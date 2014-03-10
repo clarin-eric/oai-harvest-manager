@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+	   <Centers>  
+	   
+	   
+	   
+	      <CenterProfile>
+			<Centername>Eberhard Karls Universität Tübingen</Centername>
+			<Center_id>1</Center_id>
+			<Center_id_link>http://130.183.206.32/restxml/1</Center_id_link>
+		  </CenterProfile>   
+		    	
+       
+	      <CenterProfile>
+			<Centername>ASV Leipzig</Centername>
+			<Center_id>2</Center_id>
+			<Center_id_link>http://130.183.206.32/restxml/2</Center_id_link>
+		  </CenterProfile>   
+		    	
+       
+	      <CenterProfile>
+			<Centername>Bayerisches Archiv für Sprachsignale</Centername>
+			<Center_id>3</Center_id>
+			<Center_id_link>http://130.183.206.32/restxml/3</Center_id_link>
+		  </CenterProfile>   
+		    	
+       
+	      <CenterProfile>
+			<Centername>Institut für Deutsche Sprache</Centername>
+			<Center_id>4</Center_id>
+			<Center_id_link>http://130.183.206.32/restxml/4</Center_id_link>
+		  </CenterProfile>   
+		    	
+       
+	      <CenterProfile>
+			<Centername>MPI for Psycholinguistics</Centername>
+			<Center_id>5</Center_id>
+			<Center_id_link>http://130.183.206.32/restxml/5</Center_id_link>
+		  </CenterProfile>   
+		    	
+       
+	      <CenterProfile>
+			<Centername>Universität des Saarlandes</Centername>
+			<Center_id>6</Center_id>
+			<Center_id_link>http://130.183.206.32/restxml/6</Center_id_link>
+		  </CenterProfile>   
+		    	
+       
+	      <CenterProfile>
+			<Centername>Berlin-Brandenburg Academy of Sciences and Humanities</Centername>
+			<Center_id>7</Center_id>
+			<Center_id_link>http://130.183.206.32/restxml/7</Center_id_link>
+		  </CenterProfile>   
+		    	
+       
+	      <CenterProfile>
+			<Centername>Hamburger Zentrum für Sprachkorpora (HZSK)</Centername>
+			<Center_id>8</Center_id>
+			<Center_id_link>http://130.183.206.32/restxml/8</Center_id_link>
+		  </CenterProfile>   
+		    	
+       
+	      <CenterProfile>
+			<Centername>IMS, Universität Stuttgart</Centername>
+			<Center_id>9</Center_id>
+			<Center_id_link>http://130.183.206.32/restxml/9</Center_id_link>
+		  </CenterProfile>   
+		    	
+       
+	      <CenterProfile>
+			<Centername>Huygens Instituut</Centername>
+			<Center_id>10</Center_id>
+			<Center_id_link>http://130.183.206.32/restxml/10</Center_id_link>
+		  </CenterProfile>   
+		    	
+       
+	      <CenterProfile>
+			<Centername>LINDAT-Clarin</Centername>
+			<Center_id>11</Center_id>
+			<Center_id_link>http://130.183.206.32/restxml/11</Center_id_link>
+		  </CenterProfile>   
+		    	
+       
+	      <CenterProfile>
+			<Centername>The Clarin center at University of Copenhagen</Centername>
+			<Center_id>13</Center_id>
+			<Center_id_link>http://130.183.206.32/restxml/13</Center_id_link>
+		  </CenterProfile>   
+		    	
+       
+	      <CenterProfile>
+			<Centername>INL (Instituut voor Nederlandse Lexicologie)</Centername>
+			<Center_id>14</Center_id>
+			<Center_id_link>http://130.183.206.32/restxml/14</Center_id_link>
+		  </CenterProfile>   
+		    	
+       
+	      <CenterProfile>
+			<Centername>DANS (Data Archiving and Networked Services)</Centername>
+			<Center_id>15</Center_id>
+			<Center_id_link>http://130.183.206.32/restxml/15</Center_id_link>
+		  </CenterProfile>   
+		    	
+       
+	      <CenterProfile>
+			<Centername>MI (Meertens Instituut)</Centername>
+			<Center_id>16</Center_id>
+			<Center_id_link>http://130.183.206.32/restxml/16</Center_id_link>
+		  </CenterProfile>   
+		    	
+       
+	      <CenterProfile>
+			<Centername>RZG</Centername>
+			<Center_id>17</Center_id>
+			<Center_id_link>http://130.183.206.32/restxml/17</Center_id_link>
+		  </CenterProfile>   
+		    	
+       
+	      <CenterProfile>
+			<Centername>FZJ </Centername>
+			<Center_id>18</Center_id>
+			<Center_id_link>http://130.183.206.32/restxml/18</Center_id_link>
+		  </CenterProfile>   
+		    	
+       
+	      <CenterProfile>
+			<Centername>Center of Estonian Language Resources (CELR)</Centername>
+			<Center_id>19</Center_id>
+			<Center_id_link>http://130.183.206.32/restxml/19</Center_id_link>
+		  </CenterProfile>   
+		    	
+       
+	      <CenterProfile>
+			<Centername>CLARIN Center Vienna</Centername>
+			<Center_id>20</Center_id>
+			<Center_id_link>http://130.183.206.32/restxml/20</Center_id_link>
+		  </CenterProfile>   
+		    	
+       
+	      <CenterProfile>
+			<Centername>Dutch-Flemish Human Language Technology Agency </Centername>
+			<Center_id>21</Center_id>
+			<Center_id_link>http://130.183.206.32/restxml/21</Center_id_link>
+		  </CenterProfile>   
+		    	
+       
+	      <CenterProfile>
+			<Centername>CLARIN-PL Language Technology Centre </Centername>
+			<Center_id>22</Center_id>
+			<Center_id_link>http://130.183.206.32/restxml/22</Center_id_link>
+		  </CenterProfile>   
+		    	
+       
+	      <CenterProfile>
+			<Centername>GWDG</Centername>
+			<Center_id>23</Center_id>
+			<Center_id_link>http://130.183.206.32/restxml/23</Center_id_link>
+		  </CenterProfile>   
+		    	
+       
+	      <CenterProfile>
+			<Centername>IULA-UPF-CC-CLARIN</Centername>
+			<Center_id>24</Center_id>
+			<Center_id_link>http://130.183.206.32/restxml/24</Center_id_link>
+		  </CenterProfile>   
+		    	
+       
+	      <CenterProfile>
+			<Centername>Language Bank of Finland</Centername>
+			<Center_id>25</Center_id>
+			<Center_id_link>http://130.183.206.32/restxml/25</Center_id_link>
+		  </CenterProfile>   
+		    	
+       	    	 
+ </Centers>
+
+
+ 
+ 
+ 
