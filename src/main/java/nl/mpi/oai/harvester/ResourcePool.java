@@ -64,4 +64,12 @@ public class ResourcePool<T> {
 	}
 	return resources.removeFirst();
     }
+
+    /**
+     * Returns the number of resources available in the pool at the moment it
+     * is called.
+     */
+    public int getNumAvailable() {
+	return resources.size();
+    }
 }
