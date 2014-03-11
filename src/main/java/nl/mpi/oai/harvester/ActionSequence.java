@@ -30,7 +30,13 @@ import org.apache.log4j.Logger;
 public class ActionSequence {
     private static final Logger logger = Logger.getLogger(ActionSequence.class);
 
+    /**
+     * The input format that must be available for this sequence
+     * to be applicable.
+     */
     private final MetadataFormat inputFormat;
+
+    /** The actions, in order. */
     private final Action[] actions;
 
     /**

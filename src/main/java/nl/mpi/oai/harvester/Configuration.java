@@ -59,7 +59,13 @@ public class Configuration {
      */
     private Map<String, OutputDirectory> outputs;
 
+    /** All defined action sequences, in order of preference. */
     private List<ActionSequence> actionSequences;
+
+    /**
+     * All OAI-PMH providers (whether defined in configuration or read from
+     * centre registry).
+     */
     private List<Provider> providers;
 
     /**
@@ -115,6 +121,11 @@ public class Configuration {
 		doc.getDocumentElement(), XPathConstants.NODE));
     }
 
+    /**
+     * Parse the settings section only.
+     * 
+     * @param base top node of the settings section
+     */
     private void parseSettings(Node base) throws XPathExpressionException {
 	settings = new HashMap<>();
 
@@ -134,6 +145,11 @@ public class Configuration {
 	}
     }
 
+    /**
+     * Parse the outputs section only.
+     * 
+     * @param base top node of the outputs section
+     */
     private void parseOutputs(Node base) throws XPathExpressionException,
 	    IOException {
 	outputs = new HashMap<>();
@@ -156,12 +172,17 @@ public class Configuration {
         }
     }
 
+    /**
+     * Parse the actions section only.
+     * 
+     * @param base top node of the actions section
+     */
     private void parseActions(Node base) throws XPathExpressionException {
 	actionSequences = new ArrayList<>();
 	NodeList nodeList = (NodeList) xpath.evaluate("./format", base,
 		XPathConstants.NODESET);
         for (int i=0; i<nodeList.getLength(); i++) {
-            Node curr=nodeList.item(i);
+            Node curr = nodeList.item(i);
             String matchType = Util.getNodeText(xpath, "./@match", curr);
             String matchValue = Util.getNodeText(xpath, "./@value", curr);
 	    MetadataFormat format = new MetadataFormat(matchType, matchValue);
@@ -214,6 +235,12 @@ public class Configuration {
         }
     }
 
+    /**
+     * Parse the providers section only. Included reading from the registry
+     * if required.
+     * 
+     * @param base top node of the providers section
+     */
     private void parseProviders(Node base) throws XPathExpressionException,
 	    MalformedURLException {
 	providers = new ArrayList<>();
@@ -263,6 +290,7 @@ public class Configuration {
     public List<Provider> getProviders() {
 	return providers;
     }
+
     public List<ActionSequence> getActionSequences() {
 	return actionSequences;
     }
@@ -357,6 +385,4 @@ public class Configuration {
 	    logger.info("  " + prov);
 	}
     }
-    
-
 }

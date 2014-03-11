@@ -37,9 +37,6 @@ public class Main {
     private static Configuration config;
 
     private static void runHarvesting(Configuration config) {
-	// Ensure the timeout setting is honored.
-	// config.applyTimeoutSetting();
-
 	config.log();
 	/* create dirRoot/infoFiles if needed */
 	// Util.ensureDirExists(config.getSettings().getOrigDir());
@@ -122,6 +119,8 @@ public class Main {
 		}
 	    }
 	}
+
+	// Ensure the timeout setting is honored.
 	config.applyTimeoutSetting();
 
 	runHarvesting(config);
