@@ -9,7 +9,6 @@
       <directory>src/main/resources</directory>
       <outputDirectory>resources</outputDirectory>
       <includes>
-	<include>translation.tab</include>
 	<include>config*.xml</include>
 	<include>oai2.xsl</include>
 	<include>olac2cmdi.xsl</include>
