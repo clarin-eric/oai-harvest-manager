@@ -122,4 +122,9 @@ public class OutputDirectory {
 	    return base.toString() + " [limit " + limit + "]";
 	return base.toString();
     }
+
+    @Override
+    public int hashCode() {
+	return base.hashCode() + 29 * limit;
+    }
 }

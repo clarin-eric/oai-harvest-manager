@@ -18,6 +18,10 @@
 
 package nl.mpi.oai.harvester;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.apache.log4j.Logger;
 
 /**
@@ -31,13 +35,21 @@ public class ActionSequence {
     private static final Logger logger = Logger.getLogger(ActionSequence.class);
 
     /**
+     * All action sequences share this set of resource pools and reuse its
+     * contents where possible. So, for example, there should only be one
+     * resource pool of strip actions. Every action sequence that contains a
+     * strip action then holds a reference to that pool.
+     */
+    private static final Map<Action, ResourcePool<Action>> pooledActions = new HashMap<>();
+
+    /**
      * The input format that must be available for this sequence
      * to be applicable.
      */
     private final MetadataFormat inputFormat;
 
     /** The actions, in order. */
-    private final Action[] actions;
+    private final List<ResourcePool<Action>> actions;
 
     /**
      * Create a new action sequence.
@@ -45,9 +57,32 @@ public class ActionSequence {
      * @param inputFormat acceptable format for harvesting the source
      * @param actions sequence of actions to take, in order
      */
-    public ActionSequence(MetadataFormat inputFormat, Action[] actions) {
+    public ActionSequence(MetadataFormat inputFormat, Action[] theActions,
+	    int resourcePoolSize) {
 	this.inputFormat = inputFormat;
-	this.actions = actions;
+	
+	actions = new ArrayList<ResourcePool<Action>>();
+
+	for (Action act : theActions) {
+	    actions.add(getPool(act, resourcePoolSize));
+	}
+    }
+
+    /**
+     * Get resource pool for this action (either previously initialized or
+     * created on this call).
+     */
+    private synchronized static ResourcePool<Action> getPool(Action action,
+	    int size) {
+    	if (!pooledActions.containsKey(action)) {
+	    Action[] acts = new Action[size];
+	    for (int i = 0; i < size; i++) {
+		acts[i] = action.clone();
+	    }
+	    ResourcePool<Action> pool = new ResourcePool<>(acts);
+	    pooledActions.put(action, pool);
+	}
+	return pooledActions.get(action);
     }
 
     /**
@@ -66,8 +101,11 @@ public class ActionSequence {
      * @param record metadata record
      */
     public void runActions(MetadataRecord record) {
-	for (Action act : actions) {
-	    if (!act.perform(record)) {
+	for (ResourcePool<Action> actPool : actions) {
+	    Action act = actPool.get();
+	    boolean res = act.perform(record);
+	    actPool.release(act);
+	    if (!res) {
 		logger.error("Action " + act + " failed, terminating sequence");
 		return;
 	    }
@@ -80,8 +118,10 @@ public class ActionSequence {
 	sb.append(inputFormat);
 	sb.append(")");
 	if (actions != null) {
-	    for (Action act : actions) {
+	    for (ResourcePool<Action> actPool : actions) {
+		Action act = actPool.get();
 		sb.append(" --> ").append(act);
+		actPool.release(act);
 	    }
 	}
 	return sb.toString();

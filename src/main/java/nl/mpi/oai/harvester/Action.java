@@ -34,4 +34,10 @@ public interface Action {
      *         the record unchanged
      */
     boolean perform(MetadataRecord record);
+
+    /**
+     * Create a copy of this action. (This is used in preference to the
+     * Cloneable interface due to its well-published design issues.)
+     */
+    Action clone();
 }

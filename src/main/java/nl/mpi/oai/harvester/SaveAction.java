@@ -79,4 +79,26 @@ public class SaveAction implements Action {
     public String toString() {
 	return "save to " + dir;
     }
+
+    // Save actions are equal iff the directories are the same.
+    @Override
+    public int hashCode() {
+	return dir.hashCode();
+    }
+    @Override
+    public boolean equals(Object o) {
+	if (o instanceof SaveAction && !(o instanceof SaveGroupedAction)) {
+	    SaveAction a = (SaveAction)o;
+	    // OK, this is pretty stupid, but works...
+	    return this.toString().equals(a.toString());
+	}
+	return false;
+    }
+
+    @Override
+    public Action clone() {
+	// This is a shallow copy, resulting in multiple references to a single
+	// OutputDirectory, which is as intended.
+	return new SaveAction(dir);
+    }
 }

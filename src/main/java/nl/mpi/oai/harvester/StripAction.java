@@ -18,6 +18,7 @@
 
 package nl.mpi.oai.harvester;
 
+import java.util.logging.Level;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -77,5 +78,30 @@ public class StripAction implements Action {
     @Override
     public String toString() {
 	return "strip";
+    }
+
+    // All strip actions are equal.
+    @Override
+    public int hashCode() {
+	return 1;
+    }
+    @Override
+    public boolean equals(Object o) {
+	if (o instanceof StripAction) {
+	    return true;
+	}
+	return false;
+    }
+
+    @Override
+    public Action clone() {
+	try {
+	    // All strip actions are the same. This is effectively a "deep"
+	    // copy since it has its own XPath object.
+	    return new StripAction();
+	} catch (ParserConfigurationException ex) {
+	    logger.error(ex);
+	}
+	return null;
     }
 }

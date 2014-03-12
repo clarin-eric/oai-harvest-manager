@@ -20,6 +20,7 @@ package nl.mpi.oai.harvester;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -37,7 +38,16 @@ public class SaveGroupedAction extends SaveAction implements Action {
 
     public SaveGroupedAction(OutputDirectory dir) {
 	super(dir);
-	locations = new HashMap<>();
+	locations = Collections.synchronizedMap(new HashMap<Provider, OutputDirectory>());
+    }
+
+    /**
+     * Copy constructor that makes a SHALLOW copy. Thus the copy shares the
+     * set of subdirectories with the given action.
+     */
+    private SaveGroupedAction(SaveGroupedAction sga) {
+	super(sga.dir);
+	locations = sga.locations;
     }
 
     @Override
@@ -53,5 +63,27 @@ public class SaveGroupedAction extends SaveAction implements Action {
     @Override
     public String toString() {
 	return "save to " + dir + " grouped by provider";
+    }
+
+    // Save actions are equal iff the directories are the same (but
+    // grouping is a distinguishing factor).
+    @Override
+    public int hashCode() {
+	return dir.hashCode() + 13;
+    }
+    @Override
+    public boolean equals(Object o) {
+	if (o instanceof SaveGroupedAction) {
+	    SaveGroupedAction a = (SaveGroupedAction)o;
+	    return dir.equals(a.dir);
+	}
+	return false;
+    }
+
+    @Override
+    public Action clone() {
+	// This is a shallow copy, resulting in multiple references to
+	// a single OutputDirectory, which is as intended.
+	return new SaveGroupedAction(this);
     }
 }

@@ -20,9 +20,9 @@ package nl.mpi.oai.harvester;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.util.Map;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMResult;
@@ -40,34 +40,30 @@ import org.w3c.dom.Document;
 public class TransformAction implements Action {
     private static final Logger logger = Logger.getLogger(TransformAction.class);
 
-    /**
-     * More than meets the eye: prepared Transformer objects for efficient
-     * translation
-     */
-    private static Map<String, ResourcePool<Transformer>> transformers;
-
     /** The file containing the XSL transformation. */
     private String xsltFile;
 
+    /** Prepared XSL transformation object. */
+    private Transformer transformer;
+
     /** Create a new transform action using the specified XSLT. */
-    public TransformAction(String xsltFile) {
+    public TransformAction(String xsltFile) throws FileNotFoundException,
+	    TransformerConfigurationException {
 	this.xsltFile = xsltFile;
+	TransformerFactory transformerFactory = TransformerFactory.newInstance();
+	Source xslSource = new StreamSource(new FileInputStream(xsltFile));
+	transformer = transformerFactory.newTransformer(xslSource);
     }
 
     @Override
     public boolean perform(MetadataRecord record) {
-        try {
-            TransformerFactory transformerFactory = TransformerFactory.newInstance();
-	    Source xslSource = new StreamSource(new FileInputStream(xsltFile));
-	    Transformer transformer = transformerFactory.newTransformer(xslSource);
-
-            DOMSource source = new DOMSource(record.getDoc());
+	try {
+	    DOMSource source = new DOMSource(record.getDoc());
 	    DOMResult output = new DOMResult();
 	    transformer.transform(source, output);
 	    record.setDoc((Document) output.getNode());
-
 	    return true;
-        } catch (FileNotFoundException | TransformerException ex) {
+	} catch (TransformerException ex) {
 	    logger.error(ex);
 	    return false;
 	}
@@ -76,5 +72,30 @@ public class TransformAction implements Action {
     @Override
     public String toString() {
 	return "transform using " + xsltFile;
+    }
+
+    // Transform actions differ if and only if the XSLT files differ.
+    @Override
+    public int hashCode() {
+	return xsltFile.hashCode();
+    }
+    @Override
+    public boolean equals(Object o) {
+	if (o instanceof TransformAction) {
+	    TransformAction t = (TransformAction)o;
+	    return xsltFile.equals(t.xsltFile);
+	}
+	return false;
+    }
+
+    @Override
+    public Action clone() {
+	try {
+	    // This is a deep copy. The new object has its own Transform object.
+	    return new TransformAction(xsltFile);
+	} catch (FileNotFoundException | TransformerConfigurationException ex) {
+	    logger.error(ex);
+	}
+	return null;
     }
 }

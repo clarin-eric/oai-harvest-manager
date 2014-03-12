@@ -18,6 +18,7 @@
 
 package nl.mpi.oai.harvester;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Paths;
@@ -28,6 +29,7 @@ import java.util.Map;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerConfigurationException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import javax.xml.xpath.XPath;
@@ -221,13 +223,18 @@ public class Configuration {
 			}
 		    } else if ("transform".equals(actionType)) {
 			String xslFile = Util.getNodeText(xpath, "./@file", s);
-			act = new TransformAction(xslFile);
+			try {
+			    act = new TransformAction(xslFile);
+			} catch (FileNotFoundException | TransformerConfigurationException ex) {
+			    logger.error(ex);
+			}
 		    }
 		    if (act != null)
 			ac.add(act);
 		}
 		ActionSequence ap = new ActionSequence(format,
-			ac.toArray(new Action[ac.size()]));
+			ac.toArray(new Action[ac.size()]),
+			getResourcePoolSize());
 		actionSequences.add(ap);
 	    } else {
 		logger.warn("A format has no actions defined; skipping it");
