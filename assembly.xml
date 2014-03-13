@@ -29,7 +29,7 @@
       <outputDirectory></outputDirectory>
       <includes>
 	<include>log4j.properties</include>
-	<include>${project.artifactId}-${harv_version}.jar</include>
+	<include>${project.artifactId}-${versionNumber}.jar</include>
       </includes>
     </fileSet>
     <fileSet>

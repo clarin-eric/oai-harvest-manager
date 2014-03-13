@@ -3,21 +3,20 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>nl.mpi</groupId>
-  <artifactId>oai-harvester</artifactId>
+  <artifactId>oai-harvest-manager</artifactId>
   <packaging>jar</packaging>
-  <version>3.0</version>
-  <name>OAI Harvester</name>
-  <url>http://maven.apache.org</url>
-  <description>This is an implementation of the OAI-PMH protocol
-  </description>
+  <version>0.1</version>
+  <name>OAI Harvest Manager</name>
+  <description>This application manages OAI-PMH harvesting workflows</description>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <harv_version>${project.version}.${buildNumber}</harv_version>
+    <versionNumber>${project.version}.${buildNumber}</versionNumber>
   </properties>
 
   <scm>
-    <developerConnection>scm:svn:https://svn.mpi.nl/LAT/oai/oai-harvester</developerConnection>
+    <connection>scm:git:https://github.com/TheLanguageArchive/oai-harvest-manager.git</connection>
+    <developerConnection>scm:git:https://github.com/TheLanguageArchive/oai-harvest-manager.git</developerConnection>
   </scm>
 
   <!-- REPOSITORIES -->
@@ -77,7 +76,7 @@
 
   <!-- BUILD -->
   <build>
-    <finalName>${project.artifactId}-${harv_version}</finalName>
+    <finalName>${project.artifactId}-${versionNumber}</finalName>
     <testResources>
       <testResource>
         <directory>src/test/resources</directory>
@@ -141,20 +140,20 @@
               <Version>${project.version}</Version>
               <Revision>${buildNumber}</Revision>
 
-              <Class-Path>
-                oai-harvester-${harv_version}.jar
-              </Class-Path>
+              <Class-Path>${project.artifactId}-${versionNumber}.jar</Class-Path>
               <Class-Path>.</Class-Path>
             </manifestEntries>
           </archive>
         </configuration>
       </plugin>
-      <!-- ZIP for deployment -->
+      <!-- Deployment package (tarball). -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-assembly-plugin</artifactId>
         <version>2.4</version>
         <configuration>
+	  <finalName>${project.artifactId}-${versionNumber}</finalName>
+	  <appendAssemblyId>false</appendAssemblyId>
           <descriptors>
             <descriptor>assembly.xml</descriptor>
           </descriptors>
@@ -172,7 +171,8 @@
               <goal>create</goal>
             </goals>
             <configuration>
-              <revisionOnScmFailure>no_revision</revisionOnScmFailure>
+              <revisionOnScmFailure>none</revisionOnScmFailure>
+	      <shortRevisionLength>6</shortRevisionLength>
             </configuration>
           </execution>
         </executions>

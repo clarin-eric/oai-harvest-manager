@@ -127,4 +127,12 @@ public class OutputDirectory {
     public int hashCode() {
 	return base.hashCode() + 29 * limit;
     }
+    @Override
+    public boolean equals(Object o) {
+	if (o instanceof OutputDirectory) {
+	    OutputDirectory od = (OutputDirectory)o;
+	    return (base.equals(od.base) && limit == od.limit);
+	}
+	return false;
+    }
 }

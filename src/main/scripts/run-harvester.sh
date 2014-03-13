@@ -3,7 +3,7 @@
 export LANG=en_US.UTF-8
 
 JAVA=/lat/java/bin/java
-JAR=oai-harvester-${harv_version}.jar
+JAR=oai-harvest-manager-${versionNumber}.jar
 
 y=.
 for x in lib/*.jar ; do
@@ -16,6 +16,3 @@ if [ "z${LOGSUFFIX}" != "z" ]; then
 else
   nice java -cp ${y} -jar ${JAR} $*
 fi
-
-# NOTE: to run as corpman (e.g. on lux16), use this instead:
-# sudo -u corpman $JAVA -cp $y -jar oai-harvester-${project.version}.jar $*
