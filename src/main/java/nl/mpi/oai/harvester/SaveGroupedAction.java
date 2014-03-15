@@ -57,7 +57,7 @@ public class SaveGroupedAction extends SaveAction implements Action {
 	    OutputDirectory provDir = dir.makeSubdirectory(prov.getName());
 	    locations.put(prov, provDir);
 	}
-	return locations.get(prov).placeNewFile(record.getId());
+	return locations.get(prov).placeNewFile(Util.toFileFormat(record.getId()));
     }
 
     @Override

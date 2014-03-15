@@ -72,7 +72,7 @@ public class SaveAction implements Action {
      * @return path to new file in suitable location
      */
     protected Path chooseLocation(MetadataRecord record) throws IOException {
-	return dir.placeNewFile(record.getId());
+	return dir.placeNewFile(Util.toFileFormat(record.getId()));
     }
 
     @Override

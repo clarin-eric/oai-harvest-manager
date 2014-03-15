@@ -38,38 +38,15 @@ public class Main {
 
     private static void runHarvesting(Configuration config) {
 	config.log();
-	/* create dirRoot/infoFiles if needed */
-	// Util.ensureDirExists(config.getSettings().getOrigDir());
 
+	// Start a new worker thread for each provider. The Worker class
+	// is responsible for honouring the configured limit of
+	// concurrent worker threads.
+	Worker.setConcurrentLimit(config.getMaxJobs());
 	for (Provider prov : config.getProviders()) {
-	    logger.info("Processing provider: " + prov);
-	    for (ActionSequence as : config.getActionSequences()) {
-		// Break the inner loop after the first successful completion
-		// of an action sequence.
-		if (prov.performActions(as))
-		    break;
-	    }
+	    Worker worker = new Worker(prov, config.getActionSequences());
+	    worker.startWorker();
 	}
-
-	/*
-	// ---------- 1. Compile a list of tasks. ----------
-	HarvestingTask[] tasks = config.getHarvestingTasks();
-
-	// ---------- 2. Log the task list. ----------
-	logger.info("List of tasks to be carried out:");
-	for (HarvestingTask task : tasks) {
-	    logger.info("    "+task);
-	}
-
-	// ---------- 3. Start a thread for each task. ----------
-	for (HarvestingTask task : tasks) {
-	    HarvestAndTransformationProcess.startHarvesterThread(config,
-								 task);
-	}
-
-	// ---------- 4. Wait for all the tasks to finish. ----------
-	HarvestAndTransformationProcess.waitForThreads();
-	*/
     }
 
     public static Configuration getConfig() {

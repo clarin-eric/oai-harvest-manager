@@ -13,7 +13,7 @@
     <retry-delay>10000</retry-delay>
 
     <!-- Maximum number of concurrent harvester threads -->
-    <max-jobs>4</max-jobs>
+    <max-jobs>6</max-jobs>
 
     <!-- Number of resources placed in the resource pool. -->
     <resource-pool-size>4</resource-pool-size>
