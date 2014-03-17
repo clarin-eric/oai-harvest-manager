@@ -62,7 +62,7 @@
     <dependency>
       <groupId>org.oclc</groupId>
       <artifactId>harvester2</artifactId>
-      <version>0.1.14rc</version>
+      <version>0.1.12</version>
       <scope>compile</scope>
     </dependency>
 
