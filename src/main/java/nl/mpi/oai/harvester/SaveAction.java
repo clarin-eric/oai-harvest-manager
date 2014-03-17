@@ -47,6 +47,7 @@ public class SaveAction implements Action {
 
     @Override
     public boolean perform(MetadataRecord record) {
+	OutputStream os = null;
         try {
             TransformerFactory transformerFactory = TransformerFactory.newInstance();
             Transformer transformer = transformerFactory.newTransformer();
@@ -54,15 +55,19 @@ public class SaveAction implements Action {
 
             DOMSource source = new DOMSource(record.getDoc());
 	    
-	    OutputStream os = Files.newOutputStream(chooseLocation(record));
+	    os = Files.newOutputStream(chooseLocation(record));
 	    StreamResult result = new StreamResult(os);
 
-            transformer.transform(source, result);
+	    transformer.transform(source, result);
 	    return true;
         } catch (TransformerException | IOException ex) {
 	    logger.error(ex);
 	    return false;
-        }
+        } finally {
+	    try {
+		if (os != null) os.close();
+	    } catch (IOException e) { }
+	}
     }
 
     /**
