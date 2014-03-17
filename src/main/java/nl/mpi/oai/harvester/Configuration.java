@@ -21,6 +21,7 @@ package nl.mpi.oai.harvester;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -106,21 +107,34 @@ public class Configuration {
 	DocumentBuilder db = dbf.newDocumentBuilder();
 	Document doc = db.parse(filename);
 
+	logger.debug("Reading: settings");
 	// ----- Read configuration options -----
 	parseSettings((Node) xpath.evaluate("/config/settings",
 		doc.getDocumentElement(), XPathConstants.NODE));
 
+	logger.debug("Reading: outputs");
 	// ----- Read list of outputs -----
 	parseOutputs((Node) xpath.evaluate("/config/directories",
 		doc.getDocumentElement(), XPathConstants.NODE));
 
+	logger.debug("Reading: actions");
 	// ----- Read list of actions -----
 	parseActions((Node) xpath.evaluate("/config/actions",
 		doc.getDocumentElement(), XPathConstants.NODE));
 
-    	// ----- Read list of providers -----
+	logger.debug("Reading: providers");
+	// Some provider names are fetched over the network, so a reasonable
+	// timeout should be set here.
+	setTimeout(10);
+
+	// ----- Read list of providers -----
 	parseProviders((Node) xpath.evaluate("/config/providers",
 		doc.getDocumentElement(), XPathConstants.NODE));
+
+	// Apply configured timeout, overriding our temporary value.
+	applyTimeoutSetting();
+
+	logger.debug("Finished reading config");
     }
 
     /**
@@ -157,13 +171,14 @@ public class Configuration {
 	outputs = new HashMap<>();
 	NodeList nodeList = (NodeList) xpath.evaluate("./dir", base,
 		XPathConstants.NODESET);
+	Path workDir = Paths.get(getWorkingDirectory());
         for (int i=0; i<nodeList.getLength(); i++) {
             Node curr=nodeList.item(i);
             String path = Util.getNodeText(xpath, "./@path", curr);
             String id = Util.getNodeText(xpath, "./@id", curr);
             String maxString = Util.getNodeText(xpath, "./@max-files", curr);
 	    int max = (maxString==null) ? 0 : Integer.valueOf(maxString);
-	    OutputDirectory od = new OutputDirectory(Paths.get(path), max);
+	    OutputDirectory od = new OutputDirectory(workDir.resolve(path), max);
 
 	    if (outputs.containsKey(id)) {
 		logger.error("Configuration file defines several files with id "
@@ -358,14 +373,22 @@ public class Configuration {
     public void applyTimeoutSetting() {
         String s = settings.get(KnownOptions.TIMEOUT.toString());
 	int timeout = (s==null) ? 0 : Integer.valueOf(s);
-	if (timeout > 0) {
-	    // NOTE: This is specific to the Sun implementation of URL
-	    // connections. It works in Sun JDK and OpenJDK, but not
-	    // everywhere (e.g. not on Dalvik).
-	    String t = String.valueOf(timeout*1000);
-	    System.setProperty("sun.net.client.defaultReadTimeout", t);
-	    System.setProperty("sun.net.client.defaultConnectTimeout", t);
-	}
+	setTimeout(timeout);
+    }
+
+    /**
+     * Set network timeout to the specified number of seconds.
+     * 
+     * @param sec timeout in seconds (if 0 or negative, will disable timeout)
+     */
+    private void setTimeout(int sec) {
+	String t = (sec > 0) ? String.valueOf(sec*1000) : "-1";
+
+	// NOTE: This is specific to the Sun implementation of URL
+	// connections. It works in Sun JDK and OpenJDK, but not
+	// everywhere (e.g. not on Dalvik).
+	System.setProperty("sun.net.client.defaultReadTimeout", t);
+	System.setProperty("sun.net.client.defaultConnectTimeout", t);	    
     }
 
     /**
