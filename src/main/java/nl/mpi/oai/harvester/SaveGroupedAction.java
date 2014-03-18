@@ -54,7 +54,7 @@ public class SaveGroupedAction extends SaveAction implements Action {
     protected Path chooseLocation(MetadataRecord record) throws IOException {
 	Provider prov = record.getOrigin();
 	if (!locations.containsKey(prov)) {
-	    OutputDirectory provDir = dir.makeSubdirectory(prov.getName());
+	    OutputDirectory provDir = dir.makeSubdirectory(Util.toFileFormat(prov.getName()));
 	    locations.put(prov, provDir);
 	}
 	return locations.get(prov).placeNewFile(Util.toFileFormat(record.getId()));
