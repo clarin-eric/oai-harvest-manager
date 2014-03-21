@@ -39,10 +39,17 @@ public class SaveAction implements Action {
     private static final Logger logger = Logger.getLogger(SaveAction.class);
 
     protected OutputDirectory dir;
+    protected String suffix;
 
-    /** Create a new save action using the specified output directory. */
-    public SaveAction(OutputDirectory dir) {
+    /**
+     * Create a new save action.
+     * 
+     * @param dir output directory to save to
+     * @param suffix suffix to be added to identifier to generate filename
+     */
+    public SaveAction(OutputDirectory dir, String suffix) {
 	this.dir = dir;
+	this.suffix = (suffix == null) ? "" : suffix;
     }
 
     @Override
@@ -77,18 +84,22 @@ public class SaveAction implements Action {
      * @return path to new file in suitable location
      */
     protected Path chooseLocation(MetadataRecord record) throws IOException {
-	return dir.placeNewFile(Util.toFileFormat(record.getId()));
+	return dir.placeNewFile(Util.toFileFormat(record.getId()) + suffix);
     }
 
     @Override
     public String toString() {
-	return "save to " + dir;
+	StringBuilder sb = new StringBuilder("save to ");
+	sb.append(dir);
+	if (!suffix.isEmpty())
+	    sb.append(" using suffix ").append(suffix);
+	return sb.toString();
     }
 
     // Save actions are equal iff the directories are the same.
     @Override
     public int hashCode() {
-	return dir.hashCode();
+	return dir.hashCode() + 29 * suffix.hashCode();
     }
     @Override
     public boolean equals(Object o) {
@@ -104,6 +115,6 @@ public class SaveAction implements Action {
     public Action clone() {
 	// This is a shallow copy, resulting in multiple references to a single
 	// OutputDirectory, which is as intended.
-	return new SaveAction(dir);
+	return new SaveAction(dir, suffix);
     }
 }

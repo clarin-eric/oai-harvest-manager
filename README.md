@@ -119,9 +119,11 @@ action types are available:
 
 - The *save* action stores the record in a new file in a specified
   output directory, specified by an identifier matching one of the
-  directories defined in the previous section. If the attribute
-  *group-by-provider* is specified, a separate subdirectory will be
-  created for each endpoint.
+  directories defined in the previous section. The attribute *suffix*
+  can be used to specify the file extension (the most typical value
+  being ```suffix=".xml"```). If the attribute *group-by-provider* is
+  specified, a separate subdirectory will be created for each
+  endpoint.
 
 - The *strip* action removes the OAI-PMH envelope and retains only the
   actual metadata record. Note that the envelope contains information

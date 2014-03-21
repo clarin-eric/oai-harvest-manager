@@ -36,8 +36,15 @@ public class SaveGroupedAction extends SaveAction implements Action {
      */
     private final Map<Provider, OutputDirectory> locations;
 
-    public SaveGroupedAction(OutputDirectory dir) {
-	super(dir);
+    /**
+     * Create a new save action where output files are grouped in directories
+     * per provider.
+     * 
+     * @param dir output directory to save to
+     * @param suffix suffix to be added to identifier to generate filename
+     */
+    public SaveGroupedAction(OutputDirectory dir, String suffix) {
+	super(dir, suffix);
 	locations = Collections.synchronizedMap(new HashMap<Provider, OutputDirectory>());
     }
 
@@ -46,7 +53,7 @@ public class SaveGroupedAction extends SaveAction implements Action {
      * set of subdirectories with the given action.
      */
     private SaveGroupedAction(SaveGroupedAction sga) {
-	super(sga.dir);
+	super(sga.dir, sga.suffix);
 	locations = sga.locations;
     }
 
@@ -57,25 +64,26 @@ public class SaveGroupedAction extends SaveAction implements Action {
 	    OutputDirectory provDir = dir.makeSubdirectory(Util.toFileFormat(prov.getName()));
 	    locations.put(prov, provDir);
 	}
-	return locations.get(prov).placeNewFile(Util.toFileFormat(record.getId()));
+	return locations.get(prov).placeNewFile(Util.toFileFormat(record.getId())
+		+ suffix);
     }
 
     @Override
     public String toString() {
-	return "save to " + dir + " grouped by provider";
+	return super.toString() + " grouped by provider";
     }
 
     // Save actions are equal iff the directories are the same (but
     // grouping is a distinguishing factor).
     @Override
     public int hashCode() {
-	return dir.hashCode() + 13;
+	return dir.hashCode() + 29 * suffix.hashCode() + 13;
     }
     @Override
     public boolean equals(Object o) {
 	if (o instanceof SaveGroupedAction) {
 	    SaveGroupedAction a = (SaveGroupedAction)o;
-	    return dir.equals(a.dir);
+	    return dir.equals(a.dir) && suffix.equals(a.suffix);
 	}
 	return false;
     }

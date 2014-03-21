@@ -220,7 +220,7 @@ public class Configuration {
 			}
 		    } else if ("save".equals(actionType)) {
 			String outDirId = Util.getNodeText(xpath, "./@dir", s);
-			logger.info("dir == "+outDirId);
+			String suffix = Util.getNodeText(xpath, "./@suffix", s);
 			if (outputs.containsKey(outDirId)) {
 			    OutputDirectory outDir = outputs.get(outDirId);
 			    String group = Util.getNodeText(xpath,
@@ -228,9 +228,9 @@ public class Configuration {
 			    // If the group-by-provider attribute is
 			    // not defined, it defaults to true.
 			    if (group != null && !Boolean.valueOf(group)) {
-				act = new SaveAction(outDir);
+				act = new SaveAction(outDir, suffix);
 			    } else {
-				act = new SaveGroupedAction(outDir);
+				act = new SaveGroupedAction(outDir, suffix);
 			    }
 			} else {
 			    logger.error("Invalid output directory " + outDirId
