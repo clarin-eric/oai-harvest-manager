@@ -20,8 +20,16 @@
   </scm>
 
   <!-- REPOSITORIES -->
-  <!-- see also mirror settings in ~/.m2/settings.xml -->
   <repositories>
+    <!-- The OCLC harvester2 artifact is in the MPI repository
+	 (because the owner of the project does not currently make it
+	 available via Maven).
+      -->
+    <repository>
+      <id>MPI</id>
+      <name>MPI LAT Repository</name>
+      <url>http://lux15.mpi.nl/nexus/content/groups/public</url>
+    </repository>
     <repository>
       <id>ibiblio</id>
       <name>ibiblio.org</name>
@@ -62,7 +70,7 @@
     <dependency>
       <groupId>org.oclc</groupId>
       <artifactId>harvester2</artifactId>
-      <version>0.1.12</version>
+      <version>0.1.14rc</version>
       <scope>compile</scope>
     </dependency>
 
