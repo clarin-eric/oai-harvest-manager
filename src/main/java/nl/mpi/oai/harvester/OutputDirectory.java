@@ -100,7 +100,7 @@ public class OutputDirectory {
 	if (fileCounter < limit) {
 	    fileCounter++;
 	} else {
-	    fileCounter = 0;
+	    fileCounter = 1;
 	    nextCurrentDir();
 	    Util.ensureDirExists(currentDir);
 	}
