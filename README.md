@@ -35,30 +35,29 @@ If you use a Java IDE, it is highly likely it also offers a simple way
 to do the above.
 
 The above build process creates a package named
-```oai-harvest-manager-x.y.z.tar.gz``` (where x.y.z is a version
-number).
+`oai-harvest-manager-x.y.z.tar.gz` (where x.y.z is a version number).
 
 
 # Running the Application
 
 There are no installation instructions to speak of: simply unpack the
 above package into wherever you like. The deployment package contains
-a script to start the app, ```run-harvester.sh``` (for Unix systems
+aa script to start the app, `run-harvester.sh` (for Unix systems
 including Mac OS X; we can add a Windows batch file if anyone wants
 it). The simplest usage is:
 
 ```run-harvester.sh config.xml```
 
-where ```config.xml``` is the configuration file you wish to use.
+where `config.xml` is the configuration file you wish to use.
 Additionally, parameters can be defined on the command line. For
 example:
 
 ```run-harvester.sh timeout=30 config.xml```
 
 will set the connection timeout to 30 seconds. This value will
-override the timeout value defined in ```config.xml```, if any. The
-first parameter that does not contain = is taken as the configuration
-file name.
+override the timeout value defined in `config.xml`, if any. The first
+parameter that does not contain = is taken as the configuration file
+name.
 
 
 # Configuration
@@ -85,19 +84,20 @@ with the explanation for each section below.
 The configuration parameters in this section govern the working
 directory (all output directories will be interpreted relative to it);
 connection limits including retry count, connection delay and timeout;
-and thread control settings, including the resource pool size (which
-can be reduced to lessen memory footprint, or increased to speed up
-processing if resources are plentiful).
+thread control settings, including the resource pool size (which can
+be reduced to lessen memory footprint, or increased to speed up
+processing if resources are plentiful); and settings related to
+incremental harvesting.
 
 ## Configuring Directories
 
 The output paths listed in this section must each be given a unique
-identifier. Additionally, the ```max-files``` attribute can be used to
-set a limit on the number of files in a single directory. If this is
+identifier. Additionally, the `max-files` attribute can be used to set
+a limit on the number of files in a single directory. If this is
 non-zero, subdirectories will be created in such a way that each
-subdirectory has at most ```max-files``` files in it. The usefulness
-of this setting largely depends on the total number of records you
-expect to store in a single directory and the file system used.
+subdirectory has at most `max-files` files in it. The usefulness of
+this setting largely depends on the total number of records you expect
+to store in a single directory and the file system used.
 
 ## Configuring Actions
 
@@ -121,7 +121,7 @@ action types are available:
   output directory, specified by an identifier matching one of the
   directories defined in the previous section. The attribute *suffix*
   can be used to specify the file extension (the most typical value
-  being ```suffix=".xml"```). If the attribute *group-by-provider* is
+  being ```suffix=".xml"`). If the attribute *group-by-provider* is
   specified, a separate subdirectory will be created for each
   endpoint.
 
@@ -146,15 +146,15 @@ other metadata record is unaffected).
 For each provider, the following can be defined:
 
 - The *url* attribute (mandatory) specifies the endpoint. Any URL
-  parameters (for example, ```?verb=Identify``` is commonly included
+  parameters (for example, `?verb=Identify` is commonly included
   when endpoint addresses are discussed) are unnecessary and will be
   stripped off automatically.
 
 - The *name* attribute specifies the name to use for the provider
   (which may in turn determine file paths, depending on other
   settings). If no name is specified, the provider will be contacted
-  and the name from its ```Identify``` response used. If no valid
-  response is received within a reasonable time, a generic string like
+  and the name from its `Identify` response used. If no valid response
+  is received within a reasonable time, a generic string like
   **Unnamed provider at oai.xyz.org** is used instead.
 
 - The provider element may contain multiple *set* child elements,
