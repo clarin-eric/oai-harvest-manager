@@ -21,6 +21,15 @@
     <!-- Default timeout (for connection and reading) for a single
     http request in seconds. If unspecified, will be INFINITE.  -->
     <timeout>60</timeout>
+
+    <!-- File used to log harvesting times. -->
+    <state-file>state.xml</state-file>
+
+    <!-- If this parameter is true, use incremental harvesting. For that to
+    work, state-file must be defined, the file must exist, and the provider
+    in question must have been harvested previously. If any of these conditions
+    is not fulfilled, this setting has no effect.-->
+    <incremental>true</incremental>
   </settings>
 
 
