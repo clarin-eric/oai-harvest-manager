@@ -52,7 +52,8 @@ public class RegistryReader {
     public RegistryReader() {
 	XPathFactory xpf = XPathFactory.newInstance();
 	xpath = xpf.newXPath();
-	NSContext nsContext = new NSContext("http://www.clarin.eu/cmd/", "cmd");
+	NSContext nsContext = new NSContext();
+	nsContext.add("cmd", "http://www.clarin.eu/cmd/");
 	xpath.setNamespaceContext(nsContext);
     }
 
