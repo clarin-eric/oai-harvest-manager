@@ -47,24 +47,9 @@
     </dependency>
 
     <dependency>
-      <groupId>net.sourceforge.saxon</groupId>
-      <artifactId>saxon</artifactId>
-      <version>9.1.0.8</version>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>net.sourceforge.saxon</groupId>
-      <artifactId>saxon</artifactId>
-      <version>9.1.0.8</version>
-      <classifier>dom</classifier>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>net.sourceforge.saxon</groupId>
-      <artifactId>saxon</artifactId>
-      <version>9.1.0.8</version>
-      <classifier>xpath</classifier>
-      <scope>compile</scope>
+	<groupId>net.sf.saxon</groupId>
+	<artifactId>Saxon-HE</artifactId>
+	<version>9.5.1-4</version>
     </dependency>
 
     <dependency>
