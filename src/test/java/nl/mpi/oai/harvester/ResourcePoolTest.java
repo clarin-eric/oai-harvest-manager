@@ -33,7 +33,6 @@ public class ResourcePoolTest {
      */
     @Test
     public void testGetAndRelease() {
-	System.out.println("release");
 	String[] t = {"string"};
 	ResourcePool<String> pool = new ResourcePool<>(t);
 	assertEquals(pool.getNumAvailable(), 1);

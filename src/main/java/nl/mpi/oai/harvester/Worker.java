@@ -76,6 +76,8 @@ public class Worker implements Runnable {
 
     @Override
     public void run() {
+	provider.init();
+
 	logger.info("Processing provider " + provider);
 	for (ActionSequence as : sequences) {
 	    // Break the inner loop after the first successful completion

@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OAI-PMH xmlns="http://www.openarchives.org/OAI/2.0/"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/
+                             http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd">
+  <responseDate>2014-04-01T09:25:58Z</responseDate>
+  <request verb="GetRecord" identifier="lrp:dict-gate.3" metadataPrefix="cmdi_lexRes">http://clarin.oeaw.ac.at/oaiprovider/</request>
+<GetRecord>
+<!-- Saved on 2014-04-01. -->
+<record>
+  <header>
+    <identifier>lrp:dict-gate.3</identifier>
+    <datestamp>2014-03-26T10:42:12Z</datestamp>
+  </header>
+  <metadata>
+
+<cmd:CMD xmlns:dcr="http://www.isocat.org/ns/dcr" xmlns:cmd="http://www.clarin.eu/cmd/" xmlns:ann="http://www.clarin.eu" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.clarin.eu/cmd/ http://catalog.clarin.eu/ds/ComponentRegistry/rest/registry/profiles/clarin.eu:cr1:p_1290431694579/xsd" CMDVersion="1.1">
+                    <cmd:Header>
+                        <cmd:MdCreator>ICLTT, Vienna</cmd:MdCreator>
+                        <cmd:MdCreationDate>2013-09-20</cmd:MdCreationDate>
+                        <cmd:MdSelfLink>http://hdl.handle.net/11022/0000-0000-001C-1</cmd:MdSelfLink>
+                        <cmd:MdProfile>clarin.eu:cr1:p_1290431694579</cmd:MdProfile>
+                        <cmd:MdCollectionDisplayName>Dictionary Gate</cmd:MdCollectionDisplayName>
+                    </cmd:Header>
+                    <cmd:Resources>
+                        <cmd:ResourceProxyList>
+                            <cmd:ResourceProxy id="dict-gate.3">
+                                <cmd:ResourceType>Resource</cmd:ResourceType>
+                                <cmd:ResourceRef>http://hdl.handle.net/11022/0000-0000-0029-2</cmd:ResourceRef>
+                            </cmd:ResourceProxy>
+                        </cmd:ResourceProxyList>
+                        <cmd:JournalFileProxyList></cmd:JournalFileProxyList>
+                        <cmd:ResourceRelationList></cmd:ResourceRelationList>
+                        <cmd:IsPartOfList>
+                            <cmd:IsPartOf>http://hdl.handle.net/11022/0000-0000-001B-2</cmd:IsPartOf>
+                        </cmd:IsPartOfList>
+                    </cmd:Resources>
+                    <cmd:Components>
+                        <cmd:LexicalResourceProfile>
+                            <cmd:GeneralInfo ComponentId="clarin.eu:cr1:c_1290431694495">
+                                <cmd:ResourceTitle xml:lang="en-GB">A machine-readable Persian-English dictionary</cmd:ResourceTitle>
+                                <cmd:ResourceClass>Lexicon</cmd:ResourceClass>
+                                <cmd:Version xml:lang="en-GB">Version 1</cmd:Version>
+                                <cmd:LifeCycleStatus>development</cmd:LifeCycleStatus>
+                                <cmd:StartYear>2011</cmd:StartYear>
+                                <cmd:PublicationDate>2013-02-07</cmd:PublicationDate>
+                                <cmd:LastUpdate>2013-02-06</cmd:LastUpdate>
+                                <cmd:TimeCoverage xml:lang="en-GB">contemporary</cmd:TimeCoverage>
+                                <cmd:LegalOwner xml:lang="en-GB">Charly Mörth</cmd:LegalOwner>
+                            </cmd:GeneralInfo>
+                            <cmd:Project ComponentId="clarin.eu:cr1:c_1290431694522">
+                                <cmd:ProjectName xml:lang="en-GB">VICAV</cmd:ProjectName>
+                                <cmd:ProjectTitle xml:lang="en-GB">Viennese Corpus of Arabic Varieties</cmd:ProjectTitle>
+                                <cmd:ProjectID>VICAV</cmd:ProjectID>
+                                <cmd:Url>http://corpus3.aac.ac.at/vicav</cmd:Url>
+                                <cmd:Institution ComponentId="clarin.eu:cr1:c_1290431694496">
+                                    <cmd:Department xml:lang="en-GB">ICLTT - Institute for Corpus Linguistics and Text Technology</cmd:Department>
+                                    <cmd:Department xml:lang="de-AT">ICLTT - Institut für Corpuslinguistik und Texttechnologie</cmd:Department>
+                                    <cmd:Organisation xml:lang="en-GB">Austrian Academy of Sciences</cmd:Organisation>
+                                    <cmd:Organisation xml:lang="de-AT">Österreichische Akademie der Wissenschaften</cmd:Organisation>
+                                    <cmd:Url>http://www.oeaw.ac.at/icltt/</cmd:Url>
+                                    <cmd:Location ComponentId="clarin.eu:cr1:c_1290431694494">
+                                        <cmd:Country ComponentId="clarin.eu:cr1:c_1290431694493">                
+                            <cmd:CountryName xml:lang="en-GB">Austria</cmd:CountryName>
+                                            <cmd:CountryCoding>AT</cmd:CountryCoding>
+                                        </cmd:Country>
+                                    </cmd:Location>
+                                </cmd:Institution>
+                                <cmd:Cooperations ComponentId="clarin.eu:cr1:c_1290431694489">
+                                    <cmd:Cooperation ComponentId="clarin.eu:cr1:c_1290431694488">
+                                        <cmd:CooperationPartner xml:lang="en-GB">Institute of Near Eastern Studies</cmd:CooperationPartner>
+                                        <cmd:CooperationPartner xml:lang="de-AT">Institut für Orientalistik</cmd:CooperationPartner>
+                                        <cmd:Organisation xml:lang="en-GB">University of Vienna</cmd:Organisation>
+                                        <cmd:Organisation xml:lang="de-AT">Universität Wien</cmd:Organisation>
+                                    </cmd:Cooperation>
+                                </cmd:Cooperations>
+                                <cmd:Descriptions ComponentId="clarin.eu:cr1:c_1290431694486">
+                                    <cmd:Description xml:lang="en-GB">Project VICAV was initially designed as a forum for the presentation of digital material concerning Arabic dialectology. It was intended as a means to promote the efficient exchange of ideas and experiences in an active international community.
+                        
+                        The VICAV website serves as an interface between areal and corpus linguistics. The aim is to gather varying digital language resources for a number of different localities. The description of the different varieties will hinge on language profiles, concise and standardised ‘form sheets’ that display uniformly arranged information on research history, available literature, salient grammatical features etc. The website will also make accessible bibliographies, dictionaries, glossaries, and different types of transcribed texts.</cmd:Description>
+                                </cmd:Descriptions>
+                                <cmd:Contact ComponentId="clarin.eu:cr1:c_1290431694487">
+                                    <cmd:Person>Charly Moerth</cmd:Person>
+                                    <cmd:Role xml:lang="en-GB">Project leader</cmd:Role>
+                                    <cmd:Address>Sonnenfelsgasse 19, 1010 Wien</cmd:Address>
+                                    <cmd:Email>icltt@oeaw.ac.at</cmd:Email>
+                                    <cmd:Department>Insitute for CorpusLinguistics and TextTechnology</cmd:Department>
+                                    <cmd:Organisation>Austrian Academy of Sciences</cmd:Organisation>
+                                    <cmd:TelephoneNumber>+43/51581/2329</cmd:TelephoneNumber>
+                                    <cmd:Url>http://oeaw.ac.at/icltt</cmd:Url>
+                                </cmd:Contact>
+                                <cmd:Duration ComponentId="clarin.eu:cr1:c_1271859438116">
+                                    <cmd:StartYear>2011</cmd:StartYear>
+                                </cmd:Duration>
+                            </cmd:Project>
+                            <cmd:Creation ComponentId="clarin.eu:cr1:c_1290431694570">
+                                <cmd:Creators ComponentId="clarin.eu:cr1:c_1290431694499">
+                                    <cmd:Creator ComponentId="clarin.eu:cr1:c_1290431694498">
+                                        <cmd:Contact ComponentId="clarin.eu:cr1:c_1290431694487">
+                                            <cmd:Person>Charly Moerth</cmd:Person>
+                                            <cmd:Address>Sonnenfelsgasse 19, 1010 Wien</cmd:Address>
+                                            <cmd:Email>icltt@oeaw.ac.at</cmd:Email>
+                                            <cmd:Department>Insitute for CorpusLinguistics and TextTechnology</cmd:Department>                
+                            <cmd:Organisation>Austrian Academy of Sciences</cmd:Organisation>
+                                            <cmd:Url>http://oeaw.ac.at/icltt</cmd:Url>
+                                        </cmd:Contact>
+                                    </cmd:Creator>
+                                </cmd:Creators>
+                                <cmd:CreationToolInfo ComponentId="clarin.eu:cr1:c_1290431694497">
+                                    <cmd:CreationTool xml:lang="en-GB">VLE - Viennese Lexicographic Editor</cmd:CreationTool>
+                                    <cmd:ToolType xml:lang="en-GB">lexicographic editor</cmd:ToolType>
+                                    <cmd:Version xml:lang="en-GB">Version1</cmd:Version>
+                                    <cmd:Url>http://corpus3.aac.ac.at/showcase/index.php/vle</cmd:Url>
+                                </cmd:CreationToolInfo>
+                                <cmd:Annotation ComponentId="clarin.eu:cr1:c_1290431694569">
+                                    <cmd:AnnotationMode xml:lang="en-US">manual</cmd:AnnotationMode>
+                                    <cmd:AnnotationFormat xml:lang="en-US">TEI-XML</cmd:AnnotationFormat>
+                                    <cmd:AnnotationToolInfo ComponentId="clarin.eu:cr1:c_1290431694534">
+                                        <cmd:Version>TEI-P5</cmd:Version>
+                                        <cmd:Url>http://www.tei-c.org/ns/1.0</cmd:Url>
+                                    </cmd:AnnotationToolInfo>
+                                </cmd:Annotation>
+                                <cmd:Source ComponentId="clarin.eu:cr1:c_1290431694524">
+                                    <cmd:OriginalSource xml:lang="en-GB">This is an original digital resource</cmd:OriginalSource>
+                                </cmd:Source>
+                            </cmd:Creation>
+                            <cmd:Access ComponentId="clarin.eu:cr1:c_1290431694501">
+                                <cmd:Availability xml:lang="en-GB">free</cmd:Availability>
+                                <cmd:DistributionMedium xml:lang="en-GB">online</cmd:DistributionMedium>
+                                <cmd:CatalogueLink>http://clarin.aac.ac.at/cr/get/at.icltt.cr.dict-gate.1</cmd:CatalogueLink>
+                                <cmd:Price xml:lang="en-GB">free</cmd:Price>
+                                <cmd:Licence src="http://creativecommons.org/licenses/by-nc-sa/3.0/" xml:lang="en-GB">CC-by-nc-sa</cmd:Licence>
+                                <cmd:Contact ComponentId="clarin.eu:cr1:c_1290431694487">
+                                    <cmd:Person>Charly Moerth</cmd:Person>
+                                    <cmd:Address>Sonnenfelsgasse 19, 1010 Wien</cmd:Address>
+                                    <cmd:Email>icltt@oeaw.ac.at</cmd:Email>
+                                    <cmd:Department>Insitute for CorpusLinguistics and TextTechnology</cmd:Department>
+                                    <cmd:Organisation>Austrian Academy of Sciences</cmd:Organisation>
+                                    <cmd:Url>http://oeaw.ac.at/icltt</cmd:Url>
+                                </cmd:Contact>
+                            </cmd:Access>
+                            <cmd:LexiconContext ComponentId="clarin.eu:cr1:c_1290431694566">
+                                <cmd:LexiconType xml:lang="en-GB">multilingual dictionary</cmd:LexiconType>
+                                <cmd:SubjectLanguages ComponentId="clarin.eu:cr1:c_1290431694565">
+                                    <cmd:NoLanguages>multilingual</cmd:NoLanguages>
+                                    <cmd:SubjectLanguage ComponentId="clarin.eu:cr1:c_1290431694564">
+                                        <cmd:Language ComponentId="clarin.eu:cr1:c_1271859438111">
+                                            <cmd:LanguageName xml:lang="en-GB">Modern Persian</cmd:LanguageName>
+                                            <cmd:ISO639 ComponentId="clarin.eu:cr1:c_1271859438110">
+                                                <cmd:iso-639-3-code>arz</cmd:iso-639-3-code>
+                                            </cmd:ISO639>
+                                        </cmd:Language>
+                                    </cmd:SubjectLanguage>
+                                    <cmd:SubjectLanguage ComponentId="clarin.eu:cr1:c_1290431694564">
+                                        <cmd:Language ComponentId="clarin.eu:cr1:c_1271859438111">
+                                            <cmd:LanguageName xml:lang="en-GB">English</cmd:LanguageName>
+                                            <cmd:ISO639 ComponentId="clarin.eu:cr1:c_1271859438110">
+                                                <cmd:iso-639-3-code>eng</cmd:iso-639-3-code>
+                                            </cmd:ISO639>
+                                        </cmd:Language>
+                                    </cmd:SubjectLanguage>
+                                    <cmd:SubjectLanguage ComponentId="clarin.eu:cr1:c_1290431694564">
+                                        <cmd:Language ComponentId="clarin.eu:cr1:c_1271859438111">
+                                            <cmd:LanguageName xml:lang="en-GB">German</cmd:LanguageName>
+                                            <cmd:ISO639 ComponentId="clarin.eu:cr1:c_1271859438110">
+                                                <cmd:iso-639-3-code>deu</cmd:iso-639-3-code>
+                                            </cmd:ISO639>
+                                        </cmd:Language>
+                                    </cmd:SubjectLanguage>
+                                </cmd:SubjectLanguages>
+                                <cmd:ModalityInfo ComponentId="clarin.eu:cr1:c_1290431694513">
+                                    <cmd:Modalities>spoken</cmd:Modalities>
+                                </cmd:ModalityInfo>
+                                <cmd:HeadwordType ComponentId="clarin.eu:cr1:c_1290431694505">
+                                    <cmd:LexicalUnit xml:lang="en-GB">lemma</cmd:LexicalUnit>
+                                </cmd:HeadwordType>
+                                <cmd:Descriptions ComponentId="clarin.eu:cr1:c_1290431694486">
+                                    <cmd:Description type="short" xml:lang="en-GB">entries contain translations from persian to english and german, grammatical information and examples</cmd:Description>
+                                </cmd:Descriptions>
+                            </cmd:LexiconContext>
+                            <cmd:SizeInfo ComponentId="clarin.eu:cr1:c_1290431694536">
+                                <cmd:TotalSize ComponentId="clarin.eu:cr1:c_1290431694529">
+                                    <cmd:Size>1892</cmd:Size>
+                                    <cmd:SizeUnit xml:lang="en-GB">entries</cmd:SizeUnit>
+                                </cmd:TotalSize>
+                                <cmd:SizePerLanguage ComponentId="clarin.eu:cr1:c_1290431694535">
+                                    <cmd:Size>1892</cmd:Size>
+                                    <cmd:SizeUnit xml:lang="en-GB">entries</cmd:SizeUnit>
+                                    <cmd:Language ComponentId="clarin.eu:cr1:c_1271859438111">
+                                        <cmd:LanguageName xml:lang="en-GB">Modern Persian</cmd:LanguageName>
+                                        <cmd:ISO639 ComponentId="clarin.eu:cr1:c_1271859438110">
+                                            <cmd:iso-639-3-code>arz</cmd:iso-639-3-code>
+                                        </cmd:ISO639>
+                                    </cmd:Language>
+                                </cmd:SizePerLanguage>
+                            </cmd:SizeInfo>
+                            <cmd:TextTechnical ComponentId="clarin.eu:cr1:c_1290431694512">
+                                <cmd:CharacterEncoding xml:lang="en-GB">UTF-8</cmd:CharacterEncoding>
+                                <cmd:MimeTypes ComponentId="clarin.eu:cr1:c_1290431694511">
+                                    <cmd:MimeType>text/xml</cmd:MimeType>
+                                </cmd:MimeTypes>
+                            </cmd:TextTechnical>
+                        </cmd:LexicalResourceProfile>
+                    </cmd:Components>
+                </cmd:CMD>
+  </metadata>
+</record>
+
+</GetRecord></OAI-PMH>

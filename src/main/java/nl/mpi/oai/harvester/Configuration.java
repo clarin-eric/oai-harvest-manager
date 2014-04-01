@@ -286,23 +286,35 @@ public class Configuration {
 	    Node cur = prov.item(j);
 	    String pName = Util.getNodeText(xpath, "./@name", cur);
 	    String pUrl = Util.getNodeText(xpath, "./@url", cur);
-		
+	    String pStatic = Util.getNodeText(xpath, "./@static", cur);
+
 	    if (pUrl == null) {
 		logger.error("Skipping provider " + pName + ": URL is missing");
 		continue;
 	    }
 
-	    Provider provider = (pName == null) ? new Provider(pUrl) : new Provider(pName, pUrl);
+	    Provider provider;
+	    if (Boolean.valueOf(pStatic)) {
+		provider = new StaticProvider(pUrl);
+		if (pName != null)
+		    provider.setName(pName);
+	    } else {
+		provider = new Provider(pUrl);
+		if (pName != null)
+		    provider.setName(pName);
 
-	    NodeList sets = (NodeList) xpath.evaluate("./set", cur,
-		    XPathConstants.NODESET);
-	    if (sets != null && sets.getLength() > 0) {
-		ArrayList<String> setSpec = new ArrayList<>();
-		for (int k=0; k<sets.getLength(); k++) {
-		    Node s = sets.item(k);
-		    setSpec.add(s.getTextContent());
+		// Note: static providers do not support sets, so this only
+		// needs to be done here.
+		NodeList sets = (NodeList) xpath.evaluate("./set", cur,
+			XPathConstants.NODESET);
+		if (sets != null && sets.getLength() > 0) {
+		    ArrayList<String> setSpec = new ArrayList<>();
+		    for (int k=0; k<sets.getLength(); k++) {
+			Node s = sets.item(k);
+			setSpec.add(s.getTextContent());
+		    }
+		    provider.setSets(setSpec.toArray(new String[setSpec.size()]));
 		}
-		provider.setSets(setSpec.toArray(new String[setSpec.size()]));
 	    }
 
 	    providers.add(provider);

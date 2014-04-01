@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OAI-PMH xmlns="http://www.openarchives.org/OAI/2.0/"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/
+                             http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd">
+  <responseDate>2014-04-01T09:20:45Z</responseDate>
+  <request verb="ListMetadataFormats">http://clarin.oeaw.ac.at/oaiprovider/</request>
+<!-- Saved on 2014-04-01. -->
+<ListMetadataFormats>
+  <metadataFormat>
+    <metadataPrefix>oai_dc</metadataPrefix>
+    <schema>http://www.openarchives.org/OAI/2.0/oai_dc.xsd</schema>
+    <metadataNamespace>http://www.openarchives.org/OAI/2.0/oai_dc/</metadataNamespace>
+  </metadataFormat>
+  <metadataFormat>
+    <metadataPrefix>cmdi_lexRes</metadataPrefix>
+    <schema>http://catalog.clarin.eu/ds/ComponentRegistry/rest/registry/profiles/clarin.eu:cr1:p_1290431694579/xsd</schema>
+    <metadataNamespace>http://www.clarin.eu/cmd/</metadataNamespace>
+  </metadataFormat>
+  <metadataFormat>
+    <metadataPrefix>cmdi_teiHdr</metadataPrefix>
+    <schema>http://www.clarin.eu/cmd/ http://catalog.clarin.eu/ds/ComponentRegistry/rest/registry/profiles/clarin.eu:cr1:p_1380106710826/xsd</schema>
+    <metadataNamespace>http://www.clarin.eu/cmd/</metadataNamespace>
+  </metadataFormat>
+  <metadataFormat>
+    <metadataPrefix>cmdi_textCorpus</metadataPrefix>
+    <schema>http://catalog.clarin.eu/ds/ComponentRegistry/rest/registry/profiles/clarin.eu:cr1:p_1290431694580/xsd</schema>
+    <metadataNamespace>http://www.clarin.eu/cmd/</metadataNamespace>
+  </metadataFormat>
+  <metadataFormat>
+    <metadataPrefix>cmdi_collection</metadataPrefix>
+    <schema>http://catalog.clarin.eu/ds/ComponentRegistry/rest/registry/profiles/clarin.eu:cr1:p_1345561703620/xsd</schema>
+    <metadataNamespace>http://www.clarin.eu/cmd/</metadataNamespace>
+  </metadataFormat>
+</ListMetadataFormats>
+</OAI-PMH>

@@ -52,10 +52,10 @@ public class Provider {
     private static final Logger logger = Logger.getLogger(Provider.class);
 
     /** Name of the provider. */
-    private String name;
+    protected String name;
 
     /** Address through which the OAI repository is accessed. */
-    private String oaiUrl;
+    protected String oaiUrl;
 
     /** List of OAI sets to harvest (optional). */
     private String[] sets = null;
@@ -64,22 +64,41 @@ public class Provider {
      * We make so many XPath queries we could just as well keep one XPath
      * object to hand for them.
      */
-    private XPath xpath;
+    protected XPath xpath;
 
-    /** Create provider with specified name and URL. */
-    public Provider(String name, String oaiUrl) {
-	init(oaiUrl);
-	this.name = name;
+    /**
+     * Create provider.
+     *
+     * @param url OAI-PMH URL (endpoint) of the provider
+     */
+    public Provider(String url) {
+	// If the base URL is given with parameters (most often
+	// ?verb=Identify), strip them off to get a uniform
+	// representation.
+	if (url != null && url.contains("?"))
+	    url = url.substring(0, url.indexOf("?"));
+	this.oaiUrl = url;
     }
 
     /**
-     * Create provider with specified URL. (The provider will be
-     * queried for its name.)
+     * Prepare this object for use.
      */
-    public Provider(String url) {
-	init(url);
+    public void init() {
+	XPathFactory xpf = XPathFactory.newInstance();
+	xpath = xpf.newXPath();
+	NSContext nsContext = new NSContext();
+	nsContext.add("oai", "http://www.openarchives.org/OAI/2.0/");
+	nsContext.add("os", "http://www.openarchives.org/OAI/2.0/static-repository");
+	xpath.setNamespaceContext(nsContext);
 
-	// Fetch name.
+	if (name == null)
+	    fetchName();
+    }
+
+    /**
+     * Query the provider for its name and store it in this object.
+     */
+    void fetchName() {
 	name = getProviderName();
 
 	// If we simply can't find a name, make one up.
@@ -89,24 +108,17 @@ public class Provider {
 	}
     }
 
-    public void setSets(String[] sets) {
-	this.sets = sets;
+    /**
+     * Set the name of this provider
+     *
+     * @param name name of provider
+     */
+    public void setName(String name) {
+	this.name = name;
     }
 
-    /**
-     * Set the address (stripping off junk if necessary) and do other start-up
-     * tasks.
-     */
-    private void init(String url) {
-	// If the base URL is given with parameters (most often
-	// ?verb=Identify), strip them off to get a uniform
-	// representation.
-	if (url.contains("?"))
-	    url = url.substring(0, url.indexOf("?"));
-	this.oaiUrl = url;
-
-	XPathFactory xpf = XPathFactory.newInstance();
-	xpath = xpf.newXPath();
+    public void setSets(String[] sets) {
+	this.sets = sets;
     }
 
     /** Get name with all characters intact. */
@@ -122,22 +134,35 @@ public class Provider {
      * Get the name declared by an OAI-PMH provider by making an
      * Identify request. Returns null if no name can be found.
      */
-    private String getProviderName() {
+    protected String getProviderName() {
 	try {
 	    Identify ident = new Identify(oaiUrl);
-//	    NodeList name = (NodeList)xpath.evaluate("//*[contains(local-name(),'repositoryName')]/text()",
+	    return parseProviderName(ident.getDocument());
+	} catch (IOException | ParserConfigurationException | SAXException
+		| TransformerException e) {
+	    logger.error(e.getMessage(), e);
+	}
+	return null;
+    }
+
+    /**
+     * Parse provider's name from an Identify response.
+     *
+     * @param response DOM tree representing an Identify response.
+     * @return name, or null if one cannot be ascertained
+     */
+    String parseProviderName(Document response) {
+	try {
 	    NodeList name = (NodeList)xpath.evaluate("//*[local-name() = 'repositoryName']/text()",
-						     ident.getDocument(), XPathConstants.NODESET);
+		    response, XPathConstants.NODESET);
 	    if (name != null && name.getLength() > 0) {
 		String provName = name.item(0).getNodeValue();
 		logger.info("Contacted " + oaiUrl + " to get its name, received: \"" + provName + "\"");
 		return provName;
 	    }
-	} catch (TransformerException | XPathExpressionException
-		| ParserConfigurationException | SAXException | IOException e) {
+	} catch (XPathExpressionException e) {
 	    logger.error(e.getMessage(), e);
 	}
-	logger.info("Contacted " + oaiUrl + " to get its name but received nothing");
 	return null;
     }
 
@@ -149,7 +174,7 @@ public class Provider {
      * If the sequence can be performed, this method will start a new thread
      * to do so and return true. Otherwise no action will be taken and false
      * will be returned.
-     * 
+     *
      * @param ap the sequence of actions
      */
     public boolean performActions(ActionSequence ap) {
@@ -215,8 +240,10 @@ public class Provider {
 
     /**
      * Make an OAI-PMH GetIdentifiers call to collect all identifiers available
-     * with the given metadata prefix from this provider.
-     * 
+     * with the given metadata prefix from this provider. In case a list of
+     * sets is defined for this provider, a separate call will be made for
+     * each set.
+     *
      * @param mdPrefix metadata prefix
      * @return list of identifiers, which may be empty
      */
@@ -226,12 +253,10 @@ public class Provider {
 	List<String> ids = new ArrayList<>();
 
 	if (sets == null) {
-	    ListIdentifiers li = new ListIdentifiers(oaiUrl, null, null, null, mdPrefix);
-	    addIdentifiers(li, ids);
+	    addIdentifiers(mdPrefix, null, ids);
 	} else {
 	    for (String set : sets) {
-		ListIdentifiers li = new ListIdentifiers(oaiUrl, null, null, set, mdPrefix);
-		addIdentifiers(li, ids);
+		addIdentifiers(mdPrefix, set, ids);
 	    }
 	}
 
@@ -240,82 +265,108 @@ public class Provider {
 
     /**
      * Make an OAI-PMH GetIdentifiers call to collect all identifiers available
-     * with the given metadata prefix from this provider and add them to the
-     * given list.
-     * 
-     * @param li OAI-PMH connection object
-     * @param ids a list, already created, that identifiers will be added to
+     * with the given metadata prefix and set from this provider and add them
+     * to the given list.
+     *
+     * @param mdPrefix metadata prefix
+     * @param set OAI-PMH set, or null for none
+     * @param ids existing list to which identifiers will be added
      */
-    private void addIdentifiers(ListIdentifiers li, List<String> ids) throws IOException,
-	    ParserConfigurationException, SAXException, TransformerException,
-	    XPathExpressionException, NoSuchFieldException {
+    private void addIdentifiers(String mdPrefix, String set, List<String> ids)
+	    throws IOException, ParserConfigurationException, SAXException,
+	    TransformerException, XPathExpressionException,
+	    NoSuchFieldException {
+	ListIdentifiers li = new ListIdentifiers(oaiUrl, null, null, set, mdPrefix);
 	for (;;) {
-	    Document doc = li.getDocument();
-	    NodeList nl = (NodeList)xpath.evaluate("//*[starts-with(local-name(),'identifier') and parent::*[local-name()='header' and not(@status='deleted')]]/text()",
-		    doc, XPathConstants.NODESET);
-	    if (nl == null || nl.getLength() == 0) {
-		break;
-	    }
-
-	    for (int j = 0; j < nl.getLength(); j++) {
-		String currId = nl.item(j).getNodeValue();
-		ids.add(currId);
-	    }
-
+	    addIdentifiers(li.getDocument(), ids);
 	    String resumption = li.getResumptionToken();
 	    if (resumption == null || resumption.isEmpty()) {
 		break;
 	    }
 	    li = new ListIdentifiers(oaiUrl, resumption);
 	}
-	
+    }
+
+    /**
+     * Parse list of identifiers from an OAI provider's GetIdentifiers response
+     * and add them to the given list.
+     *
+     * @param doc DOM tree representing OAI-PMH response
+     * @param ids a list, already created, that identifiers will be added to
+     */
+    void addIdentifiers(Document doc, List<String> ids) throws IOException,
+	    ParserConfigurationException, SAXException, TransformerException,
+	    XPathExpressionException, NoSuchFieldException {
+	NodeList nl = (NodeList)xpath.evaluate("//*[starts-with(local-name(),'identifier') and parent::*[local-name()='header' and not(@status='deleted')]]/text()",
+		doc, XPathConstants.NODESET);
+	if (nl == null)
+	    return;
+
+	for (int j = 0; j < nl.getLength(); j++) {
+	    String currId = nl.item(j).getNodeValue();
+	    ids.add(currId);
+	}
     }
     
     /**
      * Get the list of metadata prefixes corresponding to the specified format
      * that are supported by this provider.
      */
-    private List<String> getPrefixes(MetadataFormat format) {
-	List<String> prefs = new ArrayList<>();
-
+    List<String> getPrefixes(MetadataFormat format) {
 	logger.debug("Checking format " + format);
 	try {
 	    ListMetadataFormats lmf = new ListMetadataFormats(oaiUrl);
-	    NodeList formats = (NodeList)xpath.evaluate("//*[local-name() = 'metadataFormat']",
-		    lmf.getDocument(), XPathConstants.NODESET);
-
-	    if (formats == null) {
-		logger.warn("Provider's ListMetadataFormats response looks empty");
-		return Collections.emptyList();
-	    }
-
-	    for (int i=0; i<formats.getLength(); i++) {
-		Node s = formats.item(i);
-		String prefix = Util.getNodeText(xpath, "./*[local-name() = 'metadataPrefix']/text()", s);
-		String schema = Util.getNodeText(xpath, "./*[local-name() = 'schema']/text()", s);
-		String ns = Util.getNodeText(xpath, "./*[local-name() = 'metadataNamespace']/text()", s);
-		String comp;
-		if ("prefix".equals(format.getType())) {
-		    comp = prefix;
-		} else if ("schema".equals(format.getType())) {
-		    comp = schema;
-		} else if ("namespace".equals(format.getType())) {
-		    comp = ns;
-		} else {
-		    logger.error("Unknown match type " + format.getType());
-		    return null;
-		}
-		if (format.getValue().equals(comp)) {
-		    logger.debug("Found suitable prefix: " + prefix);
-		    prefs.add(prefix);
-		}
-	    }
-	    return prefs;
+	    return parsePrefixes(lmf.getDocument(), format);
 	} catch (TransformerException | XPathExpressionException
 		| ParserConfigurationException | SAXException | IOException e) {
 	    logger.error(e.getMessage(), e);
 	}
 	return Collections.emptyList();
+    }
+
+    /**
+     * Parse list of metadata formats and find prefixes matching the given
+     * format specification
+     *
+     * @param doc DOM tree of OAI provider's response
+     * @param format desired metadata format
+     * @return list of prefixes
+     */
+    List<String> parsePrefixes(Document doc, MetadataFormat format)
+	    throws XPathExpressionException {
+	List<String> prefs = new ArrayList<>();
+
+	NodeList formats = (NodeList)xpath.evaluate("//*[local-name() = 'metadataFormat']",
+		doc, XPathConstants.NODESET);
+
+	if (formats == null) {
+	    logger.warn("Tne ListMetadataFormats response of this provider ("
+		    + this + ") looks empty");
+	    return Collections.emptyList();
+	}
+
+	for (int i=0; i<formats.getLength(); i++) {
+	    Node s = formats.item(i);
+	    String prefix = Util.getNodeText(xpath, "./*[local-name() = 'metadataPrefix']/text()", s);
+	    String schema = Util.getNodeText(xpath, "./*[local-name() = 'schema']/text()", s);
+	    String ns = Util.getNodeText(xpath, "./*[local-name() = 'metadataNamespace']/text()", s);
+	    String comp;
+	    if ("prefix".equals(format.getType())) {
+		comp = prefix;
+	    } else if ("schema".equals(format.getType())) {
+		comp = schema;
+	    } else if ("namespace".equals(format.getType())) {
+		comp = ns;
+	    } else {
+		logger.error("Unknown match type " + format.getType());
+		return null;
+	    }
+	    if (format.getValue().equals(comp)) {
+		logger.debug("Found suitable prefix: " + prefix);
+		prefs.add(prefix);
+	    }
+	}
+	return prefs;
     }
 
     /**
@@ -329,7 +380,7 @@ public class Provider {
 
     @Override
     public String toString() {
-	StringBuilder sb = new StringBuilder(name);
+	StringBuilder sb = new StringBuilder(name == null ? "provider" : name);
 	if (sets != null) {
 	    sb.append(" (only set(s):");
 	    for (String s : sets) {

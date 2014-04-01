@@ -66,67 +66,67 @@
       <set>xyz</set>
     </provider>
       -->
-    <provider url="http://www.language-archives.org/hosted/acl.xml"
+    <provider url="http://www.language-archives.org/hosted/acl.xml" static="true"
 	      name="A Digital Archive of Research Papers in Computational Linguistics"/>
-    <provider url="http://www.language-archives.org/hosted/ailla.xml"
+    <provider url="http://www.language-archives.org/hosted/ailla.xml" static="true"
 	      name="Archive of the Indigenous Languages of Latin America"/>
     <provider url="http://www.language-archives.org/hosted/atilf.xml"/>
-    <provider url="http://cla.berkeley.edu/olac.xml"/>
-    <provider url="http://childes.talkbank.org/childes.xml"
+    <provider url="http://cla.berkeley.edu/olac.xml" static="true"/>
+    <provider url="http://childes.talkbank.org/childes.xml" static="true"
 	      name="CHILDES Data repository"/>
-    <provider url="http://metadata.mannlib.cornell.edu/clal/clal.xml"
+    <provider url="http://metadata.mannlib.cornell.edu/clal/clal.xml" static="true"
 	      name="Cornell Language Acquisition Laboratory, CLAL"/>
-    <provider url="http://victoria.linguistlist.org/php4/ore/XMLnamespacefiles/CoCoSP/CoCoSP.xml"
+    <provider url="http://victoria.linguistlist.org/php4/ore/XMLnamespacefiles/CoCoSP/CoCoSP.xml" static="true"
 	      name="Comparative Corpus of Spoken Portuguese"/>
     <provider url="http://sldr.org/oai-pmh.php"
 	      name="Speech and Language Data Repository"/>
-    <provider url="http://www.elra.info/elrac/elra_catalogue.xml"
+    <provider url="http://www.elra.info/elrac/elra_catalogue.xml" static="true"
 	      name="European Language Resources Association"/>
     <provider url="http://www.ethnologue.com/oai2.asp"
 	      name="Ethnologue: Languages of the World"/>
-    <provider url="http://www.language-archives.org/hosted/Formosan.xml"
+    <provider url="http://www.language-archives.org/hosted/Formosan.xml" static="true"
 	      name="Academia Sinica Formosan Language Archive"/>
-    <provider url="http://victoria.linguistlist.org/php4/ore/XMLnamespacefiles/Krebs/Krebs.xml"
+    <provider url="http://victoria.linguistlist.org/php4/ore/XMLnamespacefiles/Krebs/Krebs.xml" static="true"
 	      name="Boiste"/>
-    <provider url="http://www.spectrum.uni-bielefeld.de/langdoc/olac.xml"
+    <provider url="http://www.spectrum.uni-bielefeld.de/langdoc/olac.xml" static="true"
 	      name="U Bielefeld Language Archive"/>
     <provider url="http://linguistlist.org/olac/metadata-catalog.cfm"
 	      name="The LINGUIST List Language Resources"/>
-    <provider url="http://victoria.linguistlist.org/php4/ore/XMLnamespacefiles/mbcarrom/mbcarrom.xml"
+    <provider url="http://victoria.linguistlist.org/php4/ore/XMLnamespacefiles/mbcarrom/mbcarrom.xml" static="true"
 	      name="Magoria Books' Carib and Romani Archive"/>
-    <provider url="http://www.csufresno.edu/odin/olac/odin.xml"
+    <provider url="http://www.csufresno.edu/odin/olac/odin.xml" static="true"
 	      name="ODIN - The Online Database of Interlinear Text"/>
     <provider url="http://www.ota.ox.ac.uk/cgi-bin/oai.pl"
 	      name="Oxford Text Archive"/>
     <provider url="http://catalog.paradisec.org.au/oai/item"
 	      name="Pacific And Regional Archive for Digital Sources in Endangered Cultures (PARADISEC)"/>
-    <provider url="http://www.language-archives.org/hosted/rosetta.xml"
+    <provider url="http://www.language-archives.org/hosted/rosetta.xml" static="true"
 	      name="Rosetta Project 1000 Language Archive"/>
     <provider url="http://www.ethnologue.com/sil_archives2.asp"
 	      name="SIL Language and Culture Archives"/>
-    <provider url="http://www.language-archives.org/hosted/AcademiaSinica.xml"
+    <provider url="http://www.language-archives.org/hosted/AcademiaSinica.xml" static="true"
 	      name="Academia Sinica Balanced Corpus of Modern Chinese"/>
-    <provider url="http://talkbank.org/talkbank.xml"
+    <provider url="http://talkbank.org/talkbank.xml" static="true"
 	      name="TALKBANK Data repository"/>
-    <provider url="http://www.language-archives.org/hosted/tdproject.xml"
+    <provider url="http://www.language-archives.org/hosted/tdproject.xml" static="true"
 	      name="The Typological Database Project"/>
-    <provider url="http://catalog.ldc.upenn.edu/olac/ldc_catalog.xml"
+    <provider url="http://catalog.ldc.upenn.edu/olac/ldc_catalog.xml" static="true"
 	      name="The LDC Corpus Catalog"/>
-    <provider url="http://www.language-archives.org/hosted/alma.xml"
+    <provider url="http://www.language-archives.org/hosted/alma.xml" static="true"
 	      name="African Language Materials Archive"/>
     <provider url="http://wals.info/languoid/oai"
 	      name="WALS Online"/>
     <provider url="http://wals.info/refdb_oai"
 	      name="WALS RefDB"/>
-    <provider url="http://www.morphology.surrey.ac.uk/smg-metadata.xml"
+    <provider url="http://www.morphology.surrey.ac.uk/smg-metadata.xml" static="true"
 	      name="Surrey Morphology Group Databases"/>
-    <provider url="http://www.language-archives.org/hosted/SinicaCorpus.xml"
+    <provider url="http://www.language-archives.org/hosted/SinicaCorpus.xml" static="true"
 	      name="Academia Sinica Collections"/>
-    <provider url="http://scholarspace.manoa.hawaii.edu/Kaipuleohone.xml"
+    <provider url="http://scholarspace.manoa.hawaii.edu/Kaipuleohone.xml" static="true"
 	      name="ScholarSpace at University of Hawaii at Manoa"/>
-    <provider url="http://www.language-archives.org/hosted/EarlyMandarin.xml"
+    <provider url="http://www.language-archives.org/hosted/EarlyMandarin.xml" static="true"
 	      name="Academia Sinica Tagged Corpus of Early Mandarin Chinese"/>
-    <provider url="http://www.language-archives.org/hosted/thdl-olac.xml"
+    <provider url="http://www.language-archives.org/hosted/thdl-olac.xml" static="true"
 	      name="The Tibetan and Himalayan Library"/>
     <provider url="http://nlp.pwr.wroc.pl/clarin/oai/oai2.php"
 	      name="University of Wroclaw"/>
@@ -164,7 +164,7 @@
 	      name="Meta-Share Repository at ILC"/>
     <provider url="http://aholab.ehu.es/oai/"
 	      name="University of the Basque Country"/>
-    <provider url="http://lrl-diffusion.univ-bpclermont.fr/mulce/metadata/repository/mulce-sr.xml"
+    <provider url="http://lrl-diffusion.univ-bpclermont.fr/mulce/metadata/repository/mulce-sr.xml" static="true"
 	      name="Multimodal Learning and teaching Corpora Exchange"/>
     <provider url="http://www.fihrist.org.uk/oaipmh"
 	      name="Fihrist"/>

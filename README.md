@@ -42,7 +42,7 @@ The above build process creates a package named
 
 There are no installation instructions to speak of: simply unpack the
 above package into wherever you like. The deployment package contains
-aa script to start the app, `run-harvester.sh` (for Unix systems
+a script to start the app, `run-harvester.sh` (for Unix systems
 including Mac OS X; we can add a Windows batch file if anyone wants
 it). The simplest usage is:
 
@@ -157,11 +157,44 @@ For each provider, the following can be defined:
   is received within a reasonable time, a generic string like
   **Unnamed provider at oai.xyz.org** is used instead.
 
+- The attribute *static*, when set to true, indicates that the
+  provider is static. See the section below on static providers for
+  details.
+
 - The provider element may contain multiple *set* child elements,
   which specify the names of OAI-PMH sets to be harvested.
 
 There is also a special case where provider names may be imported from
 a *centre registry*, so far only used by the CLARIN community.
+
+
+# Static Providers
+
+This app provides support for a special case: harvesting directly from
+a *static* provider, as defined in the [OAI static repository
+guidelines](http://www.openarchives.org/OAI/2.0/guidelines-static-repository.htm).
+
+Essentially, a static repository is a provider that only has to make
+available a single XML file which contains all of their records. The
+method intended by the OAI-PMH family of standards for dealing with
+this situation is that the static repository uses a *gateway* to
+intermediate access, so that harvesters may access their metadata via
+standard OAI-PMH requests through the gateway. The OAI Harvest Manager
+allows direct harvesting of the XML file, bypassing any
+intermediary. This allows harvesting in a very efficient manner, as
+only a single file needs to be transferred in place of possibly
+thousands of individual OAI-PMH requests.
+
+Please note that this type of use is beyond the scope of the OAI-PMH
+standard and should be viewed as an option for implementation
+efficiency that sacrifices some compliance with standards.
+
+To use a static provider, specify the URL of the XML file as the
+endpoint and set the attribute *static* for that provider in the
+configuration file to true. Records harvested from static providers
+only have a minimal envelope that includes datestamp (of the record)
+and identifier but excludes request specific attributes such as
+response datestamps.
 
 
 # Implementation Notes

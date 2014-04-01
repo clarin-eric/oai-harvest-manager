@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OAI-PMH xmlns="http://www.openarchives.org/OAI/2.0/"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/
+                             http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd">
+  <responseDate>2014-04-01T09:21:52Z</responseDate>
+  <request verb="Identify">http://clarin.oeaw.ac.at/oaiprovider/</request>
+<!-- Saved on 2014-04-01. -->
+<Identify>
+  <repositoryName>CLARIN Centre Vienna / Language Resources Portal</repositoryName>
+  <baseURL>http://clarin.oeaw.ac.at/oaiprovider</baseURL>
+  <protocolVersion>2.0</protocolVersion>
+  <adminEmail>icltt-tech@oeaw.ac.at</adminEmail>
+  <earliestDatestamp>2013-01-01T00:00:00Z</earliestDatestamp>
+  <deletedRecord>persistent</deletedRecord>
+  <granularity>YYYY-MM-DDThh:mm:ssZ</granularity>
+</Identify>
+</OAI-PMH>

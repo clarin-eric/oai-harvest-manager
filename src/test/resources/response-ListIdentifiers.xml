@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OAI-PMH xmlns="http://www.openarchives.org/OAI/2.0/"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/
+                             http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd">
+  <responseDate>2014-04-01T09:24:31Z</responseDate>
+  <request verb="ListIdentifiers" metadataPrefix="cmdi_lexRes">http://clarin.oeaw.ac.at/oaiprovider/</request>
+<!-- Saved on 2014-04-01. -->
+<ListIdentifiers>
+<header>
+    <identifier>lrp:dict-gate.1</identifier>
+    <datestamp>2014-03-26T10:42:12Z</datestamp>
+  </header>
+<header>
+    <identifier>lrp:dict-gate.2</identifier>
+    <datestamp>2014-03-26T10:42:12Z</datestamp>
+  </header>
+<header>
+    <identifier>lrp:dict-gate.3</identifier>
+    <datestamp>2014-03-26T10:42:12Z</datestamp>
+  </header>
+</ListIdentifiers>
+</OAI-PMH>
