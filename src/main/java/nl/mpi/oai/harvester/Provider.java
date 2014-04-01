@@ -60,6 +60,9 @@ public class Provider {
     /** List of OAI sets to harvest (optional). */
     private String[] sets = null;
 
+    /** Maximum number of retries to use when a connection fails. */
+    private int maxRetryCount = 0;
+
     /**
      * We make so many XPath queries we could just as well keep one XPath
      * object to hand for them.
@@ -71,13 +74,15 @@ public class Provider {
      *
      * @param url OAI-PMH URL (endpoint) of the provider
      */
-    public Provider(String url) {
+    public Provider(String url, int maxRetryCount) {
 	// If the base URL is given with parameters (most often
 	// ?verb=Identify), strip them off to get a uniform
 	// representation.
 	if (url != null && url.contains("?"))
 	    url = url.substring(0, url.indexOf("?"));
 	this.oaiUrl = url;
+
+	this.maxRetryCount = maxRetryCount;
 
 	XPathFactory xpf = XPathFactory.newInstance();
 	xpath = xpf.newXPath();
@@ -224,8 +229,7 @@ public class Provider {
      * @return the record, or null if it cannot be fetched
      */
     public MetadataRecord getRecord(String id, String mdPrefix) {
-	int maxRetry = Main.getConfig().getMaxRetryCount();
-	for (int i=0; i<maxRetry; i++) {
+	for (int i=0; i<maxRetryCount; i++) {
 	    try {
 		GetRecord gr = new GetRecord(oaiUrl, id, mdPrefix);
 		Document doc = gr.getDocument();

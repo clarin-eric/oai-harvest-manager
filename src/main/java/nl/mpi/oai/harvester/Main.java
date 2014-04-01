@@ -49,10 +49,6 @@ public class Main {
 	}
     }
 
-    public static Configuration getConfig() {
-	return config;
-    }
-
     public static void main(String[] args) {
 	String configFile = null;
 

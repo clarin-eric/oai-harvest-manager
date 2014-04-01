@@ -60,7 +60,7 @@ public class StaticProvider extends Provider {
      * @param oaiUrl endpoint
      */
     public StaticProvider(String oaiUrl) {
-	super(oaiUrl);
+	super(oaiUrl, 1);
     }
 
     /**
@@ -69,7 +69,7 @@ public class StaticProvider extends Provider {
      * @param doc DOM tree representing the provider's content
      */
     public StaticProvider(Document doc) {
-	super(null);
+	super(null, 1);
 	providerContent = doc;
     }
 

@@ -275,7 +275,7 @@ public class Configuration {
 		    
 	    List<String> provUrls = rr.getEndpoints(new java.net.URL(regUrl));
 	    for (String provUrl : provUrls) {
-		Provider provider = new Provider(provUrl);
+		Provider provider = new Provider(provUrl, getMaxRetryCount());
 		providers.add(provider);
 	    }
 	}
@@ -299,7 +299,7 @@ public class Configuration {
 		if (pName != null)
 		    provider.setName(pName);
 	    } else {
-		provider = new Provider(pUrl);
+		provider = new Provider(pUrl, getMaxRetryCount());
 		if (pName != null)
 		    provider.setName(pName);
 
