@@ -78,19 +78,19 @@ public class Provider {
 	if (url != null && url.contains("?"))
 	    url = url.substring(0, url.indexOf("?"));
 	this.oaiUrl = url;
-    }
 
-    /**
-     * Prepare this object for use.
-     */
-    public void init() {
 	XPathFactory xpf = XPathFactory.newInstance();
 	xpath = xpf.newXPath();
 	NSContext nsContext = new NSContext();
 	nsContext.add("oai", "http://www.openarchives.org/OAI/2.0/");
 	nsContext.add("os", "http://www.openarchives.org/OAI/2.0/static-repository");
 	xpath.setNamespaceContext(nsContext);
+    }
 
+    /**
+     * Prepare this object for use.
+     */
+    public void init() {
 	if (name == null)
 	    fetchName();
     }
