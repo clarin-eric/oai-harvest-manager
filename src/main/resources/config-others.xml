@@ -38,10 +38,10 @@
     <!-- When the attribute 'max-files' is non-zero, subdirectories
          will be created to ensure no directory has more than that
          number of files. -->
-    <dir path="oai-pmh" id="orig" max-files="1000"/>
-    <dir path="results/cmdi" id="cmdi" max-files="1000"/>
-    <dir path="results/olac" id="olac" max-files="1000"/>
-    <dir path="results/dc" id="dc" max-files="1000"/>
+    <dir path="oai-pmh" id="orig" max-files="0"/>
+    <dir path="results/cmdi" id="cmdi" max-files="0"/>
+    <dir path="results/olac" id="olac" max-files="0"/>
+    <dir path="results/dc" id="dc" max-files="0"/>
   </directories>
 
 
@@ -50,14 +50,14 @@
     <format match="prefix" value="olac">
       <action type="save" dir="orig" suffix=".xml"/>
       <action type="strip"/>
-      <action type="save" dir="olac" suffix=".xml" group-by-provider="false"/>
+      <action type="save" dir="olac" suffix=".xml"/>
       <action type="transform" file="olac2cmdi.xsl"/>
       <action type="save" dir="cmdi" suffix=".xml"/>
     </format>
     <format match="prefix" value="oai_dc">
       <action type="save" dir="orig" suffix=".xml"/>
       <action type="strip"/>
-      <action type="save" dir="dc" suffix=".xml" group-by-provider="false"/>
+      <action type="save" dir="dc" suffix=".xml"/>
       <action type="transform" file="olac2cmdi.xsl"/>
       <action type="save" dir="cmdi" suffix=".xml"/>
     </format>
@@ -83,17 +83,15 @@
     <provider url="http://cla.berkeley.edu/olac.xml" static="true"/>
     <provider url="http://childes.talkbank.org/childes.xml" static="true"
 	      name="CHILDES Data repository"/>
-    <provider url="http://metadata.mannlib.cornell.edu/clal/clal.xml" static="true"
-	      name="Cornell Language Acquisition Laboratory, CLAL"/>
+    <provider url="https://metadata-wg.mannlib.cornell.edu/clal.xml" static="true"/>
     <provider url="http://victoria.linguistlist.org/php4/ore/XMLnamespacefiles/CoCoSP/CoCoSP.xml" static="true"
 	      name="Comparative Corpus of Spoken Portuguese"/>
     <provider url="http://sldr.org/oai-pmh.php"
 	      name="Speech and Language Data Repository"/>
     <provider url="http://www.elra.info/elrac/elra_catalogue.xml" static="true"
 	      name="European Language Resources Association"/>
-    <provider url="http://www.ethnologue.com/oai2.asp"
-	      name="Ethnologue: Languages of the World"/>
-    <provider url="http://www.language-archives.org/hosted/Formosan.xml" static="true"
+    <provider url="http://archive.ethnologue.com/oai2.asp"/>
+    <provider url="http://www.language-archives.org/hosted/AcademiaSinica.xml" static="true"
 	      name="Academia Sinica Formosan Language Archive"/>
     <provider url="http://victoria.linguistlist.org/php4/ore/XMLnamespacefiles/Krebs/Krebs.xml" static="true"
 	      name="Boiste"/>
@@ -103,16 +101,12 @@
 	      name="The LINGUIST List Language Resources"/>
     <provider url="http://victoria.linguistlist.org/php4/ore/XMLnamespacefiles/mbcarrom/mbcarrom.xml" static="true"
 	      name="Magoria Books' Carib and Romani Archive"/>
-    <provider url="http://www.csufresno.edu/odin/olac/odin.xml" static="true"
-	      name="ODIN - The Online Database of Interlinear Text"/>
     <provider url="http://www.ota.ox.ac.uk/cgi-bin/oai.pl"
 	      name="Oxford Text Archive"/>
     <provider url="http://catalog.paradisec.org.au/oai/item"
 	      name="Pacific And Regional Archive for Digital Sources in Endangered Cultures (PARADISEC)"/>
-    <provider url="http://www.language-archives.org/hosted/rosetta.xml" static="true"
-	      name="Rosetta Project 1000 Language Archive"/>
-    <provider url="http://www.ethnologue.com/sil_archives2.asp"
-	      name="SIL Language and Culture Archives"/>
+    <provider url="http://www.language-archives.org/hosted/rosettaproject.org.xml" static="true"/>
+    <provider url="http://archive.ethnologue.com/sil_archives.asp"/>
     <provider url="http://www.language-archives.org/hosted/AcademiaSinica.xml" static="true"
 	      name="Academia Sinica Balanced Corpus of Modern Chinese"/>
     <provider url="http://talkbank.org/talkbank.xml" static="true"
