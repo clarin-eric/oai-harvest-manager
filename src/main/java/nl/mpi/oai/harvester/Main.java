@@ -73,15 +73,9 @@ public class Main {
 	    configFile = "resources" + sep + "config.xml";
 	}
 
-	// Read the configuration file, then process command line
-	// parameters (which may override configuration options).
-	try {
-	    config = new Configuration(configFile);
-	} catch (ParserConfigurationException | SAXException 
-		| XPathExpressionException | IOException ex) {
-	    logger.error("Unable to read configuration file", ex);
-	    return;
-	}
+	// Process options given on the command line (if any), then read the
+	// configuration file. 
+	config = new Configuration();
 	for (String arg : args) {
 	    if (arg.indexOf('=') > -1) {
 		String[] tmp=arg.split("=");
@@ -91,6 +85,13 @@ public class Main {
 		    config.setOption(tmp[0], tmp[1]);
 		}
 	    }
+	}
+	try {
+	    config.readConfig(configFile);
+	} catch (ParserConfigurationException | SAXException 
+		| XPathExpressionException | IOException ex) {
+	    logger.error("Unable to read configuration file", ex);
+	    return;
 	}
 
 	// Ensure the timeout setting is honored.

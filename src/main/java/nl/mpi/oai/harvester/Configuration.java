@@ -88,20 +88,22 @@ public class Configuration {
      * 
      * @param filename configuration file
      */
-    public Configuration(String filename) throws ParserConfigurationException,
-	    SAXException, XPathExpressionException, IOException{
+    public Configuration() {
 	XPathFactory xpf = XPathFactory.newInstance();
 	xpath = xpf.newXPath();
-
-	readConfig(filename);
+	settings = new HashMap<>();
+	outputs = new HashMap<>();
+	actionSequences = new ArrayList<>();
+	providers = new ArrayList<>();
     }
 
     /**
-     * Actually read the configuration file.
+     * Read configuration from file. Options that are already set will not be
+     * overridden.
      * 
      * @param filename configuration file
      */
-    private void readConfig(String filename) throws ParserConfigurationException,
+    public void readConfig(String filename) throws ParserConfigurationException,
 	    SAXException, XPathExpressionException, IOException {
 	DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 	DocumentBuilder db = dbf.newDocumentBuilder();
@@ -143,8 +145,6 @@ public class Configuration {
      * @param base top node of the settings section
      */
     private void parseSettings(Node base) throws XPathExpressionException {
-	settings = new HashMap<>();
-
 	for (KnownOptions x : KnownOptions.values()) {
 	    String opt = x.toString();
 	    Node curr = (Node) xpath.evaluate(opt,
@@ -155,7 +155,8 @@ public class Configuration {
 		continue;
 	    }
 	    String text = curr.getTextContent();
-	    if (text != null && !text.isEmpty()) {
+	    if (text != null && !text.isEmpty()
+		    && !settings.containsKey(opt)) {
 		settings.put(opt, text);
 	    }
 	}
@@ -168,7 +169,6 @@ public class Configuration {
      */
     private void parseOutputs(Node base) throws XPathExpressionException,
 	    IOException {
-	outputs = new HashMap<>();
 	NodeList nodeList = (NodeList) xpath.evaluate("./dir", base,
 		XPathConstants.NODESET);
 	Path workDir = Paths.get(getWorkingDirectory());
@@ -195,7 +195,6 @@ public class Configuration {
      * @param base top node of the actions section
      */
     private void parseActions(Node base) throws XPathExpressionException {
-	actionSequences = new ArrayList<>();
 	NodeList nodeList = (NodeList) xpath.evaluate("./format", base,
 		XPathConstants.NODESET);
         for (int i=0; i<nodeList.getLength(); i++) {
@@ -265,8 +264,6 @@ public class Configuration {
      */
     private void parseProviders(Node base) throws XPathExpressionException,
 	    MalformedURLException {
-	providers = new ArrayList<>();
-
 	Node registry = (Node) xpath.evaluate("./import-registry", base,
 		XPathConstants.NODE);
 	if (registry != null) {
