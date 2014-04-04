@@ -51,14 +51,14 @@
       <action type="save" dir="orig" suffix=".xml"/>
       <action type="strip"/>
       <action type="save" dir="olac" suffix=".xml"/>
-      <action type="transform" file="olac2cmdi.xsl"/>
+      <action type="transform" file="resources/olac2cmdi.xsl"/>
       <action type="save" dir="cmdi" suffix=".xml"/>
     </format>
     <format match="prefix" value="oai_dc">
       <action type="save" dir="orig" suffix=".xml"/>
       <action type="strip"/>
       <action type="save" dir="dc" suffix=".xml"/>
-      <action type="transform" file="olac2cmdi.xsl"/>
+      <action type="transform" file="resources/olac2cmdi.xsl"/>
       <action type="save" dir="cmdi" suffix=".xml"/>
     </format>
   </actions>
