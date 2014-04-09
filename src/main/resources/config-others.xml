@@ -84,7 +84,8 @@
     <provider url="http://childes.talkbank.org/childes.xml" static="true"
 	      name="CHILDES Data repository"/>
     <provider url="https://metadata-wg.mannlib.cornell.edu/clal.xml" static="true"/>
-    <provider url="http://victoria.linguistlist.org/php4/ore/XMLnamespacefiles/CoCoSP/CoCoSP.xml" static="true"
+    <provider url="http://victoria.linguistlist.org/php4/ore/XMLnamespacefiles/CoCoSP/CoCoSP.xml"
+	      static="true"
 	      name="Comparative Corpus of Spoken Portuguese"/>
     <provider url="http://sldr.org/oai-pmh.php"
 	      name="Speech and Language Data Repository"/>
@@ -101,8 +102,6 @@
 	      name="The LINGUIST List Language Resources"/>
     <provider url="http://victoria.linguistlist.org/php4/ore/XMLnamespacefiles/mbcarrom/mbcarrom.xml" static="true"
 	      name="Magoria Books' Carib and Romani Archive"/>
-    <provider url="http://www.ota.ox.ac.uk/cgi-bin/oai.pl"
-	      name="Oxford Text Archive"/>
     <provider url="http://catalog.paradisec.org.au/oai/item"
 	      name="Pacific And Regional Archive for Digital Sources in Endangered Cultures (PARADISEC)"/>
     <provider url="http://www.language-archives.org/hosted/rosettaproject.org.xml" static="true"/>
