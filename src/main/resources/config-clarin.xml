@@ -72,5 +72,16 @@
   <!-- ### list of providers ### -->
   <providers>
     <import-registry url="http://centerregistry-clarin.esc.rzg.mpg.de/restxml/"/>
+    <!--
+        In addition to the registry entries, there are some "D centres" that
+	don't belong in the centre registry. They are manually included here.
+	If one is later added to the registry the entry should be removed from
+	this file.
+
+        Currently included: Utrecht University Library and Het Nederlands
+        Instituut voor Beeld en Geluid.
+    -->
+    <provider url="http://dspace.library.uu.nl/oai/clarin"/>
+    <provider url="http://oai.beeldengeluid.nl/academia/oai"/>
   </providers>
 </config>
