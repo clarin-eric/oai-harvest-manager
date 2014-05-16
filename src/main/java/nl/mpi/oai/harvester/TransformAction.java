@@ -60,6 +60,7 @@ public class TransformAction implements Action {
 	try {
 	    DOMSource source = new DOMSource(record.getDoc());
 	    DOMResult output = new DOMResult();
+	    transformer.setParameter("provider_name",record.getOrigin().getName());
 	    transformer.transform(source, output);
 	    record.setDoc((Document) output.getNode());
 	    return true;
