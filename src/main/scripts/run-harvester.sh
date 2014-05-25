@@ -12,7 +12,7 @@ done
 
 # if LOGSUFFIX is defined, it is passed on to Java
 if [ "z${LOGSUFFIX}" != "z" ]; then
-  nice java -cp ${y} -Dlogsuffix=-${LOGSUFFIX} -jar ${JAR} $*
+  nice ${JAVA} -cp ${y} -Dlogsuffix=-${LOGSUFFIX} -jar ${JAR} $*
 else
-  nice java -cp ${y} -jar ${JAR} $*
+  nice ${JAVA} -cp ${y} -jar ${JAR} $*
 fi
