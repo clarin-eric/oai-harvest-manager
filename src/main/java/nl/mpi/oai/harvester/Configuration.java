@@ -264,18 +264,65 @@ public class Configuration {
      */
     private void parseProviders(Node base) throws XPathExpressionException,
 	    MalformedURLException {
-	Node registry = (Node) xpath.evaluate("./import-registry", base,
-		XPathConstants.NODE);
-	if (registry != null) {
-	    String regUrl = Util.getNodeText(xpath, "./@url", registry);
-	    RegistryReader rr = new RegistryReader();
-		    
-	    List<String> provUrls = rr.getEndpoints(new java.net.URL(regUrl));
-	    for (String provUrl : provUrls) {
-		Provider provider = new Provider(provUrl, getMaxRetryCount());
-		providers.add(provider);
-	    }
-	}
+        
+        // check if there is an import node
+        Node importNode = (Node) xpath.evaluate("./import", base, 
+                XPathConstants.NODE);
+        if (importNode == null) {
+            logger.debug("No import node in the configuration file");
+        } else {
+            
+            // within the import node, look for the mandatory registry node   
+            Node registryNode = (Node) xpath.evaluate("./registry", importNode,
+                    XPathConstants.NODE);
+            if (registryNode == null) {
+                logger.error("No registry specified in the configuration file");
+            } else {
+                
+                // get the registry URL
+                String rUrl = Util.getNodeText(xpath, "./@url", registryNode);
+
+                if (rUrl == null) {
+                    logger.warn("No registry specified to import from; will not import");
+                } else {
+
+                    // list of endpoints to be excluded
+                    ArrayList<String> excludeSpec = new ArrayList<>();
+
+                    // create the list
+                    NodeList excludeList = (NodeList) xpath.evaluate("./exclude", importNode,
+                            XPathConstants.NODESET);
+                    for (int i = 0; i < excludeList.getLength(); i++) {
+                        Node excludeNode = excludeList.item(i);
+
+                        // find exlude node
+                        String eUrl = Util.getNodeText(xpath, "./@url", excludeNode);
+                        if (eUrl == null) {
+                            logger.warn("No URL in exclude specification");
+                        } else {
+                            excludeSpec.add(eUrl);
+                        }
+                    }
+
+                    // get the list of endpoints from the centre registry
+                    RegistryReader rr = new RegistryReader();
+                    List<String> provUrls = rr.getEndpoints(new java.net.URL(rUrl));
+
+                    // use the list to create the list of endpoints to harvest from
+                    for (String provUrl : provUrls) {
+
+                        // do not include an endpoint if it is specified to be excluded
+                        if (excludeSpec.contains(provUrl)) {
+                            logger.debug("Excluding endpoint" + provUrl);
+                        } else {
+                            logger.debug("Including endpoint" + provUrl);
+                            Provider provider = new Provider(provUrl, getMaxRetryCount ());
+                            providers.add(provider);
+                        }
+                    }
+                }
+            }
+        }
 
 	NodeList prov = (NodeList) xpath.evaluate("./provider", base,
 		XPathConstants.NODESET);
