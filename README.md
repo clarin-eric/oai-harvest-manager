@@ -164,9 +164,13 @@ For each provider, the following can be defined:
 - The provider element may contain multiple *set* child elements,
   which specify the names of OAI-PMH sets to be harvested.
 
-There is also a special case where provider names may be imported from
-a *centre registry*, so far only used by the CLARIN community.
-
+There is also a special case where provider names may be imported from 
+a *centre registry*. So far, this registry is only used by the CLARIN community. 
+The registry is specified by its URL. All the provider endpoints defined in the 
+registry will be harvested. Sometimes, it might be necessary to exclude an 
+endpoint from the ones defined in the registry. This can be done by specifying 
+its URL in the configuration file used for harvesting. Please review the 
+instructions in the configuration files supplied in the package.
 
 # Static Providers
 
