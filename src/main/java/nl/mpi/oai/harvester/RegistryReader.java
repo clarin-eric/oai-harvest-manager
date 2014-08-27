@@ -126,7 +126,7 @@ public class RegistryReader {
 		providerInfo.getDocumentElement(), XPathConstants.NODE);
 	return (endpoint == null) ? null : endpoint.getNodeValue().trim();
     }
-
+    
     /**
      * Fetch the XML document located at the given URL, parse it, and
      * return the resulting DOM tree.
@@ -138,10 +138,46 @@ public class RegistryReader {
 	connection.setRequestMethod("GET");
 	connection.setRequestProperty("Content-Type", "application/xml");
 	connection.connect();
-	// int responseCode = connection.getResponseCode();
+        
+	int responseCode = connection.getResponseCode();
+        
+        Boolean redirect = false;
 
-	DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-	DocumentBuilder db = dbf.newDocumentBuilder();
-	return db.parse(connection.getInputStream());
+        int status = connection.getResponseCode();
+        if (status != HttpURLConnection.HTTP_OK) {
+            if (status == HttpURLConnection.HTTP_MOVED_TEMP
+                    || status == HttpURLConnection.HTTP_MOVED_PERM
+                    || status == HttpURLConnection.HTTP_SEE_OTHER) {
+                redirect = true;
+            }
+        }
+        
+	if (redirect) {
+ 
+            // get redirect url from "location" header field
+            String newUrl = connection.getHeaderField("Location");
+
+            // get the cookie if need, for login
+            String cookies = connection.getHeaderField("Set-Cookie");
+
+            // open the new connnection again
+            
+            connection = (HttpURLConnection) new URL(newUrl).openConnection();
+            connection.setInstanceFollowRedirects(false);
+            connection.setRequestMethod("GET");
+            connection.setRequestProperty("Content-Type", "application/xml");
+            
+            System.out.println("Redirect to URL : " + newUrl);
+            
+            System.out.println(System.getProperty("java.runtime.version"));
+            
+            connection.connect();
+            
+            responseCode = connection.getResponseCode();
+        }
+
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        DocumentBuilder db = dbf.newDocumentBuilder();
+        return db.parse(connection.getInputStream());
     }
 }
