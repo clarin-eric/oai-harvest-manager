@@ -4,7 +4,7 @@
   <!-- ### configuration settings ### -->
   <settings>
     <!-- Working directory. -->
-    <workdir>workspace</workdir>
+    <workdir>workspace-olac</workdir>
 
     <!-- Maximum number of attempts per record before giving up. -->
     <max-retry-count>2</max-retry-count>
@@ -49,12 +49,12 @@
   <actions>
     <format match="prefix" value="olac">
       <action type="save" dir="orig" suffix=".xml"/>
-      <action type="strip"/>
-      <action type="save" dir="olac" suffix=".xml"/>
+      <!--<action type="strip"/>
+      <action type="save" dir="olac" suffix=".xml"/>-->
       <action type="transform" file="resources/olac2cmdi.xsl"/>
       <action type="save" dir="cmdi" suffix=".xml"/>
     </format>
-    <format match="prefix" value="oai_dc">
+      <format match="prefix" value="oai_dc">
       <action type="save" dir="orig" suffix=".xml"/>
       <action type="strip"/>
       <action type="save" dir="dc" suffix=".xml"/>

@@ -52,10 +52,12 @@ public class Main {
     public static void main(String[] args) {
 	String configFile = null;
 
-	// Select Saxon XPath implementation (necessary in case there
-        // are other XPath libraries in classpath).
-        System.setProperty("javax.xml.xpath.XPathFactory",
-		"net.sf.saxon.xpath.XPathFactoryImpl");
+	// Select Saxon XSLT/XPath implementation (necessary in case there
+    // are other XSLT/XPath libraries in classpath).
+    System.setProperty("javax.xml.transform.TransformerFactory",    
+        "net.sf.saxon.TransformerFactoryImpl");
+    System.setProperty("javax.xml.xpath.XPathFactory",
+        "net.sf.saxon.xpath.XPathFactoryImpl");
 
 	// If the "config" parameter is specified, take it as the
 	// configuration file name.

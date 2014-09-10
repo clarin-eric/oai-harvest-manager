@@ -18,7 +18,7 @@
 	This parameter can be used to specify path to the iso xml
 	file.
       -->
-    <xsl:param name="iso_xml_path"/>
+    <xsl:param name="iso_xml_path" select="'resources/'"/>
     <xsl:variable name="lang-top" select="document(concat($iso_xml_path,'sil_to_iso6393.xml'))/languages"/>
 
     <!--
@@ -29,6 +29,7 @@
     
 
     <xsl:template match="/">
+        <xsl:message>MENZO: sil_to_iso6393.xml/language[<xsl:value-of select="count($lang-top/lang)"/>]</xsl:message>
         <CMD CMDVersion="1.1"
             xsi:schemaLocation="http://www.clarin.eu/cmd/ http://catalog.clarin.eu/ds/ComponentRegistry/rest/registry/profiles/clarin.eu:cr1:p_1288172614026/xsd">
             <Header>
