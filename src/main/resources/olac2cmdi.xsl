@@ -29,7 +29,6 @@
     
 
     <xsl:template match="/">
-        <xsl:message>MENZO: sil_to_iso6393.xml/language[<xsl:value-of select="count($lang-top/lang)"/>]</xsl:message>
         <CMD CMDVersion="1.1"
             xsi:schemaLocation="http://www.clarin.eu/cmd/ http://catalog.clarin.eu/ds/ComponentRegistry/rest/registry/profiles/clarin.eu:cr1:p_1288172614026/xsd">
             <Header>
