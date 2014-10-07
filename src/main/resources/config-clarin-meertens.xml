@@ -4,7 +4,7 @@
   <!-- ### configuration settings ### -->
   <settings>
     <!-- Working directory. -->
-    <workdir>workspace</workdir>
+    <workdir>workspace-meertens</workdir>
 
     <!-- Maximum number of attempts per record before giving up. -->
     <max-retry-count>2</max-retry-count>
@@ -71,30 +71,6 @@
 
   <!-- ### list of providers ### -->
   <providers>
-    <import>
-      <registry url="http://centerregistry-clarin.esc.rzg.mpg.de/restxml/"/>
-      <!-- Block harvesting from a specific provider defined in the registry 
-           element by supplying its endpoint URL as an child element tagged 
-           'exclude'. You can add multiple exclude elements. Please note that
-           the exclusion only applies to the registry element, not to the 
-           provider elements 
-      -->
-      <exclude url="http://www.meertens.knaw.nl/oai/oai_server.php?verb=Identify"/>
-    </import>
-    <!-- temporary added to overcome a bug in the harvester that only allows one endpoint per center -->
-    <provider url="https://repository.sfb833.uni-tuebingen.de:8443/oaiprovider/?verb=Identify"/>
-    <!-- Virtual Collection Registry -->
-    <provider url="http://clarin.ids-mannheim.de/vcr/oai?verb=Identify"/>
-    <!--
-        In addition to the registry entries, there are some "D centres" that
-	don't belong in the centre registry. They are manually included here.
-	If one is later added to the registry the entry should be removed from
-	this file.
-
-        Currently included: Utrecht University Library and Het Nederlands
-        Instituut voor Beeld en Geluid.
-    -->
-    <provider url="http://dspace.library.uu.nl/oai/clarin"/>
-    <provider url="http://oai.beeldengeluid.nl/academia/oai"/>
+    <provider url="http://www.meertens.knaw.nl/oai/oai_server.php?verb=Identify"/>
   </providers>
 </config>
