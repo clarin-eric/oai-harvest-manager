@@ -82,9 +82,9 @@
       <exclude url="http://www.meertens.knaw.nl/oai/oai_server.php?verb=Identify"/>
     </import>
     <!-- temporary added to overcome a bug in the harvester that only allows one endpoint per center -->
-    <provider url="https://repository.sfb833.uni-tuebingen.de:8443/oaiprovider/?verb=Identify"/>
+    <provider url="http://repository.sfb833.uni-tuebingen.de:8080/oaiprovider/?verb=Identify"/>
     <!-- Virtual Collection Registry -->
-    <provider url="http://clarin.ids-mannheim.de/vcr/oai?verb=Identify"/>
+    <!-- <provider url="http://clarin.ids-mannheim.de/vcr/oai?verb=Identify"/> -->
     <!--
         In addition to the registry entries, there are some "D centres" that
 	don't belong in the centre registry. They are manually included here.
