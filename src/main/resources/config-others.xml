@@ -112,7 +112,7 @@
 	      name="TALKBANK Data repository"/>
     <provider url="http://www.language-archives.org/hosted/tdproject.xml" static="true"
 	      name="The Typological Database Project"/>
-    <provider url="http://catalog.ldc.upenn.edu/olac/ldc_catalog.xml" static="true"
+    <provider url="http://olac.ldc.upenn.edu/cgi-bin/olaca3.pl" static="false"
 	      name="The LDC Corpus Catalog"/>
     <provider url="http://www.language-archives.org/hosted/alma.xml" static="true"
 	      name="African Language Materials Archive"/>
