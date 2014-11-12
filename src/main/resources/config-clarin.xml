@@ -80,6 +80,7 @@
            provider elements 
       -->
       <exclude url="http://www.meertens.knaw.nl/oai/oai_server.php?verb=Identify"/>
+      <exclude url="http://talkbank.org/cgi-bin/oai/XMLFile/TalkBank/oai.pl?verb=Identify"/>
     </import>
     <!-- temporary added to overcome a bug in the harvester that only allows one endpoint per center -->
     <provider url="http://repository.sfb833.uni-tuebingen.de:8080/oaiprovider/?verb=Identify"/>

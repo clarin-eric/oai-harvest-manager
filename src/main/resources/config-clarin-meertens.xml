@@ -13,7 +13,7 @@
     <retry-delay>10000</retry-delay>
 
     <!-- Maximum number of concurrent harvester threads -->
-    <max-jobs>6</max-jobs>
+    <max-jobs>1</max-jobs>
 
     <!-- Number of resources placed in the resource pool. -->
     <resource-pool-size>4</resource-pool-size>
@@ -72,5 +72,6 @@
   <!-- ### list of providers ### -->
   <providers>
     <provider url="http://www.meertens.knaw.nl/oai/oai_server.php?verb=Identify"/>
+  	<provider url="http://talkbank.org/cgi-bin/oai/XMLFile/TalkBank/oai.pl?verb=Identify"/>
   </providers>
 </config>
