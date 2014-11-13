@@ -171,5 +171,6 @@
     <provider url="http://www.fihrist.org.uk/oaipmh"
 	      name="Fihrist"/>
     <provider url="http://oai.hab.de/" name="Wolfenbuettel Digital Library"/>
+    <provider url="http://www.e-codices.unifr.ch/oai/oai.php?verb=Identify"/>
   </providers>
 </config>
