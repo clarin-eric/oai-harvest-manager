@@ -172,5 +172,6 @@
 	      name="Fihrist"/>
     <provider url="http://oai.hab.de/" name="Wolfenbuettel Digital Library"/>
     <provider url="http://www.e-codices.unifr.ch/oai/oai.php?verb=Identify"/>
+    <provider url="http://gei-digital.gei.de/viewer/oai?verb=Identify" name="GEI historic German textbooks"/>
   </providers>
 </config>
