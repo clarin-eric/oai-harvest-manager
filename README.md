@@ -41,10 +41,10 @@ The above build process creates a package named
 # Running the Application
 
 There are no installation instructions to speak of: simply unpack the
-above package into wherever you like. The deployment package contains
-a script to start the app, `run-harvester.sh` (for Unix systems
-including Mac OS X; we can add a Windows batch file if anyone wants
-it). The simplest usage is:
+above package into wherever you like. Be sure the system can find java
+however. The deployment package contains a script to start the app,
+`run-harvester.sh` (for Unix systems including Mac OS X; we can add a
+Windows batch file if anyone wants it). The simplest usage is:
 
 ```run-harvester.sh config.xml```
 
@@ -164,12 +164,12 @@ For each provider, the following can be defined:
 - The provider element may contain multiple *set* child elements,
   which specify the names of OAI-PMH sets to be harvested.
 
-There is also a special case where provider names may be imported from 
-a *centre registry*. So far, this registry is only used by the CLARIN community. 
-The registry is specified by its URL. All the provider endpoints defined in the 
-registry will be harvested. Sometimes, it might be necessary to exclude an 
-endpoint from the ones defined in the registry. This can be done by specifying 
-its URL in the configuration file used for harvesting. Please review the 
+There is also a special case where provider names may be imported from
+a *centre registry*. So far, this registry is only used by the CLARIN community.
+The registry is specified by its URL. All the provider endpoints defined in the
+registry will be harvested. Sometimes, it might be necessary to exclude an
+endpoint from the ones defined in the registry. This can be done by specifying
+its URL in the configuration file used for harvesting. Please review the
 instructions in the configuration files supplied in the package.
 
 # Static Providers
@@ -200,6 +200,9 @@ only have a minimal envelope that includes datestamp (of the record)
 and identifier but excludes request specific attributes such as
 response datestamps.
 
+# Logging
+
+The harvester will create the directory 'log' in which log files will reside. Alternatively, you can specify a directory for these by defining the HLOGDIR bash environment variable.
 
 # Implementation Notes
 
