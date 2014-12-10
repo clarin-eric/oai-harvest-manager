@@ -72,7 +72,5 @@
   <!-- ### list of providers ### -->
   <providers>
     <provider url="http://www.meertens.knaw.nl/oai/oai_server.php?verb=Identify"/>
-    <provider url="http://gandalf.talkbank.org/cgi-bin/oai/XMLFile/TalkBank/oai.pl?verb=Identify"/>
-    <provider url="http://gandalf.talkbank.org/cgi-bin/oai/XMLFile/CHILDES/oai.pl?verb=Identify"/>
   </providers>
 </config>
