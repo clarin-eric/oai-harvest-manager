@@ -4,7 +4,7 @@
   <!-- ### configuration settings ### -->
   <settings>
     <!-- Working directory. -->
-    <workdir>workspace-meertens</workdir>
+    <workdir>workspace-cmu</workdir>
 
     <!-- Maximum number of attempts per record before giving up. -->
     <max-retry-count>2</max-retry-count>
@@ -20,8 +20,8 @@
 
     <!-- Default timeout (for connection and reading) for a single
     http request in seconds. If unspecified, will be INFINITE.  -->
-    <timeout>60</timeout>
-    
+    <!--<timeout>60</timeout>-->
+
     <!-- File used to log harvesting times. -->
     <state-file>state.xml</state-file>
 
@@ -71,6 +71,7 @@
 
   <!-- ### list of providers ### -->
   <providers>
-    <provider url="http://www.meertens.knaw.nl/oai/oai_server.php?verb=Identify"/>
+    <provider url="http://gandalf.talkbank.org/cgi-bin/oai/XMLFile/TalkBank/oai.pl?verb=Identify"/>
+    <provider url="http://gandalf.talkbank.org/cgi-bin/oai/XMLFile/CHILDES/oai.pl?verb=Identify"/>
   </providers>
 </config>

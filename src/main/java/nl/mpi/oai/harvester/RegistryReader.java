@@ -75,9 +75,10 @@ public class RegistryReader {
 		    + " centres");
 	    for (String providerInfoUrl : provUrls) {
 		doc = openRemoteDocument(new URL(providerInfoUrl));
-		String endpoint = getEndpoint(doc);
-		if (endpoint != null) {
-		    endpoints.add(endpoint);
+		NodeList ends = getEndpoints(doc);
+		if (ends != null) {
+                    for (int i =0;i<ends.getLength();i++)
+                        endpoints.add(ends.item(i).getNodeValue().trim());
 		}
 	    }
 	} catch (IOException | ParserConfigurationException | SAXException
@@ -118,13 +119,13 @@ public class RegistryReader {
      * @param providerInfo xml information from the centre registry
      * @return endpoint URL, or null if none available
      */
-    public String getEndpoint(Document providerInfo) throws XPathExpressionException {
+    public NodeList getEndpoints(Document providerInfo) throws XPathExpressionException {
 	if (providerInfo == null)
 	    return null;
 
-	Node endpoint = (Node) xpath.evaluate("/cmd:CMD/cmd:Components/cmd:CenterProfile/cmd:CenterExtendedInformation/cmd:Metadata/cmd:OaiAccessPoint/text()",
-		providerInfo.getDocumentElement(), XPathConstants.NODE);
-	return (endpoint == null) ? null : endpoint.getNodeValue().trim();
+	NodeList endpoints = (NodeList) xpath.evaluate("/cmd:CMD/cmd:Components/cmd:CenterProfile/cmd:CenterExtendedInformation/cmd:Metadata/cmd:OaiAccessPoint/text()",
+		providerInfo.getDocumentElement(), XPathConstants.NODESET);
+	return (endpoints == null) ? null : endpoints;
     }
     
     /**

@@ -21,6 +21,7 @@ package nl.mpi.oai.harvester;
 import java.util.List;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import org.w3c.dom.NodeList;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.w3c.dom.Document;
@@ -57,7 +58,7 @@ public class RegistryReaderTest {
 
 	RegistryReader instance = new RegistryReader();
 	String expResult = "http://www.phonetik.uni-muenchen.de/cgi-bin/BASRepository/oaipmh/oai.pl?verb=Identify";
-	String result = instance.getEndpoint(docProvInfo);
-	assertEquals(expResult, result);
+	NodeList result = instance.getEndpoints(docProvInfo);
+	assertEquals(expResult, result.item(0).getNodeValue());
     }
 }
