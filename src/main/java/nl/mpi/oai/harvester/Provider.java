@@ -26,6 +26,7 @@ import javax.xml.xpath.XPathFactory;
 import ORG.oclc.oai.harvester2.verb.Identify;
 import ORG.oclc.oai.harvester2.verb.ListIdentifiers;
 import ORG.oclc.oai.harvester2.verb.ListMetadataFormats;
+import ORG.oclc.oai.harvester2.verb.ListRecords;
 import org.w3c.dom.NodeList;
 
 import java.io.IOException;
@@ -34,6 +35,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.xpath.XPathExpressionException;
@@ -52,10 +55,10 @@ public class Provider {
     private static final Logger logger = Logger.getLogger(Provider.class);
 
     /** Name of the provider. */
-    protected String name;
+    protected  String name;
 
     /** Address through which the OAI repository is accessed. */
-    protected String oaiUrl;
+    protected final String oaiUrl;
 
     /** List of OAI sets to harvest (optional). */
     private String[] sets = null;
@@ -67,14 +70,26 @@ public class Provider {
      * We make so many XPath queries we could just as well keep one XPath
      * object to hand for them.
      */
-    protected XPath xpath;
+    protected final XPath xpath;
+    
+    // document builder factory
+    private final DocumentBuilder db;
 
     /**
-     * Create provider.
+     * Provider constructor
+     * <br><br>
+     * 
+     * Note the constructor might throw the ParserConfigurationException. This 
+     * checked exception occurs when the factory class cannot create a document
+     * builder. This condition can arise when the factory cannot find the 
+     * necessary class, does not have access to it, or can for some reason 
+     * not instantiate the builder.
      *
      * @param url OAI-PMH URL (endpoint) of the provider
      */
-    public Provider(String url, int maxRetryCount) {
+    public Provider(String url, int maxRetryCount) 
+            throws ParserConfigurationException {
+        
 	// If the base URL is given with parameters (most often
 	// ?verb=Identify), strip them off to get a uniform
 	// representation.
@@ -83,6 +98,10 @@ public class Provider {
 	this.oaiUrl = url;
 
 	this.maxRetryCount = maxRetryCount;
+
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        // note: the dbf might throw the checked ParserConfigurationException
+        db = dbf.newDocumentBuilder();
 
 	XPathFactory xpf = XPathFactory.newInstance();
 	xpath = xpf.newXPath();
@@ -170,6 +189,136 @@ public class Provider {
 	}
 	return null;
     }
+    
+    /**
+     * Perform the actions in the sequence specified on the response to the
+     * ListRecords verb
+     * <br><br>
+     * 
+     * If the sequence can be performed, this method will start a new thread
+     * to do so and return true. Otherwise no action will be taken and false
+     * will be returned.
+     * 
+     * @param actions the sequence of actions
+     *
+     * @return
+     */
+    public boolean actionsOnListRecords(ActionSequence actions) {
+
+        // check if the endpoint supports the formats specified with the actions
+        List<String> prefixes = getPrefixes(actions.getInputFormat());
+        if (prefixes.isEmpty()) {
+            logger.info("No matching prefixes for format "
+                    + actions.getInputFormat());
+            return false;
+        }
+
+        // for every format supported, try to issue a ListRecords lr
+        for (String prefix : prefixes) {
+
+            try {
+                // on failing, we stop
+                ListRecords lr = new ListRecords(this.oaiUrl, null, null, null,
+                        prefix);
+                
+                for (;;) {
+                    
+                    /* Try Get the list of records in the response. On failing,
+                       we stop.
+                     */
+                    NodeList nl = (NodeList) xpath.evaluate(
+                            "//*[parent::*[local-name()='ListRecords']]",
+                            lr.getDocument(), XPathConstants.NODESET);
+                    
+                    // for every record in the list, perform the actions
+                    for (int j = 0; j < nl.getLength(); j++) {
+                        
+                        // first, turn the node into a document
+                        Node node = nl.item(j).cloneNode(true);
+                        Document doc = db.newDocument();
+                        Node copy = doc.importNode(node, true);
+                        doc.appendChild(copy);
+      
+                        // evaluate the document, find the identifier
+                        Node id = null;
+                        try {
+                            id = (Node) xpath.evaluate("//*[starts-with(local-name(),"
+                                    + "'identifier') and parent::*[local-name()='header'"
+                                    + "and not(@status='deleted')]]/text()",
+                                    doc, XPathConstants.NODE);
+                        } catch (XPathExpressionException ex) {
+                            logger.info("error parsing header, skipping record");
+                        }
+
+                        if (id != null) {
+                            /* Header contains indentifier and record is not 
+                               deleted. Next, evaluate the document, find the 
+                               metadata.
+                             */
+
+                            try {
+                                node = (Node) xpath.evaluate("//*[local-name()="
+                                        + "'metadata'"
+                                        + "and parent::*[local-name()='record']]/*[1]",
+                                        doc, XPathConstants.NODE);
+                            } catch (XPathExpressionException ex) {
+                                logger.info ("cannot find metadata, skipping record");
+                            }
+                            
+                            if (node != null) {
+                                /* The record does contain metadata. Create a 
+                                   document to store the metadata in.
+                                 */
+                                node = node.cloneNode(true);
+                                doc = db.newDocument();
+                                copy = doc.importNode(node, true);
+                                doc.appendChild(copy);
+                                
+                                MetadataRecord rec = new MetadataRecord(
+                                        id.getTextContent(), doc, this);
+                                
+                                /* Perform the actions. Note: for the moment skip
+                                   saving the response to the ListRecords verb. Also
+                                   skip stripping because that has already been done
+                                   here.
+                                 */
+                                rec.harvestedDirectly(true);
+                                
+                                actions.runActions(rec);
+                            }
+                        }
+                    }
+                    
+                    /* Try to get a resumption token. On failing, we continue 
+                       with the next prefix.
+                    */
+                    String resumption = lr.getResumptionToken();
+                    if (resumption == null || resumption.isEmpty()) {
+                        // finished with the records with the current prefix
+                        break;
+                    }
+                    lr = new ListRecords(oaiUrl, resumption);
+                }
+    
+            } catch ( IOException 
+                    | ParserConfigurationException 
+                    | SAXException 
+                    | TransformerException 
+                    | XPathExpressionException ex) {
+                logger.info ("Cannot create list of records with prefix " + prefix);
+                // do not try the next prefix, stop
+                return false;
+            } catch (NoSuchFieldException ex) {
+                logger.info ("Cannot get resumption token for records with prefix "
+                        + prefix);
+                // do not try the next prefix, stop
+                return false;
+            }
+
+        }
+        
+        return true;
+    }
 
     /**
      * Attempt to perform the specified sequence of actions on metadata from
@@ -218,7 +367,7 @@ public class Provider {
 	    }
 	}
 
-	return true;
+        return true;
     }
 
     /**

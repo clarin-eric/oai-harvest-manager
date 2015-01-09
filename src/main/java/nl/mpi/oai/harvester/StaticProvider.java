@@ -59,7 +59,7 @@ public class StaticProvider extends Provider {
      * 
      * @param oaiUrl endpoint
      */
-    public StaticProvider(String oaiUrl) {
+    public StaticProvider(String oaiUrl) throws ParserConfigurationException {
 	super(oaiUrl, 1);
     }
 
@@ -68,7 +68,7 @@ public class StaticProvider extends Provider {
      * 
      * @param doc DOM tree representing the provider's content
      */
-    public StaticProvider(Document doc) {
+    public StaticProvider(Document doc) throws ParserConfigurationException {
 	super(null, 1);
 	providerContent = doc;
     }

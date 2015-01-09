@@ -175,7 +175,7 @@
       </plugin>
     </plugins>
 
-    <resources>
+    <!--resources>
       <resource>
         <directory>src/main/resources</directory>
         <targetPath>..</targetPath>
@@ -183,7 +183,7 @@
           <include>log4j.properties</include>
         </includes>
       </resource>
-    </resources>
+    </resources -->
   </build>
   <reporting>
     <plugins>

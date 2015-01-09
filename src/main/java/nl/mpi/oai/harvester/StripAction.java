@@ -50,28 +50,42 @@ public class StripAction implements Action {
 
     @Override
     public boolean perform(MetadataRecord record) {
-	// Get the first child node of the "metadata" tag;
-	// that's the content of the response without the
-	// OAI-PMH envelope.
-	Node contentRoot = null;
-	try {
-	    contentRoot = (Node)xpath.evaluate("//*[local-name()='metadata' and parent::*[local-name()='record']]/*[1]",
-		    record.getDoc(), XPathConstants.NODE);
-	} catch (XPathExpressionException ex) {
-	    logger.error(ex);
-	}
-	    
-	if (contentRoot == null) {
-	    logger.warn("No content was found in this envelope");
-	    return false;
-	}
+        
+        if (record.harvestedDirectly()){
+            
+            /* The record is part of the response to the ListRecords 
+               command. The metadata has already been separated from 
+               the response, and in that sense the record can already
+               be regarded as stripped. No further action is required 
+               here. 
+            */
+            return true;
+        } else {
+            
+            // Get the first child node of the "metadata" tag;
+            // that's the content of the response without the
+            // OAI-PMH envelope.
 
-	Document content = db.newDocument();
-	Node copy = content.importNode(contentRoot, true);
-	content.appendChild(copy);
-	record.setDoc(content);
+            Node contentRoot = null;
+            try {
+                contentRoot = (Node) xpath.evaluate("//*[local-name()='metadata' and parent::*[local-name()='record']]/*[1]",
+                        record.getDoc(), XPathConstants.NODE);
+            } catch (XPathExpressionException ex) {
+                logger.error(ex);
+            }
 
-	return true;
+            if (contentRoot == null) {
+                logger.warn("No content was found in this envelope");
+                return false;
+            }
+
+            Document content = db.newDocument();
+            Node copy = content.importNode(contentRoot, true);
+            content.appendChild(copy);
+            record.setDoc(content);
+
+            return true;
+        }
     }
 
     @Override

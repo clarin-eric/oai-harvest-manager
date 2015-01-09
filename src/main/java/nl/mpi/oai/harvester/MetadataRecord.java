@@ -39,6 +39,11 @@ public class MetadataRecord {
 
     /** The XML content of this record. */
     private Document doc;
+    
+    /** Flag indicating if the record was harvested directly or not. Please 
+     *  refer to the configuration class a definition of the harvesting mode.
+     */
+    private boolean harvestedDirectly;
 
     /**
      * Create a metadata record.
@@ -75,5 +80,25 @@ public class MetadataRecord {
     /** Get the provider from which this record was harvested. */
     public Provider getOrigin() {
 	return origin;
+    }
+
+    /**
+     * Set the harvesting mode. Please refer to the configuration class a 
+     * definition of the harvesting mode.
+     * 
+     * @param b  true if records need to be harvested directly, false otherwise
+     */
+    void harvestedDirectly(boolean b) {
+        this.harvestedDirectly = b;
+    }
+
+    /**
+     * Get the harvesting mode. Please refer to the configuration class a 
+     * definition of the harvesting mode.
+     * 
+     * @return  true if records need to be harvested directly, false otherwise
+     */
+    boolean harvestedDirectly() {
+        return this.harvestedDirectly;
     }
 }

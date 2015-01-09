@@ -44,7 +44,7 @@ public class Main {
 	// concurrent worker threads.
 	Worker.setConcurrentLimit(config.getMaxJobs());
 	for (Provider prov : config.getProviders()) {
-	    Worker worker = new Worker(prov, config.getActionSequences());
+	    Worker worker = new Worker(prov, config.getActionSequences(), config.directHarvesting());
 	    worker.startWorker();
 	}
     }

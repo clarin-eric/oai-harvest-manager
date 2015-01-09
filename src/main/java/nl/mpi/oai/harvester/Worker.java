@@ -29,15 +29,20 @@ import org.apache.log4j.Logger;
  * @author Lari Lampen (MPI-PL)
  */
 public class Worker implements Runnable {
+    
     private static final Logger logger = Logger.getLogger(Worker.class);
+    
     /** A standard semaphore is used to track the number of running threads. */
     private static Semaphore semaphore;
 
     /** The provider this worker deals with. */
-    private Provider provider;
+    private final Provider provider;
 
     /** List of sequences to be applied to the harvested metadata. */
-    private List<ActionSequence> sequences;
+    private final List<ActionSequence> sequences;
+    
+    // Flag indicating ListRecords or ListIdentifiers / GetRecord mode
+    private final boolean direct; 
 
     /**
      * Set the maximum number of concurrent worker threads.
@@ -54,9 +59,10 @@ public class Worker implements Runnable {
      * @param provider OAI-PMH provider that this thread will harvest
      * @param sequences list of actions to take on harvested metadata
      */
-    public Worker(Provider provider, List<ActionSequence> sequences) {
+    public Worker(Provider provider, List<ActionSequence> sequences, boolean direct) {
 	this.provider = provider;
 	this.sequences = sequences;
+        this.direct = direct;
     }
 
     /**
@@ -77,14 +83,23 @@ public class Worker implements Runnable {
     @Override
     public void run() {
 	provider.init();
-
-	logger.info("Processing provider " + provider);
-	for (ActionSequence as : sequences) {
-	    // Break the inner loop after the first successful completion
-	    // of an action sequence.
-	    if (provider.performActions(as))
-		break;
-	}
+        
+        logger.info("Processing provider " + provider);
+        for (ActionSequence as : sequences) {
+            
+            // Break the inner loop after the first successful completion
+            // of an action sequence.
+            
+            if (direct) {
+                if (provider.actionsOnListRecords(as)) {
+                    break;
+                }
+            } else {
+                if (provider.performActions(as)) {
+                    break;
+                }
+            }
+        }
 	logger.info("Processing finished for " + provider);
 	semaphore.release();
     }

@@ -77,7 +77,8 @@ public class Configuration {
     public enum KnownOptions {
 	WORKDIR("workdir"), RETRYCOUNT("max-retry-count"),
 	RETRYDELAY("retry-delay"), MAXJOBS("max-jobs"),
-	POOLSIZE("resource-pool-size"), TIMEOUT("timeout");
+	POOLSIZE("resource-pool-size"), TIMEOUT("timeout"),
+        DIRECT("direct-harvesting");
 	private final String val;
 	private KnownOptions(final String s) { val = s; }
 	public String toString() { return val; }
@@ -262,8 +263,10 @@ public class Configuration {
      * 
      * @param base top node of the providers section
      */
-    private void parseProviders(Node base) throws XPathExpressionException,
-	    MalformedURLException {
+    private void parseProviders(Node base) throws 
+            XPathExpressionException,
+	    MalformedURLException,
+	    ParserConfigurationException {
         
         // check if there is an import node
         Node importNode = (Node) xpath.evaluate("./import", base, 
@@ -421,6 +424,41 @@ public class Configuration {
         if (s == null) return getMaxJobs();
         return Integer.valueOf(s);
     }
+    /**
+     * Check if the endpoint should be harvested directly or not. 
+     * <br><br>
+     * 
+     * Harvesting directly means that records are retrieved as responses to
+     * a request build around the ListRecords verb. Records are harvested in an
+     * indirect mode when first their identifiers are retrieved and after that,
+     * based on these identifiers, each record is requested individually. 
+     * 
+     * The advantage of direct harvesting is that a single response can contain
+     * multiple records. As long as the endpoint can provide records, it will 
+     * include a resumption token in the response, indicating that more records
+     * can be retrieved issuing another request including this token.
+     * 
+     * In indirect mode, each record identified needs to be retrieved in a an
+     * individual request. While the list of identifiers can be compiled 
+     * efficiently, this is clearly not efficient. Moreover, when building the
+     * list the OAI header is included while it is also included in the 
+     * individual records. So using indirect harvesting more data needs to be
+     * transferred.
+     *  
+     * By default, the endpoint will be harvested classically, that is, by
+     * first obtaining a list of identifiers.
+     * 
+     * @return true  if and only if the records are supposed to be harvested 
+     *               directly, that is without building a list of identifiers 
+     *               first.
+     */
+    public boolean directHarvesting() {
+        String s = settings.get(KnownOptions.DIRECT.toString());
+        if (s == null) return false;
+        return Boolean.valueOf(s);
+    }
+    
+   
 
     /**
      * Set connection properties to reflect configured connection
