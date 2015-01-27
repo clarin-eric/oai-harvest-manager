@@ -26,7 +26,6 @@ import javax.xml.xpath.XPathFactory;
 import ORG.oclc.oai.harvester2.verb.Identify;
 import ORG.oclc.oai.harvester2.verb.ListIdentifiers;
 import ORG.oclc.oai.harvester2.verb.ListMetadataFormats;
-import ORG.oclc.oai.harvester2.verb.ListRecords;
 import org.w3c.dom.NodeList;
 
 import java.io.IOException;
@@ -61,10 +60,10 @@ public class Provider {
     protected final String oaiUrl;
 
     /** List of OAI sets to harvest (optional). */
-    private String[] sets = null;
+    protected String[] sets = null;
 
     /** Maximum number of retries to use when a connection fails. */
-    private int maxRetryCount = 0;
+    protected int maxRetryCount = 0;
 
     /**
      * We make so many XPath queries we could just as well keep one XPath
@@ -73,7 +72,7 @@ public class Provider {
     protected final XPath xpath;
     
     // document builder factory
-    private final DocumentBuilder db;
+    protected final DocumentBuilder db;
 
     /**
      * Provider constructor
@@ -191,136 +190,6 @@ public class Provider {
     }
     
     /**
-     * Perform the actions in the sequence specified on the response to the
-     * ListRecords verb
-     * <br><br>
-     * 
-     * If the sequence can be performed, this method will start a new thread
-     * to do so and return true. Otherwise no action will be taken and false
-     * will be returned.
-     * 
-     * @param actions the sequence of actions
-     *
-     * @return
-     */
-    public boolean actionsOnListRecords(ActionSequence actions) {
-
-        // check if the endpoint supports the formats specified with the actions
-        List<String> prefixes = getPrefixes(actions.getInputFormat());
-        if (prefixes.isEmpty()) {
-            logger.info("No matching prefixes for format "
-                    + actions.getInputFormat());
-            return false;
-        }
-
-        // for every format supported, try to issue a ListRecords lr
-        for (String prefix : prefixes) {
-
-            try {
-                // on failing, we stop
-                ListRecords lr = new ListRecords(this.oaiUrl, null, null, null,
-                        prefix);
-                
-                for (;;) {
-                    
-                    /* Try Get the list of records in the response. On failing,
-                       we stop.
-                     */
-                    NodeList nl = (NodeList) xpath.evaluate(
-                            "//*[parent::*[local-name()='ListRecords']]",
-                            lr.getDocument(), XPathConstants.NODESET);
-                    
-                    // for every record in the list, perform the actions
-                    for (int j = 0; j < nl.getLength(); j++) {
-                        
-                        // first, turn the node into a document
-                        Node node = nl.item(j).cloneNode(true);
-                        Document doc = db.newDocument();
-                        Node copy = doc.importNode(node, true);
-                        doc.appendChild(copy);
-      
-                        // evaluate the document, find the identifier
-                        Node id = null;
-                        try {
-                            id = (Node) xpath.evaluate("//*[starts-with(local-name(),"
-                                    + "'identifier') and parent::*[local-name()='header'"
-                                    + "and not(@status='deleted')]]/text()",
-                                    doc, XPathConstants.NODE);
-                        } catch (XPathExpressionException ex) {
-                            logger.info("error parsing header, skipping record");
-                        }
-
-                        if (id != null) {
-                            /* Header contains indentifier and record is not 
-                               deleted. Next, evaluate the document, find the 
-                               metadata.
-                             */
-
-                            try {
-                                node = (Node) xpath.evaluate("//*[local-name()="
-                                        + "'metadata'"
-                                        + "and parent::*[local-name()='record']]/*[1]",
-                                        doc, XPathConstants.NODE);
-                            } catch (XPathExpressionException ex) {
-                                logger.info ("cannot find metadata, skipping record");
-                            }
-                            
-                            if (node != null) {
-                                /* The record does contain metadata. Create a 
-                                   document to store the metadata in.
-                                 */
-                                node = node.cloneNode(true);
-                                doc = db.newDocument();
-                                copy = doc.importNode(node, true);
-                                doc.appendChild(copy);
-                                
-                                MetadataRecord rec = new MetadataRecord(
-                                        id.getTextContent(), doc, this);
-                                
-                                /* Perform the actions. Note: for the moment skip
-                                   saving the response to the ListRecords verb. Also
-                                   skip stripping because that has already been done
-                                   here.
-                                 */
-                                rec.harvestedDirectly(true);
-                                
-                                actions.runActions(rec);
-                            }
-                        }
-                    }
-                    
-                    /* Try to get a resumption token. On failing, we continue 
-                       with the next prefix.
-                    */
-                    String resumption = lr.getResumptionToken();
-                    if (resumption == null || resumption.isEmpty()) {
-                        // finished with the records with the current prefix
-                        break;
-                    }
-                    lr = new ListRecords(oaiUrl, resumption);
-                }
-    
-            } catch ( IOException 
-                    | ParserConfigurationException 
-                    | SAXException 
-                    | TransformerException 
-                    | XPathExpressionException ex) {
-                logger.info ("Cannot create list of records with prefix " + prefix);
-                // do not try the next prefix, stop
-                return false;
-            } catch (NoSuchFieldException ex) {
-                logger.info ("Cannot get resumption token for records with prefix "
-                        + prefix);
-                // do not try the next prefix, stop
-                return false;
-            }
-
-        }
-        
-        return true;
-    }
-
-    /**
      * Attempt to perform the specified sequence of actions on metadata from
      * this provider (which, of course, is only possible if this provider
      * supports the specified input format(s)).
@@ -339,7 +208,7 @@ public class Provider {
 	    return false;
 	}
 
-	// Fetch list of record identifiers separately for each metadata
+	// Fetch lr of record identifiers separately for each metadata
 	// prefix corresponding to the metadata format, then collate all in
 	// a single hash (id as key, metadata prefix as value).
 	Map<String, String> identifiers = new HashMap<>();
@@ -382,7 +251,7 @@ public class Provider {
 	    try {
 		GetRecord gr = new GetRecord(oaiUrl, id, mdPrefix);
 		Document doc = gr.getDocument();
-		return new MetadataRecord(id, doc, this);
+		return new MetadataRecord(id, doc, this, "record");
 	    } catch (IOException | SAXException | ParserConfigurationException
 		    | TransformerException e) {
 		logger.error(e);

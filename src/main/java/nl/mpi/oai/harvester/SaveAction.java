@@ -54,27 +54,43 @@ public class SaveAction implements Action {
 
     @Override
     public boolean perform(MetadataRecord record) {
-	OutputStream os = null;
-        try {
-            TransformerFactory transformerFactory = TransformerFactory.newInstance();
-            Transformer transformer = transformerFactory.newTransformer();
-            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
 
-            DOMSource source = new DOMSource(record.getDoc());
-	    
-	    os = Files.newOutputStream(chooseLocation(record));
-	    StreamResult result = new StreamResult(os);
+        switch (record.getType()){
+            case "multiple records": {
+                // not implemented yet
+                return false;
+            }
+            case "record":
+            case "content":
+            case "transformed content":
+            {
+                OutputStream os = null;
+                try {
+                    TransformerFactory transformerFactory = TransformerFactory.newInstance();
+                    Transformer transformer = transformerFactory.newTransformer();
+                    transformer.setOutputProperty(OutputKeys.INDENT, "yes");
 
-	    transformer.transform(source, result);
-	    return true;
-        } catch (TransformerException | IOException ex) {
-	    logger.error(ex);
-	    return false;
-        } finally {
-	    try {
-		if (os != null) os.close();
-	    } catch (IOException e) { }
-	}
+                    DOMSource source = new DOMSource(record.getDoc());
+
+                    os = Files.newOutputStream(chooseLocation(record));
+                    StreamResult result = new StreamResult(os);
+
+                    transformer.transform(source, result);
+                    return true;
+                } catch (TransformerException | IOException ex) {
+                    logger.error(ex);
+                    return false;
+                } finally {
+                    try {
+                        if (os != null) os.close();
+                    } catch (IOException e) { }
+                }
+            }
+            default:
+                // part of multiple records, do not save
+                return true;
+        }
+
     }
 
     /**

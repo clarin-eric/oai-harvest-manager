@@ -39,11 +39,19 @@ public class MetadataRecord {
 
     /** The XML content of this record. */
     private Document doc;
-    
-    /** Flag indicating if the record was harvested directly or not. Please 
-     *  refer to the configuration class a definition of the harvesting mode.
+
+    /** Type of the record
+     *
+     * kj: list possible types here, turn into enumeration
+     *
+     * multiple records:         OAI response to list records
+     * part of multiple records:
+     * record:                   OAI response to get record
+     * content:                  result of stripping off the OAI envelope
+     * transformed content:      result of transforming content
+     *
      */
-    private boolean harvestedDirectly;
+    private String type;
 
     /**
      * Create a metadata record.
@@ -51,10 +59,11 @@ public class MetadataRecord {
      * @param id unique identifier
      * @param doc XML tree corresponding to this record
      */
-    public MetadataRecord(String id, Document doc, Provider origin) {
-	this.id = id;
-	this.doc = doc;
-	this.origin = origin;
+    public MetadataRecord(String id, Document doc, Provider origin, String type) {
+        this.id = id;
+        this.doc = doc;
+        this.origin = origin;
+        this.type = type;
     }
 
     /**
@@ -79,26 +88,16 @@ public class MetadataRecord {
 
     /** Get the provider from which this record was harvested. */
     public Provider getOrigin() {
-	return origin;
+        return origin;
     }
 
-    /**
-     * Set the harvesting mode. Please refer to the configuration class a 
-     * definition of the harvesting mode.
-     * 
-     * @param b  true if records need to be harvested directly, false otherwise
-     */
-    void harvestedDirectly(boolean b) {
-        this.harvestedDirectly = b;
+    /** Get the type of the record. */
+    public String getType() {
+        return type;
     }
 
-    /**
-     * Get the harvesting mode. Please refer to the configuration class a 
-     * definition of the harvesting mode.
-     * 
-     * @return  true if records need to be harvested directly, false otherwise
-     */
-    boolean harvestedDirectly() {
-        return this.harvestedDirectly;
+    /** Set the type of the record. */
+    public void setType(String type) {
+        this.type = type;
     }
 }

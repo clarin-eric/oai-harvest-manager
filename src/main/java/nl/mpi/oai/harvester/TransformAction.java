@@ -63,6 +63,7 @@ public class TransformAction implements Action {
 	    transformer.setParameter("provider_name",record.getOrigin().getName());
 	    transformer.transform(source, output);
 	    record.setDoc((Document) output.getNode());
+		record.setType("transformed content");
 	    return true;
 	} catch (TransformerException ex) {
 	    logger.error(ex);

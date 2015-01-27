@@ -18,6 +18,7 @@
 
 package nl.mpi.oai.harvester;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Semaphore;
 import org.apache.log4j.Logger;
@@ -58,13 +59,150 @@ public class Worker implements Runnable {
      * 
      * @param provider OAI-PMH provider that this thread will harvest
      * @param sequences list of actions to take on harvested metadata
+     * @param direct kj: need to review this parameter
      */
     public Worker(Provider provider, List<ActionSequence> sequences, boolean direct) {
 	this.provider = provider;
 	this.sequences = sequences;
-        this.direct = direct;
+    this.direct = direct;
     }
+    
+    // kj: this needs to be moved
+    List<String> prefixes = new ArrayList<>();
+    
+    /**
+     * 
+     * @param actions
+     * @return 
+     */
+    public boolean getPrefixes (ActionSequence actions){
+        
+        Protocol p = new ListPrefixesProtocol (provider, actions);
+        
+        if (!p.request() || !p.processResponse()) {
+            // something went wrong, no prefixes for this endpoint
+            return false;
+        } else {
+            // received response 
+            if (p.fullyParsed()) {
+                // no matches
+                logger.info("No matching prefixes for format "
+                        + actions.getInputFormat());
+                return false;
+            }
+            // get the prefixes
+            for (;;){
+                if (p.fullyParsed()) break;
+                String prefix = (String) p.parseResponse();
+                if (prefix != null) {
+                    prefixes.add(prefix);
+                }
+            }
+        }
+        // endpoint responded with at least one prefix
+        
+        return true;
+    }
+    
+    /**
+     * 
+     * @param actions
+     * @return 
+     */
+    public boolean actionsAfterListIdentifiers (ActionSequence actions){
 
+        // get the prefixes 
+        if (!getPrefixes(actions)) {
+            return false;
+        }
+        
+        Protocol p = new ListIdentifiersProtocol(provider, prefixes);
+
+        for (;;) {// request a list of identifier and prefix pairs
+            if (!p.request() || !p.processResponse()) {
+                // something went wrong, no identifiers for this endpoint
+                return false;
+            } else {
+                // received response 
+                if (!p.requestMore()) {
+                    // finished requesting
+                    break;
+                }
+            }
+        }
+
+        // the list of pairs, get the records they point to
+        for (;;) {
+            if (p.fullyParsed()) {
+                break;
+            }
+            MetadataRecord record = (MetadataRecord) p.parseResponse();
+
+            if (record == null) {
+                // something went wrong, skip the record
+            } else {
+                // transform the record
+                actions.runActions(record);
+            }
+        }
+        
+        return true;
+    }
+    
+    /**
+     * Perform the actions in the sequence specified on the response to the
+     * ListRecords verb
+     * <br><br>
+     * 
+     * If the sequence can be performed, this method will start a new thread
+     * to do so and return true. Otherwise no action will be taken and false
+     * will be returned.
+     * 
+     * @param actions the sequence of actions
+     *
+     * @return  false on parser or input output error
+     */
+    public boolean actionsAfterListRecords(ActionSequence actions) {
+
+        // check if the endpoint supports the formats specified with the actions
+        if (!getPrefixes(actions)) {
+            return false;
+        }
+
+        Protocol p = new ListRecordsProtocol(provider, prefixes);
+
+        for (;;) {
+
+            if (!p.request() || !p.processResponse()) {
+                // something went wrong with the request, try the next prefix
+                break;
+            } else {
+                for (;;) {
+
+                    if (p.fullyParsed()) {
+                        break;
+                    }
+                    MetadataRecord record = (MetadataRecord) p.parseResponse();
+
+                    if (record == null) {
+                        /* Something went wrong or the record has already been
+                           release, skip it
+                         */
+                    } else {
+                        // transform the record
+                        actions.runActions(record);
+                    }
+                }
+
+                if (!p.requestMore()) {
+                    break;
+                }
+            }
+        }
+
+        return true;
+    }
+    
     /**
      * Start this worker thread. This method will block for as long as
      * necessary until a thread can be started without violating the limit.
@@ -82,7 +220,7 @@ public class Worker implements Runnable {
 
     @Override
     public void run() {
-	provider.init();
+        provider.init();
         
         logger.info("Processing provider " + provider);
         for (ActionSequence as : sequences) {
@@ -91,11 +229,12 @@ public class Worker implements Runnable {
             // of an action sequence.
             
             if (direct) {
-                if (provider.actionsOnListRecords(as)) {
+                if (actionsAfterListRecords(as)) {
                     break;
                 }
             } else {
-                if (provider.performActions(as)) {
+                // if (provider.performActions(as)) {
+                if (actionsAfterListIdentifiers(as)) {
                     break;
                 }
             }
