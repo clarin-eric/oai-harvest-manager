@@ -78,7 +78,8 @@ public class Configuration {
 	WORKDIR("workdir"), RETRYCOUNT("max-retry-count"),
 	RETRYDELAY("retry-delay"), MAXJOBS("max-jobs"),
 	POOLSIZE("resource-pool-size"), TIMEOUT("timeout"),
-        DIRECT("direct-harvesting");
+        DIRECT("direct-harvesting"),
+        SAVERESPONSE("save-response");
 	private final String val;
 	private KnownOptions(final String s) { val = s; }
 	public String toString() { return val; }
@@ -86,9 +87,8 @@ public class Configuration {
 
     /**
      * Create a new configuration object based on a configuration file.
-     * 
-     * @param filename configuration file
-     */
+     *
+	 */
     public Configuration() {
 	XPathFactory xpf = XPathFactory.newInstance();
 	xpath = xpf.newXPath();
@@ -452,13 +452,23 @@ public class Configuration {
      *               directly, that is without building a list of identifiers 
      *               first.
      */
-    public boolean directHarvesting() {
+    public boolean directHarvesting(){
+        
         String s = settings.get(KnownOptions.DIRECT.toString());
         if (s == null) return false;
         return Boolean.valueOf(s);
     }
     
-   
+    /**
+     * 
+     * @return 
+     */
+    public boolean saveResponse (){
+     
+        String s = settings.get(KnownOptions.SAVERESPONSE.toString());
+        if (s == null) return true;
+        return Boolean.valueOf(s);
+    }
 
     /**
      * Set connection properties to reflect configured connection
