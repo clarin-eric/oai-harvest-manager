@@ -75,10 +75,12 @@ public class Worker implements Runnable {
     List<String> prefixes = new ArrayList<>();
     
     /**
-     * kj: complete doc
+     * Get the list of metadata prefixes supported by the endpoint<br><br>
+     *
+     * The list created is based on the format specified in the configuration.
      *
      * @param actions
-     * @return 
+     * @return false on parser or input output error
      */
     public boolean getPrefixesScenario(ActionSequence actions){
         
@@ -110,10 +112,11 @@ public class Worker implements Runnable {
     }
     
     /**
-     * kj: complete doc
+     * Get metadata records indirectly, that is by first obtaining a list of
+     * identifiers pointing to them.<br><br>
      *
-     * @param actions
-     * @return
+     * @param actions the sequence of actions
+     * @return false on parser or input output error
      */
     public boolean listIdentifiersScenario(ActionSequence actions) {
 
@@ -166,7 +169,6 @@ public class Worker implements Runnable {
      * individual record, in the sequence both will be disabled.
 
      * @param actions the sequence of actions
-     *
      * @return false on parser or input output error
      */
     private boolean listRecordsScenario(ActionSequence actions) {

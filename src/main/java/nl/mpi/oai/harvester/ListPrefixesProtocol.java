@@ -31,7 +31,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 /**
- * Prefix targeted application of the protocol.
+ * Prefix targeted application of the protocol<br><br>
  * 
  * An object of this class receives a provider and action instance. Based on 
  * these, it will try to get prefixes supported by the endpoint. 
@@ -56,7 +56,6 @@ public class ListPrefixesProtocol implements Protocol {
     
     // pointer to next element to be parsed and returned 
     private int index;
-    
 
     /**
      * Create object, associate provider data and desired prefix 
@@ -120,7 +119,7 @@ public class ListPrefixesProtocol implements Protocol {
     public boolean processResponse() {
                
         try {
-            /* Try to create a list of prefixes from the response. On faillure, 
+            /* Try to create a list of prefixes from the response. On failure,
                stop the work on the endpoint.
              */
             nodeList = (NodeList)provider.xpath.evaluate(
@@ -151,7 +150,8 @@ public class ListPrefixesProtocol implements Protocol {
      */
     @Override
     public Object parseResponse() {
-        		// kj: create doc here
+
+        // index points to the previous prefix node added to the list, update it
 
         Node node = nodeList.item(index);
         index++;
