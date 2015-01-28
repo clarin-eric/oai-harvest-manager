@@ -232,7 +232,7 @@ public class Provider {
 	    if (rec != null) {
 		logger.info("Fetched record " + me.getKey()
 			+ " (format " + me.getValue() + ")");
-		ap.runActions(rec);
+		ap.runActions(rec, false);
 	    }
 	}
 

@@ -18,10 +18,8 @@
 
 package nl.mpi.oai.harvester;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
 import org.apache.log4j.Logger;
 
 /**
@@ -40,7 +38,8 @@ public class ActionSequence {
      * resource pool of strip actions. Every action sequence that contains a
      * strip action then holds a reference to that pool.
      */
-    private static final Map<Action, ResourcePool<Action>> pooledActions = new HashMap<>();
+    private static final Map<Action, ResourcePool<Action>> pooledActions =
+			new HashMap<>();
 
     /**
      * The input format that must be available for this sequence
@@ -48,19 +47,30 @@ public class ActionSequence {
      */
     private final MetadataFormat inputFormat;
 
-    /** The actions, in order. */
+    /* The actions, in order. */
     private final List<ResourcePool<Action>> actions;
+
+	/* Remember if the sequence contains actions that are intended to save or
+	strip the envelope */
+	private final boolean save;
+	private final boolean strip;
 
     /**
      * Create a new action sequence.
      * 
      * @param inputFormat acceptable format for harvesting the source
-     * @param actions sequence of actions to take, in order
-     */
+     * @param theActions sequence of actions to take, in order
+	 * @param resourcePoolSize the number of resources in the pool
+	 * @param save iff true, the sequence is intended to save the envelope
+	 * @param strip iff true, the sequence is intended to strip the envelope
+	 *
+	 */
     public ActionSequence(MetadataFormat inputFormat, Action[] theActions,
-	    int resourcePoolSize) {
+	    int resourcePoolSize, boolean save, boolean strip) {
 	this.inputFormat = inputFormat;
-	
+	this.save        = save;
+	this.strip       = strip;
+
 	actions = new ArrayList<ResourcePool<Action>>();
 
 	for (Action act : theActions) {
@@ -99,18 +109,62 @@ public class ActionSequence {
      * be accessed using other actions within the sequence.
      * 
      * @param record metadata record
+	 * @param skip   if true, skip response saving and stripping
      */
-    public void runActions(MetadataRecord record) {
+    public void runActions(MetadataRecord record, boolean skip) {
+
+	// keep track of whether or not the action is the first in the sequence
+	boolean firstAction = true;
+
 	for (ResourcePool<Action> actPool : actions) {
-	    Action act = actPool.get();
-	    boolean res = act.perform(record);
-	    actPool.release(act);
-	    if (!res) {
-		logger.error("Action " + act + " failed, terminating sequence");
-		return;
-	    }
+		// claim an action in the pool
+	    Action action = actPool.get();
+
+		if (skip && firstAction && action instanceof SaveAction) {
+
+			/* The action is the first in the sequence, and it is a
+			SaveAction type of action. Therefore, it is intended to save the
+			the envelope. Do not not perform the action and release it */
+
+			actPool.release(action); firstAction = false;
+		} else {
+			if (skip && action instanceof StripAction) {
+
+				/* The action is intended to strip the envelope. Again, skip
+				   and release it. */
+
+				actPool.release(action);
+			} else {
+                // perform and release the action
+				boolean res = action.perform(record);
+				actPool.release(action);
+				if (!res) {
+					logger.error("Action " + action + " failed, terminating" +
+							" sequence");
+					return;
+				}
+			}
+		}
 	}
     }
+
+	/**
+	 * Check if the response should be saved
+	 *
+	 * @return true iff the sequence contains an action intended to save the response
+	 */
+	public boolean containsSaveResponse() {
+		return save;
+	}
+
+	/**
+	 * Check if the response should be stripped
+	 *
+	 * @return true iff the sequence contains an action intended to strip the response
+	 */
+	public boolean containsStripResponse(){
+		return strip;
+	}
 
     @Override
     public String toString() {

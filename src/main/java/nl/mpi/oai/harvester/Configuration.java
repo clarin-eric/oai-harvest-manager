@@ -247,9 +247,19 @@ public class Configuration {
 		    if (act != null)
 			ac.add(act);
 		}
-		ActionSequence ap = new ActionSequence(format,
-			ac.toArray(new Action[ac.size()]),
-			getResourcePoolSize());
+
+		boolean saveResponse = false, stripResponse = false;
+		if (ac.get(0) instanceof SaveAction){
+			// per definition, the action sequence is intended to save the envelope
+			saveResponse = true;
+		}
+		if (ac.get(0) instanceof StripAction || ac.get(1) instanceof StripAction){
+			// per definition, the action sequence is intended to strip the envelope
+			stripResponse = true;
+		}
+
+		ActionSequence ap = new ActionSequence(format, ac.toArray(new Action[ac.size()]),
+			getResourcePoolSize(), saveResponse, stripResponse);
 		actionSequences.add(ap);
 	    } else {
 		logger.warn("A format has no actions defined; skipping it");

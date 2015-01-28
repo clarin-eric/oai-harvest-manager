@@ -40,19 +40,6 @@ public class MetadataRecord {
     /** The XML content of this record. */
     private Document doc;
 
-    /** Type of the record
-     *
-     * kj: list possible types here, turn into enumeration
-     *
-     * multiple records:         OAI response to list records
-     * part of multiple records:
-     * record:                   OAI response to get record
-     * content:                  result of stripping off the OAI envelope
-     * transformed content:      result of transforming content
-     *
-     */
-    private String type;
-
     /**
      * Create a metadata record.
      * 
@@ -63,7 +50,6 @@ public class MetadataRecord {
         this.id = id;
         this.doc = doc;
         this.origin = origin;
-        this.type = type;
     }
 
     /**
@@ -89,15 +75,5 @@ public class MetadataRecord {
     /** Get the provider from which this record was harvested. */
     public Provider getOrigin() {
         return origin;
-    }
-
-    /** Get the type of the record. */
-    public String getType() {
-        return type;
-    }
-
-    /** Set the type of the record. */
-    public void setType(String type) {
-        this.type = type;
     }
 }

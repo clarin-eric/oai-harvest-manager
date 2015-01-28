@@ -41,9 +41,12 @@ public class Worker implements Runnable {
 
     /** List of sequences to be applied to the harvested metadata. */
     private final List<ActionSequence> sequences;
-    
-    // Flag indicating ListRecords or ListIdentifiers / GetRecord mode
-    private final boolean direct; 
+
+    /* If direct, obtain records by following the list records scenario,
+       otherwise, obtain identifiers first, and based on those, obtain the
+       records.
+     */
+    private final boolean direct;
 
     /**
      * Set the maximum number of concurrent worker threads.
@@ -61,21 +64,23 @@ public class Worker implements Runnable {
      * @param sequences list of actions to take on harvested metadata
      * @param direct kj: need to review this parameter
      */
-    public Worker(Provider provider, List<ActionSequence> sequences, boolean direct) {
-	this.provider = provider;
+    public Worker(Provider provider, List<ActionSequence> sequences,
+                  boolean direct) {
+	this.provider  = provider;
 	this.sequences = sequences;
-    this.direct = direct;
+    this.direct    = direct;
     }
     
     // kj: this needs to be moved
     List<String> prefixes = new ArrayList<>();
     
     /**
-     * 
+     * kj: complete doc
+     *
      * @param actions
      * @return 
      */
-    public boolean getPrefixes (ActionSequence actions){
+    public boolean getPrefixesScenario(ActionSequence actions){
         
         Protocol p = new ListPrefixesProtocol (provider, actions);
         
@@ -105,14 +110,15 @@ public class Worker implements Runnable {
     }
     
     /**
-     * 
+     * kj: complete doc
+     *
      * @param actions
-     * @return 
+     * @return
      */
-    public boolean actionsAfterListIdentifiers (ActionSequence actions){
+    public boolean listIdentifiersScenario(ActionSequence actions) {
 
         // get the prefixes 
-        if (!getPrefixes(actions)) {
+        if (!getPrefixesScenario(actions)) {
             return false;
         }
         
@@ -141,8 +147,8 @@ public class Worker implements Runnable {
             if (record == null) {
                 // something went wrong, skip the record
             } else {
-                // transform the record
-                actions.runActions(record);
+                // transform the record, no skipping
+                actions.runActions(record, false);
             }
         }
         
@@ -150,50 +156,63 @@ public class Worker implements Runnable {
     }
     
     /**
-     * Perform the actions in the sequence specified on the response to the
-     * ListRecords verb
-     * <br><br>
-     * 
-     * If the sequence can be performed, this method will start a new thread
-     * to do so and return true. Otherwise no action will be taken and false
-     * will be returned.
-     * 
+     * Get metadata records directly, that is without first obtaining a list of
+     * identifiers pointing to them.<br><br>
+     *
+     * In this scenario, a save action specified before a strip action is
+     * interpreted to apply the the response of the GetRecords verb. Also, the
+     * presence of a strip action in the sequence, is interpreted to apply to
+     * the response also. Since the sequence of actions will be applied to an
+     * individual record, in the sequence both will be disabled.
+
      * @param actions the sequence of actions
      *
-     * @return  false on parser or input output error
+     * @return false on parser or input output error
      */
-    public boolean actionsAfterListRecords(ActionSequence actions) {
+    private boolean listRecordsScenario(ActionSequence actions) {
 
         // check if the endpoint supports the formats specified with the actions
-        if (!getPrefixes(actions)) {
+        if (!getPrefixesScenario(actions)) {
             return false;
         }
 
-        Protocol p = new ListRecordsProtocol(provider, prefixes);
+        /* Create the protocol elements for this scenario. Pass the indication
+           whether or not to save the response to the protocol. */
 
-        for (;;) {
+        Protocol p = new ListRecordsProtocol(provider, prefixes,
+                actions.containsSaveResponse());
 
+        for (; ; ) {
             if (!p.request() || !p.processResponse()) {
                 // something went wrong with the request, try the next prefix
                 break;
             } else {
-                for (;;) {
+                /* Stripping in the list record scenario means: processing each
+                and every record in the response. Skip to the next request is no
+                strip action is demanded. */
 
-                    if (p.fullyParsed()) {
-                        break;
-                    }
-                    MetadataRecord record = (MetadataRecord) p.parseResponse();
+                if (actions.containsStripResponse()) {
 
-                    if (record == null) {
+                    for (; ; ) {
+                        if (p.fullyParsed()) {
+                            break;
+                        }
+                        MetadataRecord record = (MetadataRecord) p.parseResponse();
+
+                        if (record == null) {
                         /* Something went wrong or the record has already been
-                           release, skip it
+                           released, either way: skip it
                          */
-                    } else {
-                        // transform the record
-                        actions.runActions(record);
+                        } else {
+                            /* Indicate that response saving and skipping do not
+                            apply to the record */
+
+                            actions.runActions(record, true);
+                        }
                     }
                 }
 
+                // check if in principle another response would be available
                 if (!p.requestMore()) {
                     break;
                 }
@@ -229,12 +248,12 @@ public class Worker implements Runnable {
             // of an action sequence.
             
             if (direct) {
-                if (actionsAfterListRecords(as)) {
+                if (listRecordsScenario(as)) {
                     break;
                 }
             } else {
                 // if (provider.performActions(as)) {
-                if (actionsAfterListIdentifiers(as)) {
+                if (listIdentifiersScenario(as)) {
                     break;
                 }
             }

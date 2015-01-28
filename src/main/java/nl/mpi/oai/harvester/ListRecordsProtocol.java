@@ -34,7 +34,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 /**
- * Record oriented application of the OAI protocol.
+ * Record oriented application of the OAI protocol.<br><br>
  *
  * An object of this class receives a provider instance and prefixes obtained by
  * another application of the protocol. Based on these, it will try to get
@@ -66,17 +66,22 @@ public class ListRecordsProtocol extends ListProtocol implements Protocol {
     
     private static final Logger logger = Logger.getLogger(ListRecordsProtocol.class);
 
+    // whether or not to save the response
+    private boolean saveResponse;
+
     /**
      * Create object, associate endpoint data and desired prefix 
      * 
      * @param provider the endpoint to address in the request
      * @param prefixes the prefixes returned by the endpoint 
      */
-    public ListRecordsProtocol (Provider provider, List<String> prefixes) {
+    public ListRecordsProtocol (Provider provider, List<String> prefixes,
+                                boolean saveResponse) {
         super (provider, prefixes);
         message [0] = "Requesting more records with prefix ";
         message [1] = "Requesting records with prefix ";
         message [2] = "Cannot get ";
+        this.saveResponse = saveResponse;
     }
    
     /**
@@ -132,15 +137,15 @@ public class ListRecordsProtocol extends ListProtocol implements Protocol {
     /**
      * Get token. Here, supply the token returned by the ListRecord method.
      * 
-     * @param reponse
+     * @param response
      * @return the token
      * @throws TransformerException
      * @throws NoSuchFieldException 
      */
     @Override
-    public String getToken (HarvesterVerb reponse) throws TransformerException, 
+    public String getToken (HarvesterVerb response) throws TransformerException,
             NoSuchFieldException{
-        return ((ListRecords)response).getResumptionToken();
+        return ((ListRecords) this.response).getResumptionToken();
     }
     
     /**
@@ -156,6 +161,12 @@ public class ListRecordsProtocol extends ListProtocol implements Protocol {
         if (response == null){
             logger.error("Protocol error");
             return false;
+        }
+
+        // check if the response needs to be saved
+
+        if (saveResponse) {
+
         }
 
         try {
@@ -266,5 +277,9 @@ public class ListRecordsProtocol extends ListProtocol implements Protocol {
     @Override
     public boolean fullyParsed() {
         return nIndex == nodeList.getLength();
+    }
+
+    private boolean saveResponse (){
+        return true;
     }
 }

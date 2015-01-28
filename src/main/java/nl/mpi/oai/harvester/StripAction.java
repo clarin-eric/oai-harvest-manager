@@ -49,58 +49,33 @@ public class StripAction implements Action {
     }
 
     @Override
-    /**
-     * Note: consider a strip action that is sensitive to different kinds of
-     * responses, like for example: record, list of records, metadata content
-     * of a record.
-     */
     public boolean perform(MetadataRecord record) {
 
-        switch (record.getType()) {
-            case "multiple records": {
-                // not implemented yet
-                return false;
-            }
+        // Get the first child node of the "metadata" tag;
+        // that's the content of the response without the
+        // OAI-PMH envelope.
 
-            case "part of multiple records": {
-                // strip action moves saving away from the orig
-                record.setType("content");
-                return true;
-            }
-
-            case "record": {
-
-                // Get the first child node of the "metadata" tag;
-                // that's the content of the response without the
-                // OAI-PMH envelope.
-
-                Node contentRoot = null;
-                try {
-                    contentRoot = (Node) xpath.evaluate("//*[local-name()=" +
-                                    "'metadata' and parent::*[local-name()=" +
-                                    "'record']]/*[1]",
-                            record.getDoc(), XPathConstants.NODE);
-                } catch (XPathExpressionException ex) {
-                    logger.error(ex);
-                }
-
-                if (contentRoot == null) {
-                    logger.warn("No content was found in this envelope");
-                    return false;
-                }
-
-                Document content = db.newDocument();
-                Node copy = content.importNode(contentRoot, true);
-                content.appendChild(copy);
-                record.setDoc(content);
-                record.setType("content");
-
-                return true;
-            }
-            default:
-                // nothing to be done, error could be reported
-                return true;
+        Node contentRoot = null;
+        try {
+            contentRoot = (Node) xpath.evaluate("//*[local-name()=" +
+                            "'metadata' and parent::*[local-name()=" +
+                            "'record']]/*[1]",
+                    record.getDoc(), XPathConstants.NODE);
+        } catch (XPathExpressionException ex) {
+            logger.error(ex);
         }
+
+        if (contentRoot == null) {
+            logger.warn("No content was found in this envelope");
+            return false;
+        }
+
+        Document content = db.newDocument();
+        Node copy = content.importNode(contentRoot, true);
+        content.appendChild(copy);
+        record.setDoc(content);
+
+        return true;
     }
 
     @Override

@@ -255,7 +255,7 @@ public abstract class ListProtocol implements Protocol {
         try {
             // try to get a response from the endpoint
             if (!(resumptionToken == null || resumptionToken.isEmpty())) {
-                // use resumptiontoken
+                // use resumption token
                 logger.debug(message[0] + prefixes.get(pIndex));
 
                 response = verb2(provider.oaiUrl, resumptionToken);
