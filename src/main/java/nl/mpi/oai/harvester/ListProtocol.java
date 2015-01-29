@@ -20,24 +20,34 @@
 package nl.mpi.oai.harvester;
 
 import ORG.oclc.oai.harvester2.verb.HarvesterVerb;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerException;
 import org.apache.log4j.Logger;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- * List oriented application of the protocol.
- * 
- * Describe the flow. Clearly explain what the target list is for: records that
- * are available to the client. There is a difference in implementation. Listing
- * identifiers, all the identifiers are stored first, before retrieving each
- * record individually. When listing records, the list is used to determine 
- * whether or not a record is a duplicate.
- * 
+ * List oriented application of the protocol <br><br>
+ *
+ * This class provides a sorted list of elements. This list can be used by
+ * extending classes to store characteristics of metadata returned by an
+ * endpoint. Because elements can only occur once in the list, classes can for
+ * example use the list to remove duplicate record identifiers. <br><br>
+ *
+ * Because the class does not specify any verbs itself, extending classes need
+ * to provide these. This class defines two verb methods, one for a verb with two,
+ * another for a verb with five parameters. An extending class will need to
+ * override these methods. <br><br>
+ *
+ * The request method is intended to iterate over sets and prefixes. Since the
+ * response and therefore the method of processing it will be different for
+ * different types of verbs, this class leaves the other methods in the protocol
+ * abstract. The extending class will have to implement these. <br><br>
+ *
  * @author keeloo
  */
 public abstract class ListProtocol implements Protocol {
@@ -45,28 +55,31 @@ public abstract class ListProtocol implements Protocol {
     private static final Logger logger = Logger.getLogger(ListProtocol.class);
     
     // messages specific to extending classes
-    protected static String[] message = new String [3];
+    protected final static String[] message = new String [3];
 
     // information on where to send the request
     protected final Provider provider;
     // pointer to current set
-    protected int sIndex;
+    private int sIndex;
     
     // metadata prefixes that need to be requested
     protected final List<String> prefixes;
     // pointer to current prefix
     protected int pIndex;
     
-    // kj: list of response elements 
+    // a list of nodes kept between the processing and parsing of a response
     protected NodeList nodeList;
     // pointer to next element that needs to be checked 
     protected int nIndex;   
     
     // the resumption token send by the previous request
-    protected String resumptionToken;
+    private String resumptionToken;
     
-    // kj: 
-    protected SortedArrayList <IdPrefix> targets;
+    /* A list to store identifier and prefix pairs in. A pair can be in the
+       list only once, thus ensuring the extending classes to return every record
+       identified exactly once.
+     */
+    protected final SortedArrayList <IdPrefix> targets;
     // pointer to next element to be parsed and returned
     protected int tIndex;  
     
@@ -85,13 +98,14 @@ public abstract class ListProtocol implements Protocol {
          * @return true if the element was inserted, false otherwise
          */
         public boolean checkAndInsertSorted(T element) {
-            
+
             int i = 0, j;
+
             Comparable<T> c = (Comparable<T>) element;
-            for (;;) {
+            for (; ; ) {
                 if (i == this.size()) {
                     // element not included yet
-                    this.add(element); 
+                    this.add(element);
                     return true;
                 }
                 j = c.compareTo(this.get(i));
@@ -100,7 +114,7 @@ public abstract class ListProtocol implements Protocol {
                     return false;
                 } else {
                     if (j > 0) {
-                        // there could still be a match, continue 
+                        // there could still be a match, continue
                         i++;
                     } else {
                         // there will not be a match, insert
@@ -109,6 +123,7 @@ public abstract class ListProtocol implements Protocol {
                     }
                 }
             }
+
         }
     }
     
@@ -121,22 +136,22 @@ public abstract class ListProtocol implements Protocol {
         // constituents of the idPrefix
         final String identifier;
         final String prefix;
-        
+
         IdPrefix (String identifier, String prefix){
             this.identifier = identifier;
             this.prefix     = prefix;
         }
-        
+
         /**
          * Compare the IdPrefix object to another one
-         * 
-         * @param object  another idPrefix to be compared to the idPrefix object
+         *
+         * @param object another idPrefix to be compared to the idPrefix object
          * @return  -1 if the parameters is smaller than the object
          *           0 if equal
-         *           1 if greater 
+         *           1 if greater
          */
         @Override
-        public int compareTo (Object object){
+        public int compareTo(Object object) {
 
             if (!(object instanceof IdPrefix)) {
                 // we do not expect this
@@ -144,21 +159,21 @@ public abstract class ListProtocol implements Protocol {
             } else {
                 IdPrefix idPrefix = (IdPrefix) object;
 
-                int cIden = this.identifier.compareTo(idPrefix.identifier);
-                int cPref = this.prefix.compareTo(idPrefix.prefix);
-                
-                if (cIden != 0) {
-                    return cIden;
+                int cIdentifier = this.identifier.compareTo(idPrefix.identifier);
+                int cPrefix = this.prefix.compareTo(idPrefix.prefix);
+
+                if (cIdentifier != 0) {
+                    return cIdentifier;
                 } else {
                     // identifiers are equal, prefixes will not be
-                    return cPref;
+                    return cPrefix;
                 }
             }
         }
     }
     
     /**
-     * Create object, associate endpoint data and desired prefix 
+     * Associate endpoint data and desired prefix
      * 
      * @param provider the endpoint to address in the request
      * @param prefixes the prefixes returned by the endpoint 
@@ -196,7 +211,7 @@ public abstract class ListProtocol implements Protocol {
      *
      * @return the response
      */
-    abstract HarvesterVerb verb5(String s1, String s2, String s3, String s4, 
+    abstract HarvesterVerb verb5(String s1, String s2, String s3, String s4,
             String s5)
             throws 
             IOException,
@@ -210,7 +225,7 @@ public abstract class ListProtocol implements Protocol {
      * object does not have a method for getting the token the extending classes 
      * need to make this method effective.
      * 
-     * @param  response
+     * @param  response the response
      * @return  a string containing the token
      * @throws  TransformerException
      * @throws  NoSuchFieldException 

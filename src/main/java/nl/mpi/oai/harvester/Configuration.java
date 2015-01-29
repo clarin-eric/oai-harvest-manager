@@ -262,7 +262,7 @@ public class Configuration {
 			getResourcePoolSize(), saveResponse, stripResponse);
 		actionSequences.add(ap);
 	    } else {
-		logger.warn("A format has no actions defined; skipping it");
+		logger.warn("A format has no actions defined; s2ipping it");
 	    }
         }
     }

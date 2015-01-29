@@ -34,31 +34,16 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 /**
- * Record oriented application of the OAI protocol.<br><br>
+ * This class extends the ListProtocol class by providing ListRecord type of
+ * verbs. One with two parameters, for resuming, one with five for the initial
+ * request. Since it implements specific verbs, it is also specific in processing
+ * and parsing of the responses. <br><br>
  *
- * An object of this class receives a provider instance and prefixes obtained by
- * another application of the protocol. Based on these, it will try to get
- * records from the endpoint. For each prefix, this application will consider 
- * sets specified in the provider object.<br><br>
- *
- * Note. Given the nature of the iteration, first over prefixes, within those
- * over sets, it cannot be guaranteed that a records will be requested twice or
- * more often. When the protocol is instantiated without a set specified, every
- * record will be retrieved only once. If in a particular situation duplicates
- * give rise to problems, please use the ListIndentifiers protocol. ??? <br><br>
- *
- * Note. It would be possible to keep track of the records retrieved. Create a
- * list, and add an identifier and prefix idPrefix once a record has been
- * retrieved from the endpoint. Only return a record to the client if it is not
- * in the list. Note: the feature could be turned of when sets == null <br><br>
- * 
- * Note. This class has not been tested in conjunction with sets. <br><br>
- * 
- * Note. This application of the protocol is more efficient when it comes to 
- * memory usage. Clearly explain that here, a list of nodes is kept between the
- * processing of a response and the parsing. Here, the target list is used for
- * keeping track of duplicates. A node list is required for processing the list 
- * records request.
+ * Note. If the endpoint provides a record in several sets, in the end this
+ * class needs to return it to the client only once. This class will use the
+ * list provided in the superclass to remove duplicate identifier and prefix
+ * pairs. By using this list when parsing, the class will return a record its
+ * client at most once. <br><br>
  *
  * @author Kees Jan van de Looij (MPI-PL)
  */
@@ -66,8 +51,6 @@ public class ListRecordsProtocol extends ListProtocol implements Protocol {
     
     private static final Logger logger = Logger.getLogger(ListRecordsProtocol.class);
 
-    // whether or not to save the response
-    private boolean saveResponse;
 
     /**
      * Create object, associate endpoint data and desired prefix 
@@ -75,22 +58,23 @@ public class ListRecordsProtocol extends ListProtocol implements Protocol {
      * @param provider the endpoint to address in the request
      * @param prefixes the prefixes returned by the endpoint 
      */
-    public ListRecordsProtocol (Provider provider, List<String> prefixes,
-                                boolean saveResponse) {
+    public ListRecordsProtocol (Provider provider, List<String> prefixes) {
         super (provider, prefixes);
+        // supply messages specific to requesting records
         message [0] = "Requesting more records with prefix ";
         message [1] = "Requesting records with prefix ";
         message [2] = "Cannot get ";
-        this.saveResponse = saveResponse;
     }
    
     /**
-     * Supply the ListRecords verb. Here, make the version with two string
-     * parameters effective.
+     * Implementation of the ListRecords verb <br><br>
+     *
+     * This implementation supplies the form of the verb used in a request
+     * based on a resumption token. <br><br>
      * 
-     * @param p1
-     * @param p2
-     * @return 
+     * @param p1 metadata prefix
+     * @param p2 resumption token
+     * @return the response to the request
      * @throws java.io.IOException 
      * @throws org.xml.sax.SAXException
      * @throws javax.xml.parsers.ParserConfigurationException
@@ -108,15 +92,17 @@ public class ListRecordsProtocol extends ListProtocol implements Protocol {
     }
 
     /**
-     * Supply the ListRecords verb. Here, make the version with five string
-     * parameters effective.
-     * 
-     * @param p1
-     * @param p2
-     * @param p3
-     * @param p4
-     * @param p5
-     * @return 
+     * Implementation of the ListRecords verb <br><br>
+     *
+     * This implementation supplies the form of the verb used in the initial
+     * request. <br><br>
+     *
+     * @param p1 endpoint URL
+     * @param p2 from date, for selective harvesting
+     * @param p3 until date, for selective harvesting
+     * @param p4 metadata prefix
+     * @param p5 set
+     * @return the response to the request
      * @throws java.io.IOException 
      * @throws org.xml.sax.SAXException
      * @throws javax.xml.parsers.ParserConfigurationException
@@ -125,7 +111,7 @@ public class ListRecordsProtocol extends ListProtocol implements Protocol {
      */
     @Override
     public HarvesterVerb verb5(String p1, String p2, String p3, String p4,
-            String p5) throws 
+            String p5) throws
             IOException,
             ParserConfigurationException,
             SAXException,
@@ -137,7 +123,7 @@ public class ListRecordsProtocol extends ListProtocol implements Protocol {
     /**
      * Get token. Here, supply the token returned by the ListRecord method.
      * 
-     * @param response
+     * @param response the response
      * @return the token
      * @throws TransformerException
      * @throws NoSuchFieldException 
@@ -147,7 +133,12 @@ public class ListRecordsProtocol extends ListProtocol implements Protocol {
             NoSuchFieldException{
         return ((ListRecords) this.response).getResumptionToken();
     }
-    
+
+    @Override
+    public Document getResponse() {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
     /**
      * Get a list of records from the response
      * 
@@ -164,10 +155,6 @@ public class ListRecordsProtocol extends ListProtocol implements Protocol {
         }
 
         // check if the response needs to be saved
-
-        if (saveResponse) {
-
-        }
 
         try {
             /* Try to create a list of records from the response. On failure,
@@ -277,9 +264,5 @@ public class ListRecordsProtocol extends ListProtocol implements Protocol {
     @Override
     public boolean fullyParsed() {
         return nIndex == nodeList.getLength();
-    }
-
-    private boolean saveResponse (){
-        return true;
     }
 }

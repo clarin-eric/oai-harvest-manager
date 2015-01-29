@@ -26,15 +26,16 @@ import javax.xml.transform.TransformerException;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import org.apache.log4j.Logger;
+import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 /**
- * Prefix targeted application of the protocol<br><br>
- * 
- * An object of this class receives a provider and action instance. Based on 
- * these, it will try to get prefixes supported by the endpoint. 
+ * Prefix targeted application of the protocol <br><br>
+ *
+ * Clients to this class can request prefixes supported by a metadata record by
+ * supplying endpoint data and an action. <br><br>
  *
  * @author Kees Jan van de Looij (MPI-PL)
  */
@@ -60,8 +61,8 @@ public class ListPrefixesProtocol implements Protocol {
     /**
      * Create object, associate provider data and desired prefix 
      * 
-     * @param provider  information on where to send the request
-     * @param actions   transformations to be performed on the metadata records
+     * @param provider  the endpoint to address in the request
+     * @param actions   specify the format requested
      */
     public ListPrefixesProtocol(Provider provider, ActionSequence actions) {
         this.response = null;
@@ -101,7 +102,12 @@ public class ListPrefixesProtocol implements Protocol {
         // return the response, a list of prefixes
         return true;
     }
-    
+
+    @Override
+    public Document getResponse() {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
     /**
      * Not supposed to be invoked in this implementation 
      */
@@ -117,28 +123,28 @@ public class ListPrefixesProtocol implements Protocol {
      */
     @Override
     public boolean processResponse() {
-               
+
         try {
             /* Try to create a list of prefixes from the response. On failure,
                stop the work on the endpoint.
              */
-            nodeList = (NodeList)provider.xpath.evaluate(
+            nodeList = (NodeList) provider.xpath.evaluate(
                     "//*[local-name() = 'metadataFormat']",
                     response.getDocument(), XPathConstants.NODESET);
         } catch (XPathExpressionException e) {
             logger.error(e.getMessage(), e);
-            logger.info("Cannot create list of prefixes for format " + 
+            logger.info("Cannot create list of prefixes for format " +
                     actions.getInputFormat() + " obtained from endpoint "
                     + provider.oaiUrl);
             // something went wrong when creating the list, try another endpoint
             return false;
         }
 
-	if (nodeList == null) {
-	    logger.warn("The ListMetadataFormats response from the "
-		    + this.provider.oaiUrl + "endpoint looks empty");
-	}
-        
+        if (nodeList == null) {
+            logger.warn("The ListMetadataFormats response from the "
+                    + this.provider.oaiUrl + "endpoint looks empty");
+        }
+
         return true;
     }
 

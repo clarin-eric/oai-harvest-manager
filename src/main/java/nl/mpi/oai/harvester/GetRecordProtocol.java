@@ -28,12 +28,8 @@ import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
 /**
- * Record oriented application of the OAI protocol.
- * 
- * An object of this class receives a provider, an identifier, an a prefix
- * instance obtained by another application of the protocol. Based on these, 
- * it will try request the identified record from the endpoint.
- * 
+ * This class provides the GetRecord verb and the parsing specific to it <br><br>
+ *
  * @author Kees Jan van de Looij (MPI-PL)
  */
 public class GetRecordProtocol implements Protocol {
@@ -43,9 +39,6 @@ public class GetRecordProtocol implements Protocol {
     // response to the ListRecords command
     private GetRecord response;
 
-    // list response elements to be parsed and made available
-    private Document document;
-
     // information on where to send the request
     private final Provider provider;
     
@@ -54,18 +47,12 @@ public class GetRecordProtocol implements Protocol {
     
     // record identifier
     private final String identifier;
-    
-    // whether or not the previous request send a resumption token
-    private boolean requestMore;
-    
-    // the resumption token send by the previous request
-    private String resumptionToken;
-    
+
     // pointer to next element to be parsed and returned 
     private boolean parsed;   
     
     /**
-     * Create object, associate provider, desired prefix and identifier
+     * Associate provider, desired prefix and identifier with the request <br><br>
      * 
      * @param provider    information on where to send the request
      * @param prefix      the prefix of the desired record
@@ -73,18 +60,16 @@ public class GetRecordProtocol implements Protocol {
      */
     public GetRecordProtocol (Provider provider, String prefix, String identifier){
         this.response    = null;
-        this.document    = null;
         this.provider    = provider;
         this.prefix      = prefix;
         this.identifier  = identifier;
-        this.requestMore = false;
         this.parsed      = false;
     }
 
     /**
-     * Request the record, retry if needed
+     * Request the record, retry if needed <br><br>
      * 
-     * @return 
+     * @return false if an error occurred, true otherwise
      */
     @Override
     public boolean request() {
@@ -111,19 +96,26 @@ public class GetRecordProtocol implements Protocol {
     }
 
     @Override
+    public Document getResponse() {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    @Override
     public boolean requestMore() {
-        // in this track in the protocol, there can only be one response
+        // in this application of the protocol, there can only be one response
         throw new UnsupportedOperationException("Protocol error"); 
     }
 
     @Override
     public boolean processResponse() {
+        // this application of the protocol does not need response processing
         throw new UnsupportedOperationException("Protocol error");
     }
 
     /**
-     * Get the record 
-     * @return 
+     * Get the record
+     *
+     * @return the record
      */
     @Override
     public Object parseResponse() {

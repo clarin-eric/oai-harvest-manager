@@ -28,33 +28,22 @@ import javax.xml.transform.TransformerException;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import org.apache.log4j.Logger;
+import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 /**
- * Identifier oriented application of the OAI protocol.
- * 
- * An object of this class receives a provider instance and prefixes obtained by
- * another application of the protocol. Based on these, it will try to get 
- * records from the endpoint. For each prefix, this application will consider 
- * sets specified in the provider object. <br><br>
- * 
- * Note. If the endpoint provides a record in several sets, in the end we need
- * to return it to the client only once. Because of this, the class contains a
- * subclass implementing a sorted array list. Al element will only be inserted
- * into the list if it is not already there. In other words, applying the 
- * protocol in this way will never give rise to requesting a record twice or 
- * more often. <br><br>
- * 
- * Note. This class has not been tested in conjunction with sets. <br><br>
- * 
- * Question. When it comes to saving files, how to deal with multiple instances
- * of he same identifier? Could we assume that an identifier is exclusively used
- * with one prefix only? ??? <br><br>
- * 
- * Note. This application of the protocol is more efficient when it comes to 
- * memory usage. 
+ * This class extends the ListProtocol class by providing ListIdentifiers type
+ * of verbs. One with two parameters, for resuming, one with five for the initial
+ * request. Since it implements specific verbs, it is also specific in processing
+ * and parsing of the responses. <br><br>
  *
+ * Note. If the endpoint provides a record in several sets, in the end this
+ * class needs to return it to the client only once. This class will use the
+ * list provided in the superclass to remove duplicate identifier and prefix
+ * pairs. By using this list when parsing, the class will return a record its
+ * client at most once. <br><br>
+ * 
  * @author Kees Jan van de Looij (MPI-PL)
  */
 public class ListIdentifiersProtocol extends ListProtocol implements Protocol {
@@ -63,25 +52,28 @@ public class ListIdentifiersProtocol extends ListProtocol implements Protocol {
             ListIdentifiersProtocol.class);
     
     /**
-     * Create object. Add messages specific to listing identifiers 
+     * Associate endpoint and prefixes with the protocol
      * 
      * @param provider the endpoint to address in the request
      * @param prefixes the prefixes returned by the endpoint 
      */
     ListIdentifiersProtocol (Provider provider, List<String> prefixes){
         super(provider, prefixes);
+        // supply messages specific to requesting identifiers
         message [0] = "Requesting more identifiers of records with prefix ";
         message [1] = "Requesting identifiers of records with prefix ";
         message [2] = "Cannot get identifiers of ";
     }
     
     /**
-     * Supply the ListIdentifiers verb. Here, make the version with two string
-     * parameters effective.
-     * 
-     * @param p1
-     * @param p2
-     * @return 
+     * Implementation of the ListIdentifiers verb <br><br>
+     *
+     * This implementation supplies the form of the verb used in a request
+     * based on a resumption token. <br><br>
+     *
+     * @param p1 metadata prefix
+     * @param p2 resumption token
+     * @return the response to the request
      * @throws java.io.IOException 
      * @throws org.xml.sax.SAXException
      * @throws javax.xml.parsers.ParserConfigurationException
@@ -99,14 +91,16 @@ public class ListIdentifiersProtocol extends ListProtocol implements Protocol {
     }
 
     /**
-     * Supply the ListIdentifiers verb. Here, make the version with five string
-     * parameters effective.
-     * 
-     * @param p1
-     * @param p2
-     * @param p3
-     * @param p4
-     * @param p5
+     * Implementation of the ListIdentifiers verb <br><br>
+     *
+     * This implementation supplies the form of the verb used in the initial
+     * request. <br><br>
+     *
+     * @param p1 endpoint URL
+     * @param p2 from date, for selective harvesting
+     * @param p3 until date, for selective harvesting
+     * @param p4 metadata prefix
+     * @param p5 set
      * @return the response to the request
      * @throws java.io.IOException 
      * @throws org.xml.sax.SAXException
@@ -116,7 +110,7 @@ public class ListIdentifiersProtocol extends ListProtocol implements Protocol {
      */
     @Override
     public HarvesterVerb verb5(String p1, String p2, String p3, String p4,
-            String p5) throws 
+            String p5) throws
             IOException,
             ParserConfigurationException,
             SAXException,
@@ -126,19 +120,26 @@ public class ListIdentifiersProtocol extends ListProtocol implements Protocol {
     }
     
     /**
-     * Get token. Here, supply the token returned by the ListIdentifier method.
+     * Get resumption token <br><br>
+     *
+     * Supply the token returned by the ListIdentifiers request. <br><br>
      * 
-     * @param reponse
+     * @param response the response to the request
      * @return the token
      * @throws TransformerException
      * @throws NoSuchFieldException
      */
     @Override
-    public String getToken (HarvesterVerb reponse) throws TransformerException, 
+    public String getToken (HarvesterVerb response) throws TransformerException,
             NoSuchFieldException{
-        return ((ListIdentifiers)response).getResumptionToken();
+        return ((ListIdentifiers) this.response).getResumptionToken();
     }
-        
+
+    @Override
+    public Document getResponse() {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
     /**
      * Create a list of identifier prefix targets from the response
      * 
@@ -156,7 +157,7 @@ public class ListIdentifiersProtocol extends ListProtocol implements Protocol {
 
         try {
             /* Try to add the targets in the response to the list. On 
-               faillure, stop the work on the current prefix.
+               failure, stop the work on the current prefix.
              */
             nodeList = (NodeList)provider.xpath.evaluate(
                     "//*[starts-with(local-name(),'identifier') "
@@ -166,7 +167,7 @@ public class ListIdentifiersProtocol extends ListProtocol implements Protocol {
         } catch (XPathExpressionException e) {
             // something went wrong when creating the list, try another prefix
             logger.error(e.getMessage(), e);
-            logger.info("Cannot create list of indentifiers of " + 
+            logger.info("Cannot create list of identifiers of " +
                     prefixes.get(pIndex) +
                     " records for endpoint " + provider.oaiUrl);
             return false;

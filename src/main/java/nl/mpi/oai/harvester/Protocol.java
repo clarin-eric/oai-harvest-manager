@@ -18,28 +18,53 @@
 
 package nl.mpi.oai.harvester;
 
-/** 
- * A form of access to the OAI protocol. Implementations have access to a 
- * part of the OAI protocol. A request could take the form of the ListRecords
- * verb, in which case the processing will concentrate on parsing, separating,
- * records from the response.
- * 
- * By making requests to the endpoint, an object of an implementing class 
- * creates a list of response elements to be used within the client.
- * 
+import org.w3c.dom.Document;
+
+/**
+ * Abstract view on the OAI protocol <br><br>
+ *
+ * A class implementing this interface is intended to provide those primitives
+ * of the OAI protocol that play a rol in a particular scenario of harvesting. <br><br>
+ *
+ * If the scenario, for example, would be to harvest metadata records using
+ * the ListRecords verb, the request method implements a request based on this
+ * verb. In this scenario, the processResponse method would create a list of
+ * metadata records included in the response to the verb. Finally, the
+ * parseResponse method would return the records one by one. <br><br>
+ *
+ * Another example of a class used by a scenario would be harvesting using
+ * the ListIdentifiers verb. The request method would obtain responses to this
+ * verb, the processResponse method would create the list of identifiers, and
+ * the parseResponse method would use the GetRecord verb to get the records one
+ * by one. <br><br>
+ *
+ * Different implementations of this interface allow for different scenarios
+ * to be implemented uniformly. Also, a particular scenario could be implemented
+ * by similar but different classes implementing this interface. Finally, an
+ * implementation can target different parts of the protocol. Next to classes
+ * that implement record harvesting, there could be a class supplying the
+ * primitives for obtaining prefixes. <br><br>
+ *
  * @author Kees Jan van de Looij (MPI-PL)
  */
 public interface Protocol {
     
     /**
-     * Get a response from the endpoint
-     * 
+     * Request to the endpoint<br><br>
+     *
      * @return  false if there was an error, true otherwise
      */
     public boolean request ();
+
+    /**
+     * Get the response from the endpoint<br><br>
+     *
+     * @return null if an error occurred, otherwise the response to the request
+     */
+    public Document getResponse ();
     
     /**
-     * Find out if it would be sensible to make another request
+     * Find out if it would be sensible to make another request<br><br>
      * 
      * @return  true if it might be, false otherwise
      */
@@ -47,14 +72,14 @@ public interface Protocol {
     
 
     /**
-     * Create a list of elements from the response
+     * Create a list of metadata elements from the response<br><br>
      * 
      * @return  false if there was an error, true otherwise
      */
     public boolean processResponse ();
     
     /**
-     * Return the next element in the list 
+     * Return the next metadata element in the list<br><br>
      * 
      * Could be parsedProcessed due to adapt to ListIdentifiers
      * 
@@ -63,7 +88,7 @@ public interface Protocol {
     public Object parseResponse ();
     
     /**
-     * Check if the list is fully parsed
+     * Check if the list is fully parsed<br><br>
      * 
      * @return  true if it is, false otherwise
      */

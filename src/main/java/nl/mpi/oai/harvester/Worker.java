@@ -181,8 +181,7 @@ public class Worker implements Runnable {
         /* Create the protocol elements for this scenario. Pass the indication
            whether or not to save the response to the protocol. */
 
-        Protocol p = new ListRecordsProtocol(provider, prefixes,
-                actions.containsSaveResponse());
+        Protocol p = new ListRecordsProtocol(provider, prefixes);
 
         for (; ; ) {
             if (!p.request() || !p.processResponse()) {
