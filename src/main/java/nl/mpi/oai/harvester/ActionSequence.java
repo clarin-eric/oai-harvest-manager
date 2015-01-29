@@ -107,9 +107,9 @@ public class ActionSequence {
      *
      * This method does not return a value. The results of the actions should
      * be accessed using other actions within the sequence.
-     * 
+     *
      * @param record metadata record
-	 * @param skip   if true, skip response saving and stripping
+	 * @param skip if true, skip response saving and stripping
      */
     public void runActions(MetadataRecord record, boolean skip) {
 

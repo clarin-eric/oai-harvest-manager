@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Semaphore;
 import org.apache.log4j.Logger;
+import org.w3c.dom.Document;
 
 /**
  * This class represents a single processing thread in the harvesting actions
@@ -39,7 +40,7 @@ public class Worker implements Runnable {
     /** The provider this worker deals with. */
     private final Provider provider;
 
-    /** List of sequences to be applied to the harvested metadata. */
+    /** List of sequences to be applied to the harvested Metadata. */
     private final List<ActionSequence> sequences;
 
     /* If direct, obtain records by following the list records scenario,
@@ -61,7 +62,7 @@ public class Worker implements Runnable {
      * Create a Worker object.
      * 
      * @param provider OAI-PMH provider that this thread will harvest
-     * @param sequences list of actions to take on harvested metadata
+     * @param sequences list of actions to take on harvested Metadata
      * @param direct kj: need to review this parameter
      */
     public Worker(Provider provider, List<ActionSequence> sequences,
@@ -75,7 +76,7 @@ public class Worker implements Runnable {
     List<String> prefixes = new ArrayList<>();
     
     /**
-     * Get the list of metadata prefixes supported by the endpoint<br><br>
+     * Get the list of Metadata prefixes supported by the endpoint<br><br>
      *
      * The list created is based on the format specified in the configuration.
      *
@@ -112,7 +113,7 @@ public class Worker implements Runnable {
     }
     
     /**
-     * Get metadata records indirectly, that is by first obtaining a list of
+     * Get Metadata records indirectly, that is by first obtaining a list of
      * identifiers pointing to them.<br><br>
      *
      * @param actions the sequence of actions
@@ -159,7 +160,7 @@ public class Worker implements Runnable {
     }
     
     /**
-     * Get metadata records directly, that is without first obtaining a list of
+     * Get Metadata records directly, that is without first obtaining a list of
      * identifiers pointing to them.<br><br>
      *
      * In this scenario, a save action specified before a strip action is
@@ -188,12 +189,25 @@ public class Worker implements Runnable {
                 // something went wrong with the request, try the next prefix
                 break;
             } else {
-                /* Stripping in the list record scenario means: processing each
-                and every record in the response. Skip to the next request is no
-                strip action is demanded. */
+
+                if (actions.containsSaveResponse()) {
+                    /* Saving the response in the list record scenario means:
+                       to save the
+
+                    Document response = p.getResponse();
+
+                    MetadataRecord record = new MetadataRecord(response, this.provider);
+
+                    */
+                }
+
 
                 if (actions.containsStripResponse()) {
 
+                    /* Stripping in the list record scenario means: processing
+                       each and every record in the response. Skip to the next
+                       request is no strip action is demanded.
+                     */
                     for (; ; ) {
                         if (p.fullyParsed()) {
                             break;

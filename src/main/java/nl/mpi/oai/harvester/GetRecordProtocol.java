@@ -126,8 +126,7 @@ public class GetRecordProtocol implements Protocol {
            identifier and provider from the protocol, to create and return a
            metadata record.
         */
-        return new MetadataRecord(identifier, response.getDocument(), provider,
-                "record");
+        return new MetadataRecord(identifier, response.getDocument(), provider);
     }
 
     /**

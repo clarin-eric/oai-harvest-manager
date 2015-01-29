@@ -70,7 +70,7 @@ public class ListRecordsProtocol extends ListProtocol implements Protocol {
      * Implementation of the ListRecords verb <br><br>
      *
      * This implementation supplies the form of the verb used in a request
-     * based on a resumption token. <br><br>
+     * based on a resumption token.
      * 
      * @param p1 metadata prefix
      * @param p2 resumption token
@@ -95,7 +95,7 @@ public class ListRecordsProtocol extends ListProtocol implements Protocol {
      * Implementation of the ListRecords verb <br><br>
      *
      * This implementation supplies the form of the verb used in the initial
-     * request. <br><br>
+     * request.
      *
      * @param p1 endpoint URL
      * @param p2 from date, for selective harvesting
@@ -121,7 +121,7 @@ public class ListRecordsProtocol extends ListProtocol implements Protocol {
     }
     
     /**
-     * Get token. Here, supply the token returned by the ListRecord method.
+     * Get token. Here, supply the token returned by the ListRecords verb
      * 
      * @param response the response
      * @return the token
@@ -134,9 +134,14 @@ public class ListRecordsProtocol extends ListProtocol implements Protocol {
         return ((ListRecords) this.response).getResumptionToken();
     }
 
+    /**
+     * Get the response
+     *
+     * @return the response
+     */
     @Override
     public Document getResponse() {
-        throw new UnsupportedOperationException("Not implemented yet");
+        return response.getDocument();
     }
 
     /**
@@ -217,26 +222,26 @@ public class ListRecordsProtocol extends ListProtocol implements Protocol {
             return null;
         }
 
-        // evaluate the document, find the metadata record
+        // evaluate the document, find the Metadata record
         Node dataNode;
         try {
             dataNode = (Node) provider.xpath.evaluate("//*[local-name()="
-                    + "'metadata'"
+                    + "Metadata"
                     + "and parent::*[local-name()='record']]/*[1]",
                     doc, XPathConstants.NODE);
         } catch (XPathExpressionException e) {
             // something went wrong parsing, try another record
             logger.error(e.getMessage(), e);
-            logger.info("cannot find metadata, skipping record");
+            logger.info("cannot find Metadata, skipping record");
             return null;
         }
 
         if (dataNode == null) {
-            // the node does not contain metadata 
+            // the node does not contain Metadata
             return null;
         }
         
-        // create a document to store the metadata in
+        // create a document to store the Metadata in
         dataNode = dataNode.cloneNode(true);
         doc = provider.db.newDocument();
         copy = doc.importNode(dataNode, true);
@@ -249,7 +254,7 @@ public class ListRecordsProtocol extends ListProtocol implements Protocol {
         IdPrefix idPrefix = new IdPrefix (id, prefixes.get(pIndex));
         if (targets.checkAndInsertSorted(idPrefix)){
             // inserted, not released to the client before
-            return new MetadataRecord(id, doc, provider, "part of multiple records");
+            return new MetadataRecord(id, doc, provider);
         } else {
             // not inserted, the record has already been release to the client
             return null;

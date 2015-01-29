@@ -251,7 +251,7 @@ public class Provider {
 	    try {
 		GetRecord gr = new GetRecord(oaiUrl, id, mdPrefix);
 		Document doc = gr.getDocument();
-		return new MetadataRecord(id, doc, this, "record");
+		return new MetadataRecord(id, doc, this);
 	    } catch (IOException | SAXException | ParserConfigurationException
 		    | TransformerException e) {
 		logger.error(e);
@@ -287,10 +287,10 @@ public class Provider {
 
     /**
      * Make an OAI-PMH GetIdentifiers call to collect all identifiers available
-     * with the given metadata prefix and set from this provider and add them
+     * with the given Metadata prefix and set from this provider and add them
      * to the given list.
      *
-     * @param mdPrefix metadata prefix
+     * @param mdPrefix Metadata prefix
      * @param set OAI-PMH set, or null for none
      * @param ids existing list to which identifiers will be added
      */
@@ -331,7 +331,7 @@ public class Provider {
     }
     
     /**
-     * Get the list of metadata prefixes corresponding to the specified format
+     * Get the list of Metadata prefixes corresponding to the specified format
      * that are supported by this provider.
      */
     List<String> getPrefixes(MetadataFormat format) {
@@ -347,11 +347,11 @@ public class Provider {
     }
 
     /**
-     * Parse list of metadata formats and find prefixes matching the given
+     * Parse list of Metadata formats and find prefixes matching the given
      * format specification
      *
      * @param doc DOM tree of OAI provider's response
-     * @param format desired metadata format
+     * @param format desired Metadata format
      * @return list of prefixes
      */
     List<String> parsePrefixes(Document doc, MetadataFormat format)

@@ -45,10 +45,11 @@ public class MetadataRecord {
      * 
      * @param id unique identifier
      * @param doc XML tree corresponding to this record
+     * @param origin endpoint information
      */
-    public MetadataRecord(String id, Document doc, Provider origin, String type) {
-        this.id = id;
-        this.doc = doc;
+    public MetadataRecord(String id, Document doc, Provider origin) {
+        this.id     = id;
+        this.doc    = doc;
         this.origin = origin;
     }
 
