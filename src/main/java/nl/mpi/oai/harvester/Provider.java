@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014, The Max Planck Institute for
+ * Copyright (C) 2015, The Max Planck Institute for
  * Psycholinguistics.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -228,7 +228,7 @@ public class Provider {
 	}
 
 	for (Map.Entry<String, String> me : identifiers.entrySet()) {
-	    MetadataRecord rec = getRecord(me.getKey(), me.getValue());
+	    Metadata rec = getRecord(me.getKey(), me.getValue());
 	    if (rec != null) {
 		logger.info("Fetched record " + me.getKey()
 			+ " (format " + me.getValue() + ")");
@@ -246,12 +246,12 @@ public class Provider {
      * @param mdPrefix metadata prefix
      * @return the record, or null if it cannot be fetched
      */
-    public MetadataRecord getRecord(String id, String mdPrefix) {
+    public Metadata getRecord(String id, String mdPrefix) {
 	for (int i=0; i<maxRetryCount; i++) {
 	    try {
 		GetRecord gr = new GetRecord(oaiUrl, id, mdPrefix);
 		Document doc = gr.getDocument();
-		return new MetadataRecord(id, doc, this, true, false);
+		return new Metadata(id, doc, this, true, false);
 	    } catch (IOException | SAXException | ParserConfigurationException
 		    | TransformerException e) {
 		logger.error(e);

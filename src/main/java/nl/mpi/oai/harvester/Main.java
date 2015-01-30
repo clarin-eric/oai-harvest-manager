@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014, The Max Planck Institute for
+ * Copyright (C) 2015, The Max Planck Institute for
  * Psycholinguistics.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -44,6 +44,11 @@ public class Main {
 	// concurrent worker threads.
 	Worker.setConcurrentLimit(config.getMaxJobs());
 	for (Provider prov : config.getProviders()) {
+		if (config.directHarvesting()){
+			Scenario s = Scenario.GETPREFIXES;
+			s.setProvider(prov);
+		}
+
 	    Worker worker = new Worker(prov, config.getActionSequences(), config.directHarvesting());
 	    worker.startWorker();
 	}

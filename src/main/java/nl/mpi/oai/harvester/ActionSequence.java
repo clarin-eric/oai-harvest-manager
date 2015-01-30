@@ -95,22 +95,34 @@ public class ActionSequence {
 	return pooledActions.get(action);
     }
 
-    /**
-     * Get the input format used in this sequence.
-     */
+	/**
+	 * Get the input format used in this sequence <br><br>
+	 *
+	 * @return the input format
+	 */
     public MetadataFormat getInputFormat() {
 	return inputFormat;
     }
 
     /**
-     * Perform the set of actions on a single metadata record.
+	 * Perform the actions specified in the configuration<br><br>
+	 *
+	 * Note. Not every action might be applicable to metadata at the various
+	 * stages of a scenario. For example, when listing records without using
+	 * identifiers, an OAI envelope will contain multiple records. While it
+	 * makes sense to save the envelope, it does not make sense to try to strip
+	 * individual metadata records. This means that performing an action on
+	 * metadata depends on <br><br>
+	 *
+	 * - an envelope being there or not, and <br><br>
+	 * - single or multiple records being present. <br><br>
+	 *
+     * Note. This method does not return a value. The results of the actions
+	 * should be accessed using other actions within the sequence.
      *
-     * This method does not return a value. The results of the actions should
-     * be accessed using other actions within the sequence.
-     *
-     * @param record metadata record
+     * @param metadata a single metadata record or a list of metadata records
      */
-    public void runActions(MetadataRecord record) {
+    public void runActions(Metadata metadata) {
 
 	// keep track of whether or not the action is the first in the sequence
 	boolean firstAction = true;
@@ -126,7 +138,7 @@ public class ActionSequence {
 
 				if (firstAction) {
 
-					if (record.isInEnvelope()) {
+					if (metadata.isInEnvelope()) {
 						// one record, or a list, save it
 						performAction = true;
 					}
@@ -135,7 +147,7 @@ public class ActionSequence {
 
 				} else {
 					// no envelope
-					if (record.isList()) {
+					if (metadata.isList()) {
 						// do not save list that is not in envelope
 					} else {
 						// unpacked metadata, save it
@@ -146,7 +158,7 @@ public class ActionSequence {
 			} else {
 				if (action instanceof StripAction) {
 
-					if (record.isInEnvelope() && ! record.isList()) {
+					if (metadata.isInEnvelope() && ! metadata.isList()) {
 						// single record in envelope, strip it
 						performAction = true;
 					}
@@ -154,7 +166,7 @@ public class ActionSequence {
 				} else {
 					// transform action
 
-					if (record.isInEnvelope() || record.isList()) {
+					if (metadata.isInEnvelope() || metadata.isList()) {
 						// transformation not possible
 					} else {
 						performAction = true;
@@ -163,7 +175,7 @@ public class ActionSequence {
 			}
 
 			if (performAction) {
-				boolean done = action.perform(record);
+				boolean done = action.perform(metadata);
 
 				actPool.release(action);
 				if (!done) {

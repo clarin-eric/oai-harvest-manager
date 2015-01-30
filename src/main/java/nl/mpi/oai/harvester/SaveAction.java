@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014, The Max Planck Institute for
+ * Copyright (C) 2015, The Max Planck Institute for
  * Psycholinguistics.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -53,7 +53,7 @@ public class SaveAction implements Action {
     }
 
     @Override
-    public boolean perform(MetadataRecord record) {
+    public boolean perform(Metadata metadata) {
 
         OutputStream os = null;
         try {
@@ -61,9 +61,9 @@ public class SaveAction implements Action {
             Transformer transformer = transformerFactory.newTransformer();
             transformer.setOutputProperty(OutputKeys.INDENT, "yes");
 
-            DOMSource source = new DOMSource(record.getDoc());
+            DOMSource source = new DOMSource(metadata.getDoc());
 
-            os = Files.newOutputStream(chooseLocation(record));
+            os = Files.newOutputStream(chooseLocation(metadata));
             StreamResult result = new StreamResult(os);
 
             transformer.transform(source, result);
@@ -82,11 +82,11 @@ public class SaveAction implements Action {
     /**
      * Simply choose location to save in.
      * 
-     * @param record metadata record
+     * @param metadata metadata record
      * @return path to new file in suitable location
      */
-    protected Path chooseLocation(MetadataRecord record) throws IOException {
-	return dir.placeNewFile(Util.toFileFormat(record.getId()) + suffix);
+    protected Path chooseLocation(Metadata metadata) throws IOException {
+	return dir.placeNewFile(Util.toFileFormat(metadata.getId()) + suffix);
     }
 
     @Override

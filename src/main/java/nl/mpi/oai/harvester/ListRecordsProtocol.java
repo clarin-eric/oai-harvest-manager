@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014, The Max Planck Institute for
+ * Copyright (C) 2015, The Max Planck Institute for
  * Psycholinguistics.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -237,11 +237,11 @@ public class ListRecordsProtocol extends ListProtocol implements Protocol {
         }
 
         if (dataNode == null) {
-            // the node does not contain Metadata
+            // the node does not contain metadata
             return null;
         }
         
-        // create a document to store the Metadata in
+        // create a document to store the metadata in
         dataNode = dataNode.cloneNode(true);
         doc = provider.db.newDocument();
         copy = doc.importNode(dataNode, true);
@@ -254,7 +254,7 @@ public class ListRecordsProtocol extends ListProtocol implements Protocol {
         IdPrefix idPrefix = new IdPrefix (id, prefixes.get(pIndex));
         if (targets.checkAndInsertSorted(idPrefix)){
             // inserted, not released to the client before
-            return new MetadataRecord(id, doc, provider, false, false);
+            return new Metadata(id, doc, provider, false, false);
         } else {
             // not inserted, the record has already been release to the client
             return null;

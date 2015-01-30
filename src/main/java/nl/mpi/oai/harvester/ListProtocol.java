@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014, The Max Planck Institute for
+ * Copyright (C) 2015, The Max Planck Institute for
  * Psycholinguistics.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -260,12 +260,9 @@ public abstract class ListProtocol implements Protocol {
                 return false;
             }
         }
-        
+
+        // start with a fresh node list for processing the list records request
         response = null;
-        
-        // a new node list for processing the list records request
-        // kj: not used in list identifiers
-        nIndex = 0;
 
         try {
             // try to get a response from the endpoint

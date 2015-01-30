@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014, The Max Planck Institute for
+ * Copyright (C) 2015, The Max Planck Institute for
  * Psycholinguistics.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -49,7 +49,7 @@ public class StripAction implements Action {
     }
 
     @Override
-    public boolean perform(MetadataRecord record) {
+    public boolean perform(Metadata record) {
 
         // Get the first child node of the "metadata" tag;
         // that's the content of the response without the
@@ -74,6 +74,7 @@ public class StripAction implements Action {
         Node copy = content.importNode(contentRoot, true);
         content.appendChild(copy);
         record.setDoc(content);
+        record.setIsInEnvelope (false);
 
         return true;
     }

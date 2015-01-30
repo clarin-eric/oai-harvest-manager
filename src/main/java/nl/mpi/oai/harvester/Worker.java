@@ -40,7 +40,7 @@ public class Worker implements Runnable {
     /** The provider this worker deals with. */
     private final Provider provider;
 
-    /** List of sequences to be applied to the harvested Metadata. */
+    /** List of sequences to be applied to the harvested metadata. */
     private final List<ActionSequence> sequences;
 
     /* If direct, obtain records by following the list records scenario,
@@ -48,6 +48,9 @@ public class Worker implements Runnable {
        records.
      */
     private final boolean direct;
+
+    // list of prefixes provided by the endpoint
+    List<String> prefixes = new ArrayList<>();
 
     /**
      * Set the maximum number of concurrent worker threads.
@@ -62,8 +65,12 @@ public class Worker implements Runnable {
      * Create a Worker object.
      * 
      * @param provider OAI-PMH provider that this thread will harvest
-     * @param sequences list of actions to take on harvested Metadata
-     * @param direct kj: need to review this parameter
+     * @param sequences list of actions to take on harvested metadata
+     *
+     * @param direct todo: need to review this parameter
+     *
+     *               Instead of a simple flag, an enumeration could be used to
+     *               determine which scenario to follow.
      */
     public Worker(Provider provider, List<ActionSequence> sequences,
                   boolean direct) {
@@ -71,12 +78,9 @@ public class Worker implements Runnable {
 	this.sequences = sequences;
     this.direct    = direct;
     }
-    
-    // kj: this needs to be moved
-    List<String> prefixes = new ArrayList<>();
-    
+
     /**
-     * Get the list of Metadata prefixes supported by the endpoint<br><br>
+     * Get the list of metadata prefixes supported by the endpoint<br><br>
      *
      * The list created is based on the format specified in the configuration.
      *
@@ -113,7 +117,7 @@ public class Worker implements Runnable {
     }
     
     /**
-     * Get Metadata records indirectly, that is by first obtaining a list of
+     * Get metadata records indirectly, that is by first obtaining a list of
      * identifiers pointing to them.<br><br>
      *
      * @param actions the sequence of actions
@@ -146,7 +150,7 @@ public class Worker implements Runnable {
             if (p.fullyParsed()) {
                 break;
             }
-            MetadataRecord record = (MetadataRecord) p.parseResponse();
+            Metadata record = (Metadata) p.parseResponse();
 
             if (record == null) {
                 // something went wrong, skip the record
@@ -160,7 +164,7 @@ public class Worker implements Runnable {
     }
     
     /**
-     * Get Metadata records directly, that is without first obtaining a list of
+     * Get metadata records directly, that is without first obtaining a list of
      * identifiers pointing to them.<br><br>
      *
      * In this scenario, a save action specified before a strip action is
@@ -200,12 +204,12 @@ public class Worker implements Runnable {
 
                     // generate id: sequence number
 
-                    MetadataRecord record = new MetadataRecord(id.toString(),
+                    Metadata records = new Metadata(id.toString(),
                             response, this.provider, true, true);
 
                     id++;
 
-                    if (record == null) {
+                    if (records == null) {
                         /* Something went wrong or the record has already been
                            released, either way: skip it
                          */
@@ -213,7 +217,7 @@ public class Worker implements Runnable {
                             /* Indicate that response saving and skipping do not
                             apply to the record */
 
-                        actions.runActions(record);
+                        actions.runActions(records);
                     }
                 }
 
@@ -227,7 +231,7 @@ public class Worker implements Runnable {
                         if (p.fullyParsed()) {
                             break;
                         }
-                        MetadataRecord record = (MetadataRecord) p.parseResponse();
+                        Metadata record = (Metadata) p.parseResponse();
 
                         if (record == null) {
                         /* Something went wrong or the record has already been

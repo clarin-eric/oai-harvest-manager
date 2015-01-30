@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014, The Max Planck Institute for
+ * Copyright (C) 2015, The Max Planck Institute for
  * Psycholinguistics.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -21,16 +21,21 @@ package nl.mpi.oai.harvester;
 import org.w3c.dom.Document;
 
 /**
- * This class represents a single record of metadata. More specifically, it
- * represents a metadata record which is instantiated as an XML document tree
- * and which may be subjected to modifications and manipulations that affect
- * the content but not the true identity of the document. In other words, the
- * record has a single immutable identifier, but its XML representation may
- * change.
- * 
+ * Metadata container <br><br>
+ *
+ * An object of this class represents metadata in XML document tree. While the
+ * identifier associated with the metadata itself is immutable, clients to this
+ * class can modify the XML document contained by invoking the getDoc and
+ * setDoc methods.
+ *
+ * Apart from being well-formed, the metadata represented by an object of this
+ * class is not constrained. This means that objects can hold metadata packaged
+ * in an OAI envelope, the content of such an envelope, or an envelope containing
+ * multiple metadata records.
+ *
  * @author Lari Lampen (MPI-PL)
  */
-public class MetadataRecord {
+public class Metadata {
     /** A unique identifier, such as the OAI-PMH record identifier. */
     private final String id;
 
@@ -38,7 +43,7 @@ public class MetadataRecord {
     private final Provider origin;
 
     // whether or not the metadata is packed in an OAI envelope
-    private final boolean isInEnvelope;
+    private boolean isInEnvelope;
     // whether or not the metadata takes the form of a list of records
     private final boolean isList;
 
@@ -52,8 +57,8 @@ public class MetadataRecord {
      * @param doc XML tree corresponding to this record
      * @param origin endpoint information
      */
-    public MetadataRecord(String id, Document doc, Provider origin,
-                          boolean isInEnvelope, boolean isList) {
+    public Metadata(String id, Document doc, Provider origin,
+                    boolean isInEnvelope, boolean isList) {
         this.id           = id;
         this.doc          = doc;
         this.origin       = origin;
@@ -102,5 +107,14 @@ public class MetadataRecord {
      */
     public boolean isList () {
         return isList;
+    }
+
+    /**
+     * Remember whether or not the metadata is packaged in an envelope
+     *
+     * @param isInEnvelope whether or not the metadata is packaged in an envelope
+     */
+    public void setIsInEnvelope(boolean isInEnvelope) {
+        this.isInEnvelope = isInEnvelope;
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014, The Max Planck Institute for
+ * Copyright (C) 2015, The Max Planck Institute for
  * Psycholinguistics.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -126,7 +126,7 @@ public class GetRecordProtocol implements Protocol {
            identifier and provider from the protocol, to create and return a
            metadata record.
         */
-        return new MetadataRecord(identifier, response.getDocument(), provider, true, false);
+        return new Metadata(identifier, response.getDocument(), provider, true, false);
     }
 
     /**

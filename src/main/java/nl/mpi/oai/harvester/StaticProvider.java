@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014, The Max Planck Institute for
+ * Copyright (C) 2015, The Max Planck Institute for
  * Psycholinguistics.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -137,13 +137,13 @@ public class StaticProvider extends Provider {
     }
 
     @Override
-    public MetadataRecord getRecord(String id, String mdPrefix) {
+    public Metadata getRecord(String id, String mdPrefix) {
 	String xp = "/os:Repository/os:ListRecords[@metadataPrefix = '"
 		+ mdPrefix + "']/oai:record[./oai:header/oai:identifier/text() = '"
 		+ id + "']";
 	Document doc = getSubtree(xp);
 	if (doc == null) return null;
-	return new MetadataRecord(id, doc, this, true, true);
+	return new Metadata(id, doc, this, true, false);
     }
 
     /**

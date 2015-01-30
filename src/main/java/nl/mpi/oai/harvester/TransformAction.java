@@ -56,7 +56,7 @@ public class TransformAction implements Action {
     }
 
     @Override
-    public boolean perform(MetadataRecord record) {
+    public boolean perform(Metadata record) {
 	try {
 	    DOMSource source = new DOMSource(record.getDoc());
 	    DOMResult output = new DOMResult();

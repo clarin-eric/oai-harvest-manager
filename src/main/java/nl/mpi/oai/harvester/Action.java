@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014, The Max Planck Institute for
+ * Copyright (C) 2015, The Max Planck Institute for
  * Psycholinguistics.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -33,7 +33,7 @@ public interface Action {
      * @return true on success; false if the action failed, leaving
      *         the record unchanged
      */
-    boolean perform(MetadataRecord record);
+    boolean perform(Metadata record);
 
     /**
      * Create a copy of this action. (This is used in preference to the
