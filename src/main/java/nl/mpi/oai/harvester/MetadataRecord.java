@@ -38,7 +38,7 @@ public class MetadataRecord {
     private final Provider origin;
 
     // whether or not the metadata is packed in an OAI envelope
-    private final boolean inEnvelope;
+    private final boolean isInEnvelope;
     // whether or not the metadata takes the form of a list of records
     private final boolean isList;
 
@@ -53,12 +53,12 @@ public class MetadataRecord {
      * @param origin endpoint information
      */
     public MetadataRecord(String id, Document doc, Provider origin,
-                          boolean inEnvelope, boolean isList) {
-        this.id         = id;
-        this.doc        = doc;
-        this.origin     = origin;
-        this.inEnvelope = inEnvelope;
-        this.isList     = isList;
+                          boolean isInEnvelope, boolean isList) {
+        this.id           = id;
+        this.doc          = doc;
+        this.origin       = origin;
+        this.isInEnvelope = isInEnvelope;
+        this.isList       = isList;
     }
 
     /**
@@ -92,7 +92,7 @@ public class MetadataRecord {
      * @return true, iff the metadata is contained in an envelope
      */
     public boolean isInEnvelope (){
-        return inEnvelope;
+        return isInEnvelope;
     }
 
     /**
