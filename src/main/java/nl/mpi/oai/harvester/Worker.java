@@ -204,7 +204,8 @@ public class Worker implements Runnable {
 
                     // generate id: sequence number
 
-                    Metadata records = new Metadata(id.toString(),
+                    Metadata records = new Metadata(
+                            provider.getName() + "-" + id.toString(),
                             response, this.provider, true, true);
 
                     id++;

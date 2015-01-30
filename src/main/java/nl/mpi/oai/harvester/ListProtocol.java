@@ -263,6 +263,10 @@ public abstract class ListProtocol implements Protocol {
         // start with a fresh node list for processing the list records request
         response = null;
 
+        // create a new node list for processing the list records request
+        // kj: not used in list identifiers, check move to list records
+        nIndex = 0;
+
         try {
             // try to get a response from the endpoint
             if (!(resumptionToken == null || resumptionToken.isEmpty())) {

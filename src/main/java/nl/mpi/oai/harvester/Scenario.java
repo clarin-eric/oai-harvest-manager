@@ -221,9 +221,10 @@ public enum Scenario {
 
                     Document response = p.getResponse();
 
-                    // generate id: sequence number
+                    // generate id: provider name and sequence number
 
-                    Metadata records = new Metadata(id.toString(),
+                    Metadata records = new Metadata(
+                            provider.getName() + "-" + id.toString(),
                             response, this.provider, true, true);
 
                     id++;
