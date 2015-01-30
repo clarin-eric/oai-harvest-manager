@@ -109,44 +109,73 @@ public class ActionSequence {
      * be accessed using other actions within the sequence.
      *
      * @param record metadata record
-	 * @param skip if true, skip response saving and stripping
      */
-    public void runActions(MetadataRecord record, boolean skip) {
+    public void runActions(MetadataRecord record) {
 
 	// keep track of whether or not the action is the first in the sequence
 	boolean firstAction = true;
 
-	for (ResourcePool<Action> actPool : actions) {
-		// claim an action in the pool
-	    Action action = actPool.get();
+		for (ResourcePool<Action> actPool : actions) {
+			// claim an action in the pool
+			Action action = actPool.get();
 
-		if (skip && firstAction && action instanceof SaveAction) {
+			// assume the action cannot be performed, investigate the opposite
+			boolean performAction = false;
 
-			/* The action is the first in the sequence, and it is a
-			SaveAction type of action. Therefore, it is intended to save the
-			the envelope. Do not not perform the action and release it */
+			if (action instanceof SaveAction) {
 
-			actPool.release(action); firstAction = false;
-		} else {
-			if (skip && action instanceof StripAction) {
+				if (firstAction) {
 
-				/* The action is intended to strip the envelope. Again, skip
-				   and release it. */
+					if (record.isInEnvelope()) {
+						// one record, or a list, save it
+						performAction = true;
+					}
 
-				actPool.release(action);
+					firstAction = false;
+
+				} else {
+					// no envelope
+					if (record.isList()) {
+						// do not save list that is not in envelope
+					} else {
+						// unpacked metadata, save it
+						performAction = true;
+					}
+				}
+
 			} else {
-                // perform and release the action
-				boolean res = action.perform(record);
+				if (action instanceof StripAction) {
+
+					if (record.isInEnvelope() && ! record.isList()) {
+						// single record in envelope, strip it
+						performAction = true;
+					}
+
+				} else {
+					// transform action
+
+					if (record.isInEnvelope() || record.isList()) {
+						// transformation not possible
+					} else {
+						performAction = true;
+					}
+				}
+			}
+
+			if (performAction) {
+				boolean done = action.perform(record);
+
 				actPool.release(action);
-				if (!res) {
+				if (!done) {
 					logger.error("Action " + action + " failed, terminating" +
 							" sequence");
 					return;
 				}
 			}
+
+			actPool.release(action);
 		}
 	}
-    }
 
 	/**
 	 * Check if the response should be saved

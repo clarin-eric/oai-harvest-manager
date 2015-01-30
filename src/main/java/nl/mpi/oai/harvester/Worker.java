@@ -152,7 +152,7 @@ public class Worker implements Runnable {
                 // something went wrong, skip the record
             } else {
                 // transform the record, no skipping
-                actions.runActions(record, false);
+                actions.runActions(record);
             }
         }
         
@@ -224,7 +224,7 @@ public class Worker implements Runnable {
                             /* Indicate that response saving and skipping do not
                             apply to the record */
 
-                            actions.runActions(record, true);
+                            actions.runActions(record);
                         }
                     }
                 }

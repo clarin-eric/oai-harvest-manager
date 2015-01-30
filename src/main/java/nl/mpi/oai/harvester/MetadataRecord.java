@@ -85,4 +85,21 @@ public class MetadataRecord {
     public Provider getOrigin() {
         return origin;
     }
+
+    /**
+     * kj: doc
+     *
+     * @return
+     */
+    public boolean isInEnvelope (){
+        return inEnvelope;
+    }
+
+    /**
+     * kj: doc
+     * @return
+     */
+    public boolean isList () {
+        return isList;
+    }
 }
