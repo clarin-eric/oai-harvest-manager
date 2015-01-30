@@ -226,7 +226,7 @@ public class ListRecordsProtocol extends ListProtocol implements Protocol {
         Node dataNode;
         try {
             dataNode = (Node) provider.xpath.evaluate("//*[local-name()="
-                    + "Metadata"
+                    + "'metadata'"
                     + "and parent::*[local-name()='record']]/*[1]",
                     doc, XPathConstants.NODE);
         } catch (XPathExpressionException e) {
@@ -254,7 +254,7 @@ public class ListRecordsProtocol extends ListProtocol implements Protocol {
         IdPrefix idPrefix = new IdPrefix (id, prefixes.get(pIndex));
         if (targets.checkAndInsertSorted(idPrefix)){
             // inserted, not released to the client before
-            return new MetadataRecord(id, doc, provider);
+            return new MetadataRecord(id, doc, provider, false, false);
         } else {
             // not inserted, the record has already been release to the client
             return null;

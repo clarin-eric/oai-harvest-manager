@@ -196,7 +196,9 @@ public class Worker implements Runnable {
 
                     Document response = p.getResponse();
 
-                    MetadataRecord record = new MetadataRecord(response, this.provider);
+                    // generate id: sequence number
+
+                    MetadataRecord record = new MetadataRecord(id, response, this.provider);
 
                     */
                 }

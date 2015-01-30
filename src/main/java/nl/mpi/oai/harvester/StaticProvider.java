@@ -143,7 +143,7 @@ public class StaticProvider extends Provider {
 		+ id + "']";
 	Document doc = getSubtree(xp);
 	if (doc == null) return null;
-	return new MetadataRecord(id, doc, this);
+	return new MetadataRecord(id, doc, this, true, true);
     }
 
     /**

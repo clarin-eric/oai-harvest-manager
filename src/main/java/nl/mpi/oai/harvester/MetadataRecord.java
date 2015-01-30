@@ -37,6 +37,11 @@ public class MetadataRecord {
     /** The OAI-PMH provider where this record originated. */
     private final Provider origin;
 
+    // whether or not the metadata is packed in an OAI envelope
+    private final boolean inEnvelope;
+    // whether or not the metadata takes the form of a list of records
+    private final boolean isList;
+
     /** The XML content of this record. */
     private Document doc;
 
@@ -47,10 +52,13 @@ public class MetadataRecord {
      * @param doc XML tree corresponding to this record
      * @param origin endpoint information
      */
-    public MetadataRecord(String id, Document doc, Provider origin) {
-        this.id     = id;
-        this.doc    = doc;
-        this.origin = origin;
+    public MetadataRecord(String id, Document doc, Provider origin,
+                          boolean inEnvelope, boolean isList) {
+        this.id         = id;
+        this.doc        = doc;
+        this.origin     = origin;
+        this.inEnvelope = inEnvelope;
+        this.isList     = isList;
     }
 
     /**
