@@ -87,17 +87,18 @@ public class MetadataRecord {
     }
 
     /**
-     * kj: doc
+     * Check if the metadata is contained in an envelope
      *
-     * @return
+     * @return true, iff the metadata is contained in an envelope
      */
     public boolean isInEnvelope (){
         return inEnvelope;
     }
 
     /**
-     * kj: doc
-     * @return
+     * Check if the metadata takes the form of a list
+     *
+     * @return true, iff the metadata takes the form of a list
      */
     public boolean isList () {
         return isList;
