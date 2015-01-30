@@ -184,6 +184,8 @@ public class Worker implements Runnable {
 
         Protocol p = new ListRecordsProtocol(provider, prefixes);
 
+        Integer id = 0;
+
         for (; ; ) {
             if (!p.request() || !p.processResponse()) {
                 // something went wrong with the request, try the next prefix
@@ -192,17 +194,28 @@ public class Worker implements Runnable {
 
                 if (actions.containsSaveResponse()) {
                     /* Saving the response in the list record scenario means:
-                       to save the
+                       to save a list of records enclosed in an envelope. */
 
                     Document response = p.getResponse();
 
                     // generate id: sequence number
 
-                    MetadataRecord record = new MetadataRecord(id, response, this.provider);
+                    MetadataRecord record = new MetadataRecord(id.toString(),
+                            response, this.provider, true, true);
 
-                    */
+                    id++;
+
+                    if (record == null) {
+                        /* Something went wrong or the record has already been
+                           released, either way: skip it
+                         */
+                    } else {
+                            /* Indicate that response saving and skipping do not
+                            apply to the record */
+
+                        actions.runActions(record);
+                    }
                 }
-
 
                 if (actions.containsStripResponse()) {
 
