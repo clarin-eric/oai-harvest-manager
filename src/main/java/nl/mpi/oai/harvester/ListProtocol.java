@@ -13,7 +13,6 @@
  *
  * A copy of the GNU General Public License is included in the file
  * LICENSE-gpl-3.0.txt. If that file is missing, see
- *
  * <http://www.gnu.org/licenses/>.
  */
 
