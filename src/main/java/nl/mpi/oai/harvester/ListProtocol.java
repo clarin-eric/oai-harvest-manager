@@ -54,7 +54,7 @@ public abstract class ListProtocol implements Protocol {
     private static final Logger logger = Logger.getLogger(ListProtocol.class);
     
     // messages specific to extending classes
-    protected final static String[] message = new String [3];
+    final static String[] message = new String [3];
 
     // information on where to send the request
     protected final Provider provider;
@@ -67,9 +67,9 @@ public abstract class ListProtocol implements Protocol {
     protected int pIndex;
     
     // a list of nodes kept between the processing and parsing of a response
-    protected NodeList nodeList;
+    NodeList nodeList;
     // pointer to next element that needs to be checked 
-    protected int nIndex;   
+    int nIndex;
     
     // the resumption token send by the previous request
     private String resumptionToken;
@@ -80,7 +80,7 @@ public abstract class ListProtocol implements Protocol {
      */
     protected final SortedArrayList <IdPrefix> targets;
     // pointer to next element to be parsed and returned
-    protected int tIndex;  
+    protected int tIndex;
     
     /**
      * ArrayList sorted according a to the relation defined on the elements
@@ -96,7 +96,7 @@ public abstract class ListProtocol implements Protocol {
          * @param element he element to be inserted
          * @return true if the element was inserted, false otherwise
          */
-        public boolean checkAndInsertSorted(T element) {
+        boolean checkAndInsertSorted(T element) {
 
             int i = 0, j;
 
@@ -133,8 +133,8 @@ public abstract class ListProtocol implements Protocol {
     protected class IdPrefix implements Comparable {
 
         // constituents of the idPrefix
-        final String identifier;
-        final String prefix;
+        protected final String identifier;
+        protected final String prefix;
 
         IdPrefix (String identifier, String prefix){
             this.identifier = identifier;
@@ -177,7 +177,7 @@ public abstract class ListProtocol implements Protocol {
      * @param provider the endpoint to address in the request
      * @param prefixes the prefixes returned by the endpoint 
      */
-    public ListProtocol (Provider provider, List<String> prefixes){
+    ListProtocol(Provider provider, List<String> prefixes){
         this.provider   = provider;
         this.prefixes   = prefixes;
         pIndex          = 0;
@@ -218,7 +218,7 @@ public abstract class ListProtocol implements Protocol {
             SAXException,
             TransformerException,
             NoSuchFieldException;
-    
+
     /**
      * Get the token indicating more data is available. Since a HarvesterVerb 
      * object does not have a method for getting the token the extending classes 
@@ -264,7 +264,6 @@ public abstract class ListProtocol implements Protocol {
         response = null;
 
         // create a new node list for processing the list records request
-        // kj: not used in list identifiers, check move to list records
         nIndex = 0;
 
         try {

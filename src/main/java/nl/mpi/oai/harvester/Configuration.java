@@ -78,7 +78,7 @@ public class Configuration {
 	WORKDIR("workdir"), RETRYCOUNT("max-retry-count"),
 	RETRYDELAY("retry-delay"), MAXJOBS("max-jobs"),
 	POOLSIZE("resource-pool-size"), TIMEOUT("timeout"),
-        DIRECT("direct-harvesting"),
+        SCENARIO("scenario"),
         SAVERESPONSE("save-response");
 	private final String val;
 	private KnownOptions(final String s) { val = s; }
@@ -435,38 +435,35 @@ public class Configuration {
         return Integer.valueOf(s);
     }
     /**
-     * Check if the endpoint should be harvested directly or not. 
-     * <br><br>
-     * 
-     * Harvesting directly means that records are retrieved as responses to
-     * a request build around the ListRecords verb. Records are harvested in an
-     * indirect mode when first their identifiers are retrieved and after that,
-     * based on these identifiers, each record is requested individually. 
-     * 
-     * The advantage of direct harvesting is that a single response can contain
+	 * Scenario for harvesting <br><br>
+	 *
+	 * Values: ListIdentifiers, ListRecords
+	 *
+     * In the ListRecords scenario records are retrieved as responses to a
+	 * request build around the ListRecords verb. The ListIdentifiers scenario
+	 * first obtains a list of records, and after that retrieves each record in
+	 * the list individually.
+     *
+     * The advantage of the ListRecords is that a single response can contain
      * multiple records. As long as the endpoint can provide records, it will 
      * include a resumption token in the response, indicating that more records
      * can be retrieved issuing another request including this token.
      * 
-     * In indirect mode, each record identified needs to be retrieved in a an
-     * individual request. While the list of identifiers can be compiled 
-     * efficiently, this is clearly not efficient. Moreover, when building the
-     * list the OAI header is included while it is also included in the 
-     * individual records. So using indirect harvesting more data needs to be
+     * In the ListIdentifiers scenario, each record identified needs to be
+	 * retrieved in a an individual request. While the list of identifiers can
+	 * be compiled efficiently, this is clearly not efficient. Moreover, when
+	 * building the list the OAI header is included while it is also included in
+	 * the individual records. So using indirect harvesting more data needs to be
      * transferred.
      *  
-     * By default, the endpoint will be harvested classically, that is, by
-     * first obtaining a list of identifiers.
+     * By default, the endpoint will be harvested by applying the ListIdentifiers
+	 * scenario.
      * 
-     * @return true  if and only if the records are supposed to be harvested 
-     *               directly, that is without building a list of identifiers 
-     *               first.
+     * @return string indicating the scenario.
      */
-    public boolean directHarvesting(){
+    public String getScenario(){
         
-        String s = settings.get(KnownOptions.DIRECT.toString());
-        if (s == null) return false;
-        return Boolean.valueOf(s);
+        return settings.get(KnownOptions.SCENARIO.toString());
     }
     
     /**

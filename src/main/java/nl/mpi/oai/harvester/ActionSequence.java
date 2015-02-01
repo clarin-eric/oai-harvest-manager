@@ -71,7 +71,7 @@ public class ActionSequence {
 	this.save        = save;
 	this.strip       = strip;
 
-	actions = new ArrayList<ResourcePool<Action>>();
+	actions = new ArrayList<>();
 
 	for (Action act : theActions) {
 	    actions.add(getPool(act, resourcePoolSize));

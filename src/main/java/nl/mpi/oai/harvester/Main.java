@@ -43,8 +43,9 @@ public class Main {
 	// is responsible for honouring the configured limit of
 	// concurrent worker threads.
 	Worker.setConcurrentLimit(config.getMaxJobs());
-	for (Provider prov : config.getProviders()) {
-	    Worker worker = new Worker(prov, config.getActionSequences(), config.directHarvesting());
+	for (Provider provider : config.getProviders()) {
+	    Worker worker = new Worker(provider,
+				config.getActionSequences(), config.getScenario());
 	    worker.startWorker();
 	}
     }

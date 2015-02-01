@@ -54,25 +54,25 @@ public class Provider {
     private static final Logger logger = Logger.getLogger(Provider.class);
 
     /** Name of the provider. */
-    protected  String name;
+	String name;
 
     /** Address through which the OAI repository is accessed. */
-    protected final String oaiUrl;
+    final String oaiUrl;
 
     /** List of OAI sets to harvest (optional). */
-    protected String[] sets = null;
+	String[] sets = null;
 
     /** Maximum number of retries to use when a connection fails. */
-    protected int maxRetryCount = 0;
+	int maxRetryCount = 0;
 
     /**
      * We make so many XPath queries we could just as well keep one XPath
      * object to hand for them.
      */
-    protected final XPath xpath;
+    final XPath xpath;
     
     // document builder factory
-    protected final DocumentBuilder db;
+    final DocumentBuilder db;
 
     /**
      * Provider constructor
@@ -157,7 +157,7 @@ public class Provider {
      * Get the name declared by an OAI-PMH provider by making an
      * Identify request. Returns null if no name can be found.
      */
-    protected String getProviderName() {
+	String getProviderName() {
 	try {
 	    Identify ident = new Identify(oaiUrl);
 	    return parseProviderName(ident.getDocument());
@@ -246,7 +246,7 @@ public class Provider {
      * @param mdPrefix metadata prefix
      * @return the record, or null if it cannot be fetched
      */
-    public Metadata getRecord(String id, String mdPrefix) {
+	Metadata getRecord(String id, String mdPrefix) {
 	for (int i=0; i<maxRetryCount; i++) {
 	    try {
 		GetRecord gr = new GetRecord(oaiUrl, id, mdPrefix);
@@ -269,7 +269,7 @@ public class Provider {
      * @param mdPrefix metadata prefix
      * @return list of identifiers, which may be empty
      */
-    public List<String> getIdentifiers(String mdPrefix) throws IOException,
+	List<String> getIdentifiers(String mdPrefix) throws IOException,
 	    ParserConfigurationException, SAXException, TransformerException,
 	    XPathExpressionException, NoSuchFieldException {
 	List<String> ids = new ArrayList<>();
@@ -316,9 +316,8 @@ public class Provider {
      * @param doc DOM tree representing OAI-PMH response
      * @param ids a list, already created, that identifiers will be added to
      */
-    void addIdentifiers(Document doc, List<String> ids) throws IOException,
-	    ParserConfigurationException, SAXException, TransformerException,
-	    XPathExpressionException, NoSuchFieldException {
+    void addIdentifiers(Document doc, List<String> ids) throws
+	    XPathExpressionException {
 	NodeList nl = (NodeList)xpath.evaluate("//*[starts-with(local-name(),'identifier') and parent::*[local-name()='header' and not(@status='deleted')]]/text()",
 		doc, XPathConstants.NODESET);
 	if (nl == null)

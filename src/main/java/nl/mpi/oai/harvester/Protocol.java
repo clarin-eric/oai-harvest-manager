@@ -47,7 +47,7 @@ import org.w3c.dom.Document;
  *
  * @author Kees Jan van de Looij (MPI-PL)
  */
-public interface Protocol {
+interface Protocol {
     
     /**
      * Request to the endpoint<br><br>
