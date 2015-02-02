@@ -120,7 +120,7 @@ public class StaticProviderTest {
 	String id = "oai:mbcarrom.linguistlist.org:371";
 	String mdPrefix = "olac";
 	StaticProvider instance = new StaticProvider(doc);
-	MetadataRecord result = instance.getRecord(id, mdPrefix);
+	Metadata result = instance.getRecord(id, mdPrefix);
 
 	assertNotNull(result);
 	assertEquals(id, result.getId());
@@ -141,7 +141,7 @@ public class StaticProviderTest {
 	String id = "garbage";
 	String mdPrefix = "olac";
 	StaticProvider instance = new StaticProvider(doc);
-	MetadataRecord result = instance.getRecord(id, mdPrefix);
+	Metadata result = instance.getRecord(id, mdPrefix);
 
 	assertNull(result);
     }
@@ -158,7 +158,7 @@ public class StaticProviderTest {
 	String id = "oai:mbcarrom.linguistlist.org:371";
 	String mdPrefix = "garbage";
 	StaticProvider instance = new StaticProvider(doc);
-	MetadataRecord result = instance.getRecord(id, mdPrefix);
+	Metadata result = instance.getRecord(id, mdPrefix);
 
 	assertNull(result);
     }
