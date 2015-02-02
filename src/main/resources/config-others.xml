@@ -108,8 +108,6 @@
     <provider url="http://archive.ethnologue.com/sil_archives.asp"/>
     <provider url="http://www.language-archives.org/hosted/AcademiaSinica.xml" static="true"
 	      name="Academia Sinica Balanced Corpus of Modern Chinese"/>
-    <provider url="http://talkbank.org/talkbank.xml" static="true"
-	      name="TALKBANK Data repository"/>
     <provider url="http://www.language-archives.org/hosted/tdproject.xml" static="true"
 	      name="The Typological Database Project"/>
   	<provider url="https://catalog.ldc.upenn.edu/olac/ldc_catalog.xml" static="true"
