@@ -81,8 +81,6 @@
 	      name="Archive of the Indigenous Languages of Latin America"/>
     <provider url="http://www.language-archives.org/hosted/atilf.xml"/>
     <provider url="http://cla.berkeley.edu/olac.xml" static="true"/>
-    <provider url="http://childes.talkbank.org/childes.xml" static="true"
-	      name="CHILDES Data repository"/>
     <provider url="https://metadata-wg.mannlib.cornell.edu/clal.xml" static="true"/>
     <provider url="http://victoria.linguistlist.org/php4/ore/XMLnamespacefiles/CoCoSP/CoCoSP.xml"
 	      static="true"
