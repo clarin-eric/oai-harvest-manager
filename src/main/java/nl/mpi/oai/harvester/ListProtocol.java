@@ -266,49 +266,72 @@ public abstract class ListProtocol implements Protocol {
         // create a new node list for processing the list records request
         nIndex = 0;
 
-        try {
-            // try to get a response from the endpoint
-            if (!(resumptionToken == null || resumptionToken.isEmpty())) {
-                // use resumption token
-                logger.debug(message[0] + prefixes.get(pIndex));
+        // number of requests attempted
+        int i = 0;
+        for (;;){
+            // assume request will complete successfully
+            boolean done = true;
 
-                response = verb2(provider.oaiUrl, resumptionToken);
-            } else {
-                logger.debug(message[1] + prefixes.get(pIndex));
+            // try the request
+            try {
+                // try to get a response from the endpoint
+                if (!(resumptionToken == null || resumptionToken.isEmpty())) {
+                    // use resumption token
+                    logger.debug(message[0] + prefixes.get(pIndex));
 
-                if (provider.sets == null) {
-                    // no sets specified, ask for records by prefix
-                    response = verb5(provider.oaiUrl, null, null,
-                            null,
-                            prefixes.get(pIndex));
+                    response = verb2(provider.oaiUrl, resumptionToken);
                 } else {
-                    // request targets for a new set and prefix combination 
-                    response = verb5(provider.oaiUrl, null, null,
-                            provider.sets[sIndex],
-                            prefixes.get(pIndex));
+                    logger.debug(message[1] + prefixes.get(pIndex));
+
+                    if (provider.sets == null) {
+                        // no sets specified, ask for records by prefix
+                        response = verb5(provider.oaiUrl, null, null,
+                                null,
+                                prefixes.get(pIndex));
+                    } else {
+                        // request targets for a new set and prefix combination
+                        response = verb5(provider.oaiUrl, null, null,
+                                provider.sets[sIndex],
+                                prefixes.get(pIndex));
+                    }
+                }
+
+                // check if more records would be available
+                resumptionToken = getToken(response);
+
+            } catch ( IOException
+                    | ParserConfigurationException
+                    | SAXException | TransformerException | NoSuchFieldException e) {
+
+                // invalidate the assumption that everything went fine
+                done = false;
+
+                // report
+                logger.error(e.getMessage(), e);
+                if (provider.sets == null) {
+                    logger.info(message[2] + prefixes.get(pIndex)
+                            + " records from endpoint " + provider.oaiUrl);
+
+                } else {
+                    logger.info(message[2] + prefixes.get(pIndex)
+                            + " records in set " + provider.sets[sIndex]
+                            + " from endpoint " + provider.oaiUrl);
                 }
             }
-       
-            // check if more records would be available
-            resumptionToken = getToken(response);
+            // tried the request
 
-        } catch ( IOException 
-                | ParserConfigurationException 
-          | SAXException | TransformerException | NoSuchFieldException e) {
-            // something went wrong with the request, try another prefix
-            logger.error(e.getMessage(), e);
-            if (provider.sets.length == 0) {
-                logger.info(message[2] + prefixes.get(pIndex)
-                        + " records from endpoint " + provider.oaiUrl);
-
+            if (done) {
+                // the request completed successfully
+                return true;
             } else {
-                logger.info(message[2] + prefixes.get(pIndex)
-                        + " records in set " + provider.sets[sIndex]
-                        + " from endpoint " + provider.oaiUrl);
+                i++;
+                if (i> provider.maxRetryCount) {
+                    // do not retry any more, try another prefix instead
+                    return false;
+                }
+                // retry the request once more
             }
-            return false;
         }
-        return true;
     }
 
     /**
