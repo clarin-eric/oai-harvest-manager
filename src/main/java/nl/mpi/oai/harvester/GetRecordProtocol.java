@@ -34,7 +34,7 @@ import org.xml.sax.SAXException;
  */
 public class GetRecordProtocol implements Protocol {
 
-    private static final Logger logger = Logger.getLogger(Provider.class);
+    private static final Logger logger = Logger.getLogger(GetRecordProtocol.class);
 
     // response to the ListRecords command
     private GetRecord response;
@@ -85,8 +85,8 @@ public class GetRecordProtocol implements Protocol {
                     | TransformerException e) {
                 // something went wrong with the request
                 logger.error(e.getMessage(), e);
-                logger.info("Cannot " + prefix + " record with id " + identifier
-                        + "from endpoint " + provider.oaiUrl);
+                logger.info("Cannot get " + prefix + " record with id " + identifier
+                        + " from endpoint " + provider.oaiUrl);
                 if (i == provider.maxRetryCount) {
                     // try another record
                     return false;
