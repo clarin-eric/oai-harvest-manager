@@ -94,6 +94,7 @@ class Worker implements Runnable {
         
         if (!p.request() || !p.processResponse()) {
             // something went wrong, no prefixes for this endpoint
+            // kj: no matching prefixes for the endpoint;
             return false;
         } else {
             // received response 
@@ -113,8 +114,20 @@ class Worker implements Runnable {
             }
         }
         // endpoint responded with at least one prefix
+
+        /* kj: do not return true if there were no matches
+
+           If there are no matches, return false. In this case the
+           action sequence needs to be terminated. A succeeding action
+           sequence could then provide a match.
+
+         */
         
-        return true;
+        if (prefixes.size() == 0) {
+            return false;
+        } else {
+            return true;
+        }
     }
     
     /**
