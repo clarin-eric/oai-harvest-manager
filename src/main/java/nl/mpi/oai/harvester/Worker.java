@@ -189,7 +189,7 @@ class Worker implements Runnable {
 
         Protocol p = new ListRecordsProtocol(provider, prefixes);
 
-        Integer id = 0;
+        Integer n = 0;
 
         for (; ; ) {
             if (!p.request() || !p.processResponse()) {
@@ -203,13 +203,16 @@ class Worker implements Runnable {
 
                     Document response = p.getResponse();
 
-                    // generate id: sequence number
+                    // generate id: sequence number, provide leading zeros
+
+                    String id;
+                    id = String.format("%07d", n);
 
                     Metadata records = new Metadata(
-                            provider.getName() + "-" + id.toString(),
+                            provider.getName() + "-" + id,
                             response, this.provider, true, true);
 
-                    id++;
+                    n++;
 
                     // apply the action sequence to the record
                     actions.runActions(records);
@@ -274,8 +277,7 @@ class Worker implements Runnable {
         logger.info("Processing provider " + provider);
         for (ActionSequence actionSequence : actionSequences) {
 
-            // Break the inner loop after the first successful completion
-            // of an action sequence.
+            // break after an action sequence has completed successfully
 
             switch (scenario) {
 
