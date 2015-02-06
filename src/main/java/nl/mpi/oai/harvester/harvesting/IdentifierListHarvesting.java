@@ -17,7 +17,7 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-package nl.mpi.oai.harvester;
+package nl.mpi.oai.harvester.harvesting;
 
 import ORG.oclc.oai.harvester2.verb.HarvesterVerb;
 import ORG.oclc.oai.harvester2.verb.ListIdentifiers;
@@ -27,6 +27,8 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
+
+import nl.mpi.oai.harvester.metadata.Provider;
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
@@ -46,10 +48,10 @@ import org.xml.sax.SAXException;
  * 
  * @author Kees Jan van de Looij (MPI-PL)
  */
-public class ListIdentifiersProtocol extends ListProtocol implements Protocol {
+public class IdentifierListHarvesting extends ListHarvesting implements Harvesting {
     
     private static final Logger logger = Logger.getLogger(
-            ListIdentifiersProtocol.class);
+            IdentifierListHarvesting.class);
     
     /**
      * Associate endpoint and prefixes with the protocol
@@ -57,7 +59,7 @@ public class ListIdentifiersProtocol extends ListProtocol implements Protocol {
      * @param provider the endpoint to address in the request
      * @param prefixes the prefixes returned by the endpoint 
      */
-    ListIdentifiersProtocol (Provider provider, List<String> prefixes){
+    public IdentifierListHarvesting(Provider provider, List<String> prefixes){
         super(provider, prefixes);
         // supply messages specific to requesting identifiers
         message [0] = "Requesting more identifiers of records with prefix ";
@@ -202,7 +204,7 @@ public class ListIdentifiersProtocol extends ListProtocol implements Protocol {
         tIndex++;
         // get the record for the identifier and prefix
         
-        GetRecordProtocol p = new GetRecordProtocol (provider, pair.prefix, 
+        RecordHarvesting p = new RecordHarvesting(provider, pair.prefix,
                 pair.identifier);
         
         if (p.request()) {

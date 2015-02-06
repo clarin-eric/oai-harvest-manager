@@ -20,6 +20,8 @@ package nl.mpi.oai.harvester;
 
 import java.io.File;
 import java.io.IOException;
+
+import nl.mpi.oai.harvester.control.Util;
 import org.junit.Rule;
 import org.junit.Test;
 import static org.junit.Assert.*;

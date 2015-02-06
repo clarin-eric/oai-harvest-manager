@@ -16,7 +16,7 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-package nl.mpi.oai.harvester;
+package nl.mpi.oai.harvester.control;
 
 import java.io.IOException;
 import javax.xml.parsers.DocumentBuilder;
@@ -24,8 +24,9 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathFactory;
+
+import nl.mpi.oai.harvester.metadata.NSContext;
 import org.w3c.dom.Document;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import java.net.URL;
 import java.net.HttpURLConnection;

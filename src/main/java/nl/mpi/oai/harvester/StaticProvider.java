@@ -29,6 +29,10 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
+
+import nl.mpi.oai.harvester.metadata.Metadata;
+import nl.mpi.oai.harvester.metadata.MetadataFormat;
+import nl.mpi.oai.harvester.metadata.Provider;
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -110,13 +114,13 @@ public class StaticProvider extends Provider {
     }
 
     @Override
-    protected String getProviderName() {
+    public  String getProviderName() {
 	Document doc = getSubtree("/os:Repository/os:Identify");
 	return parseProviderName(doc);
     }
 
     @Override
-    List<String> getPrefixes(MetadataFormat format) {
+    public List<String> getPrefixes(MetadataFormat format) {
 	try {
 	    Document doc = getSubtree("/os:Repository/os:ListMetadataFormats");
 	    return parsePrefixes(providerContent, format);

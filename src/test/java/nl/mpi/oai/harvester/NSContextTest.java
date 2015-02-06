@@ -19,6 +19,8 @@
 package nl.mpi.oai.harvester;
 
 import java.util.Iterator;
+
+import nl.mpi.oai.harvester.metadata.NSContext;
 import org.junit.Test;
 import static org.junit.Assert.*;
 

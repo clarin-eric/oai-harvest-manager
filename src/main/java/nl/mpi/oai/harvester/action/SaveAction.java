@@ -16,7 +16,7 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-package nl.mpi.oai.harvester;
+package nl.mpi.oai.harvester.action;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -28,6 +28,10 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+
+import nl.mpi.oai.harvester.metadata.Metadata;
+import nl.mpi.oai.harvester.control.OutputDirectory;
+import nl.mpi.oai.harvester.control.Util;
 import org.apache.log4j.Logger;
 
 /**

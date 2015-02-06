@@ -16,12 +16,14 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-package nl.mpi.oai.harvester;
+package nl.mpi.oai.harvester.harvesting;
 
 import org.w3c.dom.Document;
 
 /**
  * Abstract view on the OAI protocol <br><br>
+ *
+ * kj: the general idea of harvesting, include static harvesting
  *
  * A class implementing this interface is intended to provide those primitives
  * of the OAI protocol that play a rol in a particular scenario of harvesting. <br><br>
@@ -47,7 +49,7 @@ import org.w3c.dom.Document;
  *
  * @author Kees Jan van de Looij (MPI-PL)
  */
-interface Protocol {
+public interface Harvesting {
     
     /**
      * Request to the endpoint<br><br>

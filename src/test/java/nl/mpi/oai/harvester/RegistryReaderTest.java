@@ -21,6 +21,8 @@ package nl.mpi.oai.harvester;
 import java.util.List;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+
+import nl.mpi.oai.harvester.control.RegistryReader;
 import org.w3c.dom.NodeList;
 import org.junit.Test;
 import static org.junit.Assert.*;

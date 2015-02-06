@@ -16,11 +16,19 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-package nl.mpi.oai.harvester;
+package nl.mpi.oai.harvester.control;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Semaphore;
+
+import nl.mpi.oai.harvester.action.ActionSequence;
+import nl.mpi.oai.harvester.harvesting.Harvesting;
+import nl.mpi.oai.harvester.harvesting.IdentifierListHarvesting;
+import nl.mpi.oai.harvester.harvesting.PrefixHarvesting;
+import nl.mpi.oai.harvester.harvesting.RecordListHarvesting;
+import nl.mpi.oai.harvester.metadata.Metadata;
+import nl.mpi.oai.harvester.metadata.Provider;
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 
@@ -85,16 +93,15 @@ class Worker implements Runnable {
      *
      * The list created is based on the format specified in the configuration.
      *
-     * @param actions kj: add documentation
+     * @param actions kj: doc
      * @return false on parser or input output error
      */
     private boolean getPrefixesScenario(ActionSequence actions){
         
-        Protocol p = new ListPrefixesProtocol (provider, actions);
+        Harvesting p = new PrefixHarvesting(provider, actions);
         
         if (!p.request() || !p.processResponse()) {
-            // something went wrong, no prefixes for this endpoint
-            // kj: no matching prefixes for the endpoint;
+            // something went wrong, or no prefixes for this endpoint
             return false;
         } else {
             // received response 
@@ -144,7 +151,7 @@ class Worker implements Runnable {
             return false;
         }
         
-        Protocol p = new ListIdentifiersProtocol(provider, prefixes);
+        Harvesting p = new IdentifierListHarvesting(provider, prefixes);
 
         for (;;) {// request a list of identifier and prefix pairs
             if (!p.request() || !p.processResponse()) {
@@ -159,7 +166,7 @@ class Worker implements Runnable {
             }
         }
 
-        // the list of pairs, get the records they point to
+        // the list of pairs, get the records they point to kj: doc
         for (;;) {
             if (p.fullyParsed()) {
                 break;
@@ -200,7 +207,7 @@ class Worker implements Runnable {
         /* Create the protocol elements for this scenario. Pass the indication
            whether or not to save the response to the protocol. */
 
-        Protocol p = new ListRecordsProtocol(provider, prefixes);
+        Harvesting p = new RecordListHarvesting(provider, prefixes);
 
         Integer n = 0;
 
@@ -289,6 +296,18 @@ class Worker implements Runnable {
 
         logger.info("Processing provider " + provider);
         for (ActionSequence actionSequence : actionSequences) {
+
+            /* kj: static providers pass here
+
+               Currently, non-static scenarios will be applied to them. Tying
+               the harvesting modes to them, at configuration level fixes this.
+
+               Also, for static harvesting both the list scenarios are one and
+               the same. Chosen to implement static harvesting in the form of the
+               list identifiers scenario. Move the scenario to the provider level
+               and force 'ListIdentifiers' while configuring.
+
+             */
 
             // break after an action sequence has completed successfully
 

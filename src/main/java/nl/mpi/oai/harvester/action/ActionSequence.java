@@ -16,10 +16,13 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-package nl.mpi.oai.harvester;
+package nl.mpi.oai.harvester.action;
 
 import java.util.*;
 
+import nl.mpi.oai.harvester.metadata.Metadata;
+import nl.mpi.oai.harvester.metadata.MetadataFormat;
+import nl.mpi.oai.harvester.control.ResourcePool;
 import org.apache.log4j.Logger;
 
 /**
@@ -27,7 +30,7 @@ import org.apache.log4j.Logger;
  * comprising an input format specification followed by a list of actions
  * to be performed sequentially.
  * 
- * @author Lari Lampen (MPI-PL)
+ * @author Lari Lampen (MPI-PL), Kees Jan van de Looij (MPI-PL)
  */
 public class ActionSequence {
     private static final Logger logger = Logger.getLogger(ActionSequence.class);
@@ -148,7 +151,7 @@ public class ActionSequence {
 				} else {
 					// no envelope
 					if (metadata.isList()) {
-						// do not save list that is not in envelope
+						// do not save a list that is not in an envelope
 					} else {
 						// unpacked metadata, save it
 						performAction = true;
