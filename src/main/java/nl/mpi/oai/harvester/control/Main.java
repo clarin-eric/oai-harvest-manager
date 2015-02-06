@@ -16,11 +16,14 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-package nl.mpi.oai.harvester;
+package nl.mpi.oai.harvester.control;
 
 import java.io.IOException;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPathExpressionException;
+
+import nl.mpi.oai.harvester.control.Worker;
+import nl.mpi.oai.harvester.metadata.Provider;
 import org.apache.log4j.Logger;
 import org.xml.sax.SAXException;
 

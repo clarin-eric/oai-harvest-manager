@@ -16,9 +16,10 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-package nl.mpi.oai.harvester;
+package nl.mpi.oai.harvester.harvesting;
 
 import ORG.oclc.oai.harvester2.verb.HarvesterVerb;
+import nl.mpi.oai.harvester.metadata.Provider;
 import org.apache.log4j.Logger;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
@@ -26,7 +27,6 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -49,9 +49,9 @@ import java.util.List;
  *
  * @author keeloo
  */
-public abstract class ListProtocol implements Protocol {
+public abstract class ListHarvesting extends AbstractListHarvesting implements Harvesting {
 
-    private static final Logger logger = Logger.getLogger(ListProtocol.class);
+    private static final Logger logger = Logger.getLogger(ListHarvesting.class);
     
     // messages specific to extending classes
     final static String[] message = new String [3];
@@ -68,108 +68,9 @@ public abstract class ListProtocol implements Protocol {
     
     // a list of nodes kept between the processing and parsing of a response
     NodeList nodeList;
-    // pointer to next element that needs to be checked 
-    int nIndex;
-    
+
     // the resumption token send by the previous request
     private String resumptionToken;
-    
-    /* A list to store identifier and prefix pairs in. A pair can be in the
-       list only once, thus ensuring the extending classes to return every record
-       identified exactly once.
-     */
-    protected final SortedArrayList <IdPrefix> targets;
-    // pointer to next element to be parsed and returned
-    protected int tIndex;
-    
-    /**
-     * ArrayList sorted according a to the relation defined on the elements
-     * 
-     * @param <T> the type of the elements in the list
-     */
-    protected class SortedArrayList<T> extends ArrayList<T> {
-        
-        /**
-         * Insert an element into the list if and only if it is not already 
-         * included in the list.
-         * 
-         * @param element he element to be inserted
-         * @return true if the element was inserted, false otherwise
-         */
-        boolean checkAndInsertSorted(T element) {
-
-            int i = 0, j;
-
-            Comparable<T> c = (Comparable<T>) element;
-            for (; ; ) {
-                if (i == this.size()) {
-                    // element not included yet
-                    this.add(element);
-                    return true;
-                }
-                j = c.compareTo(this.get(i));
-                if (j == 0) {
-                    // found a match, element already in the list
-                    return false;
-                } else {
-                    if (j > 0) {
-                        // there could still be a match, continue
-                        i++;
-                    } else {
-                        // there will not be a match, insert
-                        this.add(i, element);
-                        return true;
-                    }
-                }
-            }
-
-        }
-    }
-    
-    /**
-     * Pair of identifier and prefix. By the compareTo method the class defines
-     * an ordering relation on the pairs.
-     */
-    protected class IdPrefix implements Comparable {
-
-        // constituents of the idPrefix
-        protected final String identifier;
-        protected final String prefix;
-
-        IdPrefix (String identifier, String prefix){
-            this.identifier = identifier;
-            this.prefix     = prefix;
-        }
-
-        /**
-         * Compare the IdPrefix object to another one
-         *
-         * @param object another idPrefix to be compared to the idPrefix object
-         * @return  -1 if the parameters is smaller than the object
-         *           0 if equal
-         *           1 if greater
-         */
-        @Override
-        public int compareTo(Object object) {
-
-            if (!(object instanceof IdPrefix)) {
-                // we do not expect this
-                return 0;
-            } else {
-                IdPrefix idPrefix = (IdPrefix) object;
-
-                int cIdentifier = this.identifier.compareTo(idPrefix.identifier);
-                int cPrefix = this.prefix.compareTo(idPrefix.prefix);
-
-                if (cIdentifier != 0) {
-                    return cIdentifier;
-                } else {
-                    // identifiers are equal, prefixes will not be
-                    return cPrefix;
-                }
-            }
-        }
-    }
     
     /**
      * Associate endpoint data and desired prefix
@@ -177,15 +78,15 @@ public abstract class ListProtocol implements Protocol {
      * @param provider the endpoint to address in the request
      * @param prefixes the prefixes returned by the endpoint 
      */
-    ListProtocol(Provider provider, List<String> prefixes){
+    ListHarvesting(Provider provider, List<String> prefixes){
+        super(provider);
         this.provider   = provider;
         this.prefixes   = prefixes;
         pIndex          = 0;
         response        = null;
-        nIndex          = 0;
         resumptionToken = null;
         tIndex          = 0;
-        targets         = new SortedArrayList <> ();
+
     }
     
     /**
@@ -233,8 +134,8 @@ public abstract class ListProtocol implements Protocol {
             NoSuchFieldException;
 
     // response to the request
-    HarvesterVerb response; 
-    
+    HarvesterVerb response;
+
     /**
      * Request data from endpoint. Iterate over the prefixes supplied, for each 
      * prefix iterate over the sets indicated in the provider object. If all 

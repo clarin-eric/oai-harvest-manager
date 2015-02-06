@@ -17,7 +17,7 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-package nl.mpi.oai.harvester;
+package nl.mpi.oai.harvester.harvesting;
 
 import ORG.oclc.oai.harvester2.verb.ListMetadataFormats;
 import java.io.IOException;
@@ -25,6 +25,10 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
+
+import nl.mpi.oai.harvester.action.ActionSequence;
+import nl.mpi.oai.harvester.metadata.Provider;
+import nl.mpi.oai.harvester.control.Util;
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -37,11 +41,13 @@ import org.xml.sax.SAXException;
  * Clients to this class can request prefixes supported by a metadata record by
  * supplying endpoint data and an action. <br><br>
  *
+ * kj: could extend an abstract harvesting class
+ *
  * @author Kees Jan van de Looij (MPI-PL)
  */
-public class ListPrefixesProtocol implements Protocol {
+public class PrefixHarvesting implements Harvesting {
     
-    private static final Logger logger = Logger.getLogger(ListPrefixesProtocol.class);
+    private static final Logger logger = Logger.getLogger(PrefixHarvesting.class);
 
     // response to the ListRecords command
     private ListMetadataFormats response;
@@ -64,7 +70,7 @@ public class ListPrefixesProtocol implements Protocol {
      * @param provider  the endpoint to address in the request
      * @param actions   specify the format requested
      */
-    public ListPrefixesProtocol(Provider provider, ActionSequence actions) {
+    public PrefixHarvesting(Provider provider, ActionSequence actions) {
         this.response = null;
         this.provider = provider;
         this.actions  = actions;

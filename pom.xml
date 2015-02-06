@@ -124,7 +124,7 @@
             <manifest>
               <classpathPrefix>lib/</classpathPrefix>
               <addClasspath>true</addClasspath>
-              <mainClass>nl.mpi.oai.harvester.Main</mainClass>
+              <mainClass>nl.mpi.oai.harvester.control.Main</mainClass>
             </manifest>
             <manifestEntries>
               <Built-By>${user.name}</Built-By>

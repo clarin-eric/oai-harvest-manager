@@ -16,7 +16,7 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-package nl.mpi.oai.harvester;
+package nl.mpi.oai.harvester.metadata;
 
 /**
  * This class represents a schema or family of schemata for metadata, as

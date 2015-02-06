@@ -17,12 +17,15 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-package nl.mpi.oai.harvester;
+package nl.mpi.oai.harvester.harvesting;
 
 import ORG.oclc.oai.harvester2.verb.GetRecord;
 import java.io.IOException;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
+
+import nl.mpi.oai.harvester.metadata.Metadata;
+import nl.mpi.oai.harvester.metadata.Provider;
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
@@ -30,11 +33,13 @@ import org.xml.sax.SAXException;
 /**
  * This class provides the GetRecord verb and the parsing specific to it <br><br>
  *
+ * kj: could extend an abstract harvesting class
+ *
  * @author Kees Jan van de Looij (MPI-PL)
  */
-public class GetRecordProtocol implements Protocol {
+public class RecordHarvesting implements Harvesting {
 
-    private static final Logger logger = Logger.getLogger(Provider.class);
+    private static final Logger logger = Logger.getLogger(RecordHarvesting.class);
 
     // response to the ListRecords command
     private GetRecord response;
@@ -58,7 +63,7 @@ public class GetRecordProtocol implements Protocol {
      * @param prefix      the prefix of the desired record
      * @param identifier  the identifier of the record
      */
-    public GetRecordProtocol (Provider provider, String prefix, String identifier){
+    public RecordHarvesting(Provider provider, String prefix, String identifier){
         this.response    = null;
         this.provider    = provider;
         this.prefix      = prefix;
@@ -85,8 +90,8 @@ public class GetRecordProtocol implements Protocol {
                     | TransformerException e) {
                 // something went wrong with the request
                 logger.error(e.getMessage(), e);
-                logger.info("Cannot " + prefix + " record with id " + identifier
-                        + "from endpoint " + provider.oaiUrl);
+                logger.info("Cannot get " + prefix + " record with id " + identifier
+                        + " from endpoint " + provider.oaiUrl);
                 if (i == provider.maxRetryCount) {
                     // try another record
                     return false;

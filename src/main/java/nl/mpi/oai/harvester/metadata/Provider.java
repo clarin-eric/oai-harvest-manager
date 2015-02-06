@@ -16,7 +16,7 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-package nl.mpi.oai.harvester;
+package nl.mpi.oai.harvester.metadata;
 
 import ORG.oclc.oai.harvester2.verb.GetRecord;
 import javax.xml.xpath.XPath;
@@ -26,6 +26,8 @@ import javax.xml.xpath.XPathFactory;
 import ORG.oclc.oai.harvester2.verb.Identify;
 import ORG.oclc.oai.harvester2.verb.ListIdentifiers;
 import ORG.oclc.oai.harvester2.verb.ListMetadataFormats;
+import nl.mpi.oai.harvester.control.Util;
+import nl.mpi.oai.harvester.action.ActionSequence;
 import org.w3c.dom.NodeList;
 
 import java.io.IOException;
@@ -54,25 +56,25 @@ public class Provider {
     private static final Logger logger = Logger.getLogger(Provider.class);
 
     /** Name of the provider. */
-	String name;
+	public String name;
 
     /** Address through which the OAI repository is accessed. */
-    final String oaiUrl;
+    public final String oaiUrl;
 
     /** List of OAI sets to harvest (optional). */
-	String[] sets = null;
+	public String[] sets = null;
 
     /** Maximum number of retries to use when a connection fails. */
-	int maxRetryCount = 0;
+	public int maxRetryCount = 0;
 
     /**
      * We make so many XPath queries we could just as well keep one XPath
      * object to hand for them.
      */
-    final XPath xpath;
+    public final XPath xpath;
     
     // document builder factory
-    final DocumentBuilder db;
+    public final DocumentBuilder db;
 
     /**
      * Provider constructor
@@ -157,7 +159,7 @@ public class Provider {
      * Get the name declared by an OAI-PMH provider by making an
      * Identify request. Returns null if no name can be found.
      */
-	String getProviderName() {
+	public String getProviderName() {
 	try {
 	    Identify ident = new Identify(oaiUrl);
 	    return parseProviderName(ident.getDocument());
@@ -174,7 +176,7 @@ public class Provider {
      * @param response DOM tree representing an Identify response.
      * @return name, or null if one cannot be ascertained
      */
-    String parseProviderName(Document response) {
+    public String parseProviderName(Document response) {
 	try {
 	    NodeList name = (NodeList)xpath.evaluate("//*[local-name() = 'repositoryName']/text()",
 		    response, XPathConstants.NODESET);
@@ -246,7 +248,7 @@ public class Provider {
      * @param mdPrefix metadata prefix
      * @return the record, or null if it cannot be fetched
      */
-	Metadata getRecord(String id, String mdPrefix) {
+	public Metadata getRecord(String id, String mdPrefix) {
 	for (int i=0; i<maxRetryCount; i++) {
 	    try {
 		GetRecord gr = new GetRecord(oaiUrl, id, mdPrefix);
@@ -269,7 +271,7 @@ public class Provider {
      * @param mdPrefix metadata prefix
      * @return list of identifiers, which may be empty
      */
-	List<String> getIdentifiers(String mdPrefix) throws IOException,
+	public List<String> getIdentifiers(String mdPrefix) throws IOException,
 	    ParserConfigurationException, SAXException, TransformerException,
 	    XPathExpressionException, NoSuchFieldException {
 	List<String> ids = new ArrayList<>();
@@ -294,7 +296,7 @@ public class Provider {
      * @param set OAI-PMH set, or null for none
      * @param ids existing list to which identifiers will be added
      */
-    private void addIdentifiers(String mdPrefix, String set, List<String> ids)
+    public void addIdentifiers(String mdPrefix, String set, List<String> ids)
 	    throws IOException, ParserConfigurationException, SAXException,
 	    TransformerException, XPathExpressionException,
 	    NoSuchFieldException {
@@ -316,7 +318,7 @@ public class Provider {
      * @param doc DOM tree representing OAI-PMH response
      * @param ids a list, already created, that identifiers will be added to
      */
-    void addIdentifiers(Document doc, List<String> ids) throws
+    public void addIdentifiers(Document doc, List<String> ids) throws
 	    XPathExpressionException {
 	NodeList nl = (NodeList)xpath.evaluate("//*[starts-with(local-name(),'identifier') and parent::*[local-name()='header' and not(@status='deleted')]]/text()",
 		doc, XPathConstants.NODESET);
@@ -333,7 +335,7 @@ public class Provider {
      * Get the list of Metadata prefixes corresponding to the specified format
      * that are supported by this provider.
      */
-    List<String> getPrefixes(MetadataFormat format) {
+    public List<String> getPrefixes(MetadataFormat format) {
 	logger.debug("Checking format " + format);
 	try {
 	    ListMetadataFormats lmf = new ListMetadataFormats(oaiUrl);
@@ -353,7 +355,7 @@ public class Provider {
      * @param format desired Metadata format
      * @return list of prefixes
      */
-    List<String> parsePrefixes(Document doc, MetadataFormat format)
+	public List<String> parsePrefixes(Document doc, MetadataFormat format)
 	    throws XPathExpressionException {
 	List<String> prefs = new ArrayList<>();
 

@@ -17,7 +17,7 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-package nl.mpi.oai.harvester;
+package nl.mpi.oai.harvester.harvesting;
 
 import ORG.oclc.oai.harvester2.verb.HarvesterVerb;
 import ORG.oclc.oai.harvester2.verb.ListRecords;
@@ -27,6 +27,9 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
+
+import nl.mpi.oai.harvester.metadata.Metadata;
+import nl.mpi.oai.harvester.metadata.Provider;
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -47,9 +50,9 @@ import org.xml.sax.SAXException;
  *
  * @author Kees Jan van de Looij (MPI-PL)
  */
-public class ListRecordsProtocol extends ListProtocol implements Protocol {
+public class RecordListHarvesting extends ListHarvesting implements Harvesting {
     
-    private static final Logger logger = Logger.getLogger(ListRecordsProtocol.class);
+    private static final Logger logger = Logger.getLogger(RecordListHarvesting.class);
 
 
     /**
@@ -58,7 +61,7 @@ public class ListRecordsProtocol extends ListProtocol implements Protocol {
      * @param provider the endpoint to address in the request
      * @param prefixes the prefixes returned by the endpoint 
      */
-    public ListRecordsProtocol (Provider provider, List<String> prefixes) {
+    public RecordListHarvesting(Provider provider, List<String> prefixes) {
         super (provider, prefixes);
         // supply messages specific to requesting records
         message [0] = "Requesting more records with prefix ";

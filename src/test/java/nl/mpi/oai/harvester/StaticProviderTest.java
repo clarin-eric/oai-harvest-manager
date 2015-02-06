@@ -22,6 +22,9 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+
+import nl.mpi.oai.harvester.metadata.Metadata;
+import nl.mpi.oai.harvester.metadata.MetadataFormat;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.w3c.dom.Document;

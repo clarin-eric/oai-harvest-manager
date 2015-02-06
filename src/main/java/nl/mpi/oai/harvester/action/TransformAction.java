@@ -16,7 +16,7 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-package nl.mpi.oai.harvester;
+package nl.mpi.oai.harvester.action;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -28,6 +28,8 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamSource;
+
+import nl.mpi.oai.harvester.metadata.Metadata;
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 

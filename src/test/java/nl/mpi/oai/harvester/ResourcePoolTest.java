@@ -18,6 +18,7 @@
 
 package nl.mpi.oai.harvester;
 
+import nl.mpi.oai.harvester.control.ResourcePool;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
