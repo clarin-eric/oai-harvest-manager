@@ -21,7 +21,7 @@
     <!-- Default timeout (for connection and reading) for a single
     http request in seconds. If unspecified, will be INFINITE.  -->
     <timeout>60</timeout>
-    
+
     <!-- File used to log harvesting times. -->
     <state-file>state.xml</state-file>
 
@@ -82,6 +82,9 @@
       <exclude url="http://www.meertens.knaw.nl/oai/oai_server.php?verb=Identify"/>
       <exclude url="http://talkbank.org/cgi-bin/oai/XMLFile/TalkBank/oai.pl?verb=Identify"/>
     </import>
+    <!-- temporary added the CMU endpoints -->
+    <provider url="http://alpha.talkbank.org:8089/talkbank-oai/provider"/>
+    <provider url="http://alpha.talkbank.org:8089/childes-oai/provider"/>
     <!-- temporary added to overcome a bug in the harvester that only allows one endpoint per center -->
     <provider url="http://repository.sfb833.uni-tuebingen.de:8080/oaiprovider/?verb=Identify"/>
     <!-- Virtual Collection Registry -->
