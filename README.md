@@ -68,7 +68,7 @@ file. The configuration file is composed of four sections:
 - *settings*, where options such as directory paths and timeouts are
    set;
 - *directories*, where output paths are defined;
-- *actions*, the most complex section, where sequences of actions can
+- *actions*, the most complex section, where actionSequences of actions can
    be defined for different metadata formats (actions include semantic
    transformations and saving intermediary or final results into a
    file); and
@@ -101,7 +101,7 @@ to store in a single directory and the file system used.
 
 ## Configuring Actions
 
-Multiple action sequences can be defined in this section. Each
+Multiple action actionSequences can be defined in this section. Each
 sequence corresponds to a format specification followed by a number of
 sequential actions.
 
@@ -219,7 +219,7 @@ treated like different providers).
 
 For efficiency, thread pools containing prepared action objects are
 constructed for each action referenced in the actions section of the
-configuration file. Different action sequences share the same pool for
+configuration file. Different action actionSequences share the same pool for
 the exact same action. Consider the following example, assuming that
 the configuration parameter *resource-pool-size* is set to 5:
 
@@ -238,7 +238,7 @@ the configuration parameter *resource-pool-size* is set to 5:
 
 In this case, a total of 15 objects are pooled for the save actions: 5
 for saving to the directory ```orig``` in a pool shared by the two
-action sequences, and 5 each for the directories ```cmdi``` and
+action actionSequences, and 5 each for the directories ```cmdi``` and
 ```olac```, only used by one action sequence each.
 
 The pooling implementation is particularly important when

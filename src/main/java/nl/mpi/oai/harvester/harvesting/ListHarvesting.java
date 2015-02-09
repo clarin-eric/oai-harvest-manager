@@ -69,7 +69,7 @@ public abstract class ListHarvesting extends AbstractListHarvesting implements H
     // a list of nodes kept between the processing and parsing of a response
     NodeList nodeList;
 
-    // the resumption token send by the previous request
+    // the resumption token send by the previous request kj: move to abstract class
     private String resumptionToken;
     
     /**
@@ -133,7 +133,7 @@ public abstract class ListHarvesting extends AbstractListHarvesting implements H
     abstract String getToken (HarvesterVerb response) throws TransformerException, 
             NoSuchFieldException;
 
-    // response to the request
+    // response to the request, kj: move to abstract harvesting
     HarvesterVerb response;
 
     /**

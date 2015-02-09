@@ -2,17 +2,13 @@ package nl.mpi.oai.harvester.harvesting;
 
 import ORG.oclc.oai.harvester2.verb.Identify;
 import nl.mpi.oai.harvester.action.ActionSequence;
-import nl.mpi.oai.harvester.control.Util;
 import nl.mpi.oai.harvester.metadata.StaticProvider;
 import org.apache.log4j.Logger;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
-import javax.xml.xpath.XPathExpressionException;
 import java.io.IOException;
 
 /**
@@ -21,7 +17,7 @@ import java.io.IOException;
  *
  * @author Kees Jan van de Looij (MPI-PL)
  */
-public class StaticPrefixHarvesting extends PrefixHarvesting implements Harvesting{
+class StaticPrefixHarvesting extends PrefixHarvesting implements Harvesting{
 
     private static final Logger logger = Logger.getLogger(StaticPrefixHarvesting.class);
 
@@ -43,7 +39,7 @@ public class StaticPrefixHarvesting extends PrefixHarvesting implements Harvesti
      * @param provider  the endpoint to address in the request
      * @param actions   specify the actions
      */
-    public StaticPrefixHarvesting(StaticProvider provider, ActionSequence actions) {
+    private StaticPrefixHarvesting(StaticProvider provider, ActionSequence actions) {
         super(provider, actions);
         this.provider = provider;
         this.actions  = actions;
