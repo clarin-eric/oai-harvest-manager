@@ -1,55 +1,63 @@
+/*
+ * Copyright (C) 2015, The Max Planck Institute for
+ * Psycholinguistics.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, version 3 of the License.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
+ *
+ * A copy of the GNU General Public License is included in the file
+ * LICENSE-gpl-3.0.txt. If that file is missing, see
+ * <http://www.gnu.org/licenses/>.
+ */
+
 package nl.mpi.oai.harvester.harvesting;
 
-import ORG.oclc.oai.harvester2.verb.HarvesterVerb;
 import nl.mpi.oai.harvester.metadata.Provider;
+import org.apache.log4j.Logger;
 import org.w3c.dom.NodeList;
 
+import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Objects;
 
 /**
- * kj: List related harvesting, doc
+ * <br>Harvesting depending on a list<br><br>
+ *
+ * This class gathers the fields and methods needed for harvesting that are
+ * typical for harvesting depending on a list. You could, for example think
+ * of harvesting using a list of identifiers or a list of records.
  *
  * @author Kees Jan van de Looij (MPI-PL)
  */
-abstract public class AbstractListHarvesting implements Harvesting {
+abstract public class AbstractListHarvesting extends AbstractHarvesting {
 
-    // information on where to send the request
-    private final Provider provider;
-    // pointer to current set
-    private int sIndex;
-
-    // Response to the request
-    HarvesterVerb response;
-
-    // a list of nodes kept between the processing and parsing of a response
+    /** <br> a list of nodes kept between the processing and parsing of a
+        response */
     NodeList nodeList;
-    /**  pointer to next element that needs to be checked */
-    public int nIndex;
+    /** <br> pointer to next element that needs to be checked */
+    int nIndex;
 
-    /* The resumption token send by the previous request. Please note that not
-       every mode of harvesting needs it.
-
-       kj: consider moving to an abstract harvesting class
-     */
-    private String resumptionToken;
-
-    /** A list to store identifier and prefix pairs in. A pair can be in the
-       list only once, thus ensuring the extending classes to return every record
-       identified exactly once.
-    */
-    protected final SortedArrayList  targets;
+    /** <br> A list to store identifier and prefix pairs in. A pair can be in the
+        list only once, thus ensuring the extending classes to return every record
+        identified exactly once. */
+    final SortedArrayList  targets;
     /** pointer to next element to be parsed and returned */
-    protected int tIndex;
+    int tIndex;
 
     /**
-     * kj: doc
+     * <br> Associate list based harvesting with a provider
      * 
-     * @param provider 
+     * @param provider the provider
      */
-    protected AbstractListHarvesting(Provider provider) {
+    AbstractListHarvesting(Provider provider) {
 
-        this.provider   = provider;
+        super(provider);
         nIndex          = 0;
         resumptionToken = null;
         tIndex          = 0;
@@ -57,14 +65,14 @@ abstract public class AbstractListHarvesting implements Harvesting {
     }
     
     /**
-     * ArrayList sorted according a to the relation defined on the elements
+     * <br> ArrayList sorted according a to the relation defined on the elements
      *
      * Note: since the class does not depend on the outer class, consider it
      *       static.
      */
-    protected static class SortedArrayList extends ArrayList<IdPrefix> {
+    static class SortedArrayList extends ArrayList<IdPrefix> {
         
-        /**
+        /*
          * Since this class implements the Serializable interface, declare an
          * explicit version number. An serialized object in this class will
          * carry the identification to ensure that an instance of receiving is
@@ -74,13 +82,13 @@ abstract public class AbstractListHarvesting implements Harvesting {
         private static final long serialVersionUID = 1L;
 
         /**
-         * Insert an element into the list if and only if it is not already
+         * <br> Insert an element into the list if and only if it is not already
          * included in the list.
          *
          * @param element he element to be inserted
          * @return true if the element was inserted, false otherwise
          */
-        public boolean checkAndInsertSorted(IdPrefix element) {
+        boolean checkAndInsertSorted(IdPrefix element) {
 
             int i = 0, j;
 
@@ -110,30 +118,39 @@ abstract public class AbstractListHarvesting implements Harvesting {
     }
 
     /**
-     * Pair of identifier and prefix. By the compareTo method the class defines
-     * an ordering relation on the pairs.
+     * <br> Pair of identifier and prefix. By the compareTo method the class
+     * defines an ordering relation on the pairs.
      * 
      * Note: like SortedArrayList class, this class can be static.
+     *
+     * Note: because of the ordering relation defined, the class implements
+     *       an equals method next to the compareTo method.
      */
-    public static class IdPrefix implements Comparable<IdPrefix> {
+    static class IdPrefix implements Comparable<IdPrefix> {
 
-        /** constituents of the idPrefix */
-        public final String identifier;
-        /** kj: doc */
-        public final String prefix;
+        /** constituents of the idPrefix, the identifier part of the pair*/
+        final String identifier;
+        /** Prefix part of the pair */
+        final String prefix;
 
         /**
-         * kj: doc
-         * @param identifier
-         * @param prefix 
+         * <br>Create an identifier and prefix pair
+         *
+         * @param identifier the identifier part of the pair
+         * @param prefix the prefix part of the pair
          */
-        public IdPrefix (String identifier, String prefix){
+        IdPrefix (String identifier, String prefix){
             this.identifier = identifier;
             this.prefix     = prefix;
         }
 
         /**
-         * Compare the IdPrefix object to another one
+         * <br>Compare the IdPrefix object to another one<br><br>
+         *
+         * Please note that this method defines an ordering relation that is
+         * not compatible with the object.equals method. Because the class
+         * would inherit that equals method, an alternative equals method is
+         * guaranteeing a correct interpretation of the ordering.
          *
          * @param idPrefix another idPrefix to be compared to the idPrefix object
          * @return -1 if the parameters is smaller than the object <br>
@@ -141,31 +158,6 @@ abstract public class AbstractListHarvesting implements Harvesting {
          *          1 if greater
          */
         @Override
-        /* kj: Intellij analyses
-
-           'Not annotated parameter overrides @NotNull parameter'
-        
-           Netbeans analyses:
-        
-           Class defines compareTo(...) and uses Object.equals()
-        
-           This class defines a compareTo(...) method but inherits its equals() 
-           method from java.lang.Object. Generally, the value of compareTo should
-           return zero if and only if equals returns true. If this is violated, 
-           weird and unpredictable failures will occur in classes such as 
-           PriorityQueue. In Java 5 the PriorityQueue.remove method uses the 
-           compareTo method, while in Java 6 it uses the equals method.
-        
-           From the JavaDoc for the compareTo method in the Comparable interface:
-         
-           It is strongly recommended, but not strictly required that 
-           (x.compareTo(y)==0) == (x.equals(y)). Generally speaking, any class
-           that implements the Comparable interface and violates this condition
-           should clearly indicate this fact. The recommended language is "Note:
-           this class has a natural ordering that is inconsistent with equals."
-        
-           kj: equals method has been implemented, extract annotation from the above remark
-         */
         public int compareTo(IdPrefix idPrefix) {
 
             int cIdentifier = this.identifier.compareTo(idPrefix.identifier);
@@ -180,23 +172,36 @@ abstract public class AbstractListHarvesting implements Harvesting {
         }
 
         /**
-         * kj: why this is needed, refer to the explanation above
+         * <br> Check if the IdPrefix object is equal to another object<br><br>
          *
-         * @param object kj: doc
-         * @return
+         * @param object another IdPrefix object
+         * @return true if the other object is of type IdPrefix type, and both
+         *         objects are equal, false otherwise.
          */
         @Override
         public boolean equals(Object object) {
 
-            if (object instanceof IdPrefix) {
+            if (!(object instanceof IdPrefix)) {
+
+                /* Since the class is its own superclass, the comparison cannot
+                   be passed on to another class. Consider the objects to be
+                   unequal.
+                 */
+                return false;
+            } else {
+                // the parameter object is also of type IdPrefix, cast it
                 IdPrefix idPrefix = (IdPrefix) object;
+                // invoke string comparison on the components
                 if (!this.identifier.equals(idPrefix.identifier)) {
+                    /* The identifiers differ. This means that the pairs are
+                       are not the same.
+                     */
                     return false;
                 } else {
+                    // equality depends on the prefixes to be equal
                     return this.prefix.equals(idPrefix.prefix);
                 }
             }
-            return super.equals(object);
         }
 
         /** 

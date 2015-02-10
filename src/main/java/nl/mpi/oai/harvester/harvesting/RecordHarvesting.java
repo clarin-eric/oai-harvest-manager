@@ -33,23 +33,15 @@ import org.xml.sax.SAXException;
 /**
  * This class provides the GetRecord verb and the parsing specific to it <br><br>
  *
- * kj: could extend an abstract harvesting class
- *
  * @author Kees Jan van de Looij (MPI-PL)
  */
-public class RecordHarvesting implements Harvesting {
+public class RecordHarvesting extends AbstractHarvesting {
 
     private static final Logger logger = Logger.getLogger(RecordHarvesting.class);
 
-    // response to the ListRecords command
-    private GetRecord response;
-
-    // information on where to send the request
-    private final Provider provider;
-    
     // prefix of requested metadata records
     private final String prefix;
-    
+
     // record identifier
     private final String identifier;
 
@@ -64,8 +56,8 @@ public class RecordHarvesting implements Harvesting {
      * @param identifier  the identifier of the record
      */
     public RecordHarvesting(Provider provider, String prefix, String identifier){
+        super(provider);
         this.response    = null;
-        this.provider    = provider;
         this.prefix      = prefix;
         this.identifier  = identifier;
         this.parsed      = false;

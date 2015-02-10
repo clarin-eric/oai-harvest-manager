@@ -30,7 +30,7 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * List oriented application of the protocol <br><br>
+ * <br>List oriented application of the protocol <br><br>
  *
  * This class provides a sorted list of elements. This list can be used by
  * extending classes to store characteristics of metadata returned by an
@@ -49,29 +49,13 @@ import java.util.List;
  *
  * @author keeloo
  */
-public abstract class ListHarvesting extends AbstractListHarvesting implements Harvesting {
+public abstract class ListHarvesting extends AbstractListHarvesting {
 
     private static final Logger logger = Logger.getLogger(ListHarvesting.class);
     
-    // messages specific to extending classes
+    /** Messages specific to extending classes */
     final static String[] message = new String [3];
 
-    // information on where to send the request
-    protected final Provider provider;
-    // pointer to current set
-    private int sIndex;
-    
-    // metadata prefixes that need to be requested
-    protected final List<String> prefixes;
-    // pointer to current prefix
-    protected int pIndex;
-    
-    // a list of nodes kept between the processing and parsing of a response
-    NodeList nodeList;
-
-    // the resumption token send by the previous request kj: move to abstract class
-    private String resumptionToken;
-    
     /**
      * Associate endpoint data and desired prefix
      * 
@@ -80,13 +64,11 @@ public abstract class ListHarvesting extends AbstractListHarvesting implements H
      */
     ListHarvesting(Provider provider, List<String> prefixes){
         super(provider);
-        this.provider   = provider;
         this.prefixes   = prefixes;
         pIndex          = 0;
         response        = null;
         resumptionToken = null;
         tIndex          = 0;
-
     }
     
     /**
@@ -132,9 +114,6 @@ public abstract class ListHarvesting extends AbstractListHarvesting implements H
      */
     abstract String getToken (HarvesterVerb response) throws TransformerException, 
             NoSuchFieldException;
-
-    // response to the request, kj: move to abstract harvesting
-    HarvesterVerb response;
 
     /**
      * Request data from endpoint. Iterate over the prefixes supplied, for each 

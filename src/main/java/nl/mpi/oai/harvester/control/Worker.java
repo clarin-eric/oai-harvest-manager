@@ -39,7 +39,7 @@ import org.w3c.dom.Document;
  * get the records individually. Alternatively, in a second scenario, it gets
  * multiple records per OAI request directly.
  *
- * @author Lari Lampen (MPI-PL)
+ * @author Lari Lampen (MPI-PL), extensions by Kees Jan van de Looij (MPI-PL).
  */
 class Worker implements Runnable {
     
@@ -89,11 +89,11 @@ class Worker implements Runnable {
     }
 
     /**
-     * Get the list of metadata prefixes supported by the endpoint <br><br>
+     * <br>Get the list of metadata prefixes supported by the endpoint<br><br>
      *
      * The list created is based on the format specified in the configuration.
      *
-     * @param actions kj: doc
+     * @param actions sequence of actions that should be performed
      * @return false on parser or input output error
      */
     private boolean getPrefixesScenario(ActionSequence actions){
@@ -120,16 +120,11 @@ class Worker implements Runnable {
                 }
             }
         }
-        // endpoint responded with at least one prefix
 
-        /* kj: do not return true if there were no matches
-
-           If there are no matches, return false. In this case the
+        /* If there are no matches, return false. In this case the
            action sequence needs to be terminated. A succeeding action
            sequence could then provide a match.
-
          */
-        
         if (prefixes.size() == 0) {
             return false;
         } else {
@@ -166,7 +161,9 @@ class Worker implements Runnable {
             }
         }
 
-        // the list of pairs, get the records they point to kj: doc
+        /* Iterate over the list of pairs, for each pair, get the record it
+           identifies.
+         */
         for (;;) {
             if (p.fullyParsed()) {
                 break;
@@ -185,8 +182,8 @@ class Worker implements Runnable {
     }
     
     /**
-     * Get metadata records directly, that is without first obtaining a list of
-     * identifiers pointing to them <br><br>
+     * <br>Get metadata records directly, that is without first obtaining a list
+     * of identifiers pointing to them <br><br>
      *
      * In this scenario, a save action specified before a strip action is
      * interpreted to apply the the response of the GetRecords verb. Also, the
@@ -272,7 +269,7 @@ class Worker implements Runnable {
     }
     
     /**
-     * Start this worker thread <br><br>
+     * <br>Start this worker thread <br><br>
      *
      * This method will block for as long as necessary until a thread can be
      * started without violating the limit.

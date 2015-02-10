@@ -21,9 +21,7 @@ package nl.mpi.oai.harvester.harvesting;
 import org.w3c.dom.Document;
 
 /**
- * Abstract view on the OAI protocol <br><br>
- *
- * kj: the general idea of harvesting, include static harvesting
+ * <br>Abstract view on the OAI protocol<br><br>
  *
  * A class implementing this interface is intended to provide those primitives
  * of the OAI protocol that play a rol in a particular scenario of harvesting. <br><br>
@@ -42,10 +40,12 @@ import org.w3c.dom.Document;
  *
  * Different implementations of this interface allow for different scenarios
  * to be implemented uniformly. Also, a particular scenario could be implemented
- * by similar but different classes implementing this interface. Finally, an
- * implementation can target different parts of the protocol. Next to classes
- * that implement record harvesting, there could be a class supplying the
- * primitives for obtaining prefixes. <br><br>
+ * by similar but different classes implementing this interface.<br><br>
+ *
+ * Finally, please note that an implementation can target different parts of the
+ * protocol. Next to classes that implement record harvesting, there could be a
+ * class supplying the primitives for obtaining prefixes or a class implementing
+ * static harvesting.
  *
  * @author Kees Jan van de Looij (MPI-PL)
  */

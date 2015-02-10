@@ -41,11 +41,9 @@ import org.xml.sax.SAXException;
  * Clients to this class can request prefixes supported by a metadata record by
  * supplying endpoint data and an action. <br><br>
  *
- * kj: could extend an abstract harvesting class
- *
  * @author Kees Jan van de Looij (MPI-PL)
  */
-public class PrefixHarvesting implements Harvesting {
+public class PrefixHarvesting extends AbstractHarvesting {
     
     private static final Logger logger = Logger.getLogger(PrefixHarvesting.class);
 
@@ -71,6 +69,7 @@ public class PrefixHarvesting implements Harvesting {
      * @param actions   specify the format requested
      */
     public PrefixHarvesting(Provider provider, ActionSequence actions) {
+        super (provider);
         this.response = null;
         this.provider = provider;
         this.actions  = actions;
