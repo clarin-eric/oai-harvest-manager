@@ -23,8 +23,9 @@ import org.w3c.dom.Document;
 /**
  * <br>Abstract view on the OAI protocol<br><br>
  *
- * A class implementing this interface is intended to provide those primitives
- * of the OAI protocol that play a rol in a particular scenario of harvesting. <br><br>
+ * A class (indirectly) implementing this interface is intended to provide
+ * those primitives of the OAI protocol that play a rol in a particular scenario
+ * of harvesting. <br><br>
  *
  * If the scenario, for example, would be to harvest metadata records using
  * the ListRecords verb, the request method implements a request based on this

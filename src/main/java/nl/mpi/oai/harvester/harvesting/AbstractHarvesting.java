@@ -35,7 +35,7 @@ public abstract class AbstractHarvesting implements Harvesting {
     /** pointer to current set */
     int sIndex;
 
-    /** Metadata prefixes that need to be requested */
+    /** Metadata prefixes that need to be matched */
     List<String> prefixes;
     /** Pointer to current prefix */
     int pIndex;

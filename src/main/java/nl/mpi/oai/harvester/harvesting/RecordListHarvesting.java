@@ -37,7 +37,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 /**
- * This class extends the ListProtocol class by providing ListRecord type of
+ * <br>This class extends the ListProtocol class by providing ListRecord type of
  * verbs. One with two parameters, for resuming, one with five for the initial
  * request. Since it implements specific verbs, it is also specific in processing
  * and parsing of the responses. <br><br>
@@ -62,6 +62,7 @@ public class RecordListHarvesting extends ListHarvesting implements Harvesting {
      * @param prefixes the prefixes returned by the endpoint 
      */
     public RecordListHarvesting(Provider provider, List<String> prefixes) {
+
         super (provider, prefixes);
         // supply messages specific to requesting records
         message [0] = "Requesting more records with prefix ";

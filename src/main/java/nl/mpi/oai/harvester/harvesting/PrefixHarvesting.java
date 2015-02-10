@@ -19,6 +19,7 @@
 
 package nl.mpi.oai.harvester.harvesting;
 
+import ORG.oclc.oai.harvester2.verb.HarvesterVerb;
 import ORG.oclc.oai.harvester2.verb.ListMetadataFormats;
 import java.io.IOException;
 import javax.xml.parsers.ParserConfigurationException;
@@ -36,7 +37,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 /**
- * Prefix targeted application of the protocol <br><br>
+ * <br>Prefix targeted application of the protocol <br><br>
  *
  * Clients to this class can request prefixes supported by a metadata record by
  * supplying endpoint data and an action. <br><br>
@@ -45,22 +46,26 @@ import org.xml.sax.SAXException;
  */
 public class PrefixHarvesting extends AbstractHarvesting {
     
-    private static final Logger logger = Logger.getLogger(PrefixHarvesting.class);
+    private static final Logger logger = Logger.getLogger(
+            PrefixHarvesting.class);
 
-    // response to the ListRecords command
-    private ListMetadataFormats response;
+    /* Response to the ListMetadataFormats verb. In this class the response
+       will belong to the ListMetadataFormats class. To allow for extending
+       classes with a different response, we choose a more abstract field.
+     */
+    HarvesterVerb response;
     
-    // list response elements to be parsed and made available
-    private NodeList nodeList;
+    /** list response elements to be parsed and made available */
+    NodeList nodeList;
     
-    // information on where to send the request
-    private final Provider provider;
+    /** Information on where to send the request */
+    final Provider provider;
     
-    // transformations to be performed on the metadata records
-    private final ActionSequence actions;
+    /** Transformations to be performed on the metadata records */
+    final ActionSequence actions;
     
-    // pointer to next element to be parsed and returned 
-    private int index;
+    /** Pointer to next element to be parsed and returned */
+    int index;
 
     /**
      * Create object, associate provider data and desired prefix 
@@ -73,6 +78,7 @@ public class PrefixHarvesting extends AbstractHarvesting {
         this.response = null;
         this.provider = provider;
         this.actions  = actions;
+        // get ready for parsing
         this.index    = 0;
     }
 
@@ -84,10 +90,8 @@ public class PrefixHarvesting extends AbstractHarvesting {
     @Override
     public boolean request() {
         
-        // need to restart parsing
-        index = 0;
-
         logger.debug("Requesting prefixes for format " + actions.getInputFormat());
+
         try {
             // try to get a response from the provider's endpoint
             response = new ListMetadataFormats(provider.oaiUrl);
@@ -104,7 +108,7 @@ public class PrefixHarvesting extends AbstractHarvesting {
             return false;
         }
 
-        // return the response, a list of prefixes
+        // response contains a list of prefixes
         return true;
     }
 
@@ -129,13 +133,23 @@ public class PrefixHarvesting extends AbstractHarvesting {
     @Override
     public boolean processResponse() {
 
+        ListMetadataFormats formats;
+
+        // check if the response is in the expected ListMetadataFormats class
+        if (! (response instanceof ListMetadataFormats)){
+            logger.error ("Protocol error");
+            return false;
+        } else {
+            formats = (ListMetadataFormats) response;
+        }
+
         try {
             /* Try to create a list of prefixes from the response. On failure,
                stop the work on the endpoint.
              */
             nodeList = (NodeList) provider.xpath.evaluate(
                     "//*[local-name() = 'metadataFormat']",
-                    response.getDocument(), XPathConstants.NODESET);
+                    formats.getDocument(), XPathConstants.NODESET);
         } catch (XPathExpressionException e) {
             logger.error(e.getMessage(), e);
             logger.info("Cannot create list of prefixes for format " +
@@ -149,6 +163,9 @@ public class PrefixHarvesting extends AbstractHarvesting {
             logger.warn("The ListMetadataFormats response from the "
                     + this.provider.oaiUrl + "endpoint looks empty");
         }
+
+        // nodeList contains a list of prefixes, het ready for parsing
+        index = 0;
 
         return true;
     }

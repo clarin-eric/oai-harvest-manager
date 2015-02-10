@@ -46,7 +46,7 @@ abstract public class AbstractListHarvesting extends AbstractHarvesting {
     /** <br> A list to store identifier and prefix pairs in. A pair can be in the
         list only once, thus ensuring the extending classes to return every record
         identified exactly once. */
-    final SortedArrayList  targets;
+    final SortedArrayList targets;
     /** pointer to next element to be parsed and returned */
     int tIndex;
 
@@ -145,7 +145,7 @@ abstract public class AbstractListHarvesting extends AbstractHarvesting {
         }
 
         /**
-         * <br>Compare the IdPrefix object to another one<br><br>
+         * <br> Compare the IdPrefix object to another one<br><br>
          *
          * Please note that this method defines an ordering relation that is
          * not compatible with the object.equals method. Because the class
@@ -205,7 +205,7 @@ abstract public class AbstractListHarvesting extends AbstractHarvesting {
         }
 
         /** 
-         * Generate hashcode for storing and manipulating class instances
+         * <br> Generate hashcode for storing and manipulating class instances
          *
          * @return the hashcode
          */

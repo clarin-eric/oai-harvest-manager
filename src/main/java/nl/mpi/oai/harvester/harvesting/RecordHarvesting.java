@@ -31,7 +31,7 @@ import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
 /**
- * This class provides the GetRecord verb and the parsing specific to it <br><br>
+ * <br>This class provides the GetRecord verb and the parsing specific to it
  *
  * @author Kees Jan van de Looij (MPI-PL)
  */
