@@ -25,7 +25,6 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import nl.mpi.oai.harvester.metadata.MetadataFormat;
-import nl.mpi.oai.harvester.metadata.Provider;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.w3c.dom.Document;

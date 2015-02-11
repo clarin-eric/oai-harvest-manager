@@ -28,7 +28,7 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 
 import nl.mpi.oai.harvester.action.ActionSequence;
-import nl.mpi.oai.harvester.metadata.Provider;
+import nl.mpi.oai.harvester.Provider;
 import nl.mpi.oai.harvester.control.Util;
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;

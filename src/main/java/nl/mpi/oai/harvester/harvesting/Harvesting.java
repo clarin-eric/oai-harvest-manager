@@ -53,21 +53,21 @@ import org.w3c.dom.Document;
 public interface Harvesting {
     
     /**
-     * Request to the endpoint<br><br>
+     * <br> Request to the endpoint
      *
      * @return  false if there was an error, true otherwise
      */
     public boolean request ();
 
     /**
-     * Get the response from the endpoint<br><br>
+     * <br> Get the response from the endpoint<br><br>
      *
      * @return null if an error occurred, otherwise the response to the request
      */
     public Document getResponse ();
     
     /**
-     * Find out if it would be sensible to make another request<br><br>
+     * <br> Find out if it would be sensible to make another request<br><br>
      * 
      * @return  true if it might be, false otherwise
      */
@@ -75,14 +75,14 @@ public interface Harvesting {
     
 
     /**
-     * Create a list of metadata elements from the response<br><br>
+     * <br> Create a list of metadata elements from the response<br><br>
      * 
      * @return  false if there was an error, true otherwise
      */
     public boolean processResponse ();
     
     /**
-     * Return the next metadata element in the list<br><br>
+     * <br> Return the next metadata element in the list<br><br>
      * 
      * Could be parsedProcessed due to adapt to ListIdentifiers
      * 
@@ -91,7 +91,7 @@ public interface Harvesting {
     public Object parseResponse ();
     
     /**
-     * Check if the list is fully parsed<br><br>
+     * <br> Check if the list is fully parsed<br><br>
      * 
      * @return  true if it is, false otherwise
      */

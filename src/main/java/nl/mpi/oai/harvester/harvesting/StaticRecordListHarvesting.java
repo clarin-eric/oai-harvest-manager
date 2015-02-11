@@ -1,7 +1,8 @@
 package nl.mpi.oai.harvester.harvesting;
 
+import nl.mpi.oai.harvester.StaticProvider;
 import nl.mpi.oai.harvester.metadata.Metadata;
-import nl.mpi.oai.harvester.metadata.Provider;
+import nl.mpi.oai.harvester.Provider;
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
@@ -11,30 +12,41 @@ import javax.xml.xpath.XPathExpressionException;
 import java.util.List;
 
 /**
- * kj: doc
+ * <br> Get metadata records <br><br>
+ *
+ * Applying static harvesting means that before getting the prefixes, the
+ * static contents needs to be fetched from the provider. In fact, in static
+ * harvesting, this is all that will be available. Because the records are
+ * in this document also, it needs to be passed to other applications of the
+ * protocol.<br><br> kj: remove redundancy
+ *
+ * Note: this class defines what is different from fetching prefixes from a non
+ * static endpoint.
+ *
+ * kj: there are no sets in static harvesting
  *
  * @author Kees Jan van de Looij (MPI-PL)
  */
-class StaticRecordListHarvesting extends AbstractListHarvesting {
+public class StaticRecordListHarvesting extends AbstractListHarvesting {
 
     private static final Logger logger = Logger.getLogger(
             AbstractListHarvesting.class);
 
     /**
-     * <br> kj: doc
+     * <br> Associate provider data and desired prefixes
      *
-     * @param provider
-     * @param prefixes
+     * @param provider the provider
+     * @param prefixes the prefixes obtained from the static content
      */
-    StaticRecordListHarvesting(Provider provider, List<String> prefixes) {
+    public StaticRecordListHarvesting(Provider provider, List<String> prefixes) {
         super(provider);
         this.prefixes = prefixes;
     }
 
     /**
-     * <br> kj: doc
+     * <br> Verify if the static content is in place
      *
-     * @return true
+     * @return false if there was an error, true otherwise
      */
     @Override
     public boolean request() {
@@ -53,8 +65,20 @@ class StaticRecordListHarvesting extends AbstractListHarvesting {
             }
         }
 
-        // provider content is in place
-        return true;
+        if (! (provider instanceof StaticProvider)){
+            logger.error("Protocol error"); return false;
+        } else {
+            StaticProvider p = (StaticProvider) provider;
+            response = p.getResponse();
+
+            if (response == null){
+                // a response should be there
+                return false;
+            } else {
+                // the original response is there
+                return true;
+            }
+        }
     }
 
     /**
@@ -64,7 +88,22 @@ class StaticRecordListHarvesting extends AbstractListHarvesting {
      */
     @Override
     public Document getResponse() {
-        return response.getDocument();
+
+        if (! (provider instanceof StaticProvider)){
+            logger.error("Protocol error"); return null;
+        } else {
+            StaticProvider p = (StaticProvider) provider;
+            response = p.getResponse();
+
+            if (response == null){
+                // content should be there
+                return null;
+            } else {
+                // static content is in place
+
+                return response.getDocument();
+            }
+        }
     }
 
     /**
@@ -89,9 +128,10 @@ class StaticRecordListHarvesting extends AbstractListHarvesting {
     public boolean processResponse() {
 
         // check for protocol errors
+
         if (response == null){
-            logger.error("Protocol error");
-            return false;
+            // response should be there
+            logger.error("Protocol error"); return false;
         }
 
         if (prefixes.size() == 0){

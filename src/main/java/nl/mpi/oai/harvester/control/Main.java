@@ -22,8 +22,7 @@ import java.io.IOException;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPathExpressionException;
 
-import nl.mpi.oai.harvester.control.Worker;
-import nl.mpi.oai.harvester.metadata.Provider;
+import nl.mpi.oai.harvester.Provider;
 import org.apache.log4j.Logger;
 import org.xml.sax.SAXException;
 

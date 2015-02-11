@@ -18,6 +18,7 @@
 
 package nl.mpi.oai.harvester.metadata;
 
+import nl.mpi.oai.harvester.Provider;
 import org.w3c.dom.Document;
 
 /**
@@ -54,14 +55,17 @@ public class Metadata {
      * Create a metadata record.
      * 
      * @param id unique identifier
-     * @param doc XML tree corresponding to this record
-     * @param origin endpoint information
+     * @param doc XML tree representing the metadata
+     * @param endpoint endpoint information
+     * @param isInEnvelope, true if metadata is contained in OAI envelope,
+     *                      false otherwise
+     * @param isList true if metadata is a list of records, false otherwise
      */
-    public Metadata(String id, Document doc, Provider origin,
+    public Metadata(String id, Document doc, Provider endpoint,
                     boolean isInEnvelope, boolean isList) {
         this.id           = id;
         this.doc          = doc;
-        this.origin       = origin;
+        this.origin       = endpoint;
         this.isInEnvelope = isInEnvelope;
         this.isList       = isList;
     }

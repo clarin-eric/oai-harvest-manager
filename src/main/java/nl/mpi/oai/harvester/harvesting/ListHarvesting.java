@@ -19,9 +19,8 @@
 package nl.mpi.oai.harvester.harvesting;
 
 import ORG.oclc.oai.harvester2.verb.HarvesterVerb;
-import nl.mpi.oai.harvester.metadata.Provider;
+import nl.mpi.oai.harvester.Provider;
 import org.apache.log4j.Logger;
-import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;

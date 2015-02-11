@@ -16,7 +16,7 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-package nl.mpi.oai.harvester.metadata;
+package nl.mpi.oai.harvester;
 
 import ORG.oclc.oai.harvester2.verb.GetRecord;
 import javax.xml.xpath.XPath;
@@ -28,6 +28,10 @@ import ORG.oclc.oai.harvester2.verb.ListIdentifiers;
 import ORG.oclc.oai.harvester2.verb.ListMetadataFormats;
 import nl.mpi.oai.harvester.control.Util;
 import nl.mpi.oai.harvester.action.ActionSequence;
+import nl.mpi.oai.harvester.harvesting.Harvesting;
+import nl.mpi.oai.harvester.metadata.Metadata;
+import nl.mpi.oai.harvester.metadata.MetadataFormat;
+import nl.mpi.oai.harvester.metadata.NSContext;
 import org.w3c.dom.NodeList;
 
 import java.io.IOException;
@@ -66,6 +70,12 @@ public class Provider {
 
     /** Maximum number of retries to use when a connection fails. */
 	public int maxRetryCount = 0;
+
+	/** Type of prefix harvesting that applies to the provider */
+	public Harvesting prefixHarvesting;
+
+	/** Type of list harvesting that applies to the provider */
+	public Harvesting metadataHarvesting;
 
     /**
      * We make so many XPath queries we could just as well keep one XPath

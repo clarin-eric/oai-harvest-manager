@@ -22,13 +22,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Semaphore;
 
+import nl.mpi.oai.harvester.StaticProvider;
 import nl.mpi.oai.harvester.action.ActionSequence;
-import nl.mpi.oai.harvester.harvesting.Harvesting;
-import nl.mpi.oai.harvester.harvesting.IdentifierListHarvesting;
-import nl.mpi.oai.harvester.harvesting.PrefixHarvesting;
-import nl.mpi.oai.harvester.harvesting.RecordListHarvesting;
+import nl.mpi.oai.harvester.harvesting.*;
 import nl.mpi.oai.harvester.metadata.Metadata;
-import nl.mpi.oai.harvester.metadata.Provider;
+import nl.mpi.oai.harvester.Provider;
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 
@@ -96,16 +94,15 @@ class Worker implements Runnable {
      * @param actions sequence of actions that should be performed
      * @return false on parser or input output error
      */
-    private boolean getPrefixesScenario(ActionSequence actions){
+    private boolean prefixesScenario(Provider provider, ActionSequence actions){
         
-        Harvesting p = new PrefixHarvesting(provider, actions);
-        
-        if (!p.request() || !p.processResponse()) {
+        if (!provider.prefixHarvesting.request() ||
+            !provider.prefixHarvesting.processResponse()) {
             // something went wrong, or no prefixes for this endpoint
             return false;
         } else {
             // received response 
-            if (p.fullyParsed()) {
+            if (provider.prefixHarvesting.fullyParsed()) {
                 // no matches
                 logger.info("No matching prefixes for format "
                         + actions.getInputFormat());
@@ -113,8 +110,8 @@ class Worker implements Runnable {
             }
             // get the prefixes
             for (;;){
-                if (p.fullyParsed()) break;
-                String prefix = (String) p.parseResponse();
+                if (provider.prefixHarvesting.fullyParsed()) break;
+                String prefix = (String) provider.prefixHarvesting.parseResponse();
                 if (prefix != null) {
                     prefixes.add(prefix);
                 }
@@ -141,20 +138,14 @@ class Worker implements Runnable {
      */
     private boolean listIdentifiersScenario(ActionSequence actions) {
 
-        // get the prefixes 
-        if (!getPrefixesScenario(actions)) {
-            return false;
-        }
-        
-        Harvesting p = new IdentifierListHarvesting(provider, prefixes);
-
         for (;;) {// request a list of identifier and prefix pairs
-            if (!p.request() || !p.processResponse()) {
+            if (!provider.metadataHarvesting.request() ||
+                !provider.metadataHarvesting.processResponse()) {
                 // something went wrong, no identifiers for this endpoint
                 return false;
             } else {
                 // received response 
-                if (!p.requestMore()) {
+                if (!provider.metadataHarvesting.requestMore()) {
                     // finished requesting
                     break;
                 }
@@ -165,10 +156,11 @@ class Worker implements Runnable {
            identifies.
          */
         for (;;) {
-            if (p.fullyParsed()) {
+            if (provider.metadataHarvesting.fullyParsed()) {
                 break;
             }
-            Metadata record = (Metadata) p.parseResponse();
+            Metadata record = (Metadata)
+                    provider.metadataHarvesting.parseResponse();
 
             if (record == null) {
                 // something went wrong, skip the record
@@ -196,20 +188,11 @@ class Worker implements Runnable {
      */
     private boolean listRecordsScenario(ActionSequence actions) {
 
-        // check if the endpoint supports the formats specified with the actions
-        if (!getPrefixesScenario(actions)) {
-            return false;
-        }
-
-        /* Create the protocol elements for this scenario. Pass the indication
-           whether or not to save the response to the protocol. */
-
-        Harvesting p = new RecordListHarvesting(provider, prefixes);
-
         Integer n = 0;
 
         for (; ; ) {
-            if (!p.request() || !p.processResponse()) {
+            if (!provider.metadataHarvesting.request() ||
+                !provider.metadataHarvesting.processResponse()) {
                 // something went wrong with the request, try the next prefix
                 break;
             } else {
@@ -218,7 +201,7 @@ class Worker implements Runnable {
                     /* Saving the response in the list record scenario means:
                        to save a list of records enclosed in an envelope. */
 
-                    Document response = p.getResponse();
+                    Document response = provider.metadataHarvesting.getResponse();
 
                     // generate id: sequence number, provide leading zeros
 
@@ -242,10 +225,11 @@ class Worker implements Runnable {
                        request is no strip action is demanded.
                      */
                     for (; ; ) {
-                        if (p.fullyParsed()) {
+                        if (provider.metadataHarvesting.fullyParsed()) {
                             break;
                         }
-                        Metadata record = (Metadata) p.parseResponse();
+                        Metadata record = (Metadata)
+                                provider.metadataHarvesting.parseResponse();
 
                         if (record == null) {
                         /* Something went wrong or the record has already been
@@ -259,7 +243,7 @@ class Worker implements Runnable {
                 }
 
                 // check if in principle another response would be available
-                if (!p.requestMore()) {
+                if (!provider.metadataHarvesting.requestMore()) {
                     break;
                 }
             }
@@ -292,52 +276,42 @@ class Worker implements Runnable {
         boolean done = false;
 
         logger.info("Processing provider " + provider);
-        for (ActionSequence actionSequence : actionSequences) {
+        for (final ActionSequence actionSequence : actionSequences) {
 
-            /* kj: static providers pass here
+            // check if harvesting of static content applies
 
-               Currently, non-static scenarios will be applied to them. Tying
-               the harvesting modes to them, at configuration level fixes this.
+            if (provider instanceof StaticProvider) {
+                provider.prefixHarvesting = new StaticPrefixHarvesting (
+                        (StaticProvider)provider, actionSequence);
 
-               Also, for static harvesting both the list scenarios are one and
-               the same. Chosen to implement static harvesting in the form of the
-               list identifiers scenario. Move the scenario to the provider level
-               and force 'ListIdentifiers' while configuring.
+            } else {
+                provider.prefixHarvesting= new PrefixHarvesting(provider,
+                        actionSequence);
+            }
 
-             */
+            // check if the endpoint supports the formats specified with the actions
 
-            // break after an action sequence has completed successfully
+            if (prefixesScenario(provider, actionSequence)) {
 
-            switch (scenario) {
-
-                // note: the GetPrefixes scenario cannot be invoked by configuration
-
-                case "ListIdentifiers": {
-                    if (listIdentifiersScenario(actionSequence)) {
-                        // success: done
-                        done = true;
-                        break;
-                    }
+                if (provider instanceof StaticProvider){
+                    provider.metadataHarvesting = new StaticRecordListHarvesting(
+                            (StaticProvider) provider, prefixes);
+                } else {
+                    provider.metadataHarvesting = new RecordListHarvesting(
+                            provider, prefixes);
                 }
 
-                case "ListRecords": {
-                    if (listRecordsScenario(actionSequence)) {
-                        // success: done
-                        done = true;
-                        break;
-                    }
-                }
-
-                default: {
-                    if (listRecordsScenario(actionSequence)) {
-                        // success: done
-                        done = true;
-                        break;
-                    }
+                if (scenario.equals("ListIdentifiers")) {
+                    done = listIdentifiersScenario(actionSequence);
+                } else {
+                    done = listRecordsScenario(actionSequence);
                 }
             }
 
+            // break after an action sequence has completed successfully
+
             if (done) break;
+
         }
         logger.info("Processing finished for " + provider);
         semaphore.release();

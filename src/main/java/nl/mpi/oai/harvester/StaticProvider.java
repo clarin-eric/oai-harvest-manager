@@ -18,6 +18,7 @@
 
 package nl.mpi.oai.harvester;
 
+import ORG.oclc.oai.harvester2.verb.HarvesterVerb;
 import ORG.oclc.oai.harvester2.verb.Identify;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -32,7 +33,6 @@ import javax.xml.xpath.XPathExpressionException;
 
 import nl.mpi.oai.harvester.metadata.Metadata;
 import nl.mpi.oai.harvester.metadata.MetadataFormat;
-import nl.mpi.oai.harvester.metadata.Provider;
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -58,6 +58,9 @@ public class StaticProvider extends Provider {
      */
     private Document providerContent = null;
 
+	/** static content response from the provider */
+	private HarvesterVerb response;
+
     /**
      * Create new static provider with the specified URL.
      * 
@@ -76,6 +79,24 @@ public class StaticProvider extends Provider {
 	super(null, 1);
 	providerContent = doc;
     }
+
+	/**
+	 * Set the response
+	 *
+	 * @param response the provider response
+	 */
+	public void setResponse(HarvesterVerb response){
+		this.response = response;
+	}
+
+	/**
+	 * Get the response
+	 *
+	 * @return the provider response
+	 */
+	public HarvesterVerb getResponse () {
+		return this.response;
+	}
 
     @Override
     public void init() {

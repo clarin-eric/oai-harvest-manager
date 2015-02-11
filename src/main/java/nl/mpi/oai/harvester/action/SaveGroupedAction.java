@@ -20,7 +20,7 @@ package nl.mpi.oai.harvester.action;
 
 import nl.mpi.oai.harvester.metadata.Metadata;
 import nl.mpi.oai.harvester.control.OutputDirectory;
-import nl.mpi.oai.harvester.metadata.Provider;
+import nl.mpi.oai.harvester.Provider;
 import nl.mpi.oai.harvester.control.Util;
 
 import java.io.IOException;

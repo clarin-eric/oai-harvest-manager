@@ -1,8 +1,8 @@
 package nl.mpi.oai.harvester.harvesting;
 
 import ORG.oclc.oai.harvester2.verb.Identify;
+import nl.mpi.oai.harvester.StaticProvider;
 import nl.mpi.oai.harvester.action.ActionSequence;
-import nl.mpi.oai.harvester.metadata.Provider;
 import org.apache.log4j.Logger;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
@@ -14,39 +14,37 @@ import javax.xml.xpath.XPathExpressionException;
 import java.io.IOException;
 
 /**
- * <br>Request prefixes<br><br>
+ * <br> Get prefixes<br><br>
  *
- * Applying static harvesting  means that before getting the prefixes, the
+ * Applying static harvesting means that before getting the prefixes, the
  * static contents needs to be fetched from the provider. In fact, in static
  * harvesting, this is all that will be available. Because the records are
  * in this document also, it needs to be passed to other applications of the
  * protocol.<br><br>
  *
- * Note: this class defines what is different from parsing prefixes from a non
+ * Note: this class defines what is different from fetching prefixes from a non
  * static endpoint.
  *
  * @author Kees Jan van de Looij (MPI-PL)
  */
-class StaticPrefixHarvesting extends PrefixHarvesting {
+public class StaticPrefixHarvesting extends PrefixHarvesting {
 
     private static final Logger logger = Logger.getLogger(
             StaticPrefixHarvesting.class);
 
     /**
-     * Create object, associate provider data and desired prefix
+     * Associate provider data and actions
      *
-     * @param provider  the endpoint to address in the request
-     * @param actions   specify the actions
+     * @param provider the endpoint to address in the request
+     * @param actions the actions
      *
      */
-    public StaticPrefixHarvesting(Provider provider, ActionSequence actions) {
+    public StaticPrefixHarvesting(StaticProvider provider, ActionSequence actions) {
         super(provider, actions);
-        // start parsing
-        this.index = 0;
     }
 
     /**
-     * kj: doc
+     * <br> Try to obtain the static content
      *
      * @return false if there was an error, true otherwise
      */
@@ -56,48 +54,69 @@ class StaticPrefixHarvesting extends PrefixHarvesting {
         // need to restart parsing
         index = 0;
 
-        logger.debug("Requesting prefixes for format " + actions.getInputFormat());
+        logger.debug("Finding prefixes for format " + actions.getInputFormat());
 
-        try {
-            response = new Identify(provider.getOaiUrl());
-        } catch ( IOException
-                | ParserConfigurationException
-                | SAXException
-                | TransformerException e) {
-            logger.error(e.getMessage(), e);
-            logger.info("Cannot get an identification from the static " +
-                    provider.getOaiUrl() + " endpoint");
-            return false;
+        if (!(provider instanceof StaticProvider)) {
+            // provider is not a provider of static content
+            logger.error("Protocol error"); return false;
+        } else {
+            StaticProvider p = (StaticProvider) provider;
+
+            if (p.getResponse() != null) {
+                // already fetched the static content
+                return true;
+            } else {
+                // content not yet there, try to fetch it
+                try {
+                    response = new Identify(provider.getOaiUrl());
+                } catch (IOException
+                        | ParserConfigurationException
+                        | SAXException
+                        | TransformerException e) {
+                    logger.error(e.getMessage(), e);
+                    logger.info("Cannot get an identification from the static " +
+                            provider.getOaiUrl() + " endpoint");
+                    return false;
+                }
+                // response contains static content, store it at provider level
+                p.setResponse(response);
+
+                return true;
+            }
         }
-
-        // response contains static content
-        return true;
     }
 
     /**
-     * <br>Get the prefixes from the document
+     * <br> Get the prefixes from the static content
      *
      * @return false if there was an error, true otherwise
      */
     public boolean processResponse() {
 
-        try {
-            nodeList = (NodeList) provider.xpath.evaluate(
-                    "/os:Repository/os:ListMetadataFormats",
-                    response.getDocument(),
-                    XPathConstants.NODESET);
-        } catch (XPathExpressionException e) {
-            /* Something went wrong with the request. This concludes the work
-               for this endpoint. kj: not really the request
-            */
-            logger.error(e.getMessage(), e);
-            logger.info("Cannot obtain " + actions.getInputFormat() +
-                    " metadata prefixes from endpoint " + provider.oaiUrl);
-            return false;
-        }
+        // check for protocol errors
 
-        // nodeList contains a list of prefixes
-        return true;
+        if (!(provider instanceof StaticProvider)) {
+            // no static provider
+            logger.error("Protocol error"); return false;
+        } else {
+            StaticProvider p = (StaticProvider) provider;
+
+            try {
+                nodeList = (NodeList) provider.xpath.evaluate(
+                        "//*[local-name() = 'metadataFormat']",
+                        response.getDocument(),
+                        XPathConstants.NODESET);
+            } catch (XPathExpressionException e) {
+                // could not extract metadata prefixes from the static content.
+                logger.error(e.getMessage(), e);
+                logger.info("Cannot obtain " + actions.getInputFormat() +
+                        " metadata prefixes for from endpoint " + p.oaiUrl);
+                return false;
+            }
+
+            // now the nodeList contains a list of prefixes
+            return true;
+        }
     }
 }
 

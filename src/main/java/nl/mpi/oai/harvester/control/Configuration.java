@@ -35,7 +35,7 @@ import javax.xml.transform.TransformerConfigurationException;
 import nl.mpi.oai.harvester.StaticProvider;
 import nl.mpi.oai.harvester.action.*;
 import nl.mpi.oai.harvester.metadata.MetadataFormat;
-import nl.mpi.oai.harvester.metadata.Provider;
+import nl.mpi.oai.harvester.Provider;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import javax.xml.xpath.XPath;

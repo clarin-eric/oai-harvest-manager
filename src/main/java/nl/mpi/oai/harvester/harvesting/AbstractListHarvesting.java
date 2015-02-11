@@ -18,11 +18,9 @@
 
 package nl.mpi.oai.harvester.harvesting;
 
-import nl.mpi.oai.harvester.metadata.Provider;
-import org.apache.log4j.Logger;
+import nl.mpi.oai.harvester.Provider;
 import org.w3c.dom.NodeList;
 
-import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Objects;
 
