@@ -5,8 +5,12 @@ import nl.mpi.oai.harvester.metadata.Metadata;
 import nl.mpi.oai.harvester.Provider;
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import java.util.List;
@@ -120,7 +124,7 @@ public class StaticRecordListHarvesting extends AbstractListHarvesting {
     }
 
     /**
-     * <br> kj: doc
+     * <br> Get a list of records from the response
      *
      * @return  false if there was an error, true otherwise
      */
@@ -142,22 +146,56 @@ public class StaticRecordListHarvesting extends AbstractListHarvesting {
         String expression = "/os:Repository/os:ListRecords[@metadataPrefix = '"+
                 prefixes.get(pIndex) +"']";
 
-        // get the identifiers associated with the prefixes
+        // get the records associated with the prefix
 
         try {
             nodeList = (NodeList) provider.xpath.evaluate(expression,
                     response.getDocument(),
                     XPathConstants.NODESET);
         } catch (XPathExpressionException e) {
-            // something went wrong when creating the list, try another prefix
+            /* Something went wrong when creating the list of records,
+               try another prefix.
+             */
             logger.error(e.getMessage(), e);
-            logger.info("Cannot create list of identifiers of " +
+            logger.info("Cannot create list of " + prefixes.get(pIndex) +
+                    " records for endpoint " + provider.oaiUrl);
+            return false;
+        }
+
+        // nodeList contains records, turn the list into a document
+
+        Node node = nodeList.item(0);
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        DocumentBuilder db = null;
+        try {
+            db = dbf.newDocumentBuilder();
+        } catch (ParserConfigurationException e) {
+            e.printStackTrace();
+        }
+        Document document = db.newDocument();
+        document.appendChild(document.importNode(node, true));
+
+        // obtain the identifiers from the document
+
+        expression = "//*[starts-with(local-name(),'identifier') " +
+                "and parent::*[local-name()='header' " +
+                "and not(@status='deleted')]]/text()";
+        try{
+            nodeList = (NodeList)provider.xpath.evaluate(expression,
+                    document, XPathConstants.NODESET);
+        } catch (XPathExpressionException e) {
+            /* Something went wrong when creating the list of identifiers of
+               records, try another prefix.
+             */
+            logger.error(e.getMessage(), e);
+            logger.info ("Cannot create list of identifiers of " +
                     prefixes.get(pIndex) +
                     " records for endpoint " + provider.oaiUrl);
             return false;
         }
 
         // add the identifier and prefix targets into the array
+
         for (int j = 0; j < nodeList.getLength(); j++) {
             String identifier = nodeList.item(j).getNodeValue();
             IdPrefix pair = new IdPrefix(identifier,
@@ -193,12 +231,12 @@ public class StaticRecordListHarvesting extends AbstractListHarvesting {
                 + pair.identifier + "']";
 
         // get the record for the identifier and prefix
-
-        Document record;
+        Node dataNode;
+        Document document = response.getDocument();
 
         try {
-            record = (Document) provider.xpath.evaluate(expression,
-                    response.getDocument(), XPathConstants.NODESET);
+            dataNode = (Document) provider.xpath.evaluate(expression,
+                    document, XPathConstants.NODE);
         } catch (XPathExpressionException e) {
             // something went wrong when parsing, try another prefix
             logger.error(e.getMessage(), e);
@@ -207,8 +245,14 @@ public class StaticRecordListHarvesting extends AbstractListHarvesting {
             return null;
         }
 
+        // create a document to store the metadata in
+        dataNode = dataNode.cloneNode(true);
+        document = provider.db.newDocument();
+        Node copy = document.importNode(dataNode, true);
+        document.appendChild(copy);
+
         // everything is fine, return the record
-        return new Metadata(pair.identifier, record, provider, false, false);
+        return new Metadata(pair.identifier, document, provider, false, false);
     }
 
     @Override

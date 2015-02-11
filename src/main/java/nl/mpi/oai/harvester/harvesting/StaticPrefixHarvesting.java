@@ -61,8 +61,9 @@ public class StaticPrefixHarvesting extends PrefixHarvesting {
             logger.error("Protocol error"); return false;
         } else {
             StaticProvider p = (StaticProvider) provider;
+            response = p.getResponse();
 
-            if (p.getResponse() != null) {
+            if (response != null) {
                 // already fetched the static content
                 return true;
             } else {
