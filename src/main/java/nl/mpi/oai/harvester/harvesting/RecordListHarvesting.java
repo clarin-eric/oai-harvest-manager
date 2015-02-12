@@ -48,9 +48,11 @@ import org.xml.sax.SAXException;
  * pairs. By using this list when parsing, the class will return a record its
  * client at most once. <br><br>
  *
+ * kj: say something about the protocol
+ *
  * @author Kees Jan van de Looij (MPI-PL)
  */
-public class RecordListHarvesting extends ListHarvesting implements Harvesting {
+public final class RecordListHarvesting extends ListHarvesting implements Harvesting {
     
     private static final Logger logger = Logger.getLogger(RecordListHarvesting.class);
 
@@ -92,6 +94,9 @@ public class RecordListHarvesting extends ListHarvesting implements Harvesting {
             SAXException,
             TransformerException,
             NoSuchFieldException {
+
+        // implement by returning ListRecords with the two parameters supplied
+
         return new ListRecords(p1, p2);
     }
 
@@ -121,6 +126,9 @@ public class RecordListHarvesting extends ListHarvesting implements Harvesting {
             SAXException,
             TransformerException,
             NoSuchFieldException {
+
+        // implement by returning ListRecords with the five parameters supplied
+
         return new ListRecords(p1, p2, p3, p4, p5);
     }
     

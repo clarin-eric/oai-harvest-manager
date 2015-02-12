@@ -34,7 +34,7 @@ import java.util.List;
 public final class StaticRecordListHarvesting extends AbstractListHarvesting {
 
     private static final Logger logger = Logger.getLogger(
-            AbstractListHarvesting.class);
+            StaticRecordListHarvesting.class);
 
     /** whether or not the methods have been invoked correctly */
     private boolean protocolError;
@@ -45,19 +45,21 @@ public final class StaticRecordListHarvesting extends AbstractListHarvesting {
      * @param provider the provider
      * @param prefixes the prefixes obtained from the static content
      */
-    public StaticRecordListHarvesting(Provider provider, List<String> prefixes) {
+    public StaticRecordListHarvesting(StaticProvider provider, List<String> prefixes) {
 
         super(provider);
+
+        // get the response stored in the StaticProvider class object
+        response = provider.getResponse();
+
         this.prefixes = prefixes;
 
         // check the state
-        protocolError = (response == null)||
-                        (!(provider instanceof StaticProvider))||
-                        (prefixes.size() == 0);
+        protocolError = (response != null) || (prefixes.size() == 0);
 
-        /* Invariant: if not protocolError, the provider is of class
-           StaticProvider, the response is in place, and at least one
-           prefix is being requested.
+        /* Invariant: if not protocolError, the response is in place, and at
+           least one prefix is being requested. Apart from this the provider
+           is a StaticProvider class object.
          */
     }
 
@@ -72,25 +74,8 @@ public final class StaticRecordListHarvesting extends AbstractListHarvesting {
     @Override
     public boolean request() {
 
-        /* A Provider class provider does not contain a response, a
-           StaticProvider does. Here, the provider is of class StaticProvider,
-           so a cast is safe.
-         */
-        StaticProvider p = (StaticProvider) provider;
-        response = p.getResponse();
-
-        // check for protocol errors
-        if (response == null) {
-            // a response should be there
-            protocolError = true;
-        }
-        if (protocolError) {
-            logger.error("Protocol error"); return false;
-        } else {
-            // the original response is there
-            return true;
-        }
-
+        // the original response is there, please refer to the constructor
+        return true;
     }
 
     /**
@@ -100,13 +85,6 @@ public final class StaticRecordListHarvesting extends AbstractListHarvesting {
      */
     @Override
     public Document getResponse() {
-
-        /* A Provider class provider does not contain a response, a
-           StaticProvider does. Here, the provider is of class StaticProvider,
-           so a cast is safe. Please refer to the constructor.
-          */
-        StaticProvider p = (StaticProvider) provider;
-        response = p.getResponse();
 
         // static content is in place, please refer to the constructor
         return response.getDocument();
