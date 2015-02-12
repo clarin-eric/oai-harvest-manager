@@ -75,7 +75,7 @@ public class Provider {
 	public Harvesting prefixHarvesting;
 
 	/** Type of list harvesting that applies to the provider */
-	public Harvesting metadataHarvesting;
+	public Harvesting recordHarvesting;
 
     /**
      * We make so many XPath queries we could just as well keep one XPath
