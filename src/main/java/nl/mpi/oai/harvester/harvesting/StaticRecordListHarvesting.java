@@ -2,7 +2,6 @@ package nl.mpi.oai.harvester.harvesting;
 
 import nl.mpi.oai.harvester.StaticProvider;
 import nl.mpi.oai.harvester.metadata.Metadata;
-import nl.mpi.oai.harvester.Provider;
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -55,7 +54,7 @@ public final class StaticRecordListHarvesting extends AbstractListHarvesting {
         this.prefixes = prefixes;
 
         // check the state
-        protocolError = (response != null) || (prefixes.size() == 0);
+        protocolError = (response == null) || (prefixes.size() == 0);
 
         /* Invariant: if not protocolError, the response is in place, and at
            least one prefix is being requested. Apart from this the provider
