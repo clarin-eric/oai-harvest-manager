@@ -245,14 +245,4 @@ public abstract class ListHarvesting extends AbstractListHarvesting {
             }
         }
     }
-    
-    /**
-     * Check for more records in the list
-     * 
-     * @return true if there are more, false otherwise
-     */
-    @Override
-    public boolean fullyParsed() {
-        return tIndex == targets.size();
-    }
 }

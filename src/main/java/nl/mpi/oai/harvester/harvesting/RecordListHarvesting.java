@@ -199,6 +199,7 @@ public class RecordListHarvesting extends ListHarvesting implements Harvesting {
         }
                      
         // turn the next node into a document
+        // kj: check of the node needs to be cloned
         Node node = nodeList.item(nIndex).cloneNode(true);
         nIndex++;
         Document doc = provider.db.newDocument();
@@ -246,6 +247,7 @@ public class RecordListHarvesting extends ListHarvesting implements Harvesting {
         }
         
         // create a document to store the metadata in
+        // kj: check of the node needs to be cloned
         dataNode = dataNode.cloneNode(true);
         doc = provider.db.newDocument();
         copy = doc.importNode(dataNode, true);

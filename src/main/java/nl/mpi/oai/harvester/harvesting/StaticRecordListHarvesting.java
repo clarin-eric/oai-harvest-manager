@@ -234,8 +234,10 @@ public class StaticRecordListHarvesting extends AbstractListHarvesting {
         Node dataNode;
         Document document = response.getDocument();
 
+        // kj:
+
         try {
-            dataNode = (Document) provider.xpath.evaluate(expression,
+            dataNode = (Node) provider.xpath.evaluate(expression,
                     document, XPathConstants.NODE);
         } catch (XPathExpressionException e) {
             // something went wrong when parsing, try another prefix
@@ -246,17 +248,13 @@ public class StaticRecordListHarvesting extends AbstractListHarvesting {
         }
 
         // create a document to store the metadata in
-        dataNode = dataNode.cloneNode(true);
+        // kj: check of the node needs to be cloned
+        // dataNode = dataNode.cloneNode(true);
         document = provider.db.newDocument();
         Node copy = document.importNode(dataNode, true);
         document.appendChild(copy);
 
         // everything is fine, return the record
         return new Metadata(pair.identifier, document, provider, false, false);
-    }
-
-    @Override
-    public boolean fullyParsed() {
-        return false;
     }
 }
