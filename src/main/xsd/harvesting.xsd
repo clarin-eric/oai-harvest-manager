@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="unqualified">
+
+    <xs:element name="harvesting" type="HarvestingType"/>
+    <xs:complexType name="HarvestingType">
+        <xs:sequence>
+            <xs:element form="unqualified" maxOccurs="1" name="mode" type="ModeType"/>
+            <xs:sequence minOccurs="0">
+                <xs:element name="HarvestFromDate">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:date">
+                            <xs:minInclusive value="1970-01-01"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:element>
+            </xs:sequence>
+            <xs:sequence maxOccurs="unbounded" minOccurs="0">
+                <xs:element name="endpoint" type="EndpointType"/>
+            </xs:sequence>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="EndpointType">
+        <xs:sequence maxOccurs="1" minOccurs="1">
+            <xs:element name="URI" minOccurs="1" type="xs:anyURI"/>
+            <xs:element name="block" minOccurs="0" type="xs:boolean"/>
+            <xs:element minOccurs="0" name="incremental" type="xs:boolean"/>
+            <xs:element minOccurs="0" name="retry" type="xs:boolean"/>
+            <xs:element name="attempted" minOccurs="1" type="xs:date"/>
+            <xs:element name="harvested" minOccurs="0" type="xs:date"/>
+            <xs:element maxOccurs="1" name="state">
+                <xs:simpleType>
+                    <xs:restriction base="xs:string"> </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:simpleType name="ModeType">
+        <xs:restriction base="xs:string">
+            <xs:maxLength value="10"/>
+            <xs:minLength value="1"/>
+            <xs:enumeration value="normal"/>
+            <xs:enumeration value="retry"/>
+            <xs:enumeration value="refresh"/>
+        </xs:restriction>
+    </xs:simpleType>
+</xs:schema>
