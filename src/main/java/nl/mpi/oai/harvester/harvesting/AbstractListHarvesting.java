@@ -19,6 +19,7 @@
 package nl.mpi.oai.harvester.harvesting;
 
 import nl.mpi.oai.harvester.Provider;
+import org.apache.log4j.Logger;
 import org.w3c.dom.NodeList;
 
 import java.util.ArrayList;
@@ -35,15 +36,20 @@ import java.util.Objects;
  */
 abstract public class AbstractListHarvesting extends AbstractHarvesting {
 
+    private static final Logger logger = Logger.getLogger(
+            AbstractListHarvesting.class);
+
     /** <br> a list of nodes kept between the processing and parsing of a
-        response */
+     *  response
+     */
     NodeList nodeList;
     /** <br> pointer to next element that needs to be checked */
     int nIndex;
 
-    /** <br> A list to store identifier and prefix pairs in. A pair can be in the
-        list only once, thus ensuring the extending classes to return every record
-        identified exactly once. */
+    /** <br> A list to store identifier and prefix pairs in. A pair can be in
+     *  the list only once, thus ensuring the extending classes to return every
+     *  record identified exactly once.
+     */
     final SortedArrayList targets;
     /** pointer to next element to be parsed and returned */
     int tIndex;
@@ -217,11 +223,81 @@ abstract public class AbstractListHarvesting extends AbstractHarvesting {
     }
 
     /**
-     * Check for more records in the list
+     * Determine if a client scenario should make another request to the
+     * endpoint. At first, iterate over the resumption tokens the endpoint
+     * might generate. After that, iterate over the prefixes supplied. For
+     * each prefix iterate over the sets indicated in the provider object.
+     *
+     * Note: this is the only method that increments the pIndex and sIndex
+     * fields.
+     *
+     * Invariant. When harvesting does not involve sets:
+     *
+     * pIndex <= prefixes.size
+     *
+     * otherwise:
+     *
+     * pIndex <= prefixes.size && sIndex <= provider.sets.length
+     *
+     * @return true if the endpoint could still have metadata available
+     *         associated with the set and prefix indicated by pIndex and
+     *         sIndex, false otherwise
+     */
+    @Override
+    public boolean requestMore() {
+
+        // check for protocol errors
+        if (pIndex > prefixes.size()){
+            throw new HarvestingException();
+        }
+        if (provider.sets == null){
+            // harvesting does not involve sets
+        } else {
+            if (sIndex > provider.sets.length){
+                throw new HarvestingException();
+            }
+        }
+
+        if (!(resumptionToken == null || resumptionToken.isEmpty())) {
+            // indicate another request could be made
+            return true;
+        } else {
+            // no need to resume requesting within the current set and prefix
+            if (provider.sets == null) {
+                pIndex++;
+                return pIndex != prefixes.size(); // done
+            } else {
+                sIndex++;
+                if (sIndex == provider.sets.length) {
+                    // try the next prefix
+                    sIndex = 0;
+                    pIndex++;
+                    return pIndex != prefixes.size(); // done
+                } else {
+                    // try the next set
+                    logger.debug("Requesting records in the "
+                            + provider.sets[sIndex] + " set");
+                    return true;
+                }
+            }
+        }
+    }
+
+    /**
+     * Determine if a client scenario has fully traversed the list of target
+     * records
+     *
+     * Invariant: pIndex <= prefixes.size
      *
      * @return true if there are more, false otherwise
      */
     public boolean fullyParsed() {
+
+        // check for protocol errors
+        if (tIndex > targets.size()) {
+            throw new HarvestingException();
+        }
+
         return tIndex == targets.size();
     }
 }

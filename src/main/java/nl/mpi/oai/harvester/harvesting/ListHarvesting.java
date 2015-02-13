@@ -115,27 +115,26 @@ public abstract class ListHarvesting extends AbstractListHarvesting {
             NoSuchFieldException;
 
     /**
-     * Request data from endpoint. Iterate over the prefixes supplied, for each 
-     * prefix iterate over the sets indicated in the provider object. If all 
-     * prefixes and sets have been iterated over and the endpoint does no longer
-     * respond with data, the requestMore method will return false.
-     * 
+     * Request metadata from the endpoint. Retry as often as the configuration
+     * allows. A scenario should invoke the requestMore method to determine if
+     * another request should be made.
+     *
+     *
+     *
      * @return false if an error occurred, true otherwise.
      */
     @Override
     public boolean request() {
-        
+
         // check for protocol errors
-        
+
         if (pIndex >= prefixes.size()) {
-            logger.error("Protocol error");
-            return false;
+            throw new UnsupportedOperationException("Protocol error");
         }
-        
-        if (provider.sets != null){
-            if (sIndex >= provider.sets.length){
-                logger.error("Protocol error");
-                return false;
+
+        if (provider.sets != null) {
+            if (sIndex >= provider.sets.length) {
+                throw new UnsupportedOperationException("Protocol error");
             }
         }
 
@@ -147,7 +146,7 @@ public abstract class ListHarvesting extends AbstractListHarvesting {
 
         // number of requests attempted
         int i = 0;
-        for (;;){
+        for (; ; ) {
             // assume request will complete successfully
             boolean done = true;
 
@@ -178,7 +177,7 @@ public abstract class ListHarvesting extends AbstractListHarvesting {
                 // check if more records would be available
                 resumptionToken = getToken(response);
 
-            } catch ( IOException
+            } catch (IOException
                     | ParserConfigurationException
                     | SAXException | TransformerException | NoSuchFieldException e) {
 
@@ -204,44 +203,11 @@ public abstract class ListHarvesting extends AbstractListHarvesting {
                 return true;
             } else {
                 i++;
-                if (i> provider.maxRetryCount) {
+                if (i > provider.maxRetryCount) {
                     // do not retry any more, try another prefix instead
                     return false;
                 }
                 // retry the request once more
-            }
-        }
-    }
-
-    /**
-     * Find out if more records would be available 
-     * 
-     * @return true if in principle there would be, false otherwise
-     */
-    @Override
-    public boolean requestMore() {
-        
-        if (!(resumptionToken == null || resumptionToken.isEmpty())) {
-            // indicate another request could be made 
-            return true;
-        } else {
-            // no need to resume requesting within the current set and prefix
-            if (provider.sets == null) {
-                pIndex++;
-                return pIndex != prefixes.size(); // done
-            } else {
-                sIndex++;
-                if (sIndex == provider.sets.length) {
-                    // try the next prefix
-                    sIndex = 0;
-                    pIndex++;
-                    return pIndex != prefixes.size(); // done
-                } else {
-                    // try the next set
-                    logger.debug("Requesting records in the "
-                            + provider.sets[sIndex] + " set");
-                    return true;
-                }
             }
         }
     }

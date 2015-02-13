@@ -49,12 +49,6 @@ public class PrefixHarvesting extends AbstractHarvesting {
     private static final Logger logger = Logger.getLogger(
             PrefixHarvesting.class);
 
-    /* Response to the ListMetadataFormats verb. In this class the response
-       will belong to the ListMetadataFormats class. To allow for extending
-       classes with a different response, we choose a more abstract field.
-     */
-    HarvesterVerb response;
-    
     /** list response elements to be parsed and made available */
     NodeList nodeList;
     
@@ -137,8 +131,7 @@ public class PrefixHarvesting extends AbstractHarvesting {
 
         // check if the response is in the expected ListMetadataFormats class
         if (! (response instanceof ListMetadataFormats)){
-            logger.error ("Protocol error");
-            return false;
+            throw new UnsupportedOperationException("Protocol error");
         } else {
             formats = (ListMetadataFormats) response;
         }

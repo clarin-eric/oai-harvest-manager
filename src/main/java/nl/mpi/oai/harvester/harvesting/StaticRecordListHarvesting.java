@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2015, The Max Planck Institute for
+ * Psycholinguistics.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, version 3 of the License.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
+ *
+ * A copy of the GNU General Public License is included in the file
+ * LICENSE-gpl-3.0.txt. If that file is missing, see
+ * <http://www.gnu.org/licenses/>.
+ */
+
 package nl.mpi.oai.harvester.harvesting;
 
 import nl.mpi.oai.harvester.StaticProvider;
@@ -22,11 +40,12 @@ import java.util.List;
  * processResponse, repeating parseResponse while fullyParsed returns all the
  * records represented in the static content.
  *
- * Note: there is no processing with sets here, there are no set parameters to
- * the methods.
+ * Note: since a endpoint providing static content, offers all its content
+ * through one single response, the requestMore superclass method will always
+ * return true.
  *
  * Note: harvesting static content does not involve sets. Therefore, none of
- * the methods in this class have set related parameters.
+ * the methods in this class refer to sets.
  *
  * @author Kees Jan van de Looij (MPI-PL)
  */
@@ -34,9 +53,6 @@ public final class StaticRecordListHarvesting extends AbstractListHarvesting {
 
     private static final Logger logger = Logger.getLogger(
             StaticRecordListHarvesting.class);
-
-    /** whether or not the methods have been invoked correctly */
-    private boolean protocolError;
 
     /**
      * <br> Associate provider data and desired prefixes
@@ -54,11 +70,13 @@ public final class StaticRecordListHarvesting extends AbstractListHarvesting {
         this.prefixes = prefixes;
 
         // check the state
-        protocolError = (response == null) || (prefixes.size() == 0);
+        if ((response == null) || (prefixes.size() == 0)){
+            throw new HarvestingException();
+        }
 
-        /* Invariant: if not protocolError, the response is in place, and at
-           least one prefix is being requested. Apart from this the provider
-           is a StaticProvider class object.
+        /* Invariant: the response is in place, and the client at requests at
+           least one prefix. Apart from this the provider is a StaticProvider
+           class object.
          */
     }
 
@@ -90,21 +108,6 @@ public final class StaticRecordListHarvesting extends AbstractListHarvesting {
     }
 
     /**
-     * <br> Check if more metadata would be available through another request
-     *
-     * @return false
-     */
-    @Override
-    public boolean requestMore() {
-
-        /* Since a endpoint providing static content, offers all its content
-           through one single response, there is no need, if the response is
-           not empty, to request more.
-         */
-        return false;
-    }
-
-    /**
      * <br> Store the records in the response in the 'targets' array
      *
      * @return false if there was an error, true otherwise
@@ -113,22 +116,19 @@ public final class StaticRecordListHarvesting extends AbstractListHarvesting {
     public boolean processResponse() {
 
         // check for protocol errors
-        if (prefixes.size() == 0){
-            protocolError = true;
-        }
         if (pIndex >= prefixes.size()) {
-            protocolError = true;
+            throw new HarvestingException();
         }
-        if (protocolError) {
-            logger.error("Protocol error"); return false;
-        }
-        // pIndex refers to an array element
 
-        // create expression for selecting records by metadata prefix
+        /* No protocol error, pIndex refers to an array element create an
+           expression for selecting records by metadata prefix.
+         */
         String expression = "/os:Repository/os:ListRecords[@metadataPrefix = '"+
                 prefixes.get(pIndex) +"']";
 
-        // get the static content from the response
+        /* No protocol error, so the constructor establishes that the response
+           contains the static endpoint content.
+         */
         Document document = response.getDocument();
 
         // parse the content
@@ -186,13 +186,10 @@ public final class StaticRecordListHarvesting extends AbstractListHarvesting {
 
         // check for protocol errors
         if (tIndex >= targets.size()) {
-            protocolError = true;
+            throw new HarvestingException();
         }
-        if (protocolError) {
-            logger.error("Protocol error"); return false;
-        }
-        // tIndex refers to an array element
 
+        // tIndex refers to an array element
         IdPrefix pair = targets.get(tIndex);
         tIndex++;
 

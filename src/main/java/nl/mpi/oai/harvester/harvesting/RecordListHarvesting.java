@@ -167,8 +167,7 @@ public final class RecordListHarvesting extends ListHarvesting implements Harves
         // check for protocol error
         
         if (response == null){
-            logger.error("Protocol error");
-            return false;
+            throw new UnsupportedOperationException("Protocol error");
         }
 
         // check if the response needs to be saved
@@ -202,8 +201,7 @@ public final class RecordListHarvesting extends ListHarvesting implements Harves
         // check for protocol error
         
         if (nodeList == null){
-            logger.error("Protocol error");
-            return null;
+            throw new UnsupportedOperationException("Protocol error");
         }
                      
         // turn the next node into a document

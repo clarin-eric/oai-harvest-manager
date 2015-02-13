@@ -101,7 +101,6 @@ public final class StaticPrefixHarvesting extends PrefixHarvesting {
         /* Provider is a StaticProvider class object, please refer to the
            constructor.
          */
-
         StaticProvider p = (StaticProvider) provider;
 
         try {
@@ -117,7 +116,9 @@ public final class StaticPrefixHarvesting extends PrefixHarvesting {
             return false;
         }
 
-        // now the nodeList contains a list of prefixes
+        /* Now the nodeList contains a list of prefixes. The superclass
+           methods can process this list.
+         */
         return true;
     }
 }

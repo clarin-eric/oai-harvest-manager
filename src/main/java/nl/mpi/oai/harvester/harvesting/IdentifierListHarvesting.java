@@ -151,10 +151,8 @@ public class IdentifierListHarvesting extends ListHarvesting implements Harvesti
     public boolean processResponse() {
         
         // check for protocol error
-        
         if (response == null){
-            logger.error("Protocol error");
-            return false;
+            throw new UnsupportedOperationException("Protocol error");
         }
 
         try {
@@ -188,22 +186,22 @@ public class IdentifierListHarvesting extends ListHarvesting implements Harvesti
 
     /**
      * Return the next identifier prefix idPrefix from the list of targets
+     *
+     * Invariant: pIndex <= prefixes.size
      * 
      * @return true if the list was parsed successfully, false otherwise
      */
     @Override
     public Object parseResponse() {
         
-        // check for protocol error
+        // check for protocol errors
         if (tIndex >= targets.size()) {
-            logger.error("Protocol error");
-            return null;
+            throw new HarvestingException();
         }
 
         IdPrefix pair = targets.get(tIndex);
         tIndex++;
         // get the record for the identifier and prefix
-        
         RecordHarvesting p = new RecordHarvesting(provider, pair.prefix,
                 pair.identifier);
         
