@@ -3,6 +3,7 @@ package nl.mpi.oai.harvester.harvesting;
 import ORG.oclc.oai.harvester2.verb.Identify;
 import nl.mpi.oai.harvester.StaticProvider;
 import nl.mpi.oai.harvester.action.ActionSequence;
+
 import org.apache.log4j.Logger;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
@@ -33,8 +34,10 @@ import java.io.IOException;
  * parseResponse method.
  *
  * @author Kees Jan van de Looij (MPI-PL)
+ *         xpath parsing by Lari Lampen (MPI-PL)
  */
-public final class StaticPrefixHarvesting extends PrefixHarvesting {
+public final class StaticPrefixHarvesting extends PrefixHarvesting
+        implements Harvesting {
 
     private static final Logger logger = Logger.getLogger(
             StaticPrefixHarvesting.class);

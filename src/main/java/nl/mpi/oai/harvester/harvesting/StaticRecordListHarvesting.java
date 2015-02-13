@@ -47,9 +47,11 @@ import java.util.List;
  * Note: harvesting static content does not involve sets. Therefore, none of
  * the methods in this class refer to sets.
  *
- * @author Kees Jan van de Looij (MPI-PL)
+ * @author Kees Jan van de Looij (MPI-PL),
+ *         xpath parsing by Lari Lampen (MPI-PL)
  */
-public final class StaticRecordListHarvesting extends AbstractListHarvesting {
+public final class StaticRecordListHarvesting extends AbstractListHarvesting
+        implements Harvesting{
 
     private static final Logger logger = Logger.getLogger(
             StaticRecordListHarvesting.class);
@@ -60,7 +62,8 @@ public final class StaticRecordListHarvesting extends AbstractListHarvesting {
      * @param provider the provider
      * @param prefixes the prefixes obtained from the static content
      */
-    public StaticRecordListHarvesting(StaticProvider provider, List<String> prefixes) {
+    public StaticRecordListHarvesting(StaticProvider provider,
+                                      List<String> prefixes) {
 
         super(provider);
 

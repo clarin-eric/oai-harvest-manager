@@ -52,7 +52,8 @@ import org.xml.sax.SAXException;
  *
  * @author Kees Jan van de Looij (MPI-PL)
  */
-public final class RecordListHarvesting extends ListHarvesting implements Harvesting {
+public final class RecordListHarvesting extends ListHarvesting
+        implements Harvesting {
     
     private static final Logger logger = Logger.getLogger(RecordListHarvesting.class);
 

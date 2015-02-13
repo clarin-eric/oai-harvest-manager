@@ -200,12 +200,12 @@ public class Provider {
 	}
 	return null;
     }
-    
+
     /**
      * Attempt to perform the specified sequence of actions on metadata from
      * this provider (which, of course, is only possible if this provider
      * supports the specified input format(s)).
-     * 
+     *
      * If the sequence can be performed, this method will start a new thread
      * to do so and return true. Otherwise no action will be taken and false
      * will be returned.
@@ -253,7 +253,7 @@ public class Provider {
 
     /**
      * Fetch a single record from this provider.
-     * 
+     *
      * @param id OAI-PMH identifier of the record
      * @param mdPrefix metadata prefix
      * @return the record, or null if it cannot be fetched
@@ -340,7 +340,7 @@ public class Provider {
 	    ids.add(currId);
 	}
     }
-    
+
     /**
      * Get the list of Metadata prefixes corresponding to the specified format
      * that are supported by this provider.

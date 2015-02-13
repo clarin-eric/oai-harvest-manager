@@ -1,11 +1,12 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
   <modelVersion>4.0.0</modelVersion>
   <groupId>nl.mpi</groupId>
   <artifactId>oai-harvest-manager</artifactId>
   <packaging>jar</packaging>
-  <version>0.3</version>
+  <version>0.4</version>
   <name>OAI Harvest Manager</name>
   <description>This application manages OAI-PMH harvesting workflows</description>
 
@@ -21,6 +22,7 @@
 
   <!-- REPOSITORIES -->
   <repositories>
+
     <!-- The OCLC harvester2 artifact is in the MPI repository
 	 (because the owner of the project does not currently make it
 	 available via Maven).
@@ -30,6 +32,7 @@
       <name>MPI LAT Repository</name>
       <url>http://lux15.mpi.nl/nexus/content/groups/public</url>
     </repository>
+
     <repository>
       <id>ibiblio</id>
       <name>ibiblio.org</name>
@@ -78,6 +81,7 @@
         </includes>
       </testResource>
     </testResources>
+
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -88,11 +92,13 @@
           <target>1.7</target>
         </configuration>
       </plugin>
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
-        <version>2.9.1</version>
+        <version>2.10.1</version>
       </plugin>
+
       <!-- Copying libs -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -114,10 +120,12 @@
           </execution>
         </executions>
       </plugin>
+
       <!-- JAR -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
+        <version>2.5</version>
         <configuration>
           <classesDirectory>target/classes</classesDirectory>
           <archive>
@@ -138,6 +146,7 @@
           </archive>
         </configuration>
       </plugin>
+
       <!-- Deployment package (tarball). -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -164,7 +173,7 @@
             </goals>
             <configuration>
               <revisionOnScmFailure>none</revisionOnScmFailure>
-	      <shortRevisionLength>6</shortRevisionLength>
+	          <shortRevisionLength>6</shortRevisionLength>
             </configuration>
           </execution>
         </executions>
@@ -173,34 +182,48 @@
           <doUpdate>false</doUpdate>
         </configuration>
       </plugin>
+
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>jaxb2-maven-plugin</artifactId>
+        <version>1.6</version>
+        <executions>
+          <execution>
+            <id>xjc</id>
+            <goals>
+              <goal>xjc</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <packageName>
+            nl.mpi.oai.harvester.generated
+          </packageName>
+        </configuration>
+      </plugin>
     </plugins>
 
-    <!--resources>
-      <resource>
-        <directory>src/main/resources</directory>
-        <targetPath>..</targetPath>
-        <includes>
-          <include>log4j.properties</include>
-        </includes>
-      </resource>
-    </resources -->
   </build>
+
   <reporting>
     <plugins>
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
-        <version>2.7</version>
+        <version>2.10.1</version>
       </plugin>
+
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>findbugs-maven-plugin</artifactId>
-        <version>2.5.3</version>
+        <version>3.0.0</version>
         <configuration>
           <threshold>Normal</threshold>
           <effort>Min</effort>
         </configuration>
       </plugin>
+
     </plugins>
   </reporting>
 </project>
