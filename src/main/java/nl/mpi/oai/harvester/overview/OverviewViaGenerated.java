@@ -3,8 +3,10 @@ package nl.mpi.oai.harvester.overview;
 
 import nl.mpi.oai.harvester.generated.EndpointType;
 import nl.mpi.oai.harvester.generated.HarvestingType;
+import nl.mpi.oai.harvester.generated.ModeType;
 import nl.mpi.oai.harvester.generated.ObjectFactory;
 import nl.mpi.oai.harvester.harvesting.HarvestingException;
+import javax.xml.bind.JAXB;
 
 import java.io.File;
 import java.util.Calendar;
@@ -18,6 +20,7 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
+import javax.xml.stream.XMLInputFactory;
 
 /**
  * A factory for harvesting overview objects.
@@ -291,31 +294,38 @@ public class OverviewViaGenerated {
 
         try {
             // associate JAXB context with the generated classes
+            // not only the HarvestingType class, the inner classes also
 
-            JAXBContext context = JAXBContext.newInstance("generated");
+            JAXBContext context = JAXBContext.newInstance("nl.mpi.oai.harvester.generated");
+            // alternative: JAXBContext context = JAXBContext.newInstance(HarvestingType.class,EndpointType.class, ModeType.class);
 
+            // obtain an unmarshaller for the classes
             Unmarshaller u = context.createUnmarshaller();
-            // we get an unmarshaller
 
             // we marshalled a JAXB element, so we unmarshall one
-            // kj: check if the element really needs to be a JAXBElement
             JAXBElement<HarvestingType> harvestingElement;
-
             harvestingElement = (JAXBElement<HarvestingType>) u.unmarshal(file);
+
+            /* To evade the unchecked type cast, the unmarshalling needs to
+               know about the type of the classes. The type can be passed, in
+               the non static use not with the file as a parameter. An XML
+               reader element is required instead.
+             */
 
             // elements are not directly accessible because of protected access
             // they are accessible through getValue however
-            // harvesting = harvestingElement.getValue();
+            harvesting = (HarvestingType) harvestingElement.getValue();
 
             // you can now use the generated get and set methods
             // harvesting.getEndpoint().get(0).getAttempted();
             System.out.println("We are done unmarshalling");
 
+
         } catch (JAXBException e) {
             // System.out.println("An exception on unmarshalling: " + e.toString());
 
             Logger.getLogger(OverviewViaGenerated.class.getName()).log(
-                    Level.SEVERE, null, e);
+                   Level.SEVERE, null, e);
         }
         
     }
@@ -369,7 +379,16 @@ public class OverviewViaGenerated {
         // remember the file where the XML is
         file = new File(fileName);
         // get the XML from this file
-        unmarshall();
+        /* See unmarshall() for an example of applying unmarshalling in the
+           non static way. At the moment, it is not clear what the advantage
+           of creating context and other things yourself would be.
+          */
+
+        Object object = JAXB.unmarshal(file, HarvestingType.class);
+
+        if (object instanceof HarvestingType){
+            harvesting = (HarvestingType) object;
+        }
     }
     
     /**
