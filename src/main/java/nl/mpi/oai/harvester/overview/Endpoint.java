@@ -13,7 +13,7 @@ package nl.mpi.oai.harvester.overview;
  * 
  * @author keeloo
  */
-public abstract class Endpoint {
+public interface Endpoint {
 
     /**
      * Check if a retry is allowed for the endpoint. 

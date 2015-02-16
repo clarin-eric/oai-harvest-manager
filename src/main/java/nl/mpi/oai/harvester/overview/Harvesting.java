@@ -11,7 +11,7 @@ package nl.mpi.oai.harvester.overview;
  * 
  * @author keeloo
  */
-public abstract class Harvesting {
+public interface Harvesting {
 
     /**
      * Mode of harvesting. 

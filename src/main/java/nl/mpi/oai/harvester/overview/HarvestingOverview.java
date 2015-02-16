@@ -3,24 +3,18 @@ package nl.mpi.oai.harvester.overview;
 
 import nl.mpi.oai.harvester.generated.EndpointType;
 import nl.mpi.oai.harvester.generated.HarvestingType;
-import nl.mpi.oai.harvester.generated.ModeType;
 import nl.mpi.oai.harvester.generated.ObjectFactory;
 import nl.mpi.oai.harvester.harvesting.HarvestingException;
-import javax.xml.bind.JAXB;
+
+import javax.xml.bind.*;
 
 import java.io.File;
 import java.util.Calendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
-import javax.xml.stream.XMLInputFactory;
 
 /**
  * A factory for harvesting overview objects.
@@ -39,7 +33,7 @@ import javax.xml.stream.XMLInputFactory;
  * overview should be finalised. If it is not, the changes made to the endpoint
  * data will not be saved.
  *
- * The OverviewViaGenerated class implements the abstract Endpoint and
+ * The HarvestingOverview class implements the abstract Endpoint and
  * Harvesting classes to be used by the harvest manager. It does this by
  * invoking methods from the generated sources. So, in the process of accessing
  * endpoint and harvesting data, the harvest manager will only deal with
@@ -48,33 +42,33 @@ import javax.xml.stream.XMLInputFactory;
  *
  * @author keeloo
  */
-public class OverviewViaGenerated {
+public final class HarvestingOverview {
 
     // the file supplied on construction
     private final File file;
 
     // factory that creates objects of the generated classes
-    private final ObjectFactory of;
+    private final ObjectFactory factory;
 
     // reference to a generated type object representing the XML 
     private HarvestingType harvesting;
-    
+
     /**
      * Make available general harvesting data by invoking the methods supplied
      * in the generated HarvestingType class
      */
-    private class HarvestingViaGenerated extends Harvesting {
+    private class HarvestingAdapter implements Harvesting {
 
         /**
          * Return the mode by invoking generated methods
-         * 
+         *
          * @return the mode
          */
         @Override
         public Mode HarvestMode() {
-            
+
             Harvesting.Mode mode = null;
-            
+
             switch (harvesting.getMode()) {
 
                 case NORMAL:
@@ -92,60 +86,60 @@ public class OverviewViaGenerated {
 
         /**
          * Return the date by invoking generated methods
-         * 
+         *
          * @return the date
          */
         @Override
         public String HarvestFromDate() {
-            
+
             // convert XMLGregorianCalendar to string
-            
+
             XMLGregorianCalendar XMLDate;
             XMLDate = harvesting.getHarvestFromDate();
-            
+
             // what if the element is not in the XML ?
-            
+
             Calendar c = Calendar.getInstance();
 
-            c.set(XMLDate.getYear (), XMLDate.getMonth (), XMLDate.getDay ());
-            
+            c.set(XMLDate.getYear(), XMLDate.getMonth(), XMLDate.getDay());
+
             // epoch zero means no previous harvest
 
             return c.toString();
-        }   
+        }
     }
-    
+
     /**
      * Make available endpoint harvesting data  by invoking the methods supplied
      * in the generated EndpointType class
      */
-    private class EndPointViaGenerated extends Endpoint {
-          
+    private class EndPointAdapter implements Endpoint {
+
         // reference to a generated type object representing the XML 
         EndpointType e;
-        
+
         /**
          * Create default EndpointType object
-         * 
-         * @param endpointURI 
+         *
+         * @param endpointURI
          */
-        private EndpointType CreateDefault (String endpointURI){
-            
-            e = of.createEndpointType();
+        private EndpointType CreateDefault(String endpointURI) {
+
+            e = factory.createEndpointType();
 
             // set some elements in the endpoint
             e.setBlock(Boolean.FALSE);
             e.setIncremental(Boolean.TRUE);
             e.setURI(endpointURI);
             e.setState("something might be wrong here");
-            
+
             return e;
         }
 
         /**
          * Look for the endpoint in a HarvestingType object; use an URI as the
          * for a key
-         * 
+         *
          * @param endpointURI
          * @return null or the endpoint
          */
@@ -173,9 +167,9 @@ public class OverviewViaGenerated {
         }
 
         /**
-         * Get endpoint data 
+         * Get endpoint data
          */
-        EndPointViaGenerated(String endpointURI) {
+        EndPointAdapter(String endpointURI) {
 
             // look for the endpoint in the XML data            
             e = FindEndpoint(endpointURI);
@@ -191,23 +185,23 @@ public class OverviewViaGenerated {
 
         /**
          * Return the date by invoking generated methods
-         * 
+         *
          * @return the date
          */
         @Override
         public String GetRecentHarvestDate() {
-            
+
             // return the date of the previous harvest
-            
+
             XMLGregorianCalendar XMLDate;
             XMLDate = e.getHarvested();
-            
+
             // what if the element is not in the XML ?
-            
+
             Calendar c = Calendar.getInstance();
 
-            c.set(XMLDate.getYear (), XMLDate.getMonth (), XMLDate.getDay ());
-            
+            c.set(XMLDate.getYear(), XMLDate.getMonth(), XMLDate.getDay());
+
             // epoch zero means no previous harvest
 
             return c.toString();
@@ -220,11 +214,11 @@ public class OverviewViaGenerated {
          */
         @Override
         public void DoneHarvesting(Boolean done) {
-            
+
             // try to get the current date
-            
+
             XMLGregorianCalendar XMLDate;
-            
+
             try {
                 XMLDate = DatatypeFactory.newInstance().newXMLGregorianCalendar();
 
@@ -233,40 +227,40 @@ public class OverviewViaGenerated {
                 XMLDate.setDay(c.get(Calendar.DAY_OF_MONTH));
                 XMLDate.setMonth(c.get(Calendar.MONTH) + 1);
                 XMLDate.setYear(c.get(Calendar.YEAR));
-                
+
                 // in any case, at this date an attempt was made
 
                 e.setAttempted(XMLDate);
-                
+
                 if (done) {
-                    
+
                     // set a new date for incremental harvesting
-                    
+
                     e.setHarvested(XMLDate);
                 }
 
             } catch (DatatypeConfigurationException ex) {
 
-                Logger.getLogger(OverviewViaGenerated.class.getName()).log(
+                Logger.getLogger(HarvestingOverview.class.getName()).log(
                         Level.SEVERE, null, e);
             }
         }
 
         /**
          * Check if full harvest is required by invoking generated methods
-         * 
-         * @return 
+         *
+         * @return
          */
         @Override
         public boolean retry() {
-           return e.isRetry();
+            return e.isRetry();
         }
 
         /**
-         * Check if incremental harvest is allowed by invoking generated 
+         * Check if incremental harvest is allowed by invoking generated
          * methods
-         * 
-         * @return 
+         *
+         * @return
          */
         @Override
         public boolean allowIncrementalHarvest() {
@@ -274,10 +268,10 @@ public class OverviewViaGenerated {
         }
 
         /**
-         * Check if harvesting the endpoint is blocked by invoking generated 
+         * Check if harvesting the endpoint is blocked by invoking generated
          * methods
-         * 
-         * @return 
+         *
+         * @return
          */
         @Override
         public boolean doNotHarvest() {
@@ -286,144 +280,61 @@ public class OverviewViaGenerated {
     }
 
     /**
-     * Get XML data from the XML in the file remembered from the construction of
-     * the overview
-     * 
-     */
-    private void unmarshall () {
-
-        try {
-            // associate JAXB context with the generated classes
-            // not only the HarvestingType class, the inner classes also
-
-            JAXBContext context = JAXBContext.newInstance("nl.mpi.oai.harvester.generated");
-            // alternative: JAXBContext context = JAXBContext.newInstance(HarvestingType.class,EndpointType.class, ModeType.class);
-
-            // obtain an unmarshaller for the classes
-            Unmarshaller u = context.createUnmarshaller();
-
-            // we marshalled a JAXB element, so we unmarshall one
-            JAXBElement<HarvestingType> harvestingElement;
-            harvestingElement = (JAXBElement<HarvestingType>) u.unmarshal(file);
-
-            /* To evade the unchecked type cast, the unmarshalling needs to
-               know about the type of the classes. The type can be passed, in
-               the non static use not with the file as a parameter. An XML
-               reader element is required instead.
-             */
-
-            // elements are not directly accessible because of protected access
-            // they are accessible through getValue however
-            harvesting = (HarvestingType) harvestingElement.getValue();
-
-            // you can now use the generated get and set methods
-            // harvesting.getEndpoint().get(0).getAttempted();
-            System.out.println("We are done unmarshalling");
-
-
-        } catch (JAXBException e) {
-            // System.out.println("An exception on unmarshalling: " + e.toString());
-
-            Logger.getLogger(OverviewViaGenerated.class.getName()).log(
-                   Level.SEVERE, null, e);
-        }
-        
-    }
-    
-    /**
-     * Put back data in the XML in the file remembered from the construction of
-     * the overview
-     * 
-     */
-    private void marshall (){
-        
-        try {
-            // associate the (generated) java harvesting representation with a JAXB element
-            JAXBElement<HarvestingType> harvestingElement
-                    = of.createHarvesting(harvesting);
-
-            // put the generated code in context
-            JAXBContext context = JAXBContext.newInstance("generated");
-
-            // tie a marshaller to the context
-            Marshaller m = context.createMarshaller();
-
-            // and make sure the XML will be nicely formatted
-            m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-
-            // show the element as output
-            m.marshal(harvestingElement, file);
-
-            System.out.println("We are done marshalling");
-
-        } catch (JAXBException e) {
-            // System.out.println("An exception on marshalling: " + e.toString());
-            
-            Logger.getLogger(OverviewViaGenerated.class.getName()).log(
-                    Level.SEVERE, null, e);
-        }
-
-    }
-    
-    /**     * Put data back in the XML in the file remembered from the construction
-     * 
+     * Put data back in the XML in the file remembered from the construction
+     * <p/>
      * Create an overview based on the XML in a file
      *
      * @param fileName name of the file
      */
-    public OverviewViaGenerated(String fileName) {
+    public HarvestingOverview(String fileName) {
+
         // create factory that creates objects of the generated classes
-        of = new ObjectFactory();
-        // ask the factory for an object representing the XML 
-        harvesting = of.createHarvestingType();
+        factory = new ObjectFactory();
+
+        // ask the factory for an object representing the XML
+        harvesting = factory.createHarvestingType();
+
         // remember the file where the XML is
         file = new File(fileName);
-        // get the XML from this file
-        /* See unmarshall() for an example of applying unmarshalling in the
-           non static way. At the moment, it is not clear what the advantage
-           of creating context and other things yourself would be.
-          */
 
+        // get the XML from this file
         Object object = JAXB.unmarshal(file, HarvestingType.class);
 
-        if (object instanceof HarvestingType){
+        if (object instanceof HarvestingType) {
             harvesting = (HarvestingType) object;
+        } else {
+            throw new HarvestingException();
         }
     }
-    
+
     /**
      * Ask the factory for general harvesting data
-     * 
+     *
      * @return
      */
-    public Harvesting getHarvesting (){
-        
-        return new HarvestingViaGenerated ();
+    public Harvesting getHarvesting() {
+
+        return new HarvestingAdapter();
     }
-    
+
     /**
      * Ask the factory for data about the endpoint identified by the URI
-     * 
+     *
      * @param endpointURI
      * @return
      */
-    public Endpoint getEndPoint (String endpointURI){
-        
-        return new EndPointViaGenerated (endpointURI);
+    public Endpoint getEndPoint(String endpointURI) {
+
+        return new EndPointAdapter(endpointURI);
     }
-    
+
     /**
-     * Close the harvesting overview 
-     * 
+     * Close the harvesting overview
+     *
      */
     @Override
     protected void finalize (){
-        marshall ();
-        try {        
-            super.finalize();
-        } catch (Throwable e) {
-            Logger.getLogger(OverviewViaGenerated.class.getName()).log(
-                    Level.SEVERE, null, e);
-        }
+
+        JAXB.marshal(harvesting, file);
     }
 }
