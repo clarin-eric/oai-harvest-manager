@@ -21,9 +21,9 @@ package nl.mpi.oai.harvester.overview;
 /**
  * <br> Adapter class definition of an OAI endpoint <br><br>
  *
- * For harvesting, the endpoint data resides an an XML file. An endpoint element
- * contains data that you can interpret as the state of the endpoint in a
- * repeating harvesting cycle. <br><br>
+ * For harvesting, the endpoint data resides an an XML file. An endpoint
+ * element contains data that you can interpret as the state of the endpoint
+ * in a repeating harvesting cycle. <br><br>
  *
  * This interface can for example be implemented by an adapter class, a class
  * mediating between the code generated on the basis of the XSD. The adapter

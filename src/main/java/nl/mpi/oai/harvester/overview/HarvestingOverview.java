@@ -1,3 +1,20 @@
+/*
+ * Copyright (C) 2015, The Max Planck Institute for
+ * Psycholinguistics.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, version 3 of the License.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
+ *
+ * A copy of the GNU General Public License is included in the file
+ * LICENSE-gpl-3.0.txt. If that file is missing, see
+ * <http://www.gnu.org/licenses/>.
+ */
 
 package nl.mpi.oai.harvester.overview;
 
@@ -17,21 +34,21 @@ import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
 /**
- * A factory for harvesting overview objects.
+ * <br> A factory for harvesting overview objects
  *
  * Objects giving a view on harvesting typically carry data about harvesting at
- * the level of an endpoint or the process of harvesting in general. 
+ * the level of an endpoint or the process of harvesting in general. <br><br>
  * 
  * By creating an object of this overview class, the harvest manager has access
- * to the data about harvesting stored in XML format. 
+ * to the data about harvesting stored in XML format. <br><br>
  * 
  * The harvester can retrieve endpoint data by supplying the endpoint URL. In
- * principle it could also generate new default endpoint views.
+ * principle it could also generate new default endpoint views. <br><br>
  *
  * Once retrieved, on harvesting, endpoint data can be modified, thus recording
  * the current state of harvesting. When harvesting is done, the harvesting
  * overview should be finalised. If it is not, the changes made to the endpoint
- * data will not be saved.
+ * data will not be saved. <br><br>
  *
  * The HarvestingOverview class implements the abstract Endpoint and
  * Harvesting classes to be used by the harvest manager. It does this by
@@ -40,7 +57,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
  * abstract objects. In this way, however only to some extend, details of the
  * implementation are hidden.
  *
- * @author keeloo
+ * @author Kees Jan van de Looij (MPI-PL)
  */
 public final class HarvestingOverview {
 
@@ -87,6 +104,10 @@ public final class HarvestingOverview {
         /**
          * Return the date by invoking generated methods
          *
+         * http://blog.jetbrains.com/idea/2012/02/new-magic-constant-inspection/
+         *
+         * kj: have a look at this method
+         *
          * @return the date
          */
         @Override
@@ -97,15 +118,19 @@ public final class HarvestingOverview {
             XMLGregorianCalendar XMLDate;
             XMLDate = harvesting.getHarvestFromDate();
 
-            // what if the element is not in the XML ?
+            /* kj: it is not exactly clear why the following
+               XMLDate.toString() would be equal to 1971-11-03
+             */
 
-            Calendar c = Calendar.getInstance();
-
-            c.set(XMLDate.getYear(), XMLDate.getMonth(), XMLDate.getDay());
+//            Calendar c = Calendar.getInstance();
+//
+//            c.set(XMLDate.getYear(), XMLDate.getMonth(), XMLDate.getDay());
 
             // epoch zero means no previous harvest
 
-            return c.toString();
+//          return c.toString();
+
+            return XMLDate.toString();
         }
     }
 
@@ -123,7 +148,7 @@ public final class HarvestingOverview {
         /**
          * Create default EndpointType object
          *
-         * @param endpointURI
+         * @param endpointURI the URI identifying the endpoint
          */
         private EndpointType CreateDefault(String endpointURI) {
 
@@ -142,7 +167,7 @@ public final class HarvestingOverview {
          * Look for the endpoint in a HarvestingType object; use an URI as the
          * for a key
          *
-         * @param endpointURI
+         * @param endpointURI the URI identifying the endpoint
          * @return null or the endpoint
          */
         private EndpointType FindEndpoint(String endpointURI) {
@@ -161,11 +186,10 @@ public final class HarvestingOverview {
             }
 
             if (found) {
+                return e;
             } else {
-                e = null;
+                return null;
             }
-
-            return e;
         }
 
         /**
@@ -200,19 +224,24 @@ public final class HarvestingOverview {
 
             // what if the element is not in the XML ?
 
-            Calendar c = Calendar.getInstance();
+            // kj: another magical constant
 
-            c.set(XMLDate.getYear(), XMLDate.getMonth(), XMLDate.getDay());
+//            Calendar c = Calendar.getInstance();
+//
+//            c.set(XMLDate.getYear(), XMLDate.getMonth(), XMLDate.getDay());
 
             // epoch zero means no previous harvest
 
-            return c.toString();
+//            return c.toString();
+
+            return XMLDate.toString();
         }
 
         /**
          * Register success or failure by invoking generated methods
          *
-         * @param done
+         * @param done true if and only if the endpoint was harvested
+         *             successfully, false otherwise
          */
         @Override
         public void DoneHarvesting(Boolean done) {
@@ -251,7 +280,8 @@ public final class HarvestingOverview {
         /**
          * Check if full harvest is required by invoking generated methods
          *
-         * @return
+         * @return true, if and only in case of an error, the endpoint will
+         * be selected for a corrective harvesting run, false otherwise
          */
         @Override
         public boolean retry() {
@@ -262,7 +292,8 @@ public final class HarvestingOverview {
          * Check if incremental harvest is allowed by invoking generated
          * methods
          *
-         * @return
+         * @return true, if and only if incremental harvesting of the endpoint
+         * is allowed, false otherwise
          */
         @Override
         public boolean allowIncrementalHarvest() {
@@ -273,7 +304,8 @@ public final class HarvestingOverview {
          * Check if harvesting the endpoint is blocked by invoking generated
          * methods
          *
-         * @return
+         * @return true, if and only if the endpoint is to be excluded from
+         * harvesting, false otherwise
          */
         @Override
         public boolean doNotHarvest() {
@@ -285,6 +317,8 @@ public final class HarvestingOverview {
      * Put data back in the XML in the file remembered from the construction
      * <p/>
      * Create an overview based on the XML in a file
+     *
+     * kj: check this documentation
      *
      * @param fileName name of the file
      */
@@ -302,17 +336,24 @@ public final class HarvestingOverview {
         // get the XML from this file
         Object object = JAXB.unmarshal(file, HarvestingType.class);
 
-        if (object instanceof HarvestingType) {
-            harvesting = (HarvestingType) object;
-        } else {
+        /* Check if the object is in the HarvestingType class. Note: if the
+           unmarshalling method returns null, the object is not in the class,
+           otherwise it is.
+          */
+        if (object == null) {
             throw new HarvestingException();
+        } else {
+            harvesting = (HarvestingType) object;
         }
     }
 
     /**
-     * Ask the factory for general harvesting data
+     * <br> Ask the factory for harvesting mode and date determining incremental
+     * harvesting <br><br>
      *
-     * @return
+     * For a definition of the mode, please refer to Harvesting interface
+     *
+     * @return harvesting data
      */
     public Harvesting getHarvesting() {
 
@@ -322,8 +363,8 @@ public final class HarvestingOverview {
     /**
      * Ask the factory for data about the endpoint identified by the URI
      *
-     * @param endpointURI
-     * @return
+     * @param endpointURI the URI of the endpoint state requested
+     * @return the endpoint
      */
     public Endpoint getEndPoint(String endpointURI) {
 
@@ -337,6 +378,15 @@ public final class HarvestingOverview {
     @Override
     protected void finalize (){
 
+        // try to invoke superclass finalization
+        try {
+            super.finalize();
+        } catch (Throwable e) {
+            Logger.getLogger(HarvestingOverview.class.getName()).log(
+                    Level.SEVERE, null, e);
+        }
+
+        // finalize the harvesting data
         JAXB.marshal(harvesting, file);
     }
 }
