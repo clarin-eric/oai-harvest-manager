@@ -112,6 +112,8 @@ public final class HarvestingOverview {
     /**
      * Make available endpoint harvesting data  by invoking the methods supplied
      * in the generated EndpointType class
+     *
+     * You can interpret this class as an adapter:
      */
     private class EndPointAdapter implements Endpoint {
 

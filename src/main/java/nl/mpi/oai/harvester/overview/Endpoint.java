@@ -19,7 +19,7 @@
 package nl.mpi.oai.harvester.overview;
 
 /**
- * <br> Adapter class definition <br><br>
+ * <br> Adapter class definition of an OAI endpoint <br><br>
  *
  * For harvesting, the endpoint data resides an an XML file. An endpoint element
  * contains data that you can interpret as the state of the endpoint in a
@@ -28,9 +28,10 @@ package nl.mpi.oai.harvester.overview;
  * This interface can for example be implemented by an adapter class, a class
  * mediating between the code generated on the basis of the XSD. The adapter
  * class bridges the gap from the generated types to the types would ideally
- * fit the the harvesting application. <br><br>
+ * fit the the harvesting application. Note: the XSD file referred to resides
+ * in the src/xsd directory. <br><br>
  *
- * An adapter class can also bridge impedance mismatches, for example the
+ * An adapter class can also bridge differences in format, for example the
  * harvesting date presented by the generated classes and the format that the
  * application would like to work on.
  *
