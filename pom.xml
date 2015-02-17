@@ -70,9 +70,10 @@
     </dependency>
   </dependencies>
 
-  <!-- BUILD -->
+  <!-- Build cycle referred plugins -->
   <build>
     <finalName>${project.artifactId}-${versionNumber}</finalName>
+    <!-- Define the location of the resources used for testing -->
     <testResources>
       <testResource>
         <directory>src/test/resources</directory>
@@ -85,7 +86,7 @@
     <pluginManagement>
       <plugins>
         <plugin>
-          <!-- Disable deployment when not configured -->
+          <!-- Disable deployment because has not been configured -->
           <artifactId>maven-deploy-plugin</artifactId>
             <configuration>
               <skip>true</skip>
@@ -95,6 +96,8 @@
     </pluginManagement>
 
     <plugins>
+
+      <!-- Configure the java compiler version, set it to 1.7 -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
@@ -105,13 +108,17 @@
         </configuration>
       </plugin>
 
+      <!-- Include the javadoc plugin allowing the build lifecycle to generate
+       the project's javadoc. Alternatively, the plugin is included in the site
+       cycle as well.-->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
         <version>2.10.1</version>
       </plugin>
 
-      <!-- Copying libs -->
+      <!-- Configure the Maven dependency plugin to include the libraries the
+       harvest manager depends on in the jar -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
@@ -133,7 +140,11 @@
         </executions>
       </plugin>
 
-      <!-- JAR -->
+      <!-- Configure the Maven jar plugin to create the jar. Set the manifest
+       entries to the identifications known to the POM. Also, exclude the log4j
+       properties file from the jar. This avoids the properties being loaded
+       from a file different from one intentionally included in the existing
+       classpath -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
@@ -161,8 +172,9 @@
         </configuration>
       </plugin>
 
-      <!-- The Maven assembly plugin will create the deployment package, the
-       tarball. The plugin will use the -->
+      <!-- Configure the Maven assembly plugin to create the deployment
+       package, the tarball. The plugin builds package's name from the artifact
+       id and version number. -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-assembly-plugin</artifactId>
@@ -238,23 +250,21 @@
           <effort>Min</effort>
         </configuration>
       </plugin>
-
     </plugins>
-
   </build>
 
+  <!-- Site cycle referred plugins -->
   <reporting>
     <plugins>
 
       <!-- Include the javadoc plugin allowing the site lifecycle to generate
-       the project's javadoc. Alternatively, including the plugin in the build
-       cycle, allows you to generate javadoc separately. -->
+       the project's javadoc. Alternatively, the plugin is included in the build
+       cycle as well. This allows you to generate javadoc separately. -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
         <version>2.10.1</version>
       </plugin>
-
     </plugins>
   </reporting>
 </project>
