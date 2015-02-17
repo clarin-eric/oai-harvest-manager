@@ -98,9 +98,9 @@ public class Provider {
      *
      * @param url OAI-PMH URL (endpoint) of the provider
      */
-    public Provider(String url, int maxRetryCount) 
+    public Provider(String url, int maxRetryCount)
             throws ParserConfigurationException {
-        
+
 	// If the base URL is given with parameters (most often
 	// ?verb=Identify), strip them off to get a uniform
 	// representation.

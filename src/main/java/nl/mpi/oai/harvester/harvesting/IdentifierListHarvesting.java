@@ -57,7 +57,9 @@ public class IdentifierListHarvesting extends ListHarvesting implements Harvesti
      * Associate endpoint and prefixes with the protocol
      * 
      * @param provider the endpoint to address in the request
-     * @param prefixes the prefixes returned by the endpoint 
+     * @param prefixes the prefixes returned by the endpoint
+     *
+     * kj: unused declaration
      */
     public IdentifierListHarvesting(Provider provider, List<String> prefixes){
         super(provider, prefixes);

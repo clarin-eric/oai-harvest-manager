@@ -297,8 +297,13 @@ class Worker implements Runnable {
                     provider.recordHarvesting = new StaticRecordListHarvesting(
                             (StaticProvider) provider, prefixes);
                 } else {
-                    provider.recordHarvesting = new RecordListHarvesting(
-                            provider, prefixes);
+                    if (scenario.equals("ListRecords")) {
+                        provider.recordHarvesting = new RecordListHarvesting(
+                                provider, prefixes);
+                    } else {
+                        provider.recordHarvesting = new IdentifierListHarvesting(
+                                provider, prefixes);
+                    }
                 }
 
                 if (scenario.equals("ListIdentifiers")) {

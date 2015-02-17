@@ -19,7 +19,6 @@
 
 package nl.mpi.oai.harvester.harvesting;
 
-import ORG.oclc.oai.harvester2.verb.HarvesterVerb;
 import ORG.oclc.oai.harvester2.verb.ListMetadataFormats;
 import java.io.IOException;
 import javax.xml.parsers.ParserConfigurationException;
