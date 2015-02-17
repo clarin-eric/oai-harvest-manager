@@ -161,7 +161,8 @@
         </configuration>
       </plugin>
 
-      <!-- Deployment package (tarball). -->
+      <!-- The Maven assembly plugin will create the deployment package, the
+       tarball. The plugin will use the -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-assembly-plugin</artifactId>
@@ -175,6 +176,10 @@
         </configuration>
       </plugin>
 
+      <!-- Add the build number plugin for generating a unique identification
+       for every build. Maven stores the ${buildNumber} variable. Please note
+       that in this project the number is part of the the version number. On
+       its turn, this number is reflected in the jar and the package names. -->
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>buildnumber-maven-plugin</artifactId>
@@ -198,10 +203,10 @@
       </plugin>
 
       <!-- Add the plugin for generating sources that establish finalisation
-      of XML files defined by the XSD in src/main/xsd. You can invoke the plugin
-      by running: mvn jaxb2:xjc Note that the generated files will end up in the
-      generated package. Refer to the plugin documentation for alternative
-      plugin configuration. -->
+       of XML files defined by the XSD in src/main/xsd. You can invoke the plugin
+       by running: mvn jaxb2:xjc Note that the generated files will end up in the
+       generated package. Refer to the plugin documentation for alternative
+       plugin configuration. -->
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>jaxb2-maven-plugin</artifactId>
@@ -222,8 +227,8 @@
       </plugin>
 
       <!-- Add and configure the plugin for Findbugs. You can run the Findbugs
-      gui as the findbugs:gui target. For more information Findbugs, refer to
-      the manual: http://findbugs.sourceforge.net/manual -->
+       gui as the findbugs:gui target. For more information Findbugs, refer to
+       the manual: http://findbugs.sourceforge.net/manual -->
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>findbugs-maven-plugin</artifactId>
@@ -233,6 +238,7 @@
           <effort>Min</effort>
         </configuration>
       </plugin>
+
     </plugins>
 
   </build>
@@ -240,6 +246,9 @@
   <reporting>
     <plugins>
 
+      <!-- Include the javadoc plugin allowing the site lifecycle to generate
+       the project's javadoc. Alternatively, including the plugin in the build
+       cycle, allows you to generate javadoc separately. -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
