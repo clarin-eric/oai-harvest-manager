@@ -82,6 +82,18 @@
       </testResource>
     </testResources>
 
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <!-- Disable deployment when not configured -->
+          <artifactId>maven-deploy-plugin</artifactId>
+            <configuration>
+              <skip>true</skip>
+            </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -139,11 +151,13 @@
               <Built-On>${maven.build.timestamp}</Built-On>
               <Version>${project.version}</Version>
               <Revision>${buildNumber}</Revision>
-
               <Class-Path>${project.artifactId}-${versionNumber}.jar</Class-Path>
               <Class-Path>.</Class-Path>
             </manifestEntries>
           </archive>
+          <excludes>
+            <exclude>**/log4j.properties</exclude>
+          </excludes>
         </configuration>
       </plugin>
 
@@ -153,8 +167,8 @@
         <artifactId>maven-assembly-plugin</artifactId>
         <version>2.4</version>
         <configuration>
-	  <finalName>${project.artifactId}-${versionNumber}</finalName>
-	  <appendAssemblyId>false</appendAssemblyId>
+	      <finalName>${project.artifactId}-${versionNumber}</finalName>
+	      <appendAssemblyId>false</appendAssemblyId>
           <descriptors>
             <descriptor>assembly.xml</descriptor>
           </descriptors>
@@ -183,6 +197,11 @@
         </configuration>
       </plugin>
 
+      <!-- Add the plugin for generating sources that establish finalisation
+      of XML files defined by the XSD in src/main/xsd. You can invoke the plugin
+      by running: mvn jaxb2:xjc Note that the generated files will end up in the
+      generated package. Refer to the plugin documentation for alternative
+      plugin configuration. -->
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>jaxb2-maven-plugin</artifactId>
@@ -201,6 +220,19 @@
           </packageName>
         </configuration>
       </plugin>
+
+      <!-- Add and configure the plugin for Findbugs. You can run the Findbugs
+      gui as the findbugs:gui target. For more information Findbugs, refer to
+      the manual: http://findbugs.sourceforge.net/manual -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>findbugs-maven-plugin</artifactId>
+        <version>3.0.0</version>
+        <configuration>
+          <threshold>Normal</threshold>
+          <effort>Min</effort>
+        </configuration>
+      </plugin>
     </plugins>
 
   </build>
@@ -212,16 +244,6 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
         <version>2.10.1</version>
-      </plugin>
-
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>findbugs-maven-plugin</artifactId>
-        <version>3.0.0</version>
-        <configuration>
-          <threshold>Normal</threshold>
-          <effort>Min</effort>
-        </configuration>
       </plugin>
 
     </plugins>
