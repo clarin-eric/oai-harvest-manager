@@ -39,11 +39,6 @@ import org.xml.sax.SAXException;
 /**
  * <br> Implement methods for requesting a list of records <br><br>
  *
- * The methods in this class invoke methods in the OCLC library that implement
- * the OAI ListRecords verb. This verb accepts two different types of lists of
- * parameters: one with two, and one with five parameters. Please refer to the
- * definition of the OAI protocol for a definition of these parameters. <br><br>
- *
  * This class provides list based harvesting with a concrete verb to base
  * requests on. Because supplies a specific verb, ListRecords, the response
  * processing needed is specific also. Hence the class also implements this
@@ -159,24 +154,11 @@ public final class RecordListHarvesting extends ListHarvesting
             throw new HarvestingException();
         }
 
-        // invariant: the response is ListRecords class object
+        /* Since the verb2 and verb5 method return a ListRecords class object,
+           the object referred to here is indeed of that class.
+         */
+
         return ((ListRecords) this.response).getResumptionToken();
-    }
-
-    /**
-     * <br> Get the response from the endpoin <br><br>
-     *
-     * @return the response
-     */
-    @Override
-    public Document getResponse() {
-
-        // check for protocol error
-        if (response == null){
-            throw new HarvestingException();
-        }
-
-        return response.getDocument();
     }
 
     /**
@@ -184,9 +166,13 @@ public final class RecordListHarvesting extends ListHarvesting
      *
      * This method filters a list of nodes from the response. The filter is
      * an XPath expression build around the ListRecords element, the element
-     * that holds the metadata records.
+     * that holds the metadata records. The parseResponse method takes the
+     * list of nodes as input.
      *
-     * Note: the parseResponse method will take the list of nodes as input
+     * Note: when listing records by listing identifiers first, the parsing
+     * method does not act on the list of metadata elements gathered from a
+     * single request. Instead, it parses list of all identifiers of records
+     * available from the endpoint.
      * 
      * @return true if the list was successfully created, false otherwise
      */
@@ -194,10 +180,11 @@ public final class RecordListHarvesting extends ListHarvesting
     public boolean processResponse() {
 
         // check for protocol error
-        if (nodeList == null){
+        if (response == null){
             throw new HarvestingException();
         }
 
+        // the response is in place
         try {
             /* Try to create a list of records from the response. On failure,
                stop the work on the current prefix.
@@ -230,12 +217,17 @@ public final class RecordListHarvesting extends ListHarvesting
     @Override
     public Object parseResponse() {
         
-        // check for protocol error
+        // check for protocol errors
         if (nodeList == null){
             throw new HarvestingException();
         }
-                     
-        // turn the next node into a document
+        if (nIndex >= nodeList.getLength()) {
+            throw new HarvestingException();
+        }
+
+        /* The list of nodes is in place, and the index points to an element
+           in the list. Turn the next node into a document.
+         */
         Node node = nodeList.item(nIndex).cloneNode(true);
         nIndex++;
         Document doc = provider.db.newDocument();
@@ -296,7 +288,7 @@ public final class RecordListHarvesting extends ListHarvesting
             // inserted, not released to the client before
             return new Metadata(id, doc, provider, false, false);
         } else {
-            // not inserted, the record has already been release to the client
+            // not inserted, the record has already been released to the client
             return null;
         }
     }
@@ -307,6 +299,9 @@ public final class RecordListHarvesting extends ListHarvesting
      * This method checks if, as a consequence of repeatedly invoking
      * processResponse the end of the list nodes created by parseResponse
      * has been reached.
+     *
+     * Note: since the parsing does not apply to the targets, but to the nodes
+     * in the list, override the AbstractListHarvesting fullyParsed method.
      *
      * @return  true if there are more, false otherwise
      */

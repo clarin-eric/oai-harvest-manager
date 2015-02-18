@@ -21,6 +21,7 @@ package nl.mpi.oai.harvester.harvesting;
 import ORG.oclc.oai.harvester2.verb.HarvesterVerb;
 import nl.mpi.oai.harvester.Provider;
 import org.apache.log4j.Logger;
+import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -212,5 +213,21 @@ public abstract class ListHarvesting extends AbstractListHarvesting {
                 // retry the request once more
             }
         }
+    }
+
+    /**
+     * <br> Get the response from the endpoint <br><br>
+     *
+     * @return the response
+     */
+    @Override
+    public Document getResponse() {
+
+        // check for protocol error
+        if (response == null){
+            throw new HarvestingException();
+        }
+
+        return response.getDocument();
     }
 }

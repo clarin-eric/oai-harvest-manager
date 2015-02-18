@@ -30,15 +30,16 @@ import javax.xml.xpath.XPathExpressionException;
 
 import nl.mpi.oai.harvester.Provider;
 import org.apache.log4j.Logger;
-import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 /**
- * <br>This class extends the ListProtocol class by providing ListIdentifiers type
- * of verbs. One with two parameters, for resuming, one with five for the initial
- * request. Since it implements specific verbs, it is also specific in processing
- * and parsing of the responses. <br><br>
+ * <br> Implement methods for requesting a list of records <br><br>
+ *
+ * This class provides list based harvesting with a concrete verb to base
+ * requests on. Because supplies a specific verb, ListIdentifiers, the response
+ * processing needed is specific also. Hence the class also implements this
+ * processing. <br><br>
  *
  * Note. If the endpoint provides a record in several sets, in the end this
  * class needs to return it to the client only once. This class will use the
@@ -59,18 +60,17 @@ public class IdentifierListHarvesting extends ListHarvesting implements Harvesti
      * @param provider the endpoint to address in the request
      * @param prefixes the prefixes returned by the endpoint
      *
-     * kj: unused declaration
      */
     public IdentifierListHarvesting(Provider provider, List<String> prefixes){
         super(provider, prefixes);
-        // supply messages specific to requesting identifiers
+        // supply the superclass with messages specific to requesting identifiers
         message [0] = "Requesting more identifiers of records with prefix ";
         message [1] = "Requesting identifiers of records with prefix ";
         message [2] = "Cannot get identifiers of ";
     }
     
     /**
-     * Implementation of the ListIdentifiers verb <br><br>
+     * <br> Create a request based on the two parameter ListIdentifiers verb <br><br>
      *
      * This implementation supplies the form of the verb used in a request
      * based on a resumption token. <br><br>
@@ -95,7 +95,7 @@ public class IdentifierListHarvesting extends ListHarvesting implements Harvesti
     }
 
     /**
-     * Implementation of the ListIdentifiers verb <br><br>
+     * <br> Create a request based on the two parameter ListIdentifiers verb <br><br>
      *
      * This implementation supplies the form of the verb used in the initial
      * request. <br><br>
@@ -124,9 +124,10 @@ public class IdentifierListHarvesting extends ListHarvesting implements Harvesti
     }
     
     /**
-     * Get resumption token <br><br>
+     * <br> Get the resumption token associated with a specific response <br><br>
      *
-     * Supply the token returned by the ListIdentifiers request. <br><br>
+     * This method implements a resumption token request by invoking the
+     * getResumptionToken OCLC library method. <br><br>
      * 
      * @param response the response to the request
      * @return the token
@@ -134,19 +135,33 @@ public class IdentifierListHarvesting extends ListHarvesting implements Harvesti
      * @throws NoSuchFieldException
      */
     @Override
-    public String getToken (HarvesterVerb response) throws TransformerException,
+    public String getToken (HarvesterVerb response) throws
+            TransformerException,
             NoSuchFieldException{
+
+        // check for protocol error
+        if (response == null){
+            throw new HarvestingException();
+        }
+
+        /* Since the verb2 and verb5 method return a ListIdentifiers class
+           object, the object referred to here is indeed of that class.
+         */
         return ((ListIdentifiers) this.response).getResumptionToken();
     }
 
-    @Override
-    public Document getResponse() {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
     /**
-     * Create a list of identifier prefix targets from the response
-     * 
+     * <br> Create a list of metadata elements from the response <br><br>
+     *
+     * This method filters identifiers from the response. The filter is
+     * an XPath expression build around the ListIdentifiers element, the
+     * element that holds metadata record headers. The identifiers end up
+     * in a target list as input to the processResponse method.
+     *
+     * Note: when listing records without first retrieving their identifiers,
+     * the target list keeps track of duplicate records only. In that case, the
+     * parseResponse method returns the metadata from a response directly.
+     *
      * @return true if the response was processed successfully, false otherwise
      */
     @Override
@@ -154,9 +169,12 @@ public class IdentifierListHarvesting extends ListHarvesting implements Harvesti
         
         // check for protocol error
         if (response == null){
-            throw new UnsupportedOperationException("Protocol error");
+            throw new HarvestingException();
         }
 
+        /* The response is in place, and pIndex <= prefixes.size because of
+           the invariant established in the AbstractListHarvesting class.
+         */
         try {
             /* Try to add the targets in the response to the list. On 
                failure, stop the work on the current prefix.
@@ -180,6 +198,10 @@ public class IdentifierListHarvesting extends ListHarvesting implements Harvesti
             String identifier = nodeList.item(j).getNodeValue();
             IdPrefix pair = new IdPrefix (identifier, 
                     prefixes.get(pIndex));
+
+            /* Try to insert the pair in the list. No problem if it is already
+               there.
+             */
             targets.checkAndInsertSorted(pair);
         }
         
@@ -187,26 +209,31 @@ public class IdentifierListHarvesting extends ListHarvesting implements Harvesti
     }
 
     /**
-     * Return the next identifier prefix idPrefix from the list of targets
+     * Return the next metadata element in the list of targets
      *
-     * Invariant: pIndex <= prefixes.size
-     * 
+     * This method returns the next metadata element from the list of targets
+     * created by the processResponse method.
+     *
      * @return true if the list was parsed successfully, false otherwise
      */
     @Override
     public Object parseResponse() {
         
         // check for protocol errors
+        if (targets == null){
+            throw new HarvestingException();
+        }
         if (tIndex >= targets.size()) {
             throw new HarvestingException();
         }
 
+        // the targets are in place and tIndex points to an element in the list
         IdPrefix pair = targets.get(tIndex);
         tIndex++;
         // get the record for the identifier and prefix
         RecordHarvesting p = new RecordHarvesting(provider, pair.prefix,
                 pair.identifier);
-        
+
         if (p.request()) {
             return p.parseResponse();
         } else {
