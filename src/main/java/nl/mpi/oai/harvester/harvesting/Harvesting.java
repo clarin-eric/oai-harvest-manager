@@ -21,32 +21,27 @@ package nl.mpi.oai.harvester.harvesting;
 import org.w3c.dom.Document;
 
 /**
- * <br>Abstract view on the OAI protocol<br><br>
+ * <br> Abstract view on the OAI protocol<br><br>
  *
- * A class (indirectly) implementing this interface is intended to provide
- * those primitives of the OAI protocol that play a rol in a particular scenario
- * of harvesting. <br><br>
+ * A class (indirectly) implementing this interface intends to provide those
+ * primitives in the OAI protocol that play a rol in a particular scenario of
+ * harvesting. <br><br>
  *
- * If the scenario, for example, would be to harvest metadata records using
- * the ListRecords verb, the request method implements a request based on this
- * verb. In this scenario, the processResponse method would create a list of
- * metadata records included in the response to the verb. Finally, the
- * parseResponse method would return the records one by one. <br><br>
+ * If a scenario would be to harvest metadata records by listing records,
+ * the request method should create a request based on this verb. The
+ * processResponse method should create a list of metadata records, and the
+ * parseResponse should return the records one by one. <br><br>
  *
- * Another example of a class used by a scenario would be harvesting using
- * the ListIdentifiers verb. The request method would obtain responses to this
- * verb, the processResponse method would create the list of identifiers, and
- * the parseResponse method would use the GetRecord verb to get the records one
- * by one. <br><br>
+ * Another example of a scenario would be to harvest metadata records by first
+ * obtaining their identifiers. In this case, the request method should create
+ * a request based on the ListIdentifiers verb. The, processResponse method
+ * should create the list of identifiers, and the parseResponse method should
+ * use the GetRecord verb to get the records one by one. <br><br>
  *
- * Different implementations of this interface allow for different scenarios
- * to be implemented uniformly. Also, a particular scenario could be implemented
- * by similar but different classes implementing this interface.<br><br>
- *
- * Finally, please note that an implementation can target different parts of the
+ * Please note that an implementation can target different parts of the
  * protocol. Next to classes that implement record harvesting, there could be a
- * class supplying the primitives for obtaining prefixes or a class implementing
- * static harvesting.
+ * class supplying the primitives for obtaining prefixes or a class that
+ * implements static harvesting.
  *
  * @author Kees Jan van de Looij (MPI-PL)
  */
@@ -75,25 +70,21 @@ public interface Harvesting {
     
 
     /**
-     * <br> Create a list of metadata elements from the response<br><br>
+     * <br> Create metadata elements from the response<br><br>
      * 
      * @return  false if there was an error, true otherwise
      */
     public boolean processResponse ();
     
     /**
-     * <br> Return the next metadata element in the list<br><br>
+     * <br> Return the next metadata element <br><br>
      *
-     *     kj: does not have to be a list, can be a single record
-     * 
-     * Could be parsedProcessed due to adapt to ListIdentifiers
-     * 
      * @return  null if an error occurred, otherwise the next element
      */
     public Object parseResponse ();
     
     /**
-     * <br> Check if the list is fully parsed<br><br>
+     * <br> Check if all metadata elements have been parsed<br><br>
      * 
      * @return  true if it is, false otherwise
      */

@@ -139,13 +139,13 @@ class Worker implements Runnable {
     private boolean listIdentifiersScenario(ActionSequence actions) {
 
         for (;;) {// request a list of identifier and prefix pairs
-            if (!provider.recordHarvesting.request() ||
-                !provider.recordHarvesting.processResponse()) {
+            if (!provider.listHarvesting.request() ||
+                !provider.listHarvesting.processResponse()) {
                 // something went wrong, no identifiers for this endpoint
                 return false;
             } else {
                 // received response 
-                if (!provider.recordHarvesting.requestMore()) {
+                if (!provider.listHarvesting.requestMore()) {
                     // finished requesting
                     break;
                 }
@@ -156,11 +156,11 @@ class Worker implements Runnable {
            identifies.
          */
         for (;;) {
-            if (provider.recordHarvesting.fullyParsed()) {
+            if (provider.listHarvesting.fullyParsed()) {
                 break;
             }
             Metadata record = (Metadata)
-                    provider.recordHarvesting.parseResponse();
+                    provider.listHarvesting.parseResponse();
 
             if (record == null) {
                 // something went wrong, skip the record
@@ -191,8 +191,8 @@ class Worker implements Runnable {
         Integer n = 0;
 
         for (; ; ) {
-            if (!provider.recordHarvesting.request() ||
-                !provider.recordHarvesting.processResponse()) {
+            if (!provider.listHarvesting.request() ||
+                !provider.listHarvesting.processResponse()) {
                 // something went wrong with the request, try the next prefix
                 break;
             } else {
@@ -201,7 +201,7 @@ class Worker implements Runnable {
                     /* Saving the response in the list record scenario means:
                        to save a list of records enclosed in an envelope. */
 
-                    Document response = provider.recordHarvesting.getResponse();
+                    Document response = provider.listHarvesting.getResponse();
 
                     // generate id: sequence number, provide leading zeros
 
@@ -225,11 +225,11 @@ class Worker implements Runnable {
                        request is no strip action is demanded.
                      */
                     for (; ; ) {
-                        if (provider.recordHarvesting.fullyParsed()) {
+                        if (provider.listHarvesting.fullyParsed()) {
                             break;
                         }
                         Metadata record = (Metadata)
-                                provider.recordHarvesting.parseResponse();
+                                provider.listHarvesting.parseResponse();
 
                         if (record == null) {
                         /* Something went wrong or the record has already been
@@ -243,7 +243,7 @@ class Worker implements Runnable {
                 }
 
                 // check if in principle another response would be available
-                if (!provider.recordHarvesting.requestMore()) {
+                if (!provider.listHarvesting.requestMore()) {
                     break;
                 }
             }
@@ -294,14 +294,14 @@ class Worker implements Runnable {
             if (prefixesScenario(provider, actionSequence)) {
 
                 if (provider instanceof StaticProvider){
-                    provider.recordHarvesting = new StaticRecordListHarvesting(
+                    provider.listHarvesting = new StaticRecordListHarvesting(
                             (StaticProvider) provider, prefixes);
                 } else {
                     if (scenario.equals("ListRecords")) {
-                        provider.recordHarvesting = new RecordListHarvesting(
+                        provider.listHarvesting = new RecordListHarvesting(
                                 provider, prefixes);
                     } else {
-                        provider.recordHarvesting = new IdentifierListHarvesting(
+                        provider.listHarvesting = new IdentifierListHarvesting(
                                 provider, prefixes);
                     }
                 }

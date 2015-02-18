@@ -30,7 +30,7 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * <br>List oriented application of the protocol <br><br>
+ * <br> List oriented application of the OAI protocol <br><br>
  *
  * This class provides a sorted list of elements. This list can be used by
  * extending classes to store characteristics of metadata returned by an
@@ -38,9 +38,9 @@ import java.util.List;
  * example use the list to remove duplicate record identifiers. <br><br>
  *
  * Because the class does not specify any verbs itself, extending classes need
- * to provide these. This class defines two verb methods, one for a verb with two,
- * another for a verb with five parameters. An extending class will need to
- * override these methods. <br><br>
+ * to provide these themselves. This class defines two verb methods, one for a
+ * verb with two, another for a verb with five parameters. An extending class
+ * will need to override these methods. <br><br>
  *
  * The request method is intended to iterate over sets and prefixes. Since the
  * response and therefore the method of processing it will be different for
@@ -65,18 +65,20 @@ public abstract class ListHarvesting extends AbstractListHarvesting {
     ListHarvesting(Provider provider, List<String> prefixes){
         super(provider);
         this.prefixes   = prefixes;
-        pIndex          = 0;
         response        = null;
         resumptionToken = null;
         tIndex          = 0;
 
-        // kj: response needs to be a ListRecords object
+        // check for protocol errors
+        if (prefixes == null){
+            throw new HarvestingException();
+        }
     }
     
     /**
      * Verb with two string parameters. A subclass needs to make this verb 
-     * effective for example by invoking the ListRecords or ListIdentifiers 
-     * request method. 
+     * effective for example by creating a ListRecords or ListIdentifiers
+     * class object.
      *
      * @return the response
      */
@@ -90,8 +92,8 @@ public abstract class ListHarvesting extends AbstractListHarvesting {
 
     /**
      * Verb with five string parameters. A subclass needs to make this verb 
-     * effective for example by invoking the ListRecords or ListIdentifiers 
-     * request method. 
+     * effective for example by creating a ListRecords or ListIdentifiers
+     * class method.
      *
      * @return the response
      */
@@ -106,13 +108,13 @@ public abstract class ListHarvesting extends AbstractListHarvesting {
 
     /**
      * Get the token indicating more data is available. Since a HarvesterVerb 
-     * object does not have a method for getting the token the extending classes 
-     * need to make this method effective.
+     * object does not have a method for getting the token itself, the extending
+     * classes need to make this method effective.
      * 
-     * @param  response the response
-     * @return  a string containing the token
-     * @throws  TransformerException
-     * @throws  NoSuchFieldException 
+     * @param response the response
+     * @return a string containing the token
+     * @throws TransformerException
+     * @throws NoSuchFieldException
      */
     abstract String getToken (HarvesterVerb response) throws TransformerException, 
             NoSuchFieldException;
@@ -122,22 +124,21 @@ public abstract class ListHarvesting extends AbstractListHarvesting {
      * allows. A scenario should invoke the requestMore method to determine if
      * another request should be made.
      *
-     *
-     *
      * @return false if an error occurred, true otherwise.
      */
     @Override
     public boolean request() {
 
-        // check for protocol errors
-
+        /* Check for protocol errors. Note that because of the constructor,
+           the prefixes and the provider are in place.
+         */
         if (pIndex >= prefixes.size()) {
-            throw new UnsupportedOperationException("Protocol error");
+            throw new HarvestingException();
         }
-
         if (provider.sets != null) {
+            // if sets have been defined, the sIndex should be pointing to one
             if (sIndex >= provider.sets.length) {
-                throw new UnsupportedOperationException("Protocol error");
+                throw new HarvestingException();
             }
         }
 
@@ -155,7 +156,10 @@ public abstract class ListHarvesting extends AbstractListHarvesting {
 
             // try the request
             try {
-                // try to get a response from the endpoint
+                /* Try to get a response from the endpoint. Because of the
+                   check for protocol errors, pIndex points to an element in
+                   the list.
+                 */
                 if (!(resumptionToken == null || resumptionToken.isEmpty())) {
                     // use resumption token
                     logger.debug(message[0] + prefixes.get(pIndex));

@@ -41,6 +41,8 @@ import org.xml.sax.SAXException;
  * Clients to this class can request prefixes supported by a metadata record by
  * supplying endpoint data and an action. <br><br>
  *
+ *     kj: needs to be checked
+ *
  * @author Kees Jan van de Looij (MPI-PL)
  */
 public class PrefixHarvesting extends AbstractHarvesting {

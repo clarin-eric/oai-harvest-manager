@@ -32,6 +32,7 @@ public abstract class AbstractHarvesting implements Harvesting {
 
     /** Information on where to send the request */
     final Provider provider;
+
     /** pointer to current set */
     int sIndex;
 
@@ -55,5 +56,11 @@ public abstract class AbstractHarvesting implements Harvesting {
     AbstractHarvesting(Provider provider) {
 
         this.provider = provider;
+        pIndex        = 0;
+
+        // check for protocol errors
+        if (provider == null){
+            throw new HarvestingException();
+        }
     }
 }
