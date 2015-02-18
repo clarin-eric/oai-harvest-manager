@@ -37,29 +37,34 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 /**
- * <br>This class extends the ListProtocol class by providing ListRecord type of
- * verbs. One with two parameters, for resuming, one with five for the initial
- * request. Since it implements specific verbs, it is also specific in processing
- * and parsing of the responses. <br><br>
+ * <br> Implement methods for requesting a list of records <br><br>
+ *
+ * The methods in this class invoke methods in the OCLC library that implement
+ * the OAI ListRecords verb. This verb accepts two different types of lists of
+ * parameters: one with two, and one with five parameters. Please refer to the
+ * definition of the OAI protocol for a definition of these parameters. <br><br>
+ *
+ * This class provides list based harvesting with a concrete verb to base
+ * requests on. Because supplies a specific verb, ListRecords, the response
+ * processing needed is specific also. Hence the class also implements this
+ * processing. <br><br>
  *
  * Note. If the endpoint provides a record in several sets, in the end this
  * class needs to return it to the client only once. This class will use the
  * list provided in the superclass to remove duplicate identifier and prefix
  * pairs. By using this list when parsing, the class will return a record its
- * client at most once. <br><br>
- *
- * kj: say something about the protocol
+ * client at most once.
  *
  * @author Kees Jan van de Looij (MPI-PL)
+ * @author Lari Lampen (MPI-PL, xpath parsing)
  */
 public final class RecordListHarvesting extends ListHarvesting
         implements Harvesting {
     
     private static final Logger logger = Logger.getLogger(RecordListHarvesting.class);
 
-
     /**
-     * Create object, associate endpoint data and desired prefix 
+     * Associate endpoint data and desired prefix
      * 
      * @param provider the endpoint to address in the request
      * @param prefixes the prefixes returned by the endpoint 
@@ -67,18 +72,22 @@ public final class RecordListHarvesting extends ListHarvesting
     public RecordListHarvesting(Provider provider, List<String> prefixes) {
 
         super (provider, prefixes);
-        // supply messages specific to requesting records
+        // supply the superclass with messages specific to requesting records
         message [0] = "Requesting more records with prefix ";
         message [1] = "Requesting records with prefix ";
         message [2] = "Cannot get ";
+        /* Invariant: the response is in place, please refer to the superclass
+           constructor.
+         */
     }
    
     /**
-     * Implementation of the ListRecords verb <br><br>
+     * <br> Create a request based on the two parameter ListRecords verb <br><br>
      *
-     * This implementation supplies the form of the verb used in a request
-     * based on a resumption token.
-     * 
+     * This method creates a request following a resumption token: a command
+     * based on the ListRecords verb and two parameters. It returns a ListRecord
+     * object from the OCLC library.
+     *
      * @param p1 metadata prefix
      * @param p2 resumption token
      * @return the response to the request
@@ -97,22 +106,22 @@ public final class RecordListHarvesting extends ListHarvesting
             NoSuchFieldException {
 
         // implement by returning ListRecords with the two parameters supplied
-
         return new ListRecords(p1, p2);
     }
 
     /**
-     * Implementation of the ListRecords verb <br><br>
+     * Create a request based on the five parameter ListRecords verb <br><br>
      *
-     * This implementation supplies the form of the verb used in the initial
-     * request.
+     * This method creates the initial ListRecords request: a command based
+     * on the ListRecords verb and five parameters. It returns a ListRecord
+     * object from the OCLC library.
      *
      * @param p1 endpoint URL
      * @param p2 from date, for selective harvesting
      * @param p3 until date, for selective harvesting
      * @param p4 metadata prefix
      * @param p5 set
-     * @return the response to the request
+     * @return the request
      * @throws java.io.IOException 
      * @throws org.xml.sax.SAXException
      * @throws javax.xml.parsers.ParserConfigurationException
@@ -129,50 +138,56 @@ public final class RecordListHarvesting extends ListHarvesting
             NoSuchFieldException {
 
         // implement by returning ListRecords with the five parameters supplied
-
         return new ListRecords(p1, p2, p3, p4, p5);
     }
     
     /**
-     * Get token. Here, supply the token returned by the ListRecords verb
-     * 
+     * <br> Get the resumption token associated with a specific response <br><br>
+     *
+     * This method implements a resumption token request by invoking the
+     * getResumptionToken OCLC library method.
+     *
      * @param response the response
      * @return the token
      * @throws TransformerException
      * @throws NoSuchFieldException 
      */
     @Override
-    public String getToken (HarvesterVerb response) throws TransformerException,
+    public String getToken (HarvesterVerb response) throws
+            TransformerException,
             NoSuchFieldException{
+
+        // invariant: the response is ListRecords class object
         return ((ListRecords) this.response).getResumptionToken();
     }
 
     /**
-     * Get the response
+     * <br> Get the response from the endpoin <br><br>
      *
      * @return the response
      */
     @Override
     public Document getResponse() {
+
+        // response is in place, please refer to the superclass constructor
         return response.getDocument();
     }
 
     /**
-     * Get a list of records from the response
+     * <br> Create a list of metadata elements from the response <br><br>
+     *
+     * This method filters a list of nodes from the response. The filter is
+     * an XPath expression build around the ListRecords element, the element
+     * that holds the metadata records.
+     *
+     * Note: the parseResponse method will take the list of nodes as input
      * 
      * @return true if the list was successfully created, false otherwise
      */
     @Override
     public boolean processResponse() {
-        
-        // check for protocol error
-        
-        if (response == null){
-            throw new UnsupportedOperationException("Protocol error");
-        }
 
-        // check if the response needs to be saved
-
+        // response is in place, please refer to the superclass constructor
         try {
             /* Try to create a list of records from the response. On failure,
                stop the work on the current prefix.
@@ -192,7 +207,13 @@ public final class RecordListHarvesting extends ListHarvesting
     }
 
     /**
-     * Get a record from the list
+     * <br> Return the next metadata element in the list <br><br>
+     *
+     * This method returns the next metadata element from the list of nodes
+     * created by the processResponse method. It applies XPath filtering to
+     * the header and record elements.
+     *
+     * Note: the method will skip records the endpoint has flagged as 'deleted'
      * 
      * @return null if an error occurred, otherwise the next record in the list
      */
@@ -200,13 +221,11 @@ public final class RecordListHarvesting extends ListHarvesting
     public Object parseResponse() {
         
         // check for protocol error
-        
         if (nodeList == null){
-            throw new UnsupportedOperationException("Protocol error");
+            throw new HarvestingException();
         }
                      
         // turn the next node into a document
-        // kj: check of the node needs to be cloned
         Node node = nodeList.item(nIndex).cloneNode(true);
         nIndex++;
         Document doc = provider.db.newDocument();
@@ -254,7 +273,6 @@ public final class RecordListHarvesting extends ListHarvesting
         }
         
         // create a document to store the metadata in
-        // kj: check of the node needs to be cloned
         dataNode = dataNode.cloneNode(true);
         doc = provider.db.newDocument();
         copy = doc.importNode(dataNode, true);
@@ -263,7 +281,6 @@ public final class RecordListHarvesting extends ListHarvesting
         String id = idNode.getTextContent();
         
         // check if the record has already been released by trying to add it to
-        
         IdPrefix idPrefix = new IdPrefix (id, prefixes.get(pIndex));
         if (targets.checkAndInsertSorted(idPrefix)){
             // inserted, not released to the client before
@@ -275,12 +292,22 @@ public final class RecordListHarvesting extends ListHarvesting
     }
 
     /**
-     * Check for more records in the list 
-     * 
+     * <br> Check if the list is fully parsed <br><br>
+     *
+     * This method checks if, as a consequence of repeatedly invoking
+     * processResponse the end of the list nodes created by parseResponse
+     * has been reached.
+     *
      * @return  true if there are more, false otherwise
      */
     @Override
     public boolean fullyParsed() {
+
+        // check for protocol error
+        if (nodeList == null){
+            throw new HarvestingException();
+        }
+
         return nIndex == nodeList.getLength();
     }
 }

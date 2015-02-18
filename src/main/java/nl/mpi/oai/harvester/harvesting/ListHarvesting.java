@@ -68,6 +68,8 @@ public abstract class ListHarvesting extends AbstractListHarvesting {
         response        = null;
         resumptionToken = null;
         tIndex          = 0;
+
+        // kj: response invariant needed for the implementing classes
     }
     
     /**

@@ -48,7 +48,7 @@ import java.util.List;
  * the methods in this class refer to sets.
  *
  * @author Kees Jan van de Looij (MPI-PL),
- *         xpath parsing by Lari Lampen (MPI-PL)
+ * @author Lari Lampen (MPI-PL, xpath parsing)
  */
 public final class StaticRecordListHarvesting extends AbstractListHarvesting
         implements Harvesting{

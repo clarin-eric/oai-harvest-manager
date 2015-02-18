@@ -28,7 +28,8 @@
             <xs:element name="attempted" minOccurs="1" type="xs:date"/>
             <xs:element name="harvested" minOccurs="0" type="xs:date"/>
             <xs:element name="group" type="xs:string"/>
-            <xs:element name="RecordsHarvested" type="xs:integer"/>
+            <xs:element name="CountHarvested" type="xs:integer"/>
+            <xs:element name="RecordCount" type="xs:integer"/>
             <xs:element maxOccurs="1" name="state">
                 <xs:simpleType>
                     <xs:restriction base="xs:string"> </xs:restriction>
