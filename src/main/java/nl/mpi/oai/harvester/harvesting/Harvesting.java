@@ -83,6 +83,8 @@ public interface Harvesting {
     
     /**
      * <br> Return the next metadata element in the list<br><br>
+     *
+     *     kj: does not have to be a list, can be a single record
      * 
      * Could be parsedProcessed due to adapt to ListIdentifiers
      * 

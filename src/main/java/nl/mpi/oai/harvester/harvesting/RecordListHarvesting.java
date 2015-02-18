@@ -76,9 +76,6 @@ public final class RecordListHarvesting extends ListHarvesting
         message [0] = "Requesting more records with prefix ";
         message [1] = "Requesting records with prefix ";
         message [2] = "Cannot get ";
-        /* Invariant: the response is in place, please refer to the superclass
-           constructor.
-         */
     }
    
     /**
@@ -157,6 +154,11 @@ public final class RecordListHarvesting extends ListHarvesting
             TransformerException,
             NoSuchFieldException{
 
+        // check for protocol error
+        if (response == null){
+            throw new HarvestingException();
+        }
+
         // invariant: the response is ListRecords class object
         return ((ListRecords) this.response).getResumptionToken();
     }
@@ -169,7 +171,11 @@ public final class RecordListHarvesting extends ListHarvesting
     @Override
     public Document getResponse() {
 
-        // response is in place, please refer to the superclass constructor
+        // check for protocol error
+        if (response == null){
+            throw new HarvestingException();
+        }
+
         return response.getDocument();
     }
 
@@ -187,7 +193,11 @@ public final class RecordListHarvesting extends ListHarvesting
     @Override
     public boolean processResponse() {
 
-        // response is in place, please refer to the superclass constructor
+        // check for protocol error
+        if (nodeList == null){
+            throw new HarvestingException();
+        }
+
         try {
             /* Try to create a list of records from the response. On failure,
                stop the work on the current prefix.

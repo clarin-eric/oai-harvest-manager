@@ -31,7 +31,7 @@ import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
 /**
- * <br>This class provides the GetRecord verb and the parsing specific to it
+ * <br> This class provides the GetRecord verb and the parsing specific to it
  *
  * @author Kees Jan van de Looij (MPI-PL)
  */
@@ -64,7 +64,7 @@ public class RecordHarvesting extends AbstractHarvesting {
     }
 
     /**
-     * Request the record, retry if needed <br><br>
+     * Request a record, retry if needed <br><br>
      * 
      * @return false if an error occurred, true otherwise
      */
@@ -94,42 +94,56 @@ public class RecordHarvesting extends AbstractHarvesting {
 
     @Override
     public Document getResponse() {
-        throw new UnsupportedOperationException("Not implemented yet");
+
+        // check for protocol error
+        if (response == null){
+            throw new HarvestingException();
+        } else {
+            return response.getDocument();
+        }
     }
 
     @Override
     public boolean requestMore() {
-        // in this application of the protocol, there can only be one response
-        throw new UnsupportedOperationException("Protocol error"); 
+
+        // there can only be one request
+        throw new HarvestingException();
+
     }
 
     @Override
     public boolean processResponse() {
-        // this application of the protocol does not need response processing
-        throw new UnsupportedOperationException("Protocol error");
+
+        // response processing not needed
+        throw new HarvestingException();
     }
 
     /**
-     * Get the record
+     * Return a metadata element
      *
-     * @return the record
+     * @return the element
      */
     @Override
     public Object parseResponse() {
+
+        // check for protocol error
+        if (response == null){
+            throw new HarvestingException();
+        }
+
         parsed = true;
         logger.info("Fetched " + prefix + " record " + identifier);
 
         /* Get the OAI envelope from the response. Use it, together with the
-           identifier and provider from the protocol, to create and return a
-           metadata record.
+           identifier and provider, to create and return a metadata element.
         */
         return new Metadata(identifier, response.getDocument(), provider, true, false);
     }
 
     /**
-     * Check if the record was returned
+     * Check if the metadata element was returned
      * 
-     * @return  true if the record was returned, false otherwise     
+     * @return true if the record was returned, false otherwise
      */
     @Override
     public boolean fullyParsed() {
