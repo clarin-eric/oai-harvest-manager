@@ -24,32 +24,54 @@ import nl.mpi.oai.harvester.Provider;
 import java.util.List;
 
 /**
- * <br>Elements common to all applications of the OAI harvesting protocol<br><br>
+ * <br> Definition of elements common to various implementations of the
+ * protocol defined by the Harvesting interface <br><br>
  *
  * @author Kees Jan van de Looij (MPI-PL)
  */
 public abstract class AbstractHarvesting implements Harvesting {
 
-    /** Information on where to send the request */
+    /**
+     * <br> Information on where to send the request
+     */
     final Provider provider;
 
-    /** pointer to current set */
+    /**
+     * <br> Pointer to current set
+     *
+     * Please note the only the AbstractListHarvesting class updates this
+     * index.
+     */
     int sIndex;
 
-    /** Metadata prefixes that need to be matched */
+    /** <br> Metadata prefixes that need to be matched
+     *
+     */
     List<String> prefixes;
-    /** Pointer to current prefix */
+    /**
+     * <br> Pointer to current prefix
+     *
+     * Please note the only the AbstractListHarvesting class updates this
+     * index.
+     */
     int pIndex;
 
-    /** Response to the OAI request */
+    /**
+     * <br> Response to the OAI request
+     */
     HarvesterVerb response;
 
-    /** The resumption token send by the previous request. Please note that not
-        every mode of harvesting needs it. */
+    /**
+     * <br> The resumption token send by the previous request
+     *
+     * Please note that not every implementation of the protocol defined by
+     * the Harvesting interface might need it.
+     */
     String resumptionToken;
 
     /**
-     * Associate a OAI provider with the application of the OAI protocol
+     * <br> Associate an OAI endpoint with the protocol defined by the
+     * Harvesting interface.
      *
      * @param provider the provider
      */

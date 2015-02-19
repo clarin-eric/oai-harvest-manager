@@ -31,11 +31,14 @@ import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
 /**
- * <br> This class provides the GetRecord verb and the parsing specific to it
+ * <br> Record harvesting <br><br>
+ *
+ * This class provides the GetRecord verb and the processing and parsing
+ * specific to it.
  *
  * @author Kees Jan van de Looij (MPI-PL)
  */
-public class RecordHarvesting extends AbstractHarvesting {
+public final class RecordHarvesting extends AbstractHarvesting {
 
     private static final Logger logger = Logger.getLogger(RecordHarvesting.class);
 
@@ -51,9 +54,9 @@ public class RecordHarvesting extends AbstractHarvesting {
     /**
      * Associate provider, desired prefix and identifier with the request <br><br>
      * 
-     * @param provider    information on where to send the request
-     * @param prefix      the prefix of the desired record
-     * @param identifier  the identifier of the record
+     * @param provider   information on where to send the request
+     * @param prefix     the prefix of the desired record
+     * @param identifier the identifier of the record
      */
     public RecordHarvesting(Provider provider, String prefix, String identifier){
         super(provider);
@@ -108,7 +111,6 @@ public class RecordHarvesting extends AbstractHarvesting {
 
         // there can only be one request
         throw new HarvestingException();
-
     }
 
     @Override

@@ -19,8 +19,11 @@
 package nl.mpi.oai.harvester.harvesting;
 
 /**
+ * <br> Raise a runtime exception because of incorrectly applying the h
+ * harvesting protocol defined in the Harvesting interface.
  *
  * @author Kees Jan van de Looij (MPI-PL)
  */
 public class HarvestingException extends RuntimeException {
+
 }

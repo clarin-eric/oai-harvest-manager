@@ -26,32 +26,40 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 /**
- * <br>Harvesting depending on a list<br><br>
+ * <br> A list based store in tne Harvesting implementation <br><br>
  *
- * This class gathers the fields and methods needed for harvesting that are
- * typical for harvesting depending on a list. You could, for example think
- * of harvesting using a list of identifiers or a list of records.
+ * This class implements the harvesting protocol defined in the Harvesting
+ * interface class by providing a list structure for metadata elements and
+ * connecting the requestMore and fullyParsed methods to this list. <br><br>
+ *
+ * The RecordListHarvesting class uses this class to store identifier and
+ * prefix pairs in order to check for duplicate metadata elements. Conversely,
+ * the IdentifierListHarvesting class employs this class to first store
+ * identifier and prefix pairs, remove duplicates, an fetch the records later.
  *
  * @author Kees Jan van de Looij (MPI-PL)
  */
-abstract public class AbstractListHarvesting extends AbstractHarvesting {
+abstract public class AbstractListHarvesting extends AbstractHarvesting
+        implements Harvesting{
 
     private static final Logger logger = Logger.getLogger(
             AbstractListHarvesting.class);
 
-    /** <br> a list of nodes kept between the processing and parsing of a
-     *  response
+    /**
+     * <br> a list of nodes kept between the processing and parsing of a
+     * response
      */
     NodeList nodeList;
     /** <br> pointer to next element that needs to be checked */
     int nIndex;
 
-    /** <br> A list to store identifier and prefix pairs in. A pair can be in
-     *  the list only once, thus ensuring the extending classes to return every
-     *  record identified exactly once.
+    /**
+     * <br> A list to store identifier and prefix pairs in. A pair can be in
+     * the list only once, thus ensuring the extending classes to return every
+     * metadata element identified exactly once.
      */
     final SortedArrayList targets;
-    /** pointer to next element to be parsed and returned */
+    /** <br> pointer to next element to be parsed and returned */
     int tIndex;
 
     /**
@@ -69,10 +77,11 @@ abstract public class AbstractListHarvesting extends AbstractHarvesting {
     }
     
     /**
-     * <br> ArrayList sorted according a to the relation defined on the elements
+     * <br> ArrayList sorted according a to the relation defined on the
+     * elements
      *
      * Note: since the class does not depend on the outer class, consider it
-     *       static.
+     * static.
      */
     static class SortedArrayList extends ArrayList<IdPrefix> {
         
@@ -128,17 +137,17 @@ abstract public class AbstractListHarvesting extends AbstractHarvesting {
      * Note: like SortedArrayList class, this class can be static.
      *
      * Note: because of the ordering relation defined, the class implements
-     *       an equals method next to the compareTo method.
+     * an equals method next to the compareTo method.
      */
     static class IdPrefix implements Comparable<IdPrefix> {
 
-        /** constituents of the idPrefix, the identifier part of the pair*/
+        /** <br> constituents of the idPrefix, the identifier part of the pair*/
         final String identifier;
-        /** Prefix part of the pair */
+        /** <br> Prefix part of the pair */
         final String prefix;
 
         /**
-         * <br>Create an identifier and prefix pair
+         * <br> Create an identifier and prefix pair
          *
          * @param identifier the identifier part of the pair
          * @param prefix the prefix part of the pair
@@ -149,7 +158,7 @@ abstract public class AbstractListHarvesting extends AbstractHarvesting {
         }
 
         /**
-         * <br> Compare the IdPrefix object to another one<br><br>
+         * <br> Compare the IdPrefix object to another one <br><br>
          *
          * Please note that this method defines an ordering relation that is
          * not compatible with the object.equals method. Because the class
@@ -176,7 +185,7 @@ abstract public class AbstractListHarvesting extends AbstractHarvesting {
         }
 
         /**
-         * <br> Check if the IdPrefix object is equal to another object<br><br>
+         * <br> Check if the IdPrefix object is equal to another object <br><br>
          *
          * @param object another IdPrefix object
          * @return true if the other object is of type IdPrefix type, and both
@@ -223,21 +232,21 @@ abstract public class AbstractListHarvesting extends AbstractHarvesting {
     }
 
     /**
-     * Determine if a client scenario should make another request to the
+     * <br> Determine if a client scenario should make another request to the
      * endpoint. At first, iterate over the resumption tokens the endpoint
      * might generate. After that, iterate over the prefixes supplied. For
-     * each prefix iterate over the sets indicated in the provider object.
+     * each prefix iterate over the sets indicated in the provider object. <br><br>
      *
      * Note: this is the only method that increments the pIndex and sIndex
-     * fields.
+     * fields. <br><br>
      *
-     * Invariant. When harvesting does not involve sets:
+     * Invariant. When harvesting does not involve sets: <br><br>
      *
-     * pIndex <= prefixes.size
+     * pIndex <= prefixes.size <br><br>
      *
-     * otherwise:
+     * otherwise: <br><br>
      *
-     * pIndex <= prefixes.size && sIndex <= provider.sets.length
+     * pIndex <= prefixes.size && sIndex <= provider.sets.length <br><br>
      *
      * @return true if the endpoint could still have metadata available
      *         associated with the set and prefix indicated by pIndex and
@@ -284,8 +293,8 @@ abstract public class AbstractListHarvesting extends AbstractHarvesting {
     }
 
     /**
-     * Determine if a client scenario has fully traversed the list of target
-     * records
+     * <br> Determine if a client scenario has fully traversed the list of
+     * target records
      *
      * Invariant: pIndex <= prefixes.size
      *

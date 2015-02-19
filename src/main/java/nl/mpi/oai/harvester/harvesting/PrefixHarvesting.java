@@ -36,37 +36,46 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 /**
- * <br>Prefix targeted application of the protocol <br><br>
+ * <br> Prefix harvesting <br><br>
  *
- * Clients to this class can request prefixes supported by a metadata record by
- * supplying endpoint data and an action. <br><br>
- *
- *     kj: needs to be checked
+ * This class provides for a way to obtain the prefixes supported by an OAI
+ * endpoint. A client can request prefixes matching the format supplied by an
+ * action. After processing the endpoint's response, the client can obtain the
+ * prefixes one after the other by parsing.
  *
  * @author Kees Jan van de Looij (MPI-PL)
  */
-public class PrefixHarvesting extends AbstractHarvesting {
+public class PrefixHarvesting extends AbstractHarvesting implements
+        Harvesting {
     
     private static final Logger logger = Logger.getLogger(
             PrefixHarvesting.class);
 
-    /** list response elements to be parsed and made available */
+    /**
+     * <br> List response elements to be parsed and made available
+     */
     NodeList nodeList;
     
-    /** Information on where to send the request */
+    /**
+     * <br> Information on where to send the request
+     */
     final Provider provider;
     
-    /** Transformations to be performed on the metadata records */
+    /**
+     * <br< Transformations to be performed on the metadata records
+     */
     final ActionSequence actions;
     
-    /** Pointer to next element to be parsed and returned */
+    /**
+     * <br> Pointer to next element to be parsed and returned
+     */
     int index;
 
     /**
-     * Create object, associate provider data and desired prefix 
+     * <br> Create object, associate provider data and desired prefix
      * 
-     * @param provider  the endpoint to address in the request
-     * @param actions   specify the format requested
+     * @param provider the endpoint to address in the request
+     * @param actions  specify the format requested
      */
     public PrefixHarvesting(Provider provider, ActionSequence actions) {
         super (provider);
@@ -78,9 +87,9 @@ public class PrefixHarvesting extends AbstractHarvesting {
     }
 
     /**
-     * Request prefixes
+     * <br> Request prefixes
      * 
-     * @return  false if there was an error, true otherwise     
+     * @return false if there was an error, true otherwise
      */
     @Override
     public boolean request() {
@@ -109,20 +118,31 @@ public class PrefixHarvesting extends AbstractHarvesting {
 
     @Override
     public Document getResponse() {
-        throw new UnsupportedOperationException("Not implemented yet");
+        // check for protocol error
+        if (response == null){
+            throw new HarvestingException();
+        } else {
+            return response.getDocument();
+        }
     }
 
     /**
-     * Not supposed to be invoked in this implementation 
+     * <br>
      */
     @Override
     public boolean requestMore() {
-        throw new UnsupportedOperationException("Protocol error");
+        // there can only be one request
+        throw new HarvestingException();
     }
 
     /**
-     * Get a list of prefixes from the response
-     * 
+     * <br> Create a list of prefixes from the response <br><br>
+     *
+     * This method filters a list of nodes from the response. The filter is
+     * an XPath expression build around the metadataFormat element, the element
+     * that holds the prefixes. The parseResponse method takes the list of
+     * nodes as input.
+     *
      * @return  true if the list was successfully created, false otherwise
      */
     @Override
@@ -165,8 +185,12 @@ public class PrefixHarvesting extends AbstractHarvesting {
     }
 
     /**
-     * Get a prefix from the list
-     * 
+     * <br> Return the next prefix element in the list <br><br>
+     *
+     * This method returns the next metadata element from the list of nodes
+     * created by the processResponse method. It applies XPath filtering to
+     * the metadataPrefix, schema and metadataNamespace elements.
+     *
      * @return  null if an error occurred or the prefix in the response does
      *          not match the specified type, otherwise the next prefix 
      */
@@ -229,9 +253,13 @@ public class PrefixHarvesting extends AbstractHarvesting {
     }
     
     /**
-     * Check for more records in the list 
+     * <br> Check if the list is fully parsed <br><br>
+     *
+     * This method checks if, as a consequence of repeatedly invoking
+     * processResponse the end of the list nodes created by parseResponse
+     * has been reached.
      * 
-     * @return  true if there are more, false otherwise
+     * @return true if there are more, false otherwise
      */
     @Override
     public boolean fullyParsed() {

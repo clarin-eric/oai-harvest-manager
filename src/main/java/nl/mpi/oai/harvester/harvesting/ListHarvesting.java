@@ -30,30 +30,28 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * <br> List oriented application of the OAI protocol <br><br>
+ * <br> A request method in a list based harvesting protocol <br><br>
  *
- * This class provides a sorted list of elements. This list can be used by
- * extending classes to store characteristics of metadata returned by an
- * endpoint. Because elements can only occur once in the list, classes can for
- * example use the list to remove duplicate record identifiers. <br><br>
+ * This class adds a request method of the protocol defined by the Harvesting
+ * interface. While the method does not invoke a particular OAI primitive, it
+ * expects these primitives to be list related, like for example ListRecords or
+ * ListIdentifiers. This class defines two verb methods, one for a verb with
+ * two, another for a verb with five parameters. <br><br>
  *
- * Because the class does not specify any verbs itself, extending classes need
- * to provide these themselves. This class defines two verb methods, one for a
- * verb with two, another for a verb with five parameters. An extending class
- * will need to override these methods. <br><br>
- *
- * The request method is intended to iterate over sets and prefixes. Since the
- * response and therefore the method of processing it will be different for
- * different types of verbs, this class leaves the other methods in the protocol
- * abstract. The extending class will have to implement these. <br><br>
+ * The request iterates over sets and prefixes. Since the response and therefore
+ * the method of processing it will be different for different types of verbs,
+ * this class leaves the other methods in the protocol abstract. <br><br>
  *
  * @author keeloo
  */
-public abstract class ListHarvesting extends AbstractListHarvesting {
+public abstract class ListHarvesting extends AbstractListHarvesting implements
+        Harvesting {
 
     private static final Logger logger = Logger.getLogger(ListHarvesting.class);
-    
-    /** Messages specific to extending classes */
+
+    /**
+     * Messages specific to extending classes
+     */
     final static String[] message = new String [3];
 
     /**
@@ -186,7 +184,9 @@ public abstract class ListHarvesting extends AbstractListHarvesting {
 
             } catch (IOException
                     | ParserConfigurationException
-                    | SAXException | TransformerException | NoSuchFieldException e) {
+                    | SAXException
+                    | TransformerException
+                    | NoSuchFieldException e) {
 
                 // invalidate the assumption that everything went fine
                 done = false;
@@ -220,7 +220,7 @@ public abstract class ListHarvesting extends AbstractListHarvesting {
     }
 
     /**
-     * <br> Get the response from the endpoint <br><br>
+     * <br> Get the response <br><br>
      *
      * @return the response
      */

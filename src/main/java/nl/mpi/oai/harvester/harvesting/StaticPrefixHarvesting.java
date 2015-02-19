@@ -15,10 +15,12 @@ import javax.xml.xpath.XPathExpressionException;
 import java.io.IOException;
 
 /**
- * <br> Get prefixes<br><br>
+ * <br> Get prefixes <br><br>
  *
- * The methods in the class establish a protocol that fits a scenario that
- * fetches prefixes. Because a static endpoint can only present its content
+ * <br> Get the prefixes supported by a static endpoint <br><br>
+ *
+ * The methods in the class establish a protocol that fits a scenario for
+ * prefix fetching. Because a static endpoint can only present its content
  * in one way only, a request for prefixes results in a response that contains
  * all the data the endpoint contains. <br><br>
  *

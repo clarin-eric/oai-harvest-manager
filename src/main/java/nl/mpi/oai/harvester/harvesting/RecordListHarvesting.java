@@ -37,18 +37,18 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 /**
- * <br> Implement methods for requesting a list of records <br><br>
+ * <br> List based record harvesting <br><br>
  *
  * This class provides list based harvesting with a concrete verb to base
  * requests on. Because supplies a specific verb, ListRecords, the response
  * processing needed is specific also. Hence the class also implements this
  * processing. <br><br>
  *
- * Note. If the endpoint provides a record in several sets, in the end this
- * class needs to return it to the client only once. This class will use the
- * list provided in the superclass to remove duplicate identifier and prefix
- * pairs. By using this list when parsing, the class will return a record its
- * client at most once.
+ * Since an endpoint might provide a metadata element in different sets, and
+ * record harvesting might involve more than one set, a metadata record could
+ * be presented to the client more than once. This class provides every record
+ * only once. It uses the list provided by the superclass to remove duplicate
+ * identifier and prefix pairs.
  *
  * @author Kees Jan van de Looij (MPI-PL)
  * @author Lari Lampen (MPI-PL, xpath parsing)

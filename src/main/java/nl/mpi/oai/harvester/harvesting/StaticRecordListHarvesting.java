@@ -32,8 +32,8 @@ import java.util.List;
 /**
  * <br> Get metadata records represented in a static content <br><br>
  *
- * The methods in the class establish a protocol that fits a scenario that
- * lists records. Because the class extends AbstractListHarvesting, and
+ * The methods in the class establish a protocol that fits a scenario for
+ * record listing. Because the class extends AbstractListHarvesting, and
  * implements harvesting of a static endpoint, the response of this endpoint
  * is already in place after retrieving the prefixes. StaticProvider class
  * objects contain the endpoint's response. This means that after invoking
@@ -99,7 +99,7 @@ public final class StaticRecordListHarvesting extends AbstractListHarvesting
     }
 
     /**
-     * <br> Get the endpoint response to the request
+     * <br> Get the response
      *
      * @return the response
      */
