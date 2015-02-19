@@ -36,26 +36,22 @@ import javax.xml.datatype.XMLGregorianCalendar;
 /**
  * <br> A factory for harvesting overview objects
  *
- * Objects giving a view on harvesting typically carry data about harvesting at
- * the level of an endpoint or the process of harvesting in general. <br><br>
- * 
- * By creating an object of this overview class, the harvest manager has access
- * to the data about harvesting stored in XML format. <br><br>
- * 
- * The harvester can retrieve endpoint data by supplying the endpoint URL. In
- * principle it could also generate new default endpoint views. <br><br>
+ * A harvester overview object packages both general data about the harvesting
+ * cycle as well as information specific to individual endpoints that have been
+ * harvested at least once before. <br><br>
  *
- * Once retrieved, on harvesting, endpoint data can be modified, thus recording
- * the current state of harvesting. When harvesting is done, the harvesting
- * overview should be finalised. If it is not, the changes made to the endpoint
- * data will not be saved. <br><br>
+ * By supplying its URI, a client can identify an endpoint. By interpreting the
+ * data recorded, the client can decide if an endpoint needs to be harvested,
+ * and also, which method of harvesting should be applied. The client can update
+ * the endpoint data to reflect the harvesting attempt. <br><br>
  *
- * The HarvestingOverview class implements the abstract Endpoint and
- * Harvesting classes to be used by the harvest manager. It does this by
- * invoking methods from the generated sources. So, in the process of accessing
- * endpoint and harvesting data, the harvest manager will only deal with
- * abstract objects. In this way, however only to some extend, details of the
- * implementation are hidden.
+ * When harvesting is done, the harvesting overview should be finalised. If it
+ * is not, the changes made to the endpoint data will not be saved. <br><br>
+ *
+ * Please note that the HarvestingOverview class implements the Endpoint and
+ * Harvesting interfaces by invoking methods from the generated sources. This
+ * means that in the process of of accessing endpoint and harvesting data, a
+ * client will only deal with abstract objects.
  *
  * @author Kees Jan van de Looij (MPI-PL)
  */
@@ -104,10 +100,6 @@ public final class HarvestingOverview {
         /**
          * Return the date by invoking generated methods
          *
-         * http://blog.jetbrains.com/idea/2012/02/new-magic-constant-inspection/
-         *
-         * kj: have a look at this method
-         *
          * @return the date
          */
         @Override
@@ -118,17 +110,25 @@ public final class HarvestingOverview {
             XMLGregorianCalendar XMLDate;
             XMLDate = harvesting.getHarvestFromDate();
 
-            /* kj: it is not exactly clear why the following
-               XMLDate.toString() would be equal to 1971-11-03
-             */
+            /* kj: check this
 
-//            Calendar c = Calendar.getInstance();
-//
-//            c.set(XMLDate.getYear(), XMLDate.getMonth(), XMLDate.getDay());
+              XMLDate.toString() // would be equal to 1971-11-03
+
+              Calendar c = Calendar.getInstance();
+
+              c.set(XMLDate.getYear(), XMLDate.getMonth(), XMLDate.getDay());
+
+              The Jetbrains code check reveals a magic endpoint:
+
+              http://blog.jetbrains.com/idea/2012/02/new-magic-constant-inspection/
+
+              It looks like this problem is not too serious. Moreover, we can do
+              without the XMLDate conversion to Gregorian
+
+              return c.toString();
+            */
 
             // epoch zero means no previous harvest
-
-//          return c.toString();
 
             return XMLDate.toString();
         }
@@ -143,7 +143,7 @@ public final class HarvestingOverview {
     private class EndPointAdapter implements Endpoint {
 
         // reference to a generated type object representing the XML 
-        EndpointType e;
+        EndpointType endpointType;
 
         /**
          * Create default EndpointType object
@@ -152,15 +152,15 @@ public final class HarvestingOverview {
          */
         private EndpointType CreateDefault(String endpointURI) {
 
-            e = factory.createEndpointType();
+            endpointType = factory.createEndpointType();
 
-            // set some elements in the endpoint
-            e.setBlock(Boolean.FALSE);
-            e.setIncremental(Boolean.TRUE);
-            e.setURI(endpointURI);
-            e.setState("something might be wrong here");
+            // set endpoint to default values
+            endpointType.setBlock(Boolean.FALSE);
+            endpointType.setIncremental(Boolean.TRUE);
+            endpointType.setURI(endpointURI);
+            endpointType.setState("initialised");
 
-            return e;
+            return endpointType;
         }
 
         /**
@@ -173,20 +173,20 @@ public final class HarvestingOverview {
         private EndpointType FindEndpoint(String endpointURI) {
 
             // assume the endpoint is not there
-            e = null;
+            endpointType = null;
 
             // iterate over the elements in the harvested element
             Boolean found = false;
 
             for (int i = 0; i < harvesting.getEndpoint().size() && !found; i++) {
-                e = harvesting.getEndpoint().get(i);
-                if (e.getURI().compareTo(endpointURI) == 0) {
+                endpointType = harvesting.getEndpoint().get(i);
+                if (endpointType.getURI().compareTo(endpointURI) == 0) {
                     found = true;
                 }
             }
 
             if (found) {
-                return e;
+                return endpointType;
             } else {
                 return null;
             }
@@ -198,14 +198,14 @@ public final class HarvestingOverview {
         EndPointAdapter(String endpointURI) {
 
             // look for the endpoint in the XML data            
-            e = FindEndpoint(endpointURI);
+            endpointType = FindEndpoint(endpointURI);
 
-            if (e == null) {
+            if (endpointType == null) {
                 // if it is not in the XML, create a default endpoint data
-                e = CreateDefault(endpointURI);
+                endpointType = CreateDefault(endpointURI);
 
                 // and add this data to the XML
-                harvesting.getEndpoint().add(e);
+                harvesting.getEndpoint().add(endpointType);
             }
         }
 
@@ -217,22 +217,30 @@ public final class HarvestingOverview {
         @Override
         public String GetRecentHarvestDate() {
 
-            // return the date of the previous harvest
+            // convert XMLGregorianCalendar to string
 
             XMLGregorianCalendar XMLDate;
-            XMLDate = e.getHarvested();
+            XMLDate = harvesting.getHarvestFromDate();
 
-            // what if the element is not in the XML ?
+            /* kj: check this
 
-            // kj: another magical constant
+              XMLDate.toString() // would be equal to 1971-11-03
 
-//            Calendar c = Calendar.getInstance();
-//
-//            c.set(XMLDate.getYear(), XMLDate.getMonth(), XMLDate.getDay());
+              Calendar c = Calendar.getInstance();
+
+              c.set(XMLDate.getYear(), XMLDate.getMonth(), XMLDate.getDay());
+
+              The Jetbrains code check reveals a magic endpoint:
+
+              http://blog.jetbrains.com/idea/2012/02/new-magic-constant-inspection/
+
+              It looks like this problem is not too serious. Moreover, we can do
+              without the XMLDate conversion to Gregorian
+
+              return c.toString();
+            */
 
             // epoch zero means no previous harvest
-
-//            return c.toString();
 
             return XMLDate.toString();
         }
@@ -261,19 +269,19 @@ public final class HarvestingOverview {
 
                 // in any case, at this date an attempt was made
 
-                e.setAttempted(XMLDate);
+                endpointType.setAttempted(XMLDate);
 
                 if (done) {
 
                     // set a new date for incremental harvesting
 
-                    e.setHarvested(XMLDate);
+                    endpointType.setHarvested(XMLDate);
                 }
 
             } catch (DatatypeConfigurationException ex) {
 
                 Logger.getLogger(HarvestingOverview.class.getName()).log(
-                        Level.SEVERE, null, e);
+                        Level.SEVERE, null, endpointType);
             }
         }
 
@@ -285,7 +293,7 @@ public final class HarvestingOverview {
          */
         @Override
         public boolean retry() {
-            return e.isRetry();
+            return endpointType.isRetry();
         }
 
         /**
@@ -297,7 +305,7 @@ public final class HarvestingOverview {
          */
         @Override
         public boolean allowIncrementalHarvest() {
-            return e.isIncremental();
+            return endpointType.isIncremental();
         }
 
         /**
@@ -309,16 +317,15 @@ public final class HarvestingOverview {
          */
         @Override
         public boolean doNotHarvest() {
-            return e.isBlock();
+            return endpointType.isBlock();
         }
     }
 
     /**
-     * Put data back in the XML in the file remembered from the construction
-     * <p/>
-     * Create an overview based on the XML in a file
+     * <br> Associate the overview with an XML file <br><br>
      *
-     * kj: check this documentation
+     * This constructor initialises the harvestingType and endpointType objects
+     * wrapped in the overview class with data from the file.
      *
      * @param fileName name of the file
      */
@@ -348,10 +355,7 @@ public final class HarvestingOverview {
     }
 
     /**
-     * <br> Ask the factory for harvesting mode and date determining incremental
-     * harvesting <br><br>
-     *
-     * For a definition of the mode, please refer to Harvesting interface
+     * <br> Create an adapter for the harvestingType object <br><br>
      *
      * @return harvesting data
      */
@@ -361,7 +365,10 @@ public final class HarvestingOverview {
     }
 
     /**
-     * Ask the factory for data about the endpoint identified by the URI
+     * <br> Create an adapter for an endpointType object <br><br>
+     *
+     * This method returns the adapter object for the endpoint indicated
+     * by the endpointURI
      *
      * @param endpointURI the URI of the endpoint state requested
      * @return the endpoint
@@ -372,7 +379,7 @@ public final class HarvestingOverview {
     }
 
     /**
-     * Close the harvesting overview
+     * Save harvesting overview
      *
      */
     @Override
