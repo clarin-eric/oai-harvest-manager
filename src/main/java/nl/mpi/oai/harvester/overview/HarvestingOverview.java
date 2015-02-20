@@ -285,6 +285,26 @@ public final class HarvestingOverview {
             }
         }
 
+        @Override
+        public String getGroup() {
+            return null;
+        }
+
+        @Override
+        public void setGroup(String group) {
+
+        }
+
+        @Override
+        public int getCount() {
+            return 0;
+        }
+
+        @Override
+        public void setCount(int count) {
+
+        }
+
         /**
          * Check if full harvest is required by invoking generated methods
          *
