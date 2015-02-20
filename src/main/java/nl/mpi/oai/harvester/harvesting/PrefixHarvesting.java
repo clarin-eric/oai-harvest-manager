@@ -143,7 +143,7 @@ public class PrefixHarvesting extends AbstractHarvesting implements
      * that holds the prefixes. The parseResponse method takes the list of
      * nodes as input.
      *
-     * @return  true if the list was successfully created, false otherwise
+     * @return true if the list was successfully created, false otherwise
      */
     @Override
     public boolean processResponse() {
@@ -191,13 +191,13 @@ public class PrefixHarvesting extends AbstractHarvesting implements
      * created by the processResponse method. It applies XPath filtering to
      * the metadataPrefix, schema and metadataNamespace elements.
      *
-     * @return  null if an error occurred or the prefix in the response does
-     *          not match the specified type, otherwise the next prefix 
+     * @return null if an error occurred or the prefix in the response does
+     *         not match the specified type, otherwise the next prefix
      */
     @Override
     public Object parseResponse() {
 
-        // index points to the previous prefix node added to the list, update it
+        // index points to the next prefix node added to the list
 
         Node node = nodeList.item(index);
         index++;

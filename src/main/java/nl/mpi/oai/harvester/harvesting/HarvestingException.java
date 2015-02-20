@@ -24,6 +24,6 @@ package nl.mpi.oai.harvester.harvesting;
  *
  * @author Kees Jan van de Looij (MPI-PL)
  */
-public class HarvestingException extends RuntimeException {
+public final class HarvestingException extends RuntimeException {
 
 }
