@@ -81,7 +81,7 @@ public interface Endpoint {
      *
      * @return the date
      */
-    public abstract String GetRecentHarvestDate();
+    public abstract String getRecentHarvestDate();
 
     /**
      * <br> Indicate success or failure <br><br>
@@ -92,5 +92,34 @@ public interface Endpoint {
      *
      * @param done true in case of success, false otherwise
      */
-    public abstract void DoneHarvesting(Boolean done);
+    public abstract void doneHarvesting(Boolean done);
+
+    /**
+     * <br> Get the group
+     *
+     * @return the group the endpoint belongs to
+     *
+     */
+    public abstract String getGroup ();
+
+    /**
+     * <br> Set the group
+     *
+     * @param group the group the endpoint belongs to
+     */
+    public abstract void setGroup (String group);
+
+    /**
+     * <br> Get the record count
+     *
+     * @return the number of records harvested
+     */
+    public int getCount ();
+
+    /**
+     * <br> Set record count
+     *
+     * @param count the number of records harvested
+     */
+    public void setCount (int count);
 }

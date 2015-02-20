@@ -215,7 +215,7 @@ public final class HarvestingOverview {
          * @return the date
          */
         @Override
-        public String GetRecentHarvestDate() {
+        public String getRecentHarvestDate() {
 
             // convert XMLGregorianCalendar to string
 
@@ -252,7 +252,7 @@ public final class HarvestingOverview {
          *             successfully, false otherwise
          */
         @Override
-        public void DoneHarvesting(Boolean done) {
+        public void doneHarvesting(Boolean done) {
 
             // try to get the current date
 
