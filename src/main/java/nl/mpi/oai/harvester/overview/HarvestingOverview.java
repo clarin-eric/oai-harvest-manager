@@ -316,6 +316,16 @@ public final class HarvestingOverview {
             return endpointType.isRetry();
         }
 
+        @Override
+        public String getURI() {
+            return null;
+        }
+
+        @Override
+        public void setURI(String URI) {
+
+        }
+
         /**
          * Check if incremental harvest is allowed by invoking generated
          * methods
@@ -336,7 +346,7 @@ public final class HarvestingOverview {
          * harvesting, false otherwise
          */
         @Override
-        public boolean doNotHarvest() {
+        public boolean blocked() {
             return endpointType.isBlock();
         }
     }

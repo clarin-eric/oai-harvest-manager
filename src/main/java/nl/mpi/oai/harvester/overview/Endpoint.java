@@ -25,6 +25,12 @@ package nl.mpi.oai.harvester.overview;
  * element contains data that you can interpret as the state of the endpoint
  * in a repeating harvesting cycle. <br><br>
  *
+ * kj: XML should serve as an example
+ *
+ * kj: default values need to be defined in the HarvestingOverview class
+ *
+ * kj: explain that what 'harvesting' means depends on the mode of the cycle
+ *
  * This interface can for example be implemented by an adapter class, a class
  * mediating between the code generated on the basis of the XSD. The adapter
  * class bridges the gap from the generated types to the types would ideally
@@ -40,55 +46,91 @@ package nl.mpi.oai.harvester.overview;
 public interface Endpoint {
 
     /**
-     * <br> Check if a retry is allowed for the endpoint <br><br>
-     * 
-     * Only if true and if the harvesting manager is in retry mode, the 
-     * records added to the endpoint after the harvested date will be eligible 
-     * for a new harvesting attempt.
-     * 
-     * @return true or false 
+     * <br> Get the endpoint URI <br><br>
+     *
+     * @return endpoint URI
      */
-    public abstract boolean retry();
-    
+    public abstract String getURI ();
+
     /**
-     * <br> Check if incremental harvesting is allowed <br><br>
-     * 
-     * Only if true, incremental harvesting, if specified at the general level,
-     * will be carried out. In this case the date the the previous successful
-     * harvest determines which records will be requested from the endpoint.
-     * 
-     * @return true or false
+     * <br> Set the endpoint URI <br><br>
+     *
+     * The URI by which the harvesting cycle will try to connect to the
+     * endpoint. Setting the value of the URI only makes sense in case the
+     * cycle was given the URI of an endpoint not known to this interface. In
+     * that case, a new endpoint,
+     *
+     * @param URI the URI of the endpoint
+     */
+    public abstract void setURI (String URI);
+
+    /**
+     * <br> Find out if an endpoint is blocked <br><br>
+     *
+     * If blocked, the cycle will not try to harvest the endpoint, regardless
+     * of any other specification.
+     *
+     * Note: there is no method for blocking the endpoint. The decision to
+     * block an endpoint is not part of the harvesting lifecycle itself. It
+     * could be taken, for example, in case the endpoint fails to perform
+     * correctly.
+     *
+     * @return true if the endpoint should be skipped, false otherwise
+     */
+    public abstract boolean blocked ();
+
+    /**
+     * <br> Check if the cycle can harvest the endpoint incrementally<br><br>
+     *
+     * In case cycle can harvest the endpoint incrementally, the date of the
+     * previous successful harvest determines which records it will be request
+     * from the endpoint.
+     *
+     * Note: there is no method for setting the value indicating whether or
+     * not incremental harvesting is allowed. The value needs to be specified
+     * elsewhere, for example in an XML file managed by a class implementing
+     * this interface.
+     *
+     * kj: default false
+     *
+     * @return true if incremental harvesting is allowed, false otherwise
      */
     public abstract boolean allowIncrementalHarvest ();
 
     /**
-     * <br> Check if the endpoint is allowed to be harvested <br><br>
-     * 
-     * Only if true, there will be no harvesting for the endpoint regardless of
-     * any other specification. This mode can be used to temporarily block 
-     * harvesting, for example in case the endpoint fails to perform correctly.
-     * 
-     * @return true or false
+     * <br> Check if the cycle can retry harvesting the endpoint <br><br>
+     *
+     * Only if the cycle itself is in retry mode, it can effectively retry
+     * harvesting the endpoint.
+     *
+     * Note: like getURI, blocked and allowIncremental harvest, the interface
+     * does not provide a method that can set the value of the retry attribute.
+     *
+     * @return true is a retry is allowed, false otherwise
      */
-    public abstract boolean doNotHarvest ();
-
+    public abstract boolean retry();
+    
     /**
      * <br> Return the date for incrementally harvesting <br><br>
-     * 
-     * Up to this date the records were harvested before. Incremental harvesting
-     * means that only those records that were added to the endpoint after this 
-     * date will be harvested.
      *
-     * @return the date
+     * The date used in the most recent and successful incremental harvest
+     * attempt. The date indicates that all records provided by the endpoint
+     * and carrying a date up to and including the date returned, have been
+     * harvested without a problem.
+     *
+     * A harvesting cycle needs to set the date by invoking the doneHarvesting
+     * method.
+     *
+     * @return the date of most recent successful harvest of the endpoint
      */
     public abstract String getRecentHarvestDate();
 
     /**
      * <br> Indicate success or failure <br><br>
      * 
-     * In case of success, the date for incremental harvesting will be set to 
-     * the current date. Otherwise the date will not be modified. Harvesting in 
-     * retry mode will consider this endpoint for harvesting again. 
+     * In case of success, this method sets the date for incremental harvesting
+     * to the current date. Otherwise it will not modify the date. A cycle in
+     * retry mode will consider this endpoint for harvesting again.
      *
      * @param done true in case of success, false otherwise
      */
