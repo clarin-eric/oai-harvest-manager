@@ -32,6 +32,10 @@ package nl.mpi.oai.harvester.overview;
  * Note: for a description of the role of adapter classes, please refer to the
  * description in the Endpoint interface.
  *
+ * kj: explain that what 'harvesting' means depends on the mode of the cycle
+ *
+ * This class mediates between the code generated on the basis of the XSD.
+ *
  * @author Kees Jan van de Looij (MPI-PL)
  */
 public interface Harvesting {

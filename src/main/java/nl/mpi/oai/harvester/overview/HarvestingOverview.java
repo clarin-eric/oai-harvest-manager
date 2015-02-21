@@ -53,6 +53,22 @@ import javax.xml.datatype.XMLGregorianCalendar;
  * means that in the process of of accessing endpoint and harvesting data, a
  * client will only deal with abstract objects.
  *
+ * This adapter class bridges the gap from the generated types to the types
+ * would ideally fit the the harvesting application. Note: the XSD file referred
+ * to resides in the src/xsd directory. <br><br>
+ *
+ * kj: about defaults
+ *
+ * URI: needed from the client
+ * blocked: false
+ * allowIncrementalHarvest: false
+ * retry: false
+ * recentHarvestDate: some zero date
+ * doneHarvesting: false
+ * group: needed from the client
+ * count: 0
+ *
+ *
  * @author Kees Jan van de Looij (MPI-PL)
  */
 public final class HarvestingOverview {
@@ -302,6 +318,16 @@ public final class HarvestingOverview {
 
         @Override
         public void setCount(int count) {
+
+        }
+
+        @Override
+        public int getIncrement() {
+            return 0;
+        }
+
+        @Override
+        public void setIncrement(int increment) {
 
         }
 

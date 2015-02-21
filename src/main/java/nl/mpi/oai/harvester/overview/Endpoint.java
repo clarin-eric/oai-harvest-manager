@@ -21,25 +21,31 @@ package nl.mpi.oai.harvester.overview;
 /**
  * <br> Adapter class definition of an OAI endpoint <br><br>
  *
- * For harvesting, the endpoint data resides an an XML file. An endpoint
- * element contains data that you can interpret as the state of the endpoint
- * in a repeating harvesting cycle. <br><br>
+ * kj: this needs some work
  *
- * kj: XML should serve as an example
+ * Also, check the XSD
  *
- * kj: default values need to be defined in the HarvestingOverview class
+ * This interface presents an endpoint to the harvesting cycle. By using the
+ * methods defined here, the harvesting cycle can store the harvesting state
+ * of the endpoint.
  *
- * kj: explain that what 'harvesting' means depends on the mode of the cycle
+ * Note that some data is represented explicitly, like for example the URI,
+ * group, and record count. Other values, like the date of the most recent
+ * harvest, are not passed explicitly by parameters to the methods defined
+ * here. The methods will determine these values for themselves.
  *
- * This interface can for example be implemented by an adapter class, a class
- * mediating between the code generated on the basis of the XSD. The adapter
- * class bridges the gap from the generated types to the types would ideally
- * fit the the harvesting application. Note: the XSD file referred to resides
- * in the src/xsd directory. <br><br>
+ * Also, some endpoint attributes are not governed by the harvesting cycle at
+ * all.
+ *
+ * A typical implementation of this interface would be an adapter class reading
+ * and writing the data from and to an XML file.
  *
  * An adapter class can also bridge differences in format, for example the
  * harvesting date presented by the generated classes and the format that the
  * application would like to work on.
+ *
+ * Refer to the package for an example implementation of this interface using
+ * XML.
  *
  * @author Kees Jan van de Looij (MPI-PL)
  */
@@ -47,6 +53,9 @@ public interface Endpoint {
 
     /**
      * <br> Get the endpoint URI <br><br>
+     *
+     * The URI by which the harvesting cycle will try to connect to the
+     * endpoint.
      *
      * @return endpoint URI
      */
@@ -68,7 +77,7 @@ public interface Endpoint {
      * <br> Find out if an endpoint is blocked <br><br>
      *
      * If blocked, the cycle will not try to harvest the endpoint, regardless
-     * of any other specification.
+     * of any other specification. <br><br>
      *
      * Note: there is no method for blocking the endpoint. The decision to
      * block an endpoint is not part of the harvesting lifecycle itself. It
@@ -84,14 +93,12 @@ public interface Endpoint {
      *
      * In case cycle can harvest the endpoint incrementally, the date of the
      * previous successful harvest determines which records it will be request
-     * from the endpoint.
+     * from the endpoint. <br><br>
      *
      * Note: there is no method for setting the value indicating whether or
      * not incremental harvesting is allowed. The value needs to be specified
      * elsewhere, for example in an XML file managed by a class implementing
      * this interface.
-     *
-     * kj: default false
      *
      * @return true if incremental harvesting is allowed, false otherwise
      */
@@ -101,7 +108,7 @@ public interface Endpoint {
      * <br> Check if the cycle can retry harvesting the endpoint <br><br>
      *
      * Only if the cycle itself is in retry mode, it can effectively retry
-     * harvesting the endpoint.
+     * harvesting the endpoint. <br><br>
      *
      * Note: like getURI, blocked and allowIncremental harvest, the interface
      * does not provide a method that can set the value of the retry attribute.
@@ -113,13 +120,11 @@ public interface Endpoint {
     /**
      * <br> Return the date for incrementally harvesting <br><br>
      *
-     * The date used in the most recent and successful incremental harvest
-     * attempt. The date indicates that all records provided by the endpoint
-     * and carrying a date up to and including the date returned, have been
-     * harvested without a problem.
+     * The date of the most recent and successful harvest cycle. A subsequent
+     * cycle will use this date when harvesting the endpoint incrementally. <br><br>
      *
-     * A harvesting cycle needs to set the date by invoking the doneHarvesting
-     * method.
+     * Note: a harvesting cycle needs to set the date by invoking the
+     * doneHarvesting method.
      *
      * @return the date of most recent successful harvest of the endpoint
      */
@@ -127,10 +132,10 @@ public interface Endpoint {
 
     /**
      * <br> Indicate success or failure <br><br>
-     * 
-     * In case of success, this method sets the date for incremental harvesting
-     * to the current date. Otherwise it will not modify the date. A cycle in
-     * retry mode will consider this endpoint for harvesting again.
+     *
+     * If done equals true, the method sets the date of the most recent and
+     * successful harvest to the current date. If false, it will only set the
+     * most recent attempt.
      *
      * @param done true in case of success, false otherwise
      */
@@ -156,12 +161,34 @@ public interface Endpoint {
      *
      * @return the number of records harvested
      */
-    public int getCount ();
+    public abstract int getCount ();
 
     /**
      * <br> Set record count
      *
      * @param count the number of records harvested
      */
-    public void setCount (int count);
+    public abstract void setCount (int count);
+
+    /**
+     * <br> Get the record increment <br><br>
+     *
+     * The number of records incrementally harvested from the endpoint in the
+     * most recent cycle. If the endpoint was not incrementally harvested, the
+     * increment will be zero.
+     *
+     * @return the increment
+     */
+    public abstract int getIncrement ();
+
+    /**
+     * <br> Set the record increment <br><br>
+     *
+     * The number of records incrementally harvested from the endpoint in the
+     * most recent cycle. If the endpoint was not incrementally harvested, the
+     * increment will be zero.
+     *
+     * @param increment the increment
+     */
+    public abstract void setIncrement (int increment);
 }
