@@ -34,7 +34,7 @@ import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
 /**
- * <br> A factory for harvesting overview objects
+ * <br> A factory for harvesting overview objects <br><br>
  *
  * A harvester overview object packages both general data about the harvesting
  * cycle as well as information specific to individual endpoints that have been
@@ -45,36 +45,47 @@ import javax.xml.datatype.XMLGregorianCalendar;
  * and also, which method of harvesting should be applied. The client can update
  * the endpoint data to reflect the harvesting attempt. <br><br>
  *
+ * By implementing the Harvesting interface as well as the Endpoint interface,
+ * this class provides data stored in XML format to a harvesting cycle in an
+ * abstract way. The XML file is defined by the harvesting.xsd file, and data
+ * is (de)linearised by invoking methods of JAXB generated classes. Note: the
+ * XSD file resides in the src/xsd directory. <br><br>
+ *
+ * About the XML cycle and endpoint representation. The XML file needs to valid
+ * with respect to the XSD supplied. These following elements are optional. <br>
+ *
+ * <table>
+ * <td>
+ * attempted <br>
+ * harvested <br>
+ * count     <br>
+ * increment <br><br>
+ * </td>
+ * </table>
+ *
+ * Being optional, defaults do not apply. The following fields are obligatory.
+ *
+ * <table>
+ * <td>
+ * URI         <br>
+ * group       <br>
+ * block       <br>
+ * retry       <br>
+ * incremental <br>
+ * scenario    <br>
+ * </td>
+ * <td>
+ * cycle needs to supply it   <br>
+ * cycle needs to supply it   <br>
+ * defaults to false          <br>
+ * defaults to false          <br>
+ * defaults to false          <br>
+ * defaults to 'list records' <br>
+ * </td>
+ * </table><br>
+ *
  * When harvesting is done, the harvesting overview should be finalised. If it
- * is not, the changes made to the endpoint data will not be saved. <br><br>
- *
- * Please note that the HarvestingOverview class implements the Endpoint and
- * Harvesting interfaces by invoking methods from the generated sources. This
- * means that in the process of of accessing endpoint and harvesting data, a
- * client will only deal with abstract objects.
- *
- * This adapter class bridges the gap from the generated types to the types
- * would ideally fit the the harvesting application. Note: the XSD file referred
- * to resides in the src/xsd directory. <br><br>
- *
- * kj: about defaults
- *
- * URI: needed from the client
- * blocked: false
- * allowIncrementalHarvest: false
- * retry: false
- * recentHarvestDate: some zero date
- * doneHarvesting: false
- * group: needed from the client
- * count: 0
- * increment: 0
- * scenario: list records
- *
- * kj: about mandatory fields
- *
- * Currently only the URI and group fields are mandatory. Find out if it is
- * necessary to make more fields mandatory. When a default endpoint is created,
- * fields could be created, facilitating manual intervention.
+ * is not, the changes made to the endpoint data will not be saved.
  *
  * @author Kees Jan van de Looij (MPI-PL)
  */
@@ -155,6 +166,11 @@ public final class HarvestingOverview {
 
             return XMLDate.toString();
         }
+
+        @Override
+        public String getScenario() {
+            return null;
+        }
     }
 
     /**
@@ -181,7 +197,6 @@ public final class HarvestingOverview {
             endpointType.setBlock(Boolean.FALSE);
             endpointType.setIncremental(Boolean.TRUE);
             endpointType.setURI(endpointURI);
-            endpointType.setState("initialised");
 
             return endpointType;
         }
@@ -425,6 +440,11 @@ public final class HarvestingOverview {
     /**
      * <br> Create an adapter for the harvestingType object <br><br>
      *
+     * Note: at the level of the XSD, the endpoints are part of harvesting, at the
+     * level of the interface the general harvesting characteristics are separate
+     * from the list of endpoints. In fact, the client never gets the complete list,
+     * it gets an endpoint referred to by the URI.
+     *
      * @return harvesting data
      */
     public Harvesting getHarvesting() {
@@ -437,6 +457,11 @@ public final class HarvestingOverview {
      *
      * This method returns the adapter object for the endpoint indicated
      * by the endpointURI
+     *
+     * Note: at the level of the XSD, the endpoints are part of harvesting, at the
+     * level of the interface the general harvesting characteristics are separate
+     * from the list of endpoints. In fact, the client never gets the complete list,
+     * it gets an endpoint referred to by the URI.
      *
      * @param endpointURI the URI of the endpoint state requested
      * @return the endpoint

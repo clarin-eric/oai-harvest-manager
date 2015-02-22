@@ -19,22 +19,25 @@
 package nl.mpi.oai.harvester.overview;
 
 /**
- * <br> Adapter class definition of general harvesting parameters <br><br>
+ * <br> Adapter class definition of the harvesting cycle <br><br>
  *
- * For harvesting, both endpoint data and general harvesting parameters
- * reside in an XML file presenting an overview of the harvesting process. The
- * overview both involves the endpoint states and parameters to the process of
- * harvesting itself. <br><br>
+ * - definition of the harvesting cycle
  *
- * Next to the state of an endpoint, more general parameters also apply: the
- * mode of harvesting, and the date used for incremental harvesting. <br><br>
+ * - general characteristics of the harvesting cycle
+ *   * mode of harvesting
+ *   method for getting it
+ *   no method for setting it, outside the governance of the cycle
+ *   depending on the implementation, could be manually
+ *   * date used for incremental harvesting
+ *   same thing here
+
+ * - adapter class implementing the interface could bridge the gap from XML
+ *   could mediate between the code generated on the basis of the XSD
+ *   together with endpoint states the XML file presents an overview of
+ *   harvesting
  *
  * Note: for a description of the role of adapter classes, please refer to the
  * description in the Endpoint interface.
- *
- * kj: explain that what 'harvesting' means depends on the mode of the cycle
- *
- * This class mediates between the code generated on the basis of the XSD.
  *
  * @author Kees Jan van de Looij (MPI-PL)
  */
@@ -80,4 +83,11 @@ public interface Harvesting {
      * @return the date
      */
     public abstract String HarvestFromDate();
+
+    /**
+     * <br> Get the harvesting scenario <br><br>
+     *
+     * @return the scenario
+     */
+    public abstract String getScenario ();
 }

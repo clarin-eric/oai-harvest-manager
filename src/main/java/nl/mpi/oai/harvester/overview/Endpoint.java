@@ -31,8 +31,8 @@ package nl.mpi.oai.harvester.overview;
  *
  * Access to other fields is indirect, like for example the date of the most
  * recent harvest. While the interface does provide a method for getting the
- * attribute, the cycle cannot specify it as a parameter. The doneHarvesting
- * method will determine and set by itself.
+ * attribute, the cycle cannot set it by means of providing a parameter. The
+ * doneHarvesting method for example will determine and set it by itself.
  *
  * A third category of attribute falls outside the control of the cycle. The
  * interface does not provide for setting the value of the attribute, not even
