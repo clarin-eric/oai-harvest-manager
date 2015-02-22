@@ -21,31 +21,26 @@ package nl.mpi.oai.harvester.overview;
 /**
  * <br> Adapter class definition of an OAI endpoint <br><br>
  *
- * kj: this needs some work
- *
- * Also, check the XSD
- *
  * This interface presents an endpoint to the harvesting cycle. By using the
  * methods defined here, the harvesting cycle can store the harvesting state
  * of the endpoint.
  *
- * Note that some data is represented explicitly, like for example the URI,
- * group, and record count. Other values, like the date of the most recent
- * harvest, are not passed explicitly by parameters to the methods defined
- * here. The methods will determine these values for themselves.
+ * The harvesting cycle can access some endpoint attributes directly through
+ * method parameters and return values. This applies for example to the URI,
+ * group, and record count.
  *
- * Also, some endpoint attributes are not governed by the harvesting cycle at
- * all.
+ * Access to other fields is indirect, like for example the date of the most
+ * recent harvest. While the interface does provide a method for getting the
+ * attribute, the cycle cannot specify it as a parameter. The doneHarvesting
+ * method will determine and set by itself.
  *
- * A typical implementation of this interface would be an adapter class reading
- * and writing the data from and to an XML file.
+ * A third category of attribute falls outside the control of the cycle. The
+ * interface does not provide for setting the value of the attribute, not even
+ * indirectly. The scenario attribute for example, belongs to this category.
  *
- * An adapter class can also bridge differences in format, for example the
- * harvesting date presented by the generated classes and the format that the
- * application would like to work on.
- *
- * Refer to the package for an example implementation of this interface using
- * XML.
+ * A typical implementation of the Endpoint interface would be an adapter class
+ * reading and writing the data from and to an XML file. The HarvestingOverview
+ * class implements the interface in this way.
  *
  * @author Kees Jan van de Looij (MPI-PL)
  */
@@ -74,6 +69,21 @@ public interface Endpoint {
     public abstract void setURI (String URI);
 
     /**
+     * <br> Get the group
+     *
+     * @return the group the endpoint belongs to
+     *
+     */
+    public abstract String getGroup ();
+
+    /**
+     * <br> Set the group
+     *
+     * @param group the group the endpoint belongs to
+     */
+    public abstract void setGroup (String group);
+
+    /**
      * <br> Find out if an endpoint is blocked <br><br>
      *
      * If blocked, the cycle will not try to harvest the endpoint, regardless
@@ -87,6 +97,19 @@ public interface Endpoint {
      * @return true if the endpoint should be skipped, false otherwise
      */
     public abstract boolean blocked ();
+
+    /**
+     * <br> Check if the cycle can retry harvesting the endpoint <br><br>
+     *
+     * Only if the cycle itself is in retry mode, it can effectively retry
+     * harvesting the endpoint. <br><br>
+     *
+     * Note: like getURI, blocked and allowIncremental harvest, the interface
+     * does not provide a method that can set the value of the retry attribute.
+     *
+     * @return true is a retry is allowed, false otherwise
+     */
+    public abstract boolean retry();
 
     /**
      * <br> Check if the cycle can harvest the endpoint incrementally<br><br>
@@ -105,18 +128,20 @@ public interface Endpoint {
     public abstract boolean allowIncrementalHarvest ();
 
     /**
-     * <br> Check if the cycle can retry harvesting the endpoint <br><br>
+     * <br> Get the scenario for harvesting <br><br>
      *
-     * Only if the cycle itself is in retry mode, it can effectively retry
-     * harvesting the endpoint. <br><br>
+     * A cycle applies a specific scenario for harvesting records. It can,
+     * for example, first harvest a list of identifiers to metadata elements,
+     * and after that, harvest the records one by one. Alternatively, it can
+     * harvest the records directly.
      *
-     * Note: like getURI, blocked and allowIncremental harvest, the interface
-     * does not provide a method that can set the value of the retry attribute.
+     * Note: there is no method for setting the scenario. The value needs to
+     * be specified independently from the harvesting cycle.
      *
-     * @return true is a retry is allowed, false otherwise
+     * @return the scenario
      */
-    public abstract boolean retry();
-    
+    public abstract String getScenario ();
+
     /**
      * <br> Return the date for incrementally harvesting <br><br>
      *
@@ -140,21 +165,6 @@ public interface Endpoint {
      * @param done true in case of success, false otherwise
      */
     public abstract void doneHarvesting(Boolean done);
-
-    /**
-     * <br> Get the group
-     *
-     * @return the group the endpoint belongs to
-     *
-     */
-    public abstract String getGroup ();
-
-    /**
-     * <br> Set the group
-     *
-     * @param group the group the endpoint belongs to
-     */
-    public abstract void setGroup (String group);
 
     /**
      * <br> Get the record count

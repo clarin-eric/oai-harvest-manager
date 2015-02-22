@@ -67,7 +67,14 @@ import javax.xml.datatype.XMLGregorianCalendar;
  * doneHarvesting: false
  * group: needed from the client
  * count: 0
+ * increment: 0
+ * scenario: list records
  *
+ * kj: about mandatory fields
+ *
+ * Currently only the URI and group fields are mandatory. Find out if it is
+ * necessary to make more fields mandatory. When a default endpoint is created,
+ * fields could be created, facilitating manual intervention.
  *
  * @author Kees Jan van de Looij (MPI-PL)
  */
@@ -362,6 +369,11 @@ public final class HarvestingOverview {
         @Override
         public boolean allowIncrementalHarvest() {
             return endpointType.isIncremental();
+        }
+
+        @Override
+        public String getScenario() {
+            return null;
         }
 
         /**
