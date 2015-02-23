@@ -21,7 +21,24 @@ package nl.mpi.oai.harvester.overview;
 /**
  * <br> Adapter class definition of the harvesting cycle <br><br>
  *
- * - definition of the harvesting cycle
+ *   A harvesting cycle traverses OAI endpoints with the intention to obtain
+ *   metadata records. The cycle initiates a request for records by issuing a
+ *   command created from an OAI verb and parameters identifying a particular
+ *   list of records.
+ *
+ *   The cycle can use the harvesting and endpoint interface to query the
+ *   general harvesting characteristics and state of the endpoint in order to
+ *   to decide whether or not to harvest and to determine OAI verb and
+ *   parameters.
+ *
+ *   After the cycle has issued the command, it needs to interpret the result
+ *   and update the endpoint state.
+ *
+ *   By tracking the state of th endpoint, it can obtain recent additions to it,
+ *   without having to harvest all the records provided once again. This mode of
+ *   harvesting is referred to as 'incremental harvesting'. Harvesting records
+ *   in this way is particularly useful when the endpoint provides a large
+ *   number of records.
  *
  * - general characteristics of the harvesting cycle
  *   * mode of harvesting
@@ -30,11 +47,7 @@ package nl.mpi.oai.harvester.overview;
  *   depending on the implementation, could be manually
  *   * date used for incremental harvesting
  *   same thing here
-
- * - adapter class implementing the interface could bridge the gap from XML
- *   could mediate between the code generated on the basis of the XSD
- *   together with endpoint states the XML file presents an overview of
- *   harvesting
+ *   * scenario for harvesting
  *
  * Note: for a description of the role of adapter classes, please refer to the
  * description in the Endpoint interface.
@@ -71,7 +84,7 @@ public interface Harvesting {
      *
      * @return the harvesting mode
      */
-    public abstract Harvesting.Mode HarvestMode();
+    public abstract Mode getHarvestMode();
 
     /**
      * <br> Returns the date to use when refreshing <br<br>
@@ -82,7 +95,7 @@ public interface Harvesting {
      *
      * @return the date
      */
-    public abstract String HarvestFromDate();
+    public abstract String getHarvestFromDate();
 
     /**
      * <br> Get the harvesting scenario <br><br>

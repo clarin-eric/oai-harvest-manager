@@ -112,7 +112,7 @@ public final class HarvestingOverview {
          * @return the mode
          */
         @Override
-        public Mode HarvestMode() {
+        public Mode getHarvestMode() {
 
             Harvesting.Mode mode = null;
 
@@ -137,7 +137,7 @@ public final class HarvestingOverview {
          * @return the date
          */
         @Override
-        public String HarvestFromDate() {
+        public String getHarvestFromDate() {
 
             // convert XMLGregorianCalendar to string
 
