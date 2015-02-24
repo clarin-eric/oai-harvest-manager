@@ -25,7 +25,7 @@ import java.util.List;
 
 /**
  * <br> Definition of elements common to various implementations of the
- * protocol defined by the Harvesting interface <br><br>
+ * protocol defined by the Cycle interface <br><br>
  *
  * @author Kees Jan van de Looij (MPI-PL)
  */
@@ -65,13 +65,13 @@ public abstract class AbstractHarvesting implements Harvesting {
      * <br> The resumption token send by the previous request
      *
      * Please note that not every implementation of the protocol defined by
-     * the Harvesting interface might need it.
+     * the Cycle interface might need it.
      */
     String resumptionToken;
 
     /**
      * <br> Associate an OAI endpoint with the protocol defined by the
-     * Harvesting interface.
+     * Cycle interface.
      *
      * @param provider the provider
      */

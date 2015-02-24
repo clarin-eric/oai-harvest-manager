@@ -32,7 +32,7 @@ import java.util.List;
 /**
  * <br> A request method in a list based harvesting protocol <br><br>
  *
- * This class adds a request method of the protocol defined by the Harvesting
+ * This class adds a request method of the protocol defined by the Cycle
  * interface. While the method does not invoke a particular OAI primitive, it
  * expects these primitives to be list related, like for example ListRecords or
  * ListIdentifiers. This class defines two verb methods, one for a verb with

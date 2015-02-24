@@ -39,8 +39,7 @@ package nl.mpi.oai.harvester.overview;
  * indirectly. The scenario attribute for example, belongs to this category.
  *
  * A typical implementation of the Endpoint interface would be an adapter class
- * reading and writing the data from and to an XML file. The HarvestingOverview
- * class implements the interface in this way.
+ * that reads from and writes to an XML file.
  *
  * @author Kees Jan van de Looij (MPI-PL)
  */

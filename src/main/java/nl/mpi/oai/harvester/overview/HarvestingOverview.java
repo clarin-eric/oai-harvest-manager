@@ -40,12 +40,14 @@ import javax.xml.datatype.XMLGregorianCalendar;
  * cycle as well as information specific to individual endpoints that have been
  * harvested at least once before. <br><br>
  *
+ * kj: specify general attributes like mode, date, and scenario elements
+ *
  * By supplying its URI, a client can identify an endpoint. By interpreting the
  * data recorded, the client can decide if an endpoint needs to be harvested,
  * and also, which method of harvesting should be applied. The client can update
  * the endpoint data to reflect the harvesting attempt. <br><br>
  *
- * By implementing the Harvesting interface as well as the Endpoint interface,
+ * By implementing the Cycle interface as well as the Endpoint interface,
  * this class provides data stored in XML format to a harvesting cycle in an
  * abstract way. The XML file is defined by the harvesting.xsd file, and data
  * is (de)linearised by invoking methods of JAXB generated classes. Note: the
@@ -104,7 +106,7 @@ public final class HarvestingOverview {
      * Make available general harvesting data by invoking the methods supplied
      * in the generated HarvestingType class
      */
-    private class HarvestingAdapter implements Harvesting {
+    private class CycleAdapter implements Cycle {
 
         /**
          * Return the mode by invoking generated methods
@@ -114,7 +116,7 @@ public final class HarvestingOverview {
         @Override
         public Mode getHarvestMode() {
 
-            Harvesting.Mode mode = null;
+            Cycle.Mode mode = null;
 
             switch (harvesting.getMode()) {
 
@@ -447,9 +449,9 @@ public final class HarvestingOverview {
      *
      * @return harvesting data
      */
-    public Harvesting getHarvesting() {
+    public Cycle getHarvesting() {
 
-        return new HarvestingAdapter();
+        return new CycleAdapter();
     }
 
     /**
