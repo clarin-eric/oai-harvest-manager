@@ -25,7 +25,9 @@ import javax.xml.datatype.XMLGregorianCalendar;
 /**
  * <br> Make available general harvesting cycle attributes <br><br>
  *
- * ... by invoking the methods supplied by the generated HarvestingType class <br><br>
+ * Methods in this class invoke the methods supplied by the JAXB generated
+ * CycleType class, the class representing the cycle elements in XML files
+ * that take the form defined by the harvesting.xsd file.
  *
  * @author Kees Jan van de Looij (MPI-PL)
  */
@@ -35,7 +37,7 @@ public class CycleAdapter implements Cycle {
     private HarvestingType harvesting;
 
     /**
-     * Associate XML data
+     * Associate XML HarvestingType data
      *
      * @param harvesting
      */
@@ -54,9 +56,6 @@ public class CycleAdapter implements Cycle {
 
         Cycle.Mode mode = null;
 
-        //
-
-
         switch (harvesting.getMode()) {
 
             case NORMAL:
@@ -73,15 +72,14 @@ public class CycleAdapter implements Cycle {
     }
 
     /**
-     * Return the date attribute by invoking the appropriate generated
-     * method
-     * <p/>
-     * Note, the date returned is in the YYYY-MM-DD format. This OAI
-     * protocol accepts this format.
-     * <p/>
-     * kj: this needs more support
-     * <p/>
-     * Note: epoch zero means no previous harvest
+     * <br> Return the date attribute by invoking the appropriate generated
+     * method <br><br>
+     *
+     *
+     * Please note the date returned is in the YYYY-MM-DD format, the same
+     * format the OAI protocol accepts as a parameter to the verbs that allow
+     * for selective harvesting. As a return value, the epoch zero date means
+     * that no attempt to harvest the endpoint has been made.
      *
      * @return the date
      */
@@ -107,6 +105,4 @@ public class CycleAdapter implements Cycle {
 
         return harvesting.getScenario();
     }
-
-
 }
