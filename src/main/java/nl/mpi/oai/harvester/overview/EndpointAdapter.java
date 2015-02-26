@@ -32,22 +32,19 @@ import java.util.logging.Logger;
 /**
  * <br>Make available endpoint type attributes <br><br>
  *
- * The attributes that determine a harvesting cycle are defined by an XML file
- * that takes a form that is defined by the harvesting.xsd file. Please refer
- * to the cycle interface and and endpoint interface for a description of the
- * semantics involved. <br><br>
- *
- * JAXB generates classes representing the XML files. It also provides a
- * factory for creating the elements in them. <br><br>
- *
  * First, an EndpointAdaptor object associates itself with a HarvestingType
  * object. After that, it looks for the endpoint. If it finds it, it remembers
  * it. Otherwise it will ask the generated JAXB factory to create a endpoint,
  * and set the fields to default values. <br><br>
  *
  * When an adapter method needs to obtain a cycle attribute, it will invoke a
- * corresponding method on the HarvestingType object, either found or created.
+ * corresponding method on the HarvestingType object, either found or created. <br><br>
  *
+ * This class depends on JAXB to generate classes representing the XML file. It
+ * also depends on the JAXB factory for creating the elements used in the XML
+ * file.
+ *
+
  * @author Kees Jan van de Looij (MPI-PL)
  */
 public class EndpointAdapter implements Endpoint {
@@ -115,7 +112,7 @@ public class EndpointAdapter implements Endpoint {
      *
      * @param endpointURI the URI of the endpoint to be harvested by the cycle
      * @param harvesting the JAXB representation of the harvesting overview file
-     * @param factory the JAXB factory for havesting overview XML files
+     * @param factory the JAXB factory for harvesting overview XML files
      */
     public EndpointAdapter(String endpointURI, HarvestingType harvesting,
                            ObjectFactory factory) {
@@ -189,7 +186,7 @@ public class EndpointAdapter implements Endpoint {
         // convert XMLGregorianCalendar to string
 
         XMLGregorianCalendar XMLDate;
-        XMLDate = harvesting.getHarvestFromDate();
+        XMLDate = endpointType.getHarvested();
 
         return XMLDate.toString();
     }

@@ -19,7 +19,7 @@
 package nl.mpi.oai.harvester.overview;
 
 /**
- * <br> Adapter class definition of an OAI endpoint <br><br>
+ * <br> Access to an OAI endpoint <br><br>
  *
  * This interface presents an endpoint to the harvesting cycle. By using the
  * methods defined here, the harvesting cycle can store the harvesting state

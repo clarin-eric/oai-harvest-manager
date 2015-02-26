@@ -19,7 +19,7 @@
 package nl.mpi.oai.harvester.overview;
 
 /**
- * <br> Adapter class definition of the harvesting cycle <br><br>
+ * <br> Access to general harvesting cycle attributes <br><br>
  *
  * A harvesting cycle traverses OAI endpoints with the intention to obtain
  * metadata records. The cycle initiates a request for records by issuing a

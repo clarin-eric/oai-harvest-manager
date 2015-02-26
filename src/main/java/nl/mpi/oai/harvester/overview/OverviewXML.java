@@ -29,31 +29,31 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * <br> A factory for harvesting overview objects <br><br>
+ * <br> HarvestingType object marshalling <br><br>
  *
- * kj: the following might need to be reviewed
+ * By returning CycleAdapter or EndpointAdapter class objects through the the
+ * Cycle and Endpoint interfaces, the methods on the objects in this class make
+ * available XML defined attributes of the harvesting cycle.
  *
- * A harvester overview object packages both general data about the harvesting
- * cycle as well as information specific to individual endpoints that have been
- * harvested at least once before. <br><br>
+ * Note: the XSD defining the harvesting overview XML files resides in the
+ * src/xsd directory. <br><br>
  *
- * kj: specify general attributes like mode, date, and scenario elements
+ * These are the elements conveyed through the Cycle interface.
  *
- * By supplying its URI, the cycle can identify an endpoint. By interpreting
- * the attributes recorded, it can decide if an endpoint needs to be harvested,
- * and also, which method of harvesting it should apply. The cycle can update
- * the endpoint attributes to reflect the harvesting attempt. <br><br>
+ * <table>
+ * <td>
+ * mode     <br>
+ * date     <br>
+ * scenario <br><br>
+ * </td>
+ * <td>
+ * supplied to the cycle <br>
+ * supplied by the cycle <br>
+ * supplied to the cycle <br><br>
+ * </td>
+ * </table>
  *
- * By returning a CycleAdapter and EndpointAdapter class object through the
- * Cycle and Endpoint interfaces, this class provides data stored in XML format
- * to a harvesting cycle in an abstract way. The XML file is defined by the
- * harvesting.xsd file, and data is (de)linearised by invoking methods of JAXB
- * generated classes. Note: the XSD file resides in the src/xsd directory. <br><br>
- *
- * About the XML cycle and endpoint representation. The XML file needs to valid
- * with respect to the XSD supplied. These following elements are optional. <br>
- *
- * kj: here we have an element to attribute mapping
+ * From the elements in the Endpoint interface, the following are optional. <br>
  *
  * <table>
  * <td>
@@ -64,7 +64,7 @@ import java.util.logging.Logger;
  * </td>
  * </table>
  *
- * Being optional, defaults do not apply. The following fields are obligatory.
+ * Being optional, defaults do not apply. The following elements are obligatory.
  *
  * <table>
  * <td>
@@ -85,12 +85,20 @@ import java.util.logging.Logger;
  * </td>
  * </table><br>
  *
+ * Please refer to the cycle interface and endpoint interface for a description
+ * of the semantics involved. <br><br>
+ *
+ * By supplying its URI, the cycle can identify an endpoint. By interpreting
+ * the attributes recorded, it can decide if an endpoint needs to be harvested,
+ * and also, which method of harvesting it should apply. The cycle can update
+ * the endpoint attributes to reflect the harvesting attempt. <br><br>
+ *
  * When harvesting is done, the harvesting overview should be finalised. If it
  * is not, the changes made to the endpoint data will not be saved.
  *
  * @author Kees Jan van de Looij (MPI-PL)
  */
-public final class HarvestingXML {
+public final class OverviewXML {
 
     // the file supplied on construction
     private final File file;
@@ -109,7 +117,7 @@ public final class HarvestingXML {
      *
      * @param fileName name of the file
      */
-    public HarvestingXML(String fileName) {
+    public OverviewXML(String fileName) {
 
         // create factory that creates objects of the generated classes
         factory = new ObjectFactory();
@@ -142,7 +150,7 @@ public final class HarvestingXML {
      * from the list of endpoints. In fact, the client never gets the complete list,
      * it gets an endpoint referred to by the URI.
      *
-     * @return harvesting data
+     * @return cycle attributes
      */
     public Cycle getCycle() {
 
@@ -161,7 +169,7 @@ public final class HarvestingXML {
      * it gets an endpoint referred to by the URI.
      *
      * @param endpointURI the URI of the endpoint state requested
-     * @return the endpoint
+     * @return endpoint attributes
      */
     public Endpoint getEndPoint(String endpointURI) {
 
@@ -179,7 +187,7 @@ public final class HarvestingXML {
         try {
             super.finalize();
         } catch (Throwable e) {
-            Logger.getLogger(HarvestingXML.class.getName()).log(
+            Logger.getLogger(OverviewXML.class.getName()).log(
                     Level.SEVERE, null, e);
         }
 

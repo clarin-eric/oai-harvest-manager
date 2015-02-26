@@ -5,18 +5,8 @@
     <xs:complexType name="HarvestingType">
         <xs:sequence>
             <xs:element form="unqualified" maxOccurs="1" name="mode" type="ModeType"/>
-            <xs:element name="HarvestFromDate" minOccurs="0">
-                <xs:simpleType>
-                    <xs:restriction base="xs:date">
-                        <xs:minInclusive value="1970-01-01"/>
-                    </xs:restriction>
-                </xs:simpleType>
-            </xs:element>
-            <xs:element minOccurs="1" name="scenario">
-                <xs:simpleType>
-                    <xs:restriction base="xs:string"/>
-                </xs:simpleType>
-            </xs:element>
+            <xs:element name="HarvestFromDate" minOccurs="0" type="xs:date"> </xs:element>
+            <xs:element minOccurs="1" name="scenario" type="xs:string"> </xs:element>
             <xs:sequence maxOccurs="unbounded" minOccurs="0">
                 <xs:element name="endpoint" type="EndpointType"/>
             </xs:sequence>
@@ -25,31 +15,15 @@
     <xs:complexType name="EndpointType">
         <xs:sequence maxOccurs="1" minOccurs="1">
             <xs:element name="URI" minOccurs="1" type="xs:anyURI"/>
-            <xs:element name="group">
-                <xs:simpleType>
-                    <xs:restriction base="xs:string"/>
-                </xs:simpleType>
-            </xs:element>
+            <xs:element name="group" type="xs:string"> </xs:element>
             <xs:element name="block" minOccurs="1" type="xs:boolean"/>
             <xs:element minOccurs="1" name="retry" type="xs:boolean"/>
             <xs:element minOccurs="1" name="incremental" type="xs:boolean"/>
-            <xs:element maxOccurs="1" name="scenario" minOccurs="1">
-                <xs:simpleType>
-                    <xs:restriction base="xs:string"> </xs:restriction>
-                </xs:simpleType>
-            </xs:element>
+            <xs:element maxOccurs="1" name="scenario" minOccurs="1" type="xs:string"> </xs:element>
             <xs:element name="attempted" minOccurs="0" type="xs:date"/>
             <xs:element name="harvested" minOccurs="0" type="xs:date"/>
-            <xs:element minOccurs="0" name="count">
-                <xs:simpleType>
-                    <xs:restriction base="xs:unsignedInt"/>
-                </xs:simpleType>
-            </xs:element>
-            <xs:element minOccurs="0" name="increment">
-                <xs:simpleType>
-                    <xs:restriction base="xs:unsignedInt"/>
-                </xs:simpleType>
-            </xs:element>
+            <xs:element minOccurs="0" name="count" type="xs:unsignedLong"> </xs:element>
+            <xs:element minOccurs="0" name="increment" type="xs:unsignedLong"> </xs:element>
         </xs:sequence>
     </xs:complexType>
     <xs:simpleType name="ModeType">

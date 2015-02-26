@@ -25,17 +25,13 @@ import javax.xml.datatype.XMLGregorianCalendar;
 /**
  * <br> Make available general harvesting cycle attributes <br><br>
  *
- * The attributes that determine a harvesting cycle are defined by an XML file
- * that takes a form that is defined by the harvesting.xsd file. Please refer
- * to the cycle interface and and endpoint interface for a description of the
- * semantics involved. <br><br>
- *
- * JAXB generates classes representing the XML files. It also provides a
- * factory for creating the elements in them. <br><br>
- *
  * A CycleAdaptor object associates itself with a HarvestingType object that was
- * created by the JAXB factory. When an adapter method needs to obtain a cycle
- * attribute, it invokes the corresponding method on the HarvestingType object.
+ * created by the JAXB factory. When an adapter method needs to access a cycle
+ * attribute, it invokes the corresponding method on the HarvestingType object. <br><br>
+ *
+ * This class depends on JAXB to generate classes representing the XML file. It
+ * also depends on the JAXB factory for creating the elements used in the XML
+ * file.
  *
  * @author Kees Jan van de Looij (MPI-PL)
  */
@@ -62,7 +58,7 @@ public class CycleAdapter implements Cycle {
     @Override
     public Mode getHarvestMode() {
 
-        Cycle.Mode mode = null;
+        Cycle.Mode mode;
 
         switch (harvesting.getMode()) {
 
@@ -75,6 +71,8 @@ public class CycleAdapter implements Cycle {
             case RETRY:
                 mode = Mode.retry;
                 break;
+            default:
+                mode = Mode.normal;
         }
         return mode;
     }
@@ -98,7 +96,15 @@ public class CycleAdapter implements Cycle {
         XMLGregorianCalendar XMLDate;
         XMLDate = harvesting.getHarvestFromDate();
 
-        return XMLDate.toString();
+        // kj: provide default
+
+        if (XMLDate == null){
+            // provide epoch zero as a default
+
+            return "1970-01-01";
+        } else {
+            return XMLDate.toString();
+        }
     }
 
     /**
@@ -109,6 +115,8 @@ public class CycleAdapter implements Cycle {
      */
     @Override
     public String getScenario() {
+
+        // kj: check values, could be changed into enumerated type
 
         return harvesting.getScenario();
     }
