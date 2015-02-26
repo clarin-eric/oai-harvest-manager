@@ -16,7 +16,7 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-package nl.mpi.oai.harvester.overview;
+package nl.mpi.oai.harvester.cycle;
 
 import nl.mpi.oai.harvester.generated.CycleType;
 import nl.mpi.oai.harvester.generated.EndpointType;
