@@ -26,13 +26,12 @@ package nl.mpi.oai.harvester.overview;
  * command created from an OAI verb and parameters identifying a particular
  * list of records.
  *
- * The cycle can use the harvesting and endpoint interface to query the
- * general harvesting characteristics and state of the endpoint in order to
- * to decide whether or not to harvest and to determine OAI verb and
- * parameters.
+ * The cycle can use the harvesting and endpoint interface to query the general
+ * harvesting characteristics and state of the endpoint in order to to decide
+ * whether or not to harvest and to determine OAI verb and parameters.
  *
- * After the cycle has issued the command, it needs to interpret the result
- * and update the endpoint state.
+ * After the cycle has issued the command, it needs to interpret the result and
+ * update the endpoint state.
  *
  * By tracking the state of th endpoint, it can obtain recent additions to it,
  * without having to harvest all the records provided once again. This mode of
@@ -99,6 +98,27 @@ public interface Cycle {
     }
 
     /**
+     * kj: documentation
+     */
+    public enum Scenario {
+
+        /**
+         *
+         */
+        ListPrefixes,
+
+        /**
+         *
+         */
+        ListIdentifiers,
+
+        /**
+         *
+         */
+        ListRecords
+    }
+
+    /**
      * <br> Return the mode in which the cycle will in principle harvest the
      * endpoints
      *
@@ -109,9 +129,9 @@ public interface Cycle {
     /**
      * <br> Returns the date to use when refreshing <br<br>
      * 
-     * Only records added to the endpoint after this data will be harvested. An 
-     * epoch zero date on return means that there was no previous harvesting  
-     * attempt.
+     * Only records added to the endpoint after this data will be harvested. By
+     * returning the epoch zero date the method indicated that there was no
+     * previous harvesting attempt.
      *
      * @return the date
      */
@@ -125,5 +145,5 @@ public interface Cycle {
      *
      * @return the scenario
      */
-    public abstract String getScenario ();
+    public abstract Scenario getScenario ();
 }

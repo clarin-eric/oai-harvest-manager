@@ -139,7 +139,7 @@ public interface Endpoint {
      *
      * @return the scenario
      */
-    public abstract String getScenario ();
+    public abstract Cycle.Scenario getScenario ();
 
     /**
      * <br> Return the date for incrementally harvesting <br><br>

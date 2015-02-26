@@ -96,6 +96,8 @@ import java.util.logging.Logger;
  * When harvesting is done, the harvesting overview should be finalised. If it
  * is not, the changes made to the endpoint data will not be saved.
  *
+ * kj: check the use of string restrictions before xs:string
+ *
  * @author Kees Jan van de Looij (MPI-PL)
  */
 public final class CycleXML {

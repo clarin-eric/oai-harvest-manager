@@ -44,13 +44,14 @@ import java.util.logging.Logger;
  * also depends on the JAXB factory for creating the elements used in the XML
  * file.
  *
-
+ * kj: check defaults and obligatory / optional elements
+ *
  * @author Kees Jan van de Looij (MPI-PL)
  */
 public class EndpointAdapter implements Endpoint {
 
     // the JAXB created object representing elements from the XML file
-    private final CycleType harvesting;
+    private final CycleType cycleType;
 
     // the JAXB created and URI referenced endpoint
     private EndpointType endpointType;
@@ -93,8 +94,8 @@ public class EndpointAdapter implements Endpoint {
         // iterate over the elements in the harvested element
         Boolean found = false;
 
-        for (int i = 0; i < harvesting.getEndpoint().size() && !found; i++) {
-            endpointType = harvesting.getEndpoint().get(i);
+        for (int i = 0; i < cycleType.getEndpoint().size() && !found; i++) {
+            endpointType = cycleType.getEndpoint().get(i);
             if (endpointType.getURI().compareTo(endpointURI) == 0) {
                 found = true;
             }
@@ -111,14 +112,14 @@ public class EndpointAdapter implements Endpoint {
      * Associate the adapter with an endpoint URI and CycleType object
      *
      * @param endpointURI the URI of the endpoint to be harvested by the cycle
-     * @param harvesting the JAXB representation of the harvesting overview file
+     * @param cycleType the JAXB representation of the harvesting overview file
      * @param factory the JAXB factory for harvesting overview XML files
      */
-    public EndpointAdapter(String endpointURI, CycleType harvesting,
+    public EndpointAdapter(String endpointURI, CycleType cycleType,
                            ObjectFactory factory) {
 
-        this.harvesting = harvesting;
-        this.factory    = factory;
+        this.cycleType = cycleType;
+        this.factory   = factory;
 
         // look for the endpoint in the XML data
         endpointType = FindEndpoint(endpointURI);
@@ -128,7 +129,7 @@ public class EndpointAdapter implements Endpoint {
             endpointType = CreateDefault(endpointURI);
 
             // and add this data to the XML
-            harvesting.getEndpoint().add(endpointType);
+            cycleType.getEndpoint().add(endpointType);
         }
     }
 
@@ -175,9 +176,25 @@ public class EndpointAdapter implements Endpoint {
     }
 
     @Override
-    public String getScenario() {
+    public Cycle.Scenario getScenario() {
 
-        return endpointType.getScenario();
+        Cycle.Scenario scenario;
+
+        switch (endpointType.getScenario()) {
+
+            case LIST_PREFIXES:
+                scenario = Cycle.Scenario.ListPrefixes;
+                break;
+            case LIST_IDENTIFIERS:
+                scenario = Cycle.Scenario.ListIdentifiers;
+                break;
+            case LIST_RECORDS:
+                scenario = Cycle.Scenario.ListRecords;
+                break;
+            default:
+                scenario = Cycle.Scenario.ListRecords;
+        }
+        return scenario;
     }
 
     @Override

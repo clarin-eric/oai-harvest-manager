@@ -43,10 +43,10 @@ public class CycleAdapter implements Cycle {
     /**
      * Associate the adapter with a CycleType object
      *
-     * @param harvesting JAXB representation of the cycle overview file
+     * @param cycleType JAXB representation of the cycle overview file
      */
-    public CycleAdapter(CycleType harvesting) {
-        this.cycleType = harvesting;
+    public CycleAdapter(CycleType cycleType) {
+        this.cycleType = cycleType;
     }
 
     /**
@@ -96,8 +96,6 @@ public class CycleAdapter implements Cycle {
         XMLGregorianCalendar XMLDate;
         XMLDate = cycleType.getHarvestFromDate();
 
-        // kj: provide default
-
         if (XMLDate == null){
             // provide epoch zero as a default
 
@@ -114,10 +112,24 @@ public class CycleAdapter implements Cycle {
      * @return the mode
      */
     @Override
-    public String getScenario() {
+    public Scenario getScenario() {
 
-        // kj: check values, could be changed into enumerated type
+        Scenario scenario;
 
-        return cycleType.getScenario();
+        switch (cycleType.getScenario()) {
+
+            case LIST_PREFIXES:
+                scenario = Scenario.ListPrefixes;
+                break;
+            case LIST_IDENTIFIERS:
+                scenario = Scenario.ListIdentifiers;
+                break;
+            case LIST_RECORDS:
+                scenario = Scenario.ListRecords;
+                break;
+            default:
+                scenario = Scenario.ListRecords;
+        }
+        return scenario;
     }
 }
