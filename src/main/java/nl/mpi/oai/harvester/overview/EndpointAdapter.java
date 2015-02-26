@@ -30,22 +30,36 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Make available endpoint harvesting data by invoking the methods supplied
- * in the generated EndpointType class
+ * <br>Make available endpoint type attributes <br><br>
  *
- * You can interpret this class as an adapter:
+ * The attributes that determine a harvesting cycle are defined by an XML file
+ * that takes a form that is defined by the harvesting.xsd file. Please refer
+ * to the cycle interface and and endpoint interface for a description of the
+ * semantics involved. <br><br>
+ *
+ * JAXB generates classes representing the XML files. It also provides a
+ * factory for creating the elements in them. <br><br>
+ *
+ * First, an EndpointAdaptor object associates itself with a HarvestingType
+ * object. After that, it looks for the endpoint. If it finds it, it remembers
+ * it. Otherwise it will ask the generated JAXB factory to create a endpoint,
+ * and set the fields to default values. <br><br>
+ *
+ * When an adapter method needs to obtain a cycle attribute, it will invoke a
+ * corresponding method on the HarvestingType object, either found or created.
  *
  * @author Kees Jan van de Looij (MPI-PL)
  */
 public class EndpointAdapter implements Endpoint {
 
-    // elements from the XML file
-    private HarvestingType harvesting;
+    // the JAXB created object representing elements from the XML file
+    private final HarvestingType harvesting;
 
-    // reference to a generated type object representing the XML
-    EndpointType endpointType;
+    // the JAXB created and URI referenced endpoint
+    private EndpointType endpointType;
 
-    private ObjectFactory factory;
+    // the JAXB factory needed to create a default endpoint
+    private final ObjectFactory factory;
 
     /**
      * Create default EndpointType object
@@ -54,9 +68,12 @@ public class EndpointAdapter implements Endpoint {
      */
     private EndpointType CreateDefault(String endpointURI) {
 
+        /* The factory has been initialised, refer to the constructor. Ask it
+           to create a new endpoint.
+        */
         endpointType = factory.createEndpointType();
 
-        // set endpoint to default values
+        // set endpoint fields to default values
         endpointType.setBlock(Boolean.FALSE);
         endpointType.setIncremental(Boolean.TRUE);
         endpointType.setURI(endpointURI);
@@ -65,8 +82,8 @@ public class EndpointAdapter implements Endpoint {
     }
 
     /**
-     * Look for the endpoint in a HarvestingType object; use an URI as the
-     * for a key
+     * Look for the endpoint in a HarvestingType object, use an URI as the
+     * as a key
      *
      * @param endpointURI the URI identifying the endpoint
      * @return null or the endpoint
@@ -94,11 +111,17 @@ public class EndpointAdapter implements Endpoint {
     }
 
     /**
-     * Get endpoint data
+     * Associate the adapter with an endpoint URI and HarvestingType object
+     *
+     * @param endpointURI the URI of the endpoint to be harvested by the cycle
+     * @param harvesting the JAXB representation of the harvesting overview file
+     * @param factory the JAXB factory for havesting overview XML files
      */
-    public EndpointAdapter(String endpointURI, HarvestingType harvesting) {
+    public EndpointAdapter(String endpointURI, HarvestingType harvesting,
+                           ObjectFactory factory) {
 
         this.harvesting = harvesting;
+        this.factory    = factory;
 
         // look for the endpoint in the XML data
         endpointType = FindEndpoint(endpointURI);
@@ -112,11 +135,54 @@ public class EndpointAdapter implements Endpoint {
         }
     }
 
-    /**
-     * Return the date by invoking generated methods
-     *
-     * @return the date
-     */
+    @Override
+    public String getURI() {
+
+        return endpointType.getURI();
+    }
+
+    @Override
+    public void setURI(String URI) {
+
+        endpointType.setURI(URI);
+    }
+
+    @Override
+    public String getGroup() {
+
+        return endpointType.getGroup();
+    }
+
+    @Override
+    public void setGroup(String group) {
+
+        endpointType.setGroup(group);
+    }
+
+    @Override
+    public boolean blocked() {
+
+        return endpointType.isBlock();
+    }
+
+    @Override
+    public boolean retry() {
+
+        return endpointType.isRetry();
+    }
+
+    @Override
+    public boolean allowIncrementalHarvest() {
+
+        return endpointType.isIncremental();
+    }
+
+    @Override
+    public String getScenario() {
+
+        return endpointType.getScenario();
+    }
+
     @Override
     public String getRecentHarvestDate() {
 
@@ -125,35 +191,9 @@ public class EndpointAdapter implements Endpoint {
         XMLGregorianCalendar XMLDate;
         XMLDate = harvesting.getHarvestFromDate();
 
-            /* kj: check this
-
-              XMLDate.toString() // would be equal to 1971-11-03
-
-              Calendar c = Calendar.getInstance();
-
-              c.set(XMLDate.getYear(), XMLDate.getMonth(), XMLDate.getDay());
-
-              The Jetbrains code check reveals a magic endpoint:
-
-              http://blog.jetbrains.com/idea/2012/02/new-magic-constant-inspection/
-
-              It looks like this problem is not too serious. Moreover, we can do
-              without the XMLDate conversion to Gregorian
-
-              return c.toString();
-            */
-
-        // epoch zero means no previous harvest
-
         return XMLDate.toString();
     }
 
-    /**
-     * Register success or failure by invoking generated methods
-     *
-     * @param done true if and only if the endpoint was harvested
-     *             successfully, false otherwise
-     */
     @Override
     public void doneHarvesting(Boolean done) {
 
@@ -171,100 +211,41 @@ public class EndpointAdapter implements Endpoint {
             XMLDate.setYear(c.get(Calendar.YEAR));
 
             // in any case, at this date an attempt was made
-
             endpointType.setAttempted(XMLDate);
 
             if (done) {
 
                 // set a new date for incremental harvesting
-
                 endpointType.setHarvested(XMLDate);
             }
 
         } catch (DatatypeConfigurationException ex) {
 
-            Logger.getLogger(HarvestingXML.class.getName()).log(
+            Logger.getLogger(EndpointAdapter.class.getName()).log(
                     Level.SEVERE, null, endpointType);
         }
     }
 
     @Override
-    public String getGroup() {
-        return null;
+    public long getCount() {
+
+        return endpointType.getCount();
     }
 
     @Override
-    public void setGroup(String group) {
+    public void setCount(long count) {
 
+        endpointType.setCount(count);
     }
 
     @Override
-    public int getCount() {
-        return 0;
+    public long getIncrement() {
+
+        return endpointType.getIncrement();
     }
 
     @Override
-    public void setCount(int count) {
-
-    }
-
-    @Override
-    public int getIncrement() {
-        return 0;
-    }
-
-    @Override
-    public void setIncrement(int increment) {
-
-    }
-
-    /**
-     * Check if full harvest is required by invoking generated methods
-     *
-     * @return true, if and only in case of an error, the endpoint will
-     * be selected for a corrective harvesting run, false otherwise
-     */
-    @Override
-    public boolean retry() {
-        return endpointType.isRetry();
-    }
-
-    @Override
-    public String getURI() {
-        return null;
-    }
-
-    @Override
-    public void setURI(String URI) {
-
-    }
-
-    /**
-     * Check if incremental harvest is allowed by invoking generated
-     * methods
-     *
-     * @return true, if and only if incremental harvesting of the endpoint
-     * is allowed, false otherwise
-     */
-    @Override
-    public boolean allowIncrementalHarvest() {
-        return endpointType.isIncremental();
-    }
-
-    @Override
-    public String getScenario() {
-        return null;
-    }
-
-    /**
-     * Check if harvesting the endpoint is blocked by invoking generated
-     * methods
-     *
-     * @return true, if and only if the endpoint is to be excluded from
-     * harvesting, false otherwise
-     */
-    @Override
-    public boolean blocked() {
-        return endpointType.isBlock();
+    public void setIncrement(long increment) {
+        endpointType.setIncrement(increment);
     }
 }

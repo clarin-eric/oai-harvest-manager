@@ -25,21 +25,29 @@ import javax.xml.datatype.XMLGregorianCalendar;
 /**
  * <br> Make available general harvesting cycle attributes <br><br>
  *
- * Methods in this class invoke the methods supplied by the JAXB generated
- * CycleType class, the class representing the cycle elements in XML files
- * that take the form defined by the harvesting.xsd file.
+ * The attributes that determine a harvesting cycle are defined by an XML file
+ * that takes a form that is defined by the harvesting.xsd file. Please refer
+ * to the cycle interface and and endpoint interface for a description of the
+ * semantics involved. <br><br>
+ *
+ * JAXB generates classes representing the XML files. It also provides a
+ * factory for creating the elements in them. <br><br>
+ *
+ * A CycleAdaptor object associates itself with a HarvestingType object that was
+ * created by the JAXB factory. When an adapter method needs to obtain a cycle
+ * attribute, it invokes the corresponding method on the HarvestingType object.
  *
  * @author Kees Jan van de Looij (MPI-PL)
  */
 public class CycleAdapter implements Cycle {
 
-    // elements from the XML file
-    private HarvestingType harvesting;
+    // the JAXB created object representing elements from the XML file
+    private final HarvestingType harvesting;
 
     /**
-     * Associate XML HarvestingType data
+     * Associate the adapter with a HarvestingType object
      *
-     * @param harvesting
+     * @param harvesting JAXB representation of the harvesting overview file
      */
     public CycleAdapter(HarvestingType harvesting) {
         this.harvesting = harvesting;
@@ -75,11 +83,10 @@ public class CycleAdapter implements Cycle {
      * <br> Return the date attribute by invoking the appropriate generated
      * method <br><br>
      *
-     *
-     * Please note the date returned is in the YYYY-MM-DD format, the same
-     * format the OAI protocol accepts as a parameter to the verbs that allow
-     * for selective harvesting. As a return value, the epoch zero date means
-     * that no attempt to harvest the endpoint has been made.
+     * The method returns the date in YYYY-MM-DD format, a format the OAI
+     * protocol accepts as a parameter to the verbs that allow for selective
+     * harvesting. As a return value, the epoch zero date indicates that no
+     * attempt to harvest the endpoint has been made.
      *
      * @return the date
      */

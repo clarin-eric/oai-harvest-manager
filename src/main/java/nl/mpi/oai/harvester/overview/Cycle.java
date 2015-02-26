@@ -92,9 +92,7 @@ public interface Cycle {
          * the endpoint after a specific date. The cycle will use the general
          * date attribute returned by the getHarvestFromDate method when it
          * constructs a harvesting request. If the endpoint is not blocked, the
-         * cycl     *
-     * kj: somehow specify this
-e will try to harvest it selectively, taking the date specified
+         * cycle will try to harvest it selectively, taking the date specified
          * into account.
          */
         refresh

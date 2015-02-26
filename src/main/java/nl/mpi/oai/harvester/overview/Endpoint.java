@@ -170,14 +170,14 @@ public interface Endpoint {
      *
      * @return the number of records harvested
      */
-    public abstract int getCount ();
+    public abstract long getCount ();
 
     /**
      * <br> Set record count
      *
      * @param count the number of records harvested
      */
-    public abstract void setCount (int count);
+    public abstract void setCount (long count);
 
     /**
      * <br> Get the record increment <br><br>
@@ -188,7 +188,7 @@ public interface Endpoint {
      *
      * @return the increment
      */
-    public abstract int getIncrement ();
+    public abstract long getIncrement ();
 
     /**
      * <br> Set the record increment <br><br>
@@ -199,5 +199,5 @@ public interface Endpoint {
      *
      * @param increment the increment
      */
-    public abstract void setIncrement (int increment);
+    public abstract void setIncrement (long increment);
 }

@@ -88,11 +88,6 @@ import java.util.logging.Logger;
  * When harvesting is done, the harvesting overview should be finalised. If it
  * is not, the changes made to the endpoint data will not be saved.
  *
- * kj: consider an alternative for the inline classes
- *
- * Alternative: create EndpointAdapter and CycleAdapter class with a constructor
- * that accepts a HarvestedType object.
- *
  * @author Kees Jan van de Looij (MPI-PL)
  */
 public final class HarvestingXML {
@@ -100,11 +95,11 @@ public final class HarvestingXML {
     // the file supplied on construction
     private final File file;
 
-    // factory that creates objects of the generated classes
-    private final ObjectFactory factory;
-
-    // reference to a generated type object representing the XML 
+    // reference to a generated type object representing the XML
     private HarvestingType harvesting;
+
+    // factory that creates objects of the generated classes
+    ObjectFactory factory;
 
     /**
      * <br> Associate the overview with an XML file <br><br>
@@ -170,7 +165,7 @@ public final class HarvestingXML {
      */
     public Endpoint getEndPoint(String endpointURI) {
 
-        return new EndpointAdapter(endpointURI, harvesting);
+        return new EndpointAdapter(endpointURI, harvesting, factory);
     }
 
     /**
