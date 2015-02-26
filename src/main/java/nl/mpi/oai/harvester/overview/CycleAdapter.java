@@ -18,16 +18,16 @@
 
 package nl.mpi.oai.harvester.overview;
 
-import nl.mpi.oai.harvester.generated.HarvestingType;
+import nl.mpi.oai.harvester.generated.CycleType;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 
 /**
  * <br> Make available general harvesting cycle attributes <br><br>
  *
- * A CycleAdaptor object associates itself with a HarvestingType object that was
+ * A CycleAdaptor object associates itself with a CycleType object that was
  * created by the JAXB factory. When an adapter method needs to access a cycle
- * attribute, it invokes the corresponding method on the HarvestingType object. <br><br>
+ * attribute, it invokes the corresponding method on the CycleType object. <br><br>
  *
  * This class depends on JAXB to generate classes representing the XML file. It
  * also depends on the JAXB factory for creating the elements used in the XML
@@ -38,15 +38,15 @@ import javax.xml.datatype.XMLGregorianCalendar;
 public class CycleAdapter implements Cycle {
 
     // the JAXB created object representing elements from the XML file
-    private final HarvestingType harvesting;
+    private final CycleType cycleType;
 
     /**
-     * Associate the adapter with a HarvestingType object
+     * Associate the adapter with a CycleType object
      *
-     * @param harvesting JAXB representation of the harvesting overview file
+     * @param harvesting JAXB representation of the cycle overview file
      */
-    public CycleAdapter(HarvestingType harvesting) {
-        this.harvesting = harvesting;
+    public CycleAdapter(CycleType harvesting) {
+        this.cycleType = harvesting;
     }
 
     /**
@@ -60,7 +60,7 @@ public class CycleAdapter implements Cycle {
 
         Cycle.Mode mode;
 
-        switch (harvesting.getMode()) {
+        switch (cycleType.getMode()) {
 
             case NORMAL:
                 mode = Mode.normal;
@@ -94,7 +94,7 @@ public class CycleAdapter implements Cycle {
         // convert XMLGregorianCalendar to string
 
         XMLGregorianCalendar XMLDate;
-        XMLDate = harvesting.getHarvestFromDate();
+        XMLDate = cycleType.getHarvestFromDate();
 
         // kj: provide default
 
@@ -118,6 +118,6 @@ public class CycleAdapter implements Cycle {
 
         // kj: check values, could be changed into enumerated type
 
-        return harvesting.getScenario();
+        return cycleType.getScenario();
     }
 }

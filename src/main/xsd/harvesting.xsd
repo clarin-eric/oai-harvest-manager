@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="unqualified">
 
-    <xs:element name="harvesting" type="HarvestingType"/>
-    <xs:complexType name="HarvestingType">
+    <xs:element name="cycle" type="CycleType"/>
+    <xs:complexType name="CycleType">
         <xs:sequence>
             <xs:element form="unqualified" maxOccurs="1" name="mode" type="ModeType"/>
             <xs:element name="HarvestFromDate" minOccurs="0" type="xs:date"> </xs:element>
@@ -22,8 +22,8 @@
             <xs:element maxOccurs="1" name="scenario" minOccurs="1" type="xs:string"> </xs:element>
             <xs:element name="attempted" minOccurs="0" type="xs:date"/>
             <xs:element name="harvested" minOccurs="0" type="xs:date"/>
-            <xs:element minOccurs="0" name="count" type="xs:unsignedLong"> </xs:element>
-            <xs:element minOccurs="0" name="increment" type="xs:unsignedLong"> </xs:element>
+            <xs:element minOccurs="0" name="count" type="xs:unsignedInt"> </xs:element>
+            <xs:element minOccurs="0" name="increment" type="xs:unsignedInt"> </xs:element>
         </xs:sequence>
     </xs:complexType>
     <xs:simpleType name="ModeType">

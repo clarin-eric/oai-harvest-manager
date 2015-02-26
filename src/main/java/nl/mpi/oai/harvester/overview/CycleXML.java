@@ -18,7 +18,7 @@
 
 package nl.mpi.oai.harvester.overview;
 
-import nl.mpi.oai.harvester.generated.HarvestingType;
+import nl.mpi.oai.harvester.generated.CycleType;
 import nl.mpi.oai.harvester.generated.ObjectFactory;
 import nl.mpi.oai.harvester.harvesting.HarvestingException;
 
@@ -29,14 +29,14 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * <br> HarvestingType object marshalling <br><br>
+ * <br> CycleType object marshalling <br><br>
  *
  * By returning CycleAdapter or EndpointAdapter class objects through the the
  * Cycle and Endpoint interfaces, the methods on the objects in this class make
  * available XML defined attributes of the harvesting cycle.
  *
- * Note: the XSD defining the harvesting overview XML files resides in the
- * src/xsd directory. <br><br>
+ * Note: the XSD defining the cycle overview XML files resides in the src/xsd
+ * directory. <br><br>
  *
  * These are the elements conveyed through the Cycle interface.
  *
@@ -98,13 +98,13 @@ import java.util.logging.Logger;
  *
  * @author Kees Jan van de Looij (MPI-PL)
  */
-public final class OverviewXML {
+public final class CycleXML {
 
     // the file supplied on construction
     private final File file;
 
-    // reference to a generated type object representing the XML
-    private HarvestingType harvesting;
+    // reference to a generated cycleType object representing the XML
+    private CycleType cycleType;
 
     // factory that creates objects of the generated classes
     ObjectFactory factory;
@@ -117,44 +117,44 @@ public final class OverviewXML {
      *
      * @param fileName name of the file
      */
-    public OverviewXML(String fileName) {
+    public CycleXML(String fileName) {
 
         // create factory that creates objects of the generated classes
         factory = new ObjectFactory();
 
         // ask the factory for an object representing the XML
-        harvesting = factory.createHarvestingType();
+        cycleType = factory.createCycleType();
 
         // remember the file where the XML is
         file = new File(fileName);
 
         // get the XML from this file
-        Object object = JAXB.unmarshal(file, HarvestingType.class);
+        Object object = JAXB.unmarshal(file, CycleType.class);
 
-        /* Check if the object is in the HarvestingType class. Note: if the
+        /* Check if the object is in the CycleType class. Note: if the
            unmarshalling method returns null, the object is not in the class,
            otherwise it is.
           */
         if (object == null) {
             throw new HarvestingException();
         } else {
-            harvesting = (HarvestingType) object;
+            cycleType = (CycleType) object;
         }
     }
 
     /**
      * <br> Create an adapter for the harvestingType object <br><br>
      *
-     * Note: at the level of the XSD, the endpoints are part of harvesting, at the
-     * level of the interface the general harvesting characteristics are separate
-     * from the list of endpoints. In fact, the client never gets the complete list,
-     * it gets an endpoint referred to by the URI.
+     * Note: at the level of the XSD, the endpoints are part of harvesting, at
+     * the level of the interface the general harvesting characteristics are
+     * separate from the list of endpoints. In fact, the client never gets the
+     * complete list, it gets an endpoint referred to by the URI.
      *
      * @return cycle attributes
      */
     public Cycle getCycle() {
 
-        return new CycleAdapter(harvesting);
+        return new CycleAdapter(cycleType);
     }
 
     /**
@@ -163,17 +163,17 @@ public final class OverviewXML {
      * This method returns the adapter object for the endpoint indicated
      * by the endpointURI
      *
-     * Note: at the level of the XSD, the endpoints are part of harvesting, at the
-     * level of the interface the general harvesting characteristics are separate
-     * from the list of endpoints. In fact, the client never gets the complete list,
-     * it gets an endpoint referred to by the URI.
+     * Note: at the level of the XSD, the endpoints are part of harvesting, at
+     * the level of the interface the general harvesting characteristics are
+     * separate from the list of endpoints. In fact, the client never gets the
+     * complete list, it gets an endpoint referred to by the URI.
      *
      * @param endpointURI the URI of the endpoint state requested
      * @return endpoint attributes
      */
     public Endpoint getEndPoint(String endpointURI) {
 
-        return new EndpointAdapter(endpointURI, harvesting, factory);
+        return new EndpointAdapter(endpointURI, cycleType, factory);
     }
 
     /**
@@ -187,11 +187,11 @@ public final class OverviewXML {
         try {
             super.finalize();
         } catch (Throwable e) {
-            Logger.getLogger(OverviewXML.class.getName()).log(
+            Logger.getLogger(CycleXML.class.getName()).log(
                     Level.SEVERE, null, e);
         }
 
         // finalize the harvesting data
-        JAXB.marshal(harvesting, file);
+        JAXB.marshal(cycleType, file);
     }
 }

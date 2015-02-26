@@ -18,8 +18,8 @@
 
 package nl.mpi.oai.harvester.overview;
 
+import nl.mpi.oai.harvester.generated.CycleType;
 import nl.mpi.oai.harvester.generated.EndpointType;
-import nl.mpi.oai.harvester.generated.HarvestingType;
 import nl.mpi.oai.harvester.generated.ObjectFactory;
 
 import javax.xml.datatype.DatatypeConfigurationException;
@@ -32,13 +32,13 @@ import java.util.logging.Logger;
 /**
  * <br>Make available endpoint type attributes <br><br>
  *
- * First, an EndpointAdaptor object associates itself with a HarvestingType
+ * First, an EndpointAdaptor object associates itself with a CycleType
  * object. After that, it looks for the endpoint. If it finds it, it remembers
  * it. Otherwise it will ask the generated JAXB factory to create a endpoint,
  * and set the fields to default values. <br><br>
  *
  * When an adapter method needs to obtain a cycle attribute, it will invoke a
- * corresponding method on the HarvestingType object, either found or created. <br><br>
+ * corresponding method on the CycleType object, either found or created. <br><br>
  *
  * This class depends on JAXB to generate classes representing the XML file. It
  * also depends on the JAXB factory for creating the elements used in the XML
@@ -50,7 +50,7 @@ import java.util.logging.Logger;
 public class EndpointAdapter implements Endpoint {
 
     // the JAXB created object representing elements from the XML file
-    private final HarvestingType harvesting;
+    private final CycleType harvesting;
 
     // the JAXB created and URI referenced endpoint
     private EndpointType endpointType;
@@ -79,7 +79,7 @@ public class EndpointAdapter implements Endpoint {
     }
 
     /**
-     * Look for the endpoint in a HarvestingType object, use an URI as the
+     * Look for the endpoint in a CycleType object, use an URI as the
      * as a key
      *
      * @param endpointURI the URI identifying the endpoint
@@ -108,13 +108,13 @@ public class EndpointAdapter implements Endpoint {
     }
 
     /**
-     * Associate the adapter with an endpoint URI and HarvestingType object
+     * Associate the adapter with an endpoint URI and CycleType object
      *
      * @param endpointURI the URI of the endpoint to be harvested by the cycle
      * @param harvesting the JAXB representation of the harvesting overview file
      * @param factory the JAXB factory for harvesting overview XML files
      */
-    public EndpointAdapter(String endpointURI, HarvestingType harvesting,
+    public EndpointAdapter(String endpointURI, CycleType harvesting,
                            ObjectFactory factory) {
 
         this.harvesting = harvesting;
