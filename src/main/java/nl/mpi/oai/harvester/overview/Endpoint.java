@@ -19,24 +19,62 @@
 package nl.mpi.oai.harvester.overview;
 
 /**
- * <br> Access to an OAI endpoint <br><br>
+ * <br> Access to endpoint attributes <br><br>
  *
- * This interface presents an endpoint to the harvest cycle. By using the
- * methods defined here, the harvest cycle can store the harvesting state of
- * the endpoint.
- *
- * The harvest cycle can access some endpoint attributes directly through
- * method parameters and return values. This applies for example to the URI,
- * group, and record count.
+ * This interface presents an endpoint to the harvest cycle. The harvest cycle
+ * can access some endpoint attributes directly through method parameters and
+ * return values. This applies for example to the URI, group, and record count. <br><br>
  *
  * Access to other fields is indirect, like for example the date of the most
  * recent harvest. While the interface does provide a method for getting the
- * attribute, the harvest cycle cannot set it by providing a parameter. The
- * doneHarvesting method for example will determine and set it by itself.
+ * value of the attribute, the harvest cycle cannot set it by providing a it as
+ * a parameter. The doneHarvesting method will determine and set it by itself. <br><br>
  *
- * A third category of attribute falls outside the control of the cycle. The
- * interface does not provide for setting the value of the attribute, not even
- * indirectly. The scenario attribute for example, belongs to this category.
+ * By using the methods defined here, the harvest cycle can track the state of
+ * the endpoints. In this way, the cycle can obtain recent additions to an
+ * endpoint, without having to harvest all the records provided by it over and
+ * over again. This incremental mode of harvesting is particularly useful when
+ * the endpoint provides a large number of records. <br><br>
+ *
+ * Methods implementing the interface should, after the first harvest attempt
+ * initialise the following values. After each subsequent attempt, they should
+ * update the values. <br><br>
+ *
+ * <table>
+ * <td>
+ * attempted <br>
+ * harvested <br>
+ * count     <br>
+ * increment <br><br>
+ * </td>
+ * </table>
+ *
+ * Apart from initialising them to a default value, the following elements fall
+ * outside the governance of the harvest cycle. This leaves room for manual
+ * intervention. Setting the block attribute to true, for example, will prevent
+ * the cycle from harvesting the endpoint. <br><br>
+ *
+ * <table>
+ * <td>
+ * URI         <br>
+ * group       <br>
+ * block       <br>
+ * retry       <br>
+ * incremental <br>
+ * scenario    <br>
+ * </td>
+ * <td>
+ * cycle needs to supply it  <br>
+ * cycle needs to supply it  <br>
+ * defaults to false         <br>
+ * defaults to false         <br>
+ * defaults to false         <br>
+ * defaults to 'ListRecords' <br>
+ * </td>
+ * </table><br>
+ *
+ * Please refer to the cycle interface and endpoint interface for a description
+ * of the semantics involved. <br><br>
  *
  * A typical implementation of the Endpoint interface would be an adapter class
  * that reads from and writes to an XML file.

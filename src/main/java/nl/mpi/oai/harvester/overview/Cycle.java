@@ -21,37 +21,36 @@ package nl.mpi.oai.harvester.overview;
 /**
  * <br> Access to general harvest cycle attributes <br><br>
  *
- * A harvest cycle traverses OAI endpoints with the intention to obtain
- * metadata records. The cycle initiates a request for records by issuing a
- * command created from an OAI verb and parameters identifying a particular
- * list of records.
- *
- * The cycle can use the cycle and endpoint interface to query the general
- * harvest cycle characteristics and state of the endpoint in order to to
+ * A harvest cycle visits OAI endpoints with the intention to obtain metadata
+ * records. The cycle can use the cycle and the endpoint interface to query the
+ * general harvest cycle characteristics and state of the endpoint in order to
  * decide whether or not to harvest and to determine OAI verb and parameters.
- *
- * After the cycle has issued the command, it needs to interpret the result and
- * update the endpoint state.
- *
- * By tracking the state of th endpoint, it can obtain recent additions to it,
- * without having to harvest all the records provided once again. This mode of
- * harvesting is referred to as 'incremental harvesting' and can be regarded as
- * a form of selective harvesting as described in the definition of the OAI
- * protocol. Incremental harvesting is particularly useful when the endpoint
- * provides a large number of records.
  *
  * General characteristics of cycle include the mode of harvesting, the date
  * specified in a incremental or selective harvesting request, and the intended
- * harvest scenario. A scenario defines the way in which the cycle will apply
- * the OAI protocol primitives. It can, for example, first harvest the
- * identifiers of  metadata records and request the identified records, or
- * alternatively, harvest the records directly.
+ * harvest scenario.
  *
- * While the interface specifies methods for obtaining general information, it
- * does not specify methods for setting the mode of harvesting, the date used
- * for selective harvesting, and the scenario for harvesting. Attributes like
- * these fall outside the governance of the harvesting cycle. This means that a
- * class that implements the interface can leave room for manual specification.
+ * <table>
+ * <td>
+ * mode     <br>
+ * date     <br>
+ * scenario <br><br>
+ * </td>
+ * <td>
+ * defaults to 'normal' <br>
+ * defaults to '1970-01-01' <br>
+ * defaults to 'ListRecords' <br><br>
+ * </td>
+ * </table>
+ *
+ * These are the elements conveyed through the Cycle interface. The elements
+ * listed are optional, the cycle will use default values, and reflect these
+ * in through the interface.
+ *
+ * While the interface specifies methods for getting the attributes, it does
+ * not specify methods for setting them. The general cycle attributes fall
+ * outside the governance of the harvesting cycle. This means that a class that
+ * implements the interface can leave room for manual specification.
  *
  * Note: for a description of the role of adapter classes, please refer to the
  * description in the Endpoint interface.
@@ -98,22 +97,36 @@ public interface Cycle {
     }
 
     /**
-     * kj: documentation
+     * The harvest scenario the cycle needs to apply <br> <br><br><br>
+     *
+     * A harvest scenario is a particular implementation and application of the
+     * methods declared in the harvesting interface. A class implements a method
+     * by invoking methods that establish primitives in the OAI protocol. <br><br>
+     *
+     * Applying a particular scenario, the cycle can, for example, first harvest
+     * the identifiers of metadata records and request the identified records,
+     * or alternatively, harvest the records directly.
      */
     public enum Scenario {
 
         /**
-         *
+         * Query the metadata prefixes the endpoint supports. The cycle uses
+         * metadata formats it associates with the endpoint to identify the
+         * prefixes.
          */
         ListPrefixes,
 
         /**
-         *
+         * In this scenario, by selecting a prefix, the cycle first obtains a
+         * list of identifiers of metadata elements the endpoint provides. Next,
+         * it gets the records the list identifies.
          */
         ListIdentifiers,
 
         /**
-         *
+         * In this scenario, instead of getting a list of identifiers first,
+         * the cycle can also select a prefix and query the endpoint for
+         * matching records without first obtaining a list of their identifiers.
          */
         ListRecords
     }

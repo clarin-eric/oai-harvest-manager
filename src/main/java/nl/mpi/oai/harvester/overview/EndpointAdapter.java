@@ -30,22 +30,19 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * <br>Make available endpoint type attributes <br><br>
+ * <br> Access to endpoint attributes stored as XML elements <br><br>
  *
- * First, an EndpointAdaptor object associates itself with a CycleType
- * object. After that, it looks for the endpoint. If it finds it, it remembers
- * it. Otherwise it will ask the generated JAXB factory to create a endpoint,
- * and set the fields to default values. <br><br>
+ * First, an EndpointAdaptor object associates itself with an OverviewType
+ * object and a URI. After that, it looks for the endpoint. If it finds it, it
+ * remembers it. Otherwise it will ask the generated JAXB factory to create a
+ * endpoint, and set its fields to default values. <br><br>
  *
- * When an adapter method needs to obtain a harvest cycle attribute, it will
- * invoke a corresponding method on the CycleType object, either found or
- * created. <br><br>
+ * When an adapter method needs to obtain an endpoint attribute, it will
+ * invoke a corresponding method on the EndpointType object. <br><br>
  *
  * This class depends on JAXB to generate classes representing the XML file. It
  * also depends on the JAXB factory for creating the elements used in the XML
  * file.
- *
- * kj: check defaults and obligatory / optional elements
  *
  * @author Kees Jan van de Looij (MPI-PL)
  */
@@ -133,6 +130,8 @@ public class EndpointAdapter implements Endpoint {
             overviewType.getEndpoint().add(endpointType);
         }
     }
+
+    // kj: check defaults and reflection back to the XML file
 
     @Override
     public String getURI() {

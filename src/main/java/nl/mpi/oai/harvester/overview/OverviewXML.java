@@ -33,70 +33,16 @@ import java.util.logging.Logger;
  *
  * By returning CycleAdapter or EndpointAdapter class objects through the the
  * Cycle and Endpoint interfaces, the methods on the objects in this class make
- * available XML defined attributes of the harvesting cycle.
- *
- * Note: the XSD defining the cycle overview XML files resides in the src/xsd
- * directory. <br><br>
- *
- * These are the elements conveyed through the Cycle interface.
- *
- * <table>
- * <td>
- * mode     <br>
- * date     <br>
- * scenario <br><br>
- * </td>
- * <td>
- * defaults to 'normal' <br>
- * defaults to '1970-01-01' <br>
- * defaults to 'ListRecords' <br><br>
- * </td>
- * </table>
- *
- * From the elements in the Endpoint interface, the following are optional. <br>
- *
- * <table>
- * <td>
- * attempted <br>
- * harvested <br>
- * count     <br>
- * increment <br><br>
- * </td>
- * </table>
- *
- * Being optional, defaults do not apply. The following elements are obligatory.
- *
- * <table>
- * <td>
- * URI         <br>
- * group       <br>
- * block       <br>
- * retry       <br>
- * incremental <br>
- * scenario    <br>
- * </td>
- * <td>
- * cycle needs to supply it  <br>
- * cycle needs to supply it  <br>
- * defaults to false         <br>
- * defaults to false         <br>
- * defaults to false         <br>
- * defaults to 'ListRecords' <br>
- * </td>
- * </table><br>
- *
- * Please refer to the cycle interface and endpoint interface for a description
- * of the semantics involved. <br><br>
+ * available XML defined attributes of the harvesting cycle. Note: the XSD
+ * defining the cycle overview XML files resides in the src/xsd directory. <br><br>
  *
  * By supplying its URI, the harvest cycle can identify an endpoint. By
- * interpreting the attributes recorded, it can decide if an endpoint needs to
- * be harvested, and also, which method of harvesting it should apply. The
+ * interpreting the attributes recorded, it can decide if it needs to harvest
+ * the endpoint, and also, which method of harvesting it should apply. The
  * cycle can update the endpoint attributes to reflect the harvest attempt. <br><br>
  *
  * When harvesting is done, the harvesting overview should be finalised. If it
  * is not, the changes made to the endpoint data will not be saved.
- *
- * kj: check the use of string restrictions before xs:string
  *
  * @author Kees Jan van de Looij (MPI-PL)
  */
@@ -124,10 +70,10 @@ public final class OverviewXML {
         // create factory that creates objects of the generated classes
         factory = new ObjectFactory();
 
-        // ask the factory for an object representing the XML
+        // ask the factory for an object that can represent XML
         overviewType = factory.createOverviewType();
 
-        // remember the file wheScenarioTypere the XML is
+        // remember the XML file
         file = new File(fileName);
 
         // get the XML from this file

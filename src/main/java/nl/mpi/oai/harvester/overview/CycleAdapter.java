@@ -15,7 +15,6 @@
  * LICENSE-gpl-3.0.txt. If that file is missing, see
  * <http://www.gnu.org/licenses/>
  *
- * kj: annotate this class
  */
 
 package nl.mpi.oai.harvester.overview;
@@ -29,7 +28,7 @@ import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
 /**
- * <br> Make available general harvest cycle attributes <br><br>
+ * <br> Access to general harvest cycle attributes stored as XML elements <br><br>
  *
  * A CycleAdaptor object associates itself with a CycleType object that was
  * created by the JAXB factory. When an adapter method needs to access a cycle
