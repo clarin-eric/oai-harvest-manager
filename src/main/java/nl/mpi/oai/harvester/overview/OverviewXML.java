@@ -16,7 +16,7 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-package nl.mpi.oai.harvester.cycle;
+package nl.mpi.oai.harvester.overview;
 
 import nl.mpi.oai.harvester.generated.CycleType;
 import nl.mpi.oai.harvester.generated.ObjectFactory;
@@ -88,10 +88,10 @@ import java.util.logging.Logger;
  * Please refer to the cycle interface and endpoint interface for a description
  * of the semantics involved. <br><br>
  *
- * By supplying its URI, the cycle can identify an endpoint. By interpreting
- * the attributes recorded, it can decide if an endpoint needs to be harvested,
- * and also, which method of harvesting it should apply. The cycle can update
- * the endpoint attributes to reflect the harvesting attempt. <br><br>
+ * By supplying its URI, the harvest cycle can identify an endpoint. By
+ * interpreting the attributes recorded, it can decide if an endpoint needs to
+ * be harvested, and also, which method of harvesting it should apply. The
+ * cycle can update the endpoint attributes to reflect the harvest attempt. <br><br>
  *
  * When harvesting is done, the harvesting overview should be finalised. If it
  * is not, the changes made to the endpoint data will not be saved.
@@ -100,7 +100,7 @@ import java.util.logging.Logger;
  *
  * @author Kees Jan van de Looij (MPI-PL)
  */
-public final class CycleXML {
+public final class OverviewXML {
 
     // the file supplied on construction
     private final File file;
@@ -119,7 +119,7 @@ public final class CycleXML {
      *
      * @param fileName name of the file
      */
-    public CycleXML(String fileName) {
+    public OverviewXML(String fileName) {
 
         // create factory that creates objects of the generated classes
         factory = new ObjectFactory();
@@ -189,7 +189,7 @@ public final class CycleXML {
         try {
             super.finalize();
         } catch (Throwable e) {
-            Logger.getLogger(CycleXML.class.getName()).log(
+            Logger.getLogger(OverviewXML.class.getName()).log(
                     Level.SEVERE, null, e);
         }
 

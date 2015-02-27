@@ -16,7 +16,7 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-package nl.mpi.oai.harvester.cycle;
+package nl.mpi.oai.harvester.overview;
 
 import nl.mpi.oai.harvester.generated.CycleType;
 import nl.mpi.oai.harvester.generated.EndpointType;
@@ -37,8 +37,9 @@ import java.util.logging.Logger;
  * it. Otherwise it will ask the generated JAXB factory to create a endpoint,
  * and set the fields to default values. <br><br>
  *
- * When an adapter method needs to obtain a cycle attribute, it will invoke a
- * corresponding method on the CycleType object, either found or created. <br><br>
+ * When an adapter method needs to obtain a harvest cycle attribute, it will
+ * invoke a corresponding method on the CycleType object, either found or
+ * created. <br><br>
  *
  * This class depends on JAXB to generate classes representing the XML file. It
  * also depends on the JAXB factory for creating the elements used in the XML

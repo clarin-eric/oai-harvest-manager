@@ -16,22 +16,22 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-package nl.mpi.oai.harvester.cycle;
+package nl.mpi.oai.harvester.overview;
 
 /**
  * <br> Access to an OAI endpoint <br><br>
  *
- * This interface presents an endpoint to the harvesting cycle. By using the
- * methods defined here, the harvesting cycle can store the harvesting state
- * of the endpoint.
+ * This interface presents an endpoint to the harvest cycle. By using the
+ * methods defined here, the harvest cycle can store the harvesting state of
+ * the endpoint.
  *
- * The harvesting cycle can access some endpoint attributes directly through
+ * The harvest cycle can access some endpoint attributes directly through
  * method parameters and return values. This applies for example to the URI,
  * group, and record count.
  *
  * Access to other fields is indirect, like for example the date of the most
  * recent harvest. While the interface does provide a method for getting the
- * attribute, the cycle cannot set it by means of providing a parameter. The
+ * attribute, the harvest cycle cannot set it by providing a parameter. The
  * doneHarvesting method for example will determine and set it by itself.
  *
  * A third category of attribute falls outside the control of the cycle. The
@@ -48,8 +48,7 @@ public interface Endpoint {
     /**
      * <br> Get the endpoint URI <br><br>
      *
-     * The URI by which the harvesting cycle will try to connect to the
-     * endpoint.
+     * The URI by which the harvest cycle will try to connect to the endpoint.
      *
      * @return endpoint URI
      */
@@ -100,8 +99,8 @@ public interface Endpoint {
     /**
      * <br> Check if the cycle can retry harvesting the endpoint <br><br>
      *
-     * Only if the cycle itself is in retry mode, it can effectively retry
-     * harvesting the endpoint. <br><br>
+     * Only if the harvest cycle itself is in retry mode, it can effectively
+     * retry harvesting the endpoint. <br><br>
      *
      * Note: like getURI, blocked and allowIncremental harvest, the interface
      * does not provide a method that can set the value of the retry attribute.
@@ -135,7 +134,7 @@ public interface Endpoint {
      * harvest the records directly.
      *
      * Note: there is no method for setting the scenario. The value needs to
-     * be specified independently from the harvesting cycle.
+     * be specified independently from the harvest cycle.
      *
      * @return the scenario
      */
@@ -182,9 +181,9 @@ public interface Endpoint {
     /**
      * <br> Get the record increment <br><br>
      *
-     * The number of records incrementally harvested from the endpoint in the
-     * most recent cycle. If the endpoint was not incrementally harvested, the
-     * increment will be zero.
+     * The number of records incrementally harvested from the endpoint in
+     * the most recent harvest cycle. If the endpoint was not incrementally
+     * harvested, the increment will be zero.
      *
      * @return the increment
      */
@@ -194,8 +193,8 @@ public interface Endpoint {
      * <br> Set the record increment <br><br>
      *
      * The number of records incrementally harvested from the endpoint in the
-     * most recent cycle. If the endpoint was not incrementally harvested, the
-     * increment will be zero.
+     * most recent harvest cycle. If the endpoint was not incrementally
+     * harvested, the increment will be zero.
      *
      * @param increment the increment
      */

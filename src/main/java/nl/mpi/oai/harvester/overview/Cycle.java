@@ -16,19 +16,19 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-package nl.mpi.oai.harvester.cycle;
+package nl.mpi.oai.harvester.overview;
 
 /**
- * <br> Access to general harvesting cycle attributes <br><br>
+ * <br> Access to general harvest cycle attributes <br><br>
  *
- * A harvesting cycle traverses OAI endpoints with the intention to obtain
+ * A harvest cycle traverses OAI endpoints with the intention to obtain
  * metadata records. The cycle initiates a request for records by issuing a
  * command created from an OAI verb and parameters identifying a particular
  * list of records.
  *
- * The cycle can use the harvesting and endpoint interface to query the general
- * harvesting characteristics and state of the endpoint in order to to decide
- * whether or not to harvest and to determine OAI verb and parameters.
+ * The cycle can use the cycle and endpoint interface to query the general
+ * harvest cycle characteristics and state of the endpoint in order to to
+ * decide whether or not to harvest and to determine OAI verb and parameters.
  *
  * After the cycle has issued the command, it needs to interpret the result and
  * update the endpoint state.
@@ -42,16 +42,16 @@ package nl.mpi.oai.harvester.cycle;
  *
  * General characteristics of cycle include the mode of harvesting, the date
  * specified in a incremental or selective harvesting request, and the intended
- * harvesting scenario. A scenario defines the way in which the cycle will
- * apply the OAI protocol primitives. It can, for example, first harvest the
+ * harvest scenario. A scenario defines the way in which the cycle will apply
+ * the OAI protocol primitives. It can, for example, first harvest the
  * identifiers of  metadata records and request the identified records, or
  * alternatively, harvest the records directly.
  *
  * While the interface specifies methods for obtaining general information, it
  * does not specify methods for setting the mode of harvesting, the date used
  * for selective harvesting, and the scenario for harvesting. Attributes like
- * these fall outside the governance of the cycle. This means that a class that
- * implements the interface can leave room for manual specification.
+ * these fall outside the governance of the harvesting cycle. This means that a
+ * class that implements the interface can leave room for manual specification.
  *
  * Note: for a description of the role of adapter classes, please refer to the
  * description in the Endpoint interface.

@@ -16,14 +16,14 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-package nl.mpi.oai.harvester.cycle;
+package nl.mpi.oai.harvester.overview;
 
 import nl.mpi.oai.harvester.generated.CycleType;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 
 /**
- * <br> Make available general harvesting cycle attributes <br><br>
+ * <br> Make available general harvest cycle attributes <br><br>
  *
  * A CycleAdaptor object associates itself with a CycleType object that was
  * created by the JAXB factory. When an adapter method needs to access a cycle
