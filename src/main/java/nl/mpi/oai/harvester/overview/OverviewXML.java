@@ -18,8 +18,8 @@
 
 package nl.mpi.oai.harvester.overview;
 
-import nl.mpi.oai.harvester.generated.CycleType;
 import nl.mpi.oai.harvester.generated.ObjectFactory;
+import nl.mpi.oai.harvester.generated.OverviewType;
 import nl.mpi.oai.harvester.harvesting.HarvestingException;
 
 import javax.xml.bind.*;
@@ -47,9 +47,9 @@ import java.util.logging.Logger;
  * scenario <br><br>
  * </td>
  * <td>
- * supplied to the cycle <br>
- * supplied by the cycle <br>
- * supplied to the cycle <br><br>
+ * defaults to 'normal' <br>
+ * defaults to '1970-01-01' <br>
+ * defaults to 'ListRecords' <br><br>
  * </td>
  * </table>
  *
@@ -76,12 +76,12 @@ import java.util.logging.Logger;
  * scenario    <br>
  * </td>
  * <td>
- * cycle needs to supply it   <br>
- * cycle needs to supply it   <br>
- * defaults to false          <br>
- * defaults to false          <br>
- * defaults to false          <br>
- * defaults to 'list records' <br>
+ * cycle needs to supply it  <br>
+ * cycle needs to supply it  <br>
+ * defaults to false         <br>
+ * defaults to false         <br>
+ * defaults to false         <br>
+ * defaults to 'ListRecords' <br>
  * </td>
  * </table><br>
  *
@@ -105,8 +105,8 @@ public final class OverviewXML {
     // the file supplied on construction
     private final File file;
 
-    // reference to a generated cycleType object representing the XML
-    private CycleType cycleType;
+    // reference to a generated overviewType object representing the XML
+    private OverviewType overviewType;
 
     // factory that creates objects of the generated classes
     ObjectFactory factory;
@@ -125,13 +125,13 @@ public final class OverviewXML {
         factory = new ObjectFactory();
 
         // ask the factory for an object representing the XML
-        cycleType = factory.createCycleType();
+        overviewType = factory.createOverviewType();
 
-        // remember the file where the XML is
+        // remember the file wheScenarioTypere the XML is
         file = new File(fileName);
 
         // get the XML from this file
-        Object object = JAXB.unmarshal(file, CycleType.class);
+        Object object = JAXB.unmarshal(file, OverviewType.class);
 
         /* Check if the object is in the CycleType class. Note: if the
            unmarshalling method returns null, the object is not in the class,
@@ -140,7 +140,7 @@ public final class OverviewXML {
         if (object == null) {
             throw new HarvestingException();
         } else {
-            cycleType = (CycleType) object;
+            overviewType = (OverviewType) object;
         }
     }
 
@@ -156,7 +156,7 @@ public final class OverviewXML {
      */
     public Cycle getCycle() {
 
-        return new CycleAdapter(cycleType);
+        return new CycleAdapter(overviewType);
     }
 
     /**
@@ -175,7 +175,7 @@ public final class OverviewXML {
      */
     public Endpoint getEndPoint(String endpointURI) {
 
-        return new EndpointAdapter(endpointURI, cycleType, factory);
+        return new EndpointAdapter(endpointURI, overviewType, factory);
     }
 
     /**
@@ -194,6 +194,6 @@ public final class OverviewXML {
         }
 
         // finalize the harvesting data
-        JAXB.marshal(cycleType, file);
+        JAXB.marshal(overviewType, file);
     }
 }

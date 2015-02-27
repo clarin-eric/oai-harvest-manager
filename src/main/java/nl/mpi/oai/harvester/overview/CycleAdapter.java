@@ -13,13 +13,19 @@
  *
  * A copy of the GNU General Public License is included in the file
  * LICENSE-gpl-3.0.txt. If that file is missing, see
- * <http://www.gnu.org/licenses/>.
+ * <http://www.gnu.org/licenses/>
+ *
+ * kj: annotate this class
  */
 
 package nl.mpi.oai.harvester.overview;
 
-import nl.mpi.oai.harvester.generated.CycleType;
+import nl.mpi.oai.harvester.generated.ModeType;
+import nl.mpi.oai.harvester.generated.OverviewType;
+import nl.mpi.oai.harvester.generated.ScenarioType;
 
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
 /**
@@ -38,14 +44,14 @@ import javax.xml.datatype.XMLGregorianCalendar;
 public class CycleAdapter implements Cycle {
 
     // the JAXB created object representing elements from the XML file
-    private final CycleType cycleType;
+    private final OverviewType cycleType;
 
     /**
      * Associate the adapter with a CycleType object
      *
      * @param cycleType JAXB representation of the cycle overview file
      */
-    public CycleAdapter(CycleType cycleType) {
+    public CycleAdapter(OverviewType cycleType) {
         this.cycleType = cycleType;
     }
 
@@ -58,22 +64,29 @@ public class CycleAdapter implements Cycle {
     @Override
     public Mode getHarvestMode() {
 
-        Cycle.Mode mode;
+        ModeType modeType;
+        modeType = cycleType.getMode();
 
-        switch (cycleType.getMode()) {
+        Mode mode;
 
-            case NORMAL:
-                mode = Mode.normal;
-                break;
-            case REFRESH:
-                mode = Mode.refresh;
-                break;
-            case RETRY:
-                mode = Mode.retry;
-                break;
-            default:
-                mode = Mode.normal;
+        if (modeType == null) {
+            mode = Mode.normal;
+            cycleType.setMode(ModeType.NORMAL);
+        } else {
+
+            switch (modeType) {
+
+                case REFRESH:
+                    mode = Mode.refresh;
+                    break;
+                case RETRY:
+                    mode = Mode.retry;
+                    break;
+                default:
+                    mode = Mode.normal;
+            }
         }
+
         return mode;
     }
 
@@ -97,7 +110,16 @@ public class CycleAdapter implements Cycle {
         XMLDate = cycleType.getHarvestFromDate();
 
         if (XMLDate == null){
-            // provide epoch zero as a default
+            try {
+                XMLDate = DatatypeFactory.newInstance().newXMLGregorianCalendar();            XMLDate.setYear(1970);
+                XMLDate.setMonth(1);
+                XMLDate.setDay(1);
+                // provide epoch zero as a default
+                cycleType.setHarvestFromDate(XMLDate);
+
+            } catch (DatatypeConfigurationException e) {
+                e.printStackTrace();
+            }
 
             return "1970-01-01";
         } else {
@@ -114,21 +136,27 @@ public class CycleAdapter implements Cycle {
     @Override
     public Scenario getScenario() {
 
+        ScenarioType scenarioType;
+        scenarioType = cycleType.getScenario();
+
         Scenario scenario;
 
-        switch (cycleType.getScenario()) {
+        if (scenarioType == null) {
+            scenario = Scenario.ListRecords;
+            cycleType.setScenario(ScenarioType.LIST_IDENTIFIERS);
+        } else {
 
-            case LIST_PREFIXES:
-                scenario = Scenario.ListPrefixes;
-                break;
-            case LIST_IDENTIFIERS:
-                scenario = Scenario.ListIdentifiers;
-                break;
-            case LIST_RECORDS:
-                scenario = Scenario.ListRecords;
-                break;
-            default:
-                scenario = Scenario.ListRecords;
+            switch (cycleType.getScenario()) {
+
+                case LIST_PREFIXES:
+                    scenario = Scenario.ListPrefixes;
+                    break;
+                case LIST_IDENTIFIERS:
+                    scenario = Scenario.ListIdentifiers;
+                    break;
+                default:
+                    scenario = Scenario.ListRecords;
+            }
         }
         return scenario;
     }

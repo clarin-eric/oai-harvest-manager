@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="unqualified">
 
-    <xs:element name="cycle" type="CycleType"/>
-    <xs:complexType name="CycleType">
+    <xs:element name="overview" type="OverviewType"/>
+    <xs:complexType name="OverviewType">
         <xs:sequence>
-            <xs:element form="unqualified" maxOccurs="1" name="mode" type="ModeType"/>
+            <xs:element form="unqualified" maxOccurs="1" name="mode" type="ModeType" minOccurs="0"/>
             <xs:element name="HarvestFromDate" minOccurs="0" type="xs:date"> </xs:element>
-            <xs:element minOccurs="1" name="scenario" type="ScenarioType"> </xs:element>
+            <xs:element minOccurs="0" name="scenario" type="ScenarioType"> </xs:element>
             <xs:sequence maxOccurs="unbounded" minOccurs="0">
                 <xs:element name="endpoint" type="EndpointType"/>
             </xs:sequence>

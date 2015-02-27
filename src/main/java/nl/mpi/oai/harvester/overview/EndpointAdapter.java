@@ -18,9 +18,9 @@
 
 package nl.mpi.oai.harvester.overview;
 
-import nl.mpi.oai.harvester.generated.CycleType;
 import nl.mpi.oai.harvester.generated.EndpointType;
 import nl.mpi.oai.harvester.generated.ObjectFactory;
+import nl.mpi.oai.harvester.generated.OverviewType;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
@@ -52,7 +52,7 @@ import java.util.logging.Logger;
 public class EndpointAdapter implements Endpoint {
 
     // the JAXB created object representing elements from the XML file
-    private final CycleType cycleType;
+    private final OverviewType overviewType;
 
     // the JAXB created and URI referenced endpoint
     private EndpointType endpointType;
@@ -95,8 +95,8 @@ public class EndpointAdapter implements Endpoint {
         // iterate over the elements in the harvested element
         Boolean found = false;
 
-        for (int i = 0; i < cycleType.getEndpoint().size() && !found; i++) {
-            endpointType = cycleType.getEndpoint().get(i);
+        for (int i = 0; i < overviewType.getEndpoint().size() && !found; i++) {
+            endpointType = overviewType.getEndpoint().get(i);
             if (endpointType.getURI().compareTo(endpointURI) == 0) {
                 found = true;
             }
@@ -113,13 +113,13 @@ public class EndpointAdapter implements Endpoint {
      * Associate the adapter with an endpoint URI and CycleType object
      *
      * @param endpointURI the URI of the endpoint to be harvested by the cycle
-     * @param cycleType the JAXB representation of the harvesting overview file
+     * @param overviewType the JAXB representation of the harvesting overview file
      * @param factory the JAXB factory for harvesting overview XML files
      */
-    public EndpointAdapter(String endpointURI, CycleType cycleType,
+    public EndpointAdapter(String endpointURI, OverviewType overviewType,
                            ObjectFactory factory) {
 
-        this.cycleType = cycleType;
+        this.overviewType = overviewType;
         this.factory   = factory;
 
         // look for the endpoint in the XML data
@@ -130,7 +130,7 @@ public class EndpointAdapter implements Endpoint {
             endpointType = CreateDefault(endpointURI);
 
             // and add this data to the XML
-            cycleType.getEndpoint().add(endpointType);
+            overviewType.getEndpoint().add(endpointType);
         }
     }
 
