@@ -30,59 +30,59 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * <br> Access to endpoint attributes stored as XML elements <br><br>
+ * <br> Access to endpoint attributes <br><br>
  *
- * First, an EndpointAdaptor object associates itself with an OverviewType
- * object and a URI. After that, it looks for the endpoint. If it finds it, it
- * remembers it. Otherwise it will ask the generated JAXB factory to create a
- * endpoint, and set its fields to default values. <br><br>
+ * An endpoint adapter is an object providing access to endpoint attributes
+ * stored as XML elements. To access a desired attribute, invoke the designated
+ * method on the adapter object. <br><br>
  *
- * When an adapter method needs to obtain an endpoint attribute, it will
- * invoke a corresponding method on the EndpointType object. <br><br>
- *
- * This class depends on JAXB to generate classes representing the XML file. It
- * also depends on the JAXB factory for creating the elements used in the XML
- * file.
+ * This class depends on JAXB to generate classes representing the XML harvest
+ * overview file. When an adapter method needs to obtain an endpoint attribute,
+ * it will invoke a corresponding method on the EndpointType object. The class
+ * also depends on the JAXB factory for creating endpoint elements and the
+ * elements enclosed in them.
  *
  * @author Kees Jan van de Looij (MPI-PL)
  */
 public class EndpointAdapter implements Endpoint {
 
-    // the JAXB created object representing elements from the XML file
+    // the JAXB representation of the harvest overview
     private final OverviewType overviewType;
 
-    // the JAXB created and URI referenced endpoint
+    // the endpoint referenced by the URI supplied to the constructor
     private EndpointType endpointType;
 
-    // the JAXB factory needed to create a default endpoint
+    // the JAXB factory, needed to create a default endpoint
     private final ObjectFactory factory;
 
     /**
-     * Create default EndpointType object
+     * Create a default endpoint
      *
      * @param endpointURI the URI identifying the endpoint
+     * @param group       the group the endpoint belongs to
      */
-    private EndpointType CreateDefault(String endpointURI) {
+    private EndpointType CreateDefault(String endpointURI, String group) {
 
-        /* The factory has been initialised, refer to the constructor. Ask it
-           to create a new endpoint.
-        */
+        /* Because of the constructor, the factory is in place. Ask it to
+           create a new endpoint.
+         */
         endpointType = factory.createEndpointType();
 
-        // set endpoint fields to default values
+        // create the endpoint fields, and set them to default values
         endpointType.setBlock(Boolean.FALSE);
         endpointType.setIncremental(Boolean.TRUE);
         endpointType.setURI(endpointURI);
+        endpointType.setGroup(group);
 
         return endpointType;
     }
 
     /**
-     * Look for the endpoint in a CycleType object, use an URI as the
-     * as a key
+     * Look for the endpoint in the overview, use an URI as the as the key
      *
      * @param endpointURI the URI identifying the endpoint
-     * @return null or the endpoint
+     * @return            null if the overview does not contain the endpoint,
+     *                    the intended endpoint otherwise
      */
     private EndpointType FindEndpoint(String endpointURI) {
 
@@ -107,40 +107,56 @@ public class EndpointAdapter implements Endpoint {
     }
 
     /**
-     * Associate the adapter with an endpoint URI and CycleType object
+     * Associate the adapter with a URI, a group, an overview, and a factory <br><br>
      *
-     * @param endpointURI the URI of the endpoint to be harvested by the cycle
-     * @param overviewType the JAXB representation of the harvesting overview file
-     * @param factory the JAXB factory for harvesting overview XML files
+     * In case the constructor cannot find the endpoint URI specified in the
+     * overview elements, it will create a new endpoint and add to the endpoint
+     * already present in the overview. <br><br>
+     *
+     * @param endpointURI  the URI of the endpoint the cycle should attempt to
+     *                     harvest
+     * @param group        the group the endpoint belongs to
+     * @param overviewType the JAXB representation of the harvest overview
+     *                     element
+     * @param factory      the JAXB factory for harvest overview elements
+     *
+     * kj: check access
      */
-    public EndpointAdapter(String endpointURI, OverviewType overviewType,
-                           ObjectFactory factory) {
+    protected EndpointAdapter(String endpointURI, String group,
+                              OverviewType overviewType, ObjectFactory factory) {
 
+        // remember the overview, remember the factory
         this.overviewType = overviewType;
-        this.factory   = factory;
+        this.factory      = factory;
 
-        // look for the endpoint in the XML data
+        // look for the endpoint in the overview
         endpointType = FindEndpoint(endpointURI);
 
         if (endpointType == null) {
-            // if it is not in the XML, create a default endpoint data
-            endpointType = CreateDefault(endpointURI);
+            // if it is not in the overview, create a default endpoint
+            endpointType = CreateDefault(endpointURI, group);
 
-            // and add this data to the XML
+            // and add it to the overview
             overviewType.getEndpoint().add(endpointType);
         }
     }
 
-    // kj: check defaults and reflection back to the XML file
-
     @Override
     public String getURI() {
 
+        // by invariance, the endpoint's URI never equals null
         return endpointType.getURI();
     }
 
-    @Override
-    public void setURI(String URI) {
+    /**
+     * Set the endpoint URI <br><br>
+     *
+     * The URI by which the harvesting cycle will try to connect to the
+     * endpoint.
+     *
+     * @param URI the endpoint URI
+     */
+    private void setURI(String URI) {
 
         endpointType.setURI(URI);
     }
@@ -148,19 +164,33 @@ public class EndpointAdapter implements Endpoint {
     @Override
     public String getGroup() {
 
-        return endpointType.getGroup();
+        String group = endpointType.getGroup();
+        if (group == null){
+            endpointType.setGroup("");
+            return "";
+        } else {
+            return group;
+        }
     }
 
-    @Override
-    public void setGroup(String group) {
+    /**
+     * <br> Set the group
+     *
+     * @param group the group the endpoint belongs to
+     */
+    private void setGroup(String group) {
 
         endpointType.setGroup(group);
     }
 
+    // kj: assign defaults and reflect these back through the interface
+
     @Override
     public boolean blocked() {
 
-        return endpointType.isBlock();
+        boolean blocked = endpointType.isBlock();
+
+        return blocked;
     }
 
     @Override

@@ -21,38 +21,12 @@ package nl.mpi.oai.harvester.overview;
 /**
  * <br> Access to endpoint attributes <br><br>
  *
- * This interface presents an endpoint to the harvest cycle. The harvest cycle
- * can access some endpoint attributes directly through method parameters and
- * return values. This applies for example to the URI, group, and record count. <br><br>
- *
- * Access to other fields is indirect, like for example the date of the most
- * recent harvest. While the interface does provide a method for getting the
- * value of the attribute, the harvest cycle cannot set it by providing a it as
- * a parameter. The doneHarvesting method will determine and set it by itself. <br><br>
- *
- * By using the methods defined here, the harvest cycle can track the state of
- * the endpoints. In this way, the cycle can obtain recent additions to an
- * endpoint, without having to harvest all the records provided by it over and
- * over again. This incremental mode of harvesting is particularly useful when
- * the endpoint provides a large number of records. <br><br>
- *
- * Methods implementing the interface should, after the first harvest attempt
- * initialise the following values. After each subsequent attempt, they should
- * update the values. <br><br>
- *
- * <table>
- * <td>
- * attempted <br>
- * harvested <br>
- * count     <br>
- * increment <br><br>
- * </td>
- * </table>
- *
  * Apart from initialising them to a default value, the following elements fall
  * outside the governance of the harvest cycle. This leaves room for manual
  * intervention. Setting the block attribute to true, for example, will prevent
- * the cycle from harvesting the endpoint. <br><br>
+ * the cycle from harvesting an endpoint that causes trouble. <br><br>
+ *
+ * kj: get only?
  *
  * <table>
  * <td>
@@ -73,8 +47,52 @@ package nl.mpi.oai.harvester.overview;
  * </td>
  * </table><br>
  *
- * Please refer to the cycle interface and endpoint interface for a description
- * of the semantics involved. <br><br>
+ * kj: initialisation issue, check xsd for obligatory elements
+ * A class implementing this interface should initialise the attributes
+ * accordingly, and reflect back to the interface. Also explain what is
+ * meant by this.
+ *
+ * The cycle should, after the first attempt of harvesting an endpoint,
+ * initialise the following values. After each subsequent attempt, they should
+ * update the values. <br><br>
+ *
+ * kj: maybe point out that setting might be indirect
+ *
+ * <table>
+ * <td>
+ * attempted <br>
+ * harvested <br>
+ * count     <br>
+ * increment <br><br>
+ * </td>
+ * </table>
+ *
+ * By using the methods defined here, the harvest cycle can track the state of
+ * the endpoints.
+ *
+ * By tracking, the cycle can obtain recent additions to an endpoint, without
+ * having to harvest all the records provided by it over and over again. This
+ * incremental mode of harvesting is particularly useful when the endpoint
+ * provides a large number of records. <br><br>
+ *
+ * kj: is this still needed?
+ * Please refer to the cycle interface for a description of the semantics involved. <br><br>
+ *
+ * This interface presents an endpoint to the harvest cycle. The harvest cycle
+ * can access the ... attributes directly through method parameters and
+ * return values. <br><br>
+ *
+ * Access to ...  is indirect, like for example the date of the most
+ * recent harvest. While the interface does provide a method for getting the
+ * value of the attribute, the harvest cycle cannot set it by providing a it as
+ * a parameter. The doneHarvesting method will determine and set it by itself. <br><br>
+ *
+ * consider what to do with these paragraphs
+ * - list exactly the attributes referenced
+ * - also, in each method, list the attributes it deals with
+ * - alternatively, combine the two paragraphs, leaving out a reference to the
+ *   attributes
+ * - maybe leave it out altogether
  *
  * A typical implementation of the Endpoint interface would be an adapter class
  * that reads from and writes to an XML file.
@@ -93,31 +111,12 @@ public interface Endpoint {
     public abstract String getURI ();
 
     /**
-     * <br> Set the endpoint URI <br><br>
-     *
-     * The URI by which the harvesting cycle will try to connect to the
-     * endpoint. Setting the value of the URI only makes sense in case the
-     * cycle was given the URI of an endpoint not known to this interface. In
-     * that case, a new endpoint,
-     *
-     * @param URI the URI of the endpoint
-     */
-    public abstract void setURI (String URI);
-
-    /**
      * <br> Get the group
      *
      * @return the group the endpoint belongs to
      *
      */
     public abstract String getGroup ();
-
-    /**
-     * <br> Set the group
-     *
-     * @param group the group the endpoint belongs to
-     */
-    public abstract void setGroup (String group);
 
     /**
      * <br> Find out if an endpoint is blocked <br><br>

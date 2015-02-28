@@ -44,8 +44,8 @@ package nl.mpi.oai.harvester.overview;
  * </table>
  *
  * These are the elements conveyed through the Cycle interface. The elements
- * listed are optional, the cycle will use default values, and reflect these
- * in through the interface.
+ * listed are optional, the methods use default values, and reflect these
+ * through the interface.
  *
  * While the interface specifies methods for getting the attributes, it does
  * not specify methods for setting them. The general cycle attributes fall

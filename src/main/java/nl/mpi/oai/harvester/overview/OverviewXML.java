@@ -117,11 +117,16 @@ public final class OverviewXML {
      * complete list, it gets an endpoint referred to by the URI.
      *
      * @param endpointURI the URI of the endpoint state requested
-     * @return endpoint attributes
+     * @param group       the group the endpoint belongs to
+     * @return            endpoint attributes
      */
-    public Endpoint getEndPoint(String endpointURI) {
+    public Endpoint getEndPoint(String endpointURI, String group) {
 
-        return new EndpointAdapter(endpointURI, overviewType, factory);
+        if (endpointURI == null){
+            throw new IllegalArgumentException("endpoint URI is null");
+        }
+
+        return new EndpointAdapter(endpointURI, group, overviewType, factory);
     }
 
     /**
