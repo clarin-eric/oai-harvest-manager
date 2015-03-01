@@ -125,6 +125,9 @@ public final class OverviewXML {
         if (endpointURI == null){
             throw new IllegalArgumentException("endpoint URI is null");
         }
+        if (group == null){
+            throw new IllegalArgumentException("endpoint group is null");
+        }
 
         return new EndpointAdapter(endpointURI, group, overviewType, factory);
     }

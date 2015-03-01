@@ -21,6 +21,7 @@ package nl.mpi.oai.harvester.overview;
 import nl.mpi.oai.harvester.generated.EndpointType;
 import nl.mpi.oai.harvester.generated.ObjectFactory;
 import nl.mpi.oai.harvester.generated.OverviewType;
+import nl.mpi.oai.harvester.generated.ScenarioType;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
@@ -109,6 +110,8 @@ class EndpointAdapter implements Endpoint {
     /**
      * Associate the adapter with a URI, a group, an overview, and a factory <br><br>
      *
+     * Precondition: endpointURI, group, overviewType and factory are not null <br><br>
+     *
      * In case the constructor cannot find the endpoint URI specified in the
      * overview elements, it will create a new endpoint and add to the endpoints
      * already present in the overview. <br><br>
@@ -119,6 +122,7 @@ class EndpointAdapter implements Endpoint {
      * @param overviewType the JAXB representation of the harvest overview
      *                     element
      * @param factory      the JAXB factory for harvest overview elements
+     *
      */
      EndpointAdapter(String endpointURI, String group,
                      OverviewType overviewType, ObjectFactory factory) {
@@ -141,28 +145,18 @@ class EndpointAdapter implements Endpoint {
 
     @Override
     public String getURI() {
-        // the endpoint URI is in place, refer to the OverviewXML class
+
+        // the endpoint URI is in place because of the constructor precondition
         return endpointType.getURI();
-    }
-
-    /**
-     * Set the endpoint URI <br><br>
-     *
-     * The URI by which the harvesting cycle will try to connect to the
-     * endpoint.
-     *
-     * @param URI the endpoint URI
-     */
-    private void setURI(String URI) {
-
-        endpointType.setURI(URI);
     }
 
     @Override
     public String getGroup() {
 
+        // try to get attribute, use boolean reference type to check for null
         String group = endpointType.getGroup();
         if (group == null){
+            // set default group, the empty string
             endpointType.setGroup("");
             return "";
         } else {
@@ -170,76 +164,92 @@ class EndpointAdapter implements Endpoint {
         }
     }
 
-    /**
-     * <br> Set the group
-     *
-     * @param group the group the endpoint belongs to
-     */
-    private void setGroup(String group) {
-
-        endpointType.setGroup(group);
-    }
-
-    // kj: assign defaults and record defaults
-
     @Override
     public boolean blocked() {
 
-        boolean blocked = endpointType.isBlock();
+        // try to get attribute, use boolean reference type to check for null
+        Boolean blocked = endpointType.isBlock();
 
-        return blocked;
+        if (blocked == null){
+            // attribute not XML overview element, add it to it
+            endpointType.setBlock(false);
+            return false;
+        } else {
+            return blocked;
+        }
     }
 
     @Override
     public boolean retry() {
 
-        return endpointType.isRetry();
+        // try to get attribute, use boolean reference type to check for null
+        Boolean retry = endpointType.isRetry();
+
+        if (retry == null){
+            // attribute not XML overview element, add it to it
+            endpointType.setRetry(false);
+            return false;
+        } else {
+            return retry;
+        }
+
     }
 
     @Override
     public boolean allowIncrementalHarvest() {
 
-        return endpointType.isIncremental();
+        // try to get attribute, use boolean reference type to check for null
+        Boolean allow = endpointType.isIncremental();
+
+        if (allow == null){
+            // attribute not XML overview element, add it to it
+            endpointType.setIncremental(false);
+            return false;
+        } else {
+            return allow;
+        }
     }
 
     @Override
     public Cycle.Scenario getScenario() {
 
-        Cycle.Scenario scenario;
+        // try to get attribute
+        ScenarioType scenarioType = endpointType.getScenario();
 
-        switch (endpointType.getScenario()) {
-
-            case LIST_PREFIXES:
-                scenario = Cycle.Scenario.ListPrefixes;
-                break;
-            case LIST_IDENTIFIERS:
-                scenario = Cycle.Scenario.ListIdentifiers;
-                break;
-            case LIST_RECORDS:
-                scenario = Cycle.Scenario.ListRecords;
-                break;
-            default:
-                scenario = Cycle.Scenario.ListRecords;
+        if (scenarioType == null) {
+            // attribute not XML overview element, add it to it
+            endpointType.setScenario(ScenarioType.LIST_RECORDS);
+            return Cycle.Scenario.ListRecords;
+        } else {
+            switch (scenarioType) {
+                case LIST_PREFIXES:
+                    return Cycle.Scenario.ListPrefixes;
+                case LIST_IDENTIFIERS:
+                    return Cycle.Scenario.ListIdentifiers;
+                default:
+                    return Cycle.Scenario.ListRecords;
+            }
         }
-        return scenario;
     }
 
     @Override
     public String getRecentHarvestDate() {
 
-        // convert XMLGregorianCalendar to string
-
         XMLGregorianCalendar XMLDate;
         XMLDate = endpointType.getHarvested();
 
-        return XMLDate.toString();
+        if (XMLDate == null){
+            return "";
+        } else {
+            // convert XMLGregorianCalendar to string
+            return XMLDate.toString();
+        }
     }
 
     @Override
     public void doneHarvesting(Boolean done) {
 
-        // try to get the current date
-
+        // get the current date
         XMLGregorianCalendar XMLDate;
 
         try {
@@ -251,17 +261,16 @@ class EndpointAdapter implements Endpoint {
             XMLDate.setMonth(c.get(Calendar.MONTH) + 1);
             XMLDate.setYear(c.get(Calendar.YEAR));
 
-            // in any case, at this date an attempt was made
+            // initialise the attribute representing the date of the attempt
             endpointType.setAttempted(XMLDate);
 
             if (done) {
-
-                // set a new date for incremental harvesting
+                // successful attempt, also set attribute representing this
                 endpointType.setHarvested(XMLDate);
             }
 
-        } catch (DatatypeConfigurationException ex) {
-
+        } catch (DatatypeConfigurationException e) {
+            // report the error, we cannot continue
             Logger.getLogger(EndpointAdapter.class.getName()).log(
                     Level.SEVERE, null, endpointType);
         }
@@ -270,7 +279,16 @@ class EndpointAdapter implements Endpoint {
     @Override
     public long getCount() {
 
-        return endpointType.getCount();
+        // try to get attribute, use long reference type to check for null
+        Long count = endpointType.getCount();
+
+        if (count == null) {
+            // attribute not XML overview element, add it to it
+            endpointType.setCount((long) 0);
+            return 0;
+        } else {
+            return count;
+        }
     }
 
     @Override
@@ -282,11 +300,21 @@ class EndpointAdapter implements Endpoint {
     @Override
     public long getIncrement() {
 
-        return endpointType.getIncrement();
+        // try to get attribute, use long reference type to check for null
+        Long increment = endpointType.getIncrement();
+
+        if (increment == null){
+            // attribute not XML overview element, add it to it
+            endpointType.setIncrement((long) 0);
+            return 0;
+        } else {
+            return increment;
+        }
     }
 
     @Override
     public void setIncrement(long increment) {
+
         endpointType.setIncrement(increment);
     }
 }

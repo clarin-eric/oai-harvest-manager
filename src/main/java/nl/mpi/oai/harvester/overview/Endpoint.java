@@ -160,13 +160,14 @@ public interface Endpoint {
     /**
      * <br> Return the date for incrementally harvesting <br><br>
      *
-     * The date of the most recent and successful harvest cycle. A subsequent
-     * cycle will use this date when harvesting the endpoint incrementally. <br><br>
+     * If recorded, the method will return the date, YYYY-MM-DD, of the most
+     * recent and successful harvest of the endpoint. A subsequent cycle will
+     * use this date when harvesting the endpoint incrementally. <br><br>
      *
      * Note: a harvesting cycle needs to set the date by invoking the
      * doneHarvesting method.
      *
-     * @return the date of most recent successful harvest of the endpoint
+     * @return the empty string if not recorded, otherwise the date
      */
     public abstract String getRecentHarvestDate();
 
