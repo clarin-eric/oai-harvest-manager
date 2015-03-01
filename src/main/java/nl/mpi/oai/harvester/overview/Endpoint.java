@@ -21,12 +21,10 @@ package nl.mpi.oai.harvester.overview;
 /**
  * <br> Access to endpoint attributes <br><br>
  *
- * Apart from initialising them to a default value, the following elements fall
- * outside the governance of the harvest cycle. This leaves room for manual
+ * Apart from initialising them to a default value, the following attributes
+ * fall outside the governance of the harvest cycle. This leaves room for manual
  * intervention. Setting the block attribute to true, for example, will prevent
  * the cycle from harvesting an endpoint that causes trouble. <br><br>
- *
- * kj: get only?
  *
  * <table>
  * <td>
@@ -47,16 +45,8 @@ package nl.mpi.oai.harvester.overview;
  * </td>
  * </table><br>
  *
- * kj: initialisation issue, check xsd for obligatory elements
- * A class implementing this interface should initialise the attributes
- * accordingly, and reflect back to the interface. Also explain what is
- * meant by this.
- *
- * The cycle should, after the first attempt of harvesting an endpoint,
- * initialise the following values. After each subsequent attempt, they should
- * update the values. <br><br>
- *
- * kj: maybe point out that setting might be indirect
+ * By using the methods defined here, the harvest cycle can track the state of
+ * the endpoints.
  *
  * <table>
  * <td>
@@ -67,32 +57,20 @@ package nl.mpi.oai.harvester.overview;
  * </td>
  * </table>
  *
- * By using the methods defined here, the harvest cycle can track the state of
- * the endpoints.
- *
  * By tracking, the cycle can obtain recent additions to an endpoint, without
  * having to harvest all the records provided by it over and over again. This
  * incremental mode of harvesting is particularly useful when the endpoint
  * provides a large number of records. <br><br>
  *
- * kj: is this still needed?
- * Please refer to the cycle interface for a description of the semantics involved. <br><br>
+ * Note: the doneHarvesting method sets both the attempted and harvested
+ * attributes. These attributes do not have a method that sets their value
+ * individually. <br><br>
  *
- * This interface presents an endpoint to the harvest cycle. The harvest cycle
- * can access the ... attributes directly through method parameters and
- * return values. <br><br>
- *
- * Access to ...  is indirect, like for example the date of the most
- * recent harvest. While the interface does provide a method for getting the
- * value of the attribute, the harvest cycle cannot set it by providing a it as
- * a parameter. The doneHarvesting method will determine and set it by itself. <br><br>
- *
- * consider what to do with these paragraphs
- * - list exactly the attributes referenced
- * - also, in each method, list the attributes it deals with
- * - alternatively, combine the two paragraphs, leaving out a reference to the
- *   attributes
- * - maybe leave it out altogether
+ * A class implementing the interface should initialise the attributes. This
+ * means that every individual method should, once it needs get the value of
+ * an attribute that has not been defined, provide the default listed in the
+ * table above. By doing this, it defines the attribute, and because of this,
+ * it should record the value for later reference. <br><br>
  *
  * A typical implementation of the Endpoint interface would be an adapter class
  * that reads from and writes to an XML file.
@@ -100,6 +78,8 @@ package nl.mpi.oai.harvester.overview;
  * @author Kees Jan van de Looij (MPI-PL)
  */
 public interface Endpoint {
+
+    // kj: sharpen the attribute definitions
 
     /**
      * <br> Get the endpoint URI <br><br>
@@ -193,9 +173,8 @@ public interface Endpoint {
     /**
      * <br> Indicate success or failure <br><br>
      *
-     * If done equals true, the method sets the date of the most recent and
-     * successful harvest to the current date. If false, it will only set the
-     * most recent attempt.
+     * Regardless of success, the method sets the attempted attribute to the
+     * current date. If done, the method also updates the harvested attribute.
      *
      * @param done true in case of success, false otherwise
      */

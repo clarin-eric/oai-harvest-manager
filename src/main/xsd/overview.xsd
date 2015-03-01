@@ -16,10 +16,10 @@
         <xs:sequence maxOccurs="1" minOccurs="1">
             <xs:element name="URI" minOccurs="1" type="xs:anyURI"/>
             <xs:element name="group" type="xs:string"> </xs:element>
-            <xs:element name="block" minOccurs="1" type="xs:boolean"/>
-            <xs:element minOccurs="1" name="retry" type="xs:boolean"/>
-            <xs:element minOccurs="1" name="incremental" type="xs:boolean"/>
-            <xs:element maxOccurs="1" name="scenario" minOccurs="1" type="ScenarioType"> </xs:element>
+            <xs:element name="block" minOccurs="0" type="xs:boolean"/>
+            <xs:element minOccurs="0" name="retry" type="xs:boolean"/>
+            <xs:element minOccurs="0" name="incremental" type="xs:boolean"/>
+            <xs:element maxOccurs="1" name="scenario" minOccurs="0" type="ScenarioType"> </xs:element>
             <xs:element name="attempted" minOccurs="0" type="xs:date"/>
             <xs:element name="harvested" minOccurs="0" type="xs:date"/>
             <xs:element minOccurs="0" name="count" type="xs:unsignedInt"> </xs:element>

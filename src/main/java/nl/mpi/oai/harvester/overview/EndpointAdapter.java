@@ -44,7 +44,7 @@ import java.util.logging.Logger;
  *
  * @author Kees Jan van de Looij (MPI-PL)
  */
-public class EndpointAdapter implements Endpoint {
+class EndpointAdapter implements Endpoint {
 
     // the JAXB representation of the harvest overview
     private final OverviewType overviewType;
@@ -110,7 +110,7 @@ public class EndpointAdapter implements Endpoint {
      * Associate the adapter with a URI, a group, an overview, and a factory <br><br>
      *
      * In case the constructor cannot find the endpoint URI specified in the
-     * overview elements, it will create a new endpoint and add to the endpoint
+     * overview elements, it will create a new endpoint and add to the endpoints
      * already present in the overview. <br><br>
      *
      * @param endpointURI  the URI of the endpoint the cycle should attempt to
@@ -119,11 +119,9 @@ public class EndpointAdapter implements Endpoint {
      * @param overviewType the JAXB representation of the harvest overview
      *                     element
      * @param factory      the JAXB factory for harvest overview elements
-     *
-     * kj: check access
      */
-    protected EndpointAdapter(String endpointURI, String group,
-                              OverviewType overviewType, ObjectFactory factory) {
+     EndpointAdapter(String endpointURI, String group,
+                     OverviewType overviewType, ObjectFactory factory) {
 
         // remember the overview, remember the factory
         this.overviewType = overviewType;
@@ -143,8 +141,7 @@ public class EndpointAdapter implements Endpoint {
 
     @Override
     public String getURI() {
-
-        // by invariance, the endpoint's URI never equals null
+        // the endpoint URI is in place, refer to the OverviewXML class
         return endpointType.getURI();
     }
 
@@ -183,7 +180,7 @@ public class EndpointAdapter implements Endpoint {
         endpointType.setGroup(group);
     }
 
-    // kj: assign defaults and reflect these back through the interface
+    // kj: assign defaults and record defaults
 
     @Override
     public boolean blocked() {
