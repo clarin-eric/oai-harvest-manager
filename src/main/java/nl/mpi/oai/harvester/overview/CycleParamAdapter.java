@@ -43,15 +43,15 @@ import javax.xml.datatype.XMLGregorianCalendar;
 public class CycleParamAdapter implements CycleParam {
 
     // the JAXB created object representing elements from the XML file
-    private final OverviewType cycleType;
+    private final OverviewType overviewType;
 
     /**
      * Associate the adapter with a CycleType object
      *
-     * @param cycleType JAXB representation of the cycle overview file
+     * @param overviewType JAXB representation of the cycle overview file
      */
-    public CycleParamAdapter(OverviewType cycleType) {
-        this.cycleType = cycleType;
+    public CycleParamAdapter(OverviewType overviewType) {
+        this.overviewType = overviewType;
     }
 
     /**
@@ -64,13 +64,13 @@ public class CycleParamAdapter implements CycleParam {
     public Mode getHarvestMode() {
 
         ModeType modeType;
-        modeType = cycleType.getMode();
+        modeType = overviewType.getMode();
 
         Mode mode;
 
         if (modeType == null) {
             mode = Mode.normal;
-            cycleType.setMode(ModeType.NORMAL);
+            overviewType.setMode(ModeType.NORMAL);
         } else {
 
             switch (modeType) {
@@ -106,15 +106,16 @@ public class CycleParamAdapter implements CycleParam {
         // convert XMLGregorianCalendar to string
 
         XMLGregorianCalendar XMLDate;
-        XMLDate = cycleType.getHarvestFromDate();
+        XMLDate = overviewType.getHarvestFromDate();
 
         if (XMLDate == null){
             try {
-                XMLDate = DatatypeFactory.newInstance().newXMLGregorianCalendar();            XMLDate.setYear(1970);
+                XMLDate = DatatypeFactory.newInstance().newXMLGregorianCalendar();
+                XMLDate.setYear(1970);
                 XMLDate.setMonth(1);
                 XMLDate.setDay(1);
                 // provide epoch zero as a default
-                cycleType.setHarvestFromDate(XMLDate);
+                overviewType.setHarvestFromDate(XMLDate);
 
             } catch (DatatypeConfigurationException e) {
                 e.printStackTrace();
@@ -136,16 +137,16 @@ public class CycleParamAdapter implements CycleParam {
     public Scenario getScenario() {
 
         ScenarioType scenarioType;
-        scenarioType = cycleType.getScenario();
+        scenarioType = overviewType.getScenario();
 
         Scenario scenario;
 
         if (scenarioType == null) {
             scenario = Scenario.ListRecords;
-            cycleType.setScenario(ScenarioType.LIST_IDENTIFIERS);
+            overviewType.setScenario(ScenarioType.LIST_IDENTIFIERS);
         } else {
 
-            switch (cycleType.getScenario()) {
+            switch (overviewType.getScenario()) {
 
                 case LIST_PREFIXES:
                     scenario = Scenario.ListPrefixes;
