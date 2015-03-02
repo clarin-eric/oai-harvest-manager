@@ -16,14 +16,34 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-package nl.mpi.oai.harvester.harvesting;
+package nl.mpi.oai.harvester.overview;
 
 /**
- * <br> Raise a runtime exception because of incorrectly applying the h
- * harvesting protocol defined in the harvesting interface.
+ * <br> Implement CycleInterface <br><br>
+ *
+ * kj: implement the interface
  *
  * @author Kees Jan van de Looij (MPI-PL)
  */
-public final class HarvestingException extends RuntimeException {
+public class CycleImplementation implements CycleInterface{
 
+    @Override
+    public Endpoint next(String URI) {
+        return null;
+    }
+
+    @Override
+    public Endpoint next() {
+        return null;
+    }
+
+    @Override
+    public boolean doneHarvesting() {
+        return false;
+    }
+
+    @Override
+    public void retry() {
+
+    }
 }

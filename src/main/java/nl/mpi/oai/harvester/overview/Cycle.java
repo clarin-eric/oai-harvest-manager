@@ -21,6 +21,9 @@ package nl.mpi.oai.harvester.overview;
 /**
  * <br> Access to general harvest cycle attributes <br><br>
  *
+ * kj: refactor
+ * Cycle, CycleAdapter -> Restriction, RestrictionAdapter
+ *
  * A harvest cycle visits OAI endpoints with the intention to obtain metadata
  * records. The cycle can use the cycle and the endpoint interface to query the
  * general harvest cycle characteristics and state of the endpoint in order to

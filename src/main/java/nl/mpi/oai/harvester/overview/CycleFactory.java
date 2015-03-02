@@ -16,14 +16,23 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-package nl.mpi.oai.harvester.harvesting;
+package nl.mpi.oai.harvester.overview;
 
 /**
- * <br> Raise a runtime exception because of incorrectly applying the h
- * harvesting protocol defined in the harvesting interface.
+ * <br> Create cycle type object <br><br>
+ *
+ * The factory returns a Cycle type object. Different types of endpoint stores
+ * could be supported, for the moment, there is only XML overview.
  *
  * @author Kees Jan van de Looij (MPI-PL)
  */
-public final class HarvestingException extends RuntimeException {
+public class CycleFactory {
 
+    public CycleInterface createCycle(String Overview){
+        CycleInterface cycle = new CycleImplementation();
+
+        // kj: do something to create the cycle
+
+        return cycle;
+    };
 }

@@ -52,7 +52,7 @@ class Worker implements Runnable {
     /** List of actionSequences to be applied to the harvested metadata. */
     private final List<ActionSequence> actionSequences;
 
-    /* Cycle scenario to be applied. ListIdentifiers: first, based on
+    /* Harvesting scenario to be applied. ListIdentifiers: first, based on
        endpoint data and prefix, get a list of identifiers, and after that
        retrieve each record in the list individually. ListRecords: skip the
        list, retrieve multiple records per request.

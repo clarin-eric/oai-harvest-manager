@@ -26,9 +26,9 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 /**
- * <br> A list based store in tne Cycle implementation <br><br>
+ * <br> A list based store in tne harvesting implementation <br><br>
  *
- * This class implements the harvesting protocol defined in the Cycle
+ * This class implements the harvesting protocol defined in the harvesting
  * interface class by providing a list structure for metadata elements and
  * connecting the requestMore and fullyParsed methods to this list. <br><br>
  *
