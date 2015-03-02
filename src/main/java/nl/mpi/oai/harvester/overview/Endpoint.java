@@ -155,7 +155,7 @@ public interface Endpoint {
      *
      * @return the scenario
      */
-    public abstract Cycle.Scenario getScenario ();
+    public abstract CycleParam.Scenario getScenario ();
 
     /**
      * <br> Return the date for incrementally harvesting <br><br>

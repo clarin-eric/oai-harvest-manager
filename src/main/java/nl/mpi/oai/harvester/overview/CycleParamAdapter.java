@@ -40,7 +40,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
  *
  * @author Kees Jan van de Looij (MPI-PL)
  */
-public class CycleAdapter implements Cycle {
+public class CycleParamAdapter implements CycleParam {
 
     // the JAXB created object representing elements from the XML file
     private final OverviewType cycleType;
@@ -50,7 +50,7 @@ public class CycleAdapter implements Cycle {
      *
      * @param cycleType JAXB representation of the cycle overview file
      */
-    public CycleAdapter(OverviewType cycleType) {
+    public CycleParamAdapter(OverviewType cycleType) {
         this.cycleType = cycleType;
     }
 

@@ -31,8 +31,8 @@ import java.util.logging.Logger;
 /**
  * <br> CycleType object marshalling <br><br>
  *
- * By returning CycleAdapter or EndpointAdapter class objects through the the
- * Cycle and Endpoint interfaces, the methods on the objects in this class make
+ * By returning CycleParamAdapter or EndpointAdapter class objects through the the
+ * CycleParam and Endpoint interfaces, the methods on the objects in this class make
  * available XML defined attributes of the harvesting cycle. Note: the XSD
  * defining the cycle overview XML files resides in the src/xsd directory. <br><br>
  *
@@ -46,7 +46,7 @@ import java.util.logging.Logger;
  *
  * @author Kees Jan van de Looij (MPI-PL)
  */
-public final class OverviewXML {
+public final class XMLOverview {
 
     // the file supplied on construction
     private final File file;
@@ -65,7 +65,7 @@ public final class OverviewXML {
      *
      * @param fileName name of the file
      */
-    public OverviewXML(String fileName) {
+    public XMLOverview(String fileName) {
 
         // create factory that creates objects of the generated classes
         factory = new ObjectFactory();
@@ -100,9 +100,9 @@ public final class OverviewXML {
      *
      * @return cycle attributes
      */
-    public Cycle getCycle() {
+    public CycleParam getCycle() {
 
-        return new CycleAdapter(overviewType);
+        return new CycleParamAdapter(overviewType);
     }
 
     /**
@@ -143,7 +143,7 @@ public final class OverviewXML {
         try {
             super.finalize();
         } catch (Throwable e) {
-            Logger.getLogger(OverviewXML.class.getName()).log(
+            Logger.getLogger(XMLOverview.class.getName()).log(
                     Level.SEVERE, null, e);
         }
 

@@ -19,13 +19,13 @@
 package nl.mpi.oai.harvester.overview;
 
 /**
- * <br> Implement CycleInterface <br><br>
+ * <br> Implement Cycle <br><br>
  *
  * kj: implement the interface
  *
  * @author Kees Jan van de Looij (MPI-PL)
  */
-public class CycleImplementation implements CycleInterface{
+public class XMLOverviewCycle implements Cycle {
 
     @Override
     public Endpoint next(String URI) {

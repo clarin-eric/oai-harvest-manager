@@ -211,7 +211,7 @@ class EndpointAdapter implements Endpoint {
     }
 
     @Override
-    public Cycle.Scenario getScenario() {
+    public CycleParam.Scenario getScenario() {
 
         // try to get attribute
         ScenarioType scenarioType = endpointType.getScenario();
@@ -219,15 +219,15 @@ class EndpointAdapter implements Endpoint {
         if (scenarioType == null) {
             // attribute not XML overview element, add it to it
             endpointType.setScenario(ScenarioType.LIST_RECORDS);
-            return Cycle.Scenario.ListRecords;
+            return CycleParam.Scenario.ListRecords;
         } else {
             switch (scenarioType) {
                 case LIST_PREFIXES:
-                    return Cycle.Scenario.ListPrefixes;
+                    return CycleParam.Scenario.ListPrefixes;
                 case LIST_IDENTIFIERS:
-                    return Cycle.Scenario.ListIdentifiers;
+                    return CycleParam.Scenario.ListIdentifiers;
                 default:
-                    return Cycle.Scenario.ListRecords;
+                    return CycleParam.Scenario.ListRecords;
             }
         }
     }

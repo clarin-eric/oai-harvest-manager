@@ -19,147 +19,48 @@
 package nl.mpi.oai.harvester.overview;
 
 /**
- * <br> Access to general harvest cycle attributes <br><br>
+ * <br> Iterate over endpoints <br><br>
  *
- * kj: refactor
- * Cycle, CycleAdapter -> Restriction, RestrictionAdapter
+ * You can iterate by supplying the name, or by iterating over the endpoints
+ * in the overview. The methods on a Cycle type of object return
+ * endpoints, either by a URI specified externally, or by the endpoints stored
+ * in the overview.
  *
- * A harvest cycle visits OAI endpoints with the intention to obtain metadata
- * records. The cycle can use the cycle and the endpoint interface to query the
- * general harvest cycle characteristics and state of the endpoint in order to
- * decide whether or not to harvest and to determine OAI verb and parameters.
- *
- * General characteristics of cycle include the mode of harvesting, the date
- * specified in a incremental or selective harvesting request, and the intended
- * harvest scenario.
- *
- * <table>
- * <td>
- * mode     <br>
- * date     <br>
- * scenario <br><br>
- * </td>
- * <td>
- * defaults to 'normal' <br>
- * defaults to '1970-01-01' <br>
- * defaults to 'ListRecords' <br><br>
- * </td>
- * </table>
- *
- * These are the elements conveyed through the Cycle interface. The elements
- * listed are optional, the methods use default values, and reflect these
- * through the interface.
- *
- * While the interface specifies methods for getting the attributes, it does
- * not specify methods for setting them. The general cycle attributes fall
- * outside the governance of the harvesting cycle. This means that a class that
- * implements the interface can leave room for manual specification.
- *
- * Note: for a description of the role of adapter classes, please refer to the
- * description in the Endpoint interface.
- *
- * Note: for more information on the OAI protocol, please refer to
- * <a href="http://www.openarchives.org/OAI/openarchivesprotocol.htm">
- *     its specification</a>.
+ * A method could also return the parameters defined in the overview. If the
+ * client to the package, the worker, the harvesting package need the general
+ * parameters, they can be made available through the cycle object. Otherwise,
+ * the parameters could be made private to the package. They will then only be
+ * available to classes inside the package. kj: need to decide this
  *
  * @author Kees Jan van de Looij (MPI-PL)
  */
 public interface Cycle {
 
     /**
-     * Mode of harvesting
+     * Get next endpoint by externally supplied URI
+     * @param URI reference to the endpoint
+     * @return the endpoint
      */
-    public enum Mode {
-
-        /**
-         * The cycle will, in normal mode, harvest incrementally. However, only
-         * if the endpoint's interface allowIncrementalHarvest method indicates
-         * that the endpoint currently supports harvesting in that mode. If it
-         * does not, the cycle will try to harvest all the records the endpoint
-         * provides.
-         */
-        normal,
-        
-        /**
-         * In this mode the cycle will try to harvest those endpoints that gave
-         * rise to errors once again. If the date of the most recent completed
-         * attempt differs from the date of the most recent attempt, the cycle
-         * assumes that harvesting the endpoint was not successful.
-         */
-        retry, 
-        
-        /**
-         * When refreshing, the cycle will harvest records that were added to
-         * the endpoint after a specific date. The cycle will use the general
-         * date attribute returned by the getHarvestFromDate method when it
-         * constructs a harvesting request. If the endpoint is not blocked, the
-         * cycle will try to harvest it selectively, taking the date specified
-         * into account.
-         */
-        refresh
-    }
+    public Endpoint next (String URI);
 
     /**
-     * The harvest scenario the cycle needs to apply <br> <br><br><br>
+     * Get the next endpoint in the overview
      *
-     * A harvest scenario is a particular implementation and application of the
-     * methods declared in the harvesting interface. A class implements a method
-     * by invoking methods that establish primitives in the OAI protocol. <br><br>
+     * Note:
      *
-     * Applying a particular scenario, the cycle can, for example, first harvest
-     * the identifiers of metadata records and request the identified records,
-     * or alternatively, harvest the records directly.
+     * @return
      */
-    public enum Scenario {
-
-        /**
-         * Query the metadata prefixes the endpoint supports. The cycle uses
-         * metadata formats it associates with the endpoint to identify the
-         * prefixes.
-         */
-        ListPrefixes,
-
-        /**
-         * In this scenario, by selecting a prefix, the cycle first obtains a
-         * list of identifiers of metadata elements the endpoint provides. Next,
-         * it gets the records the list identifies.
-         */
-        ListIdentifiers,
-
-        /**
-         * In this scenario, instead of getting a list of identifiers first,
-         * the cycle can also select a prefix and query the endpoint for
-         * matching records without first obtaining a list of their identifiers.
-         */
-        ListRecords
-    }
+    public Endpoint next ();
 
     /**
-     * <br> Return the mode in which the cycle will in principle harvest the
-     * endpoints
+     * Indicate whether all the endpoints in the overview have been visited
      *
-     * @return the harvesting mode
+     * @return
      */
-    public abstract Mode getHarvestMode();
+    public boolean doneHarvesting ();
 
     /**
-     * <br> Returns the date to use when refreshing <br<br>
-     * 
-     * Only records added to the endpoint after this data will be harvested. By
-     * returning the epoch zero date the method indicated that there was no
-     * previous harvesting attempt.
-     *
-     * @return the date
+     * Retry the endpoints that gave rise to errors
      */
-    public abstract String getHarvestFromDate();
-
-    /**
-     * <br> Get the harvesting scenario <br><br>
-     *
-     * Note: the range of valid scenarios depends on the capabilities of the
-     * current implementation of the harvesting cycle.
-     *
-     * @return the scenario
-     */
-    public abstract Scenario getScenario ();
+    public void retry ();
 }
