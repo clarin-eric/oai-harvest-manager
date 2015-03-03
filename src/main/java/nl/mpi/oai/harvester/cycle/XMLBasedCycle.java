@@ -23,17 +23,19 @@ package nl.mpi.oai.harvester.cycle;
  *
  * kj: implement the interface
  *
+ * Note: some methods need to be synchronised
+ *
  * @author Kees Jan van de Looij (MPI-PL)
  */
 public class XMLBasedCycle implements Cycle {
 
     @Override
-    public Endpoint next(String URI) {
+    public synchronized Endpoint next(String URI) {
         return null;
     }
 
     @Override
-    public Endpoint next() {
+    public synchronized Endpoint next() {
         return null;
     }
 
@@ -48,7 +50,7 @@ public class XMLBasedCycle implements Cycle {
     }
 
     @Override
-    public boolean doneHarvesting() {
+    public synchronized boolean doneHarvesting() {
         return false;
     }
 

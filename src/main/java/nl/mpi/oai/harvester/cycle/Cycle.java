@@ -21,23 +21,24 @@ package nl.mpi.oai.harvester.cycle;
 /**
  * <br> Iterate over endpoints <br><br>
  *
- * You can iterate by supplying the name, or by iterating over the endpoints
- * in the cycle. The methods on a Cycle type of object return
- * endpoints, either by a URI specified externally, or by the endpoints stored
- * in the cycle.
+ * By using the CycleFactory to create a Cycle type object, a client class can
+ * cycle over the endpoints recorded in the overview. It can also decide whether
+ * or not the client should create an OAI request and harvest the endpoint. <br><br>
  *
- * A method could also return the parameters defined in the cycle. If the
- * client to the package, the worker, needs the general parameters, these can
- * be made available through the overview object. Otherwise, the parameters
- * could be made private to the package. They will then only be available to
- * classes inside the package. kj: need to decide this
+ * Note: the interface does not make available general cycle attributes. To
+ * determine whether or not to harvest an endpoint, the cycle should invoke
+ * the doHarvest methods.
  *
  * @author Kees Jan van de Looij (MPI-PL)
  */
 public interface Cycle {
 
     /**
-     * Get next endpoint by externally supplied URI
+     * Get the next endpoint by externally supplied URI <br><br>
+     *
+     * By invoking next on a Cycle type object, a client receives the URI
+     * identified endpoint. The cycle will remove the endpoint from the list
+     * of endpoints in the overview that are elligable for harvesting.
      *
      * @param URI reference to the endpoint
      * @return the endpoint
@@ -45,40 +46,76 @@ public interface Cycle {
     public Endpoint next (String URI);
 
     /**
-     * Get the next endpoint in the cycle
+     * Get the next endpoint in the cycle <br><br>
      *
-     * Note:
+     * Next to endpoints the client identifies, there might be endpoints in
+     * the overview that have, in the current cycle, for some reason, not been
+     * identified yet. When the client invokes the next method on the cycle
+     * object without a URI, the method will return one of these endpoints and
+     * remove it from the list of endpoints available for harvesting.
      *
-     * @return
+     * @return an endpoint not visited in the current cycle
      */
     public Endpoint next ();
 
     /**
-     * Check if the endpoint should be harvested
+     * Check if the endpoint should be harvested <br><br>
      *
-     * @param endpoint
-     * @return
+     * When it decides whether or not the endpoint given should be harvested,
+     * the method will consider both the general cycle attributes as well as
+     * and endpoint attributes. <br><br>
+     *
+     * If the cycle is in normal mode, the method will allow the client to
+     * harvest the endpoint if endpoint's block attribute equals false. It will
+     * allow selective harvest if on top of that, the incremental attribute
+     * equals true. In that case the client should use the harvested attribute
+     * to set the OAI request date parameter. <br><br>
+     *
+     * If the cycle is in retry mode, the same applies as in the case of the
+     * the normal mode, except that method will return true if the endpoint's
+     * retry attribute is equal to true. <br><br>
+     *
+     * If the cycle is in refresh mode, again, the same applies as in the case
+     * of the normal mode, except that the date will now be determined by the
+     * overview's date attribute takes the place of the endpoint's harvested
+     * attribute.
+     *
+     * @param endpoint the endpoint considered
+     * @return true if and only if the endpoint should be harvested
      */
     public boolean doHarvest (Endpoint endpoint);
 
     /**
-     * Check if the endpoint indicated by the URI should be harvested
+     * Check if the endpoint indicated by the URI should be harvested <br><br>
      *
-     * @param URI
-     * @return
+     * For this method, the same applies as in the case of the doHarvest method
+     * with an EndpointType parameter.
+     *
+     * @param URI the endpoint considered
+     * @return true if and only if the endpoint should be harvested
      */
     public boolean doHarvest (String URI);
 
     /**
-     * Indicate whether all the endpoints in the cycle have been visited
+     * Indicate whether all the endpoints in the overview were returned for
+     * harvesting <br><br>
      *
-     * @return
+     * In deciding whether or not the end of the cycle has been reached, the
+     * method considers the endpoints stored in the overview. It cannot know
+     * about endpoints the client would present the cycle with by passing an
+     * identification to the next method.
+     *
+     * @return true if the end of the cycle has been reached, false otherwise
      */
     public boolean doneHarvesting ();
 
     /**
-     * Retry the endpoints that gave rise to errors
+     * Retry the endpoints that gave rise to errors <br><br>
      *
+     * When a client invokes the retry method on the cycle object, it restarts
+     * the harvest cycle. The cycle will, from that moment on, only consider
+     * endpoints that gave rise to errors. It will only consider an endpoint
+     * which harvested and attempted attributes differ.
      */
     public void retry ();
 }
