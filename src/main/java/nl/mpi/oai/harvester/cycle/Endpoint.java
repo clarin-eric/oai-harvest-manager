@@ -79,8 +79,6 @@ package nl.mpi.oai.harvester.cycle;
  */
 public interface Endpoint {
 
-    // kj: sharpen the attribute definitions
-
     /**
      * <br> Get the endpoint URI <br><br>
      *
@@ -91,7 +89,17 @@ public interface Endpoint {
     public abstract String getURI ();
 
     /**
-     * <br> Get the group
+     * <br> Get the group <br><br>
+     *
+     * An endpoint belongs to a group. Typically, each group has its own
+     * configuration and list or repository of endpoints. Also, the list of
+     * statistics, contains a reference to the group an endpoint belongs to.
+     *
+     * Please note that some object belonging to a class outside the cycle
+     * package needs to supply the group attribute to the harvest cycle. The
+     * cycle can only determine the group after it has been stored in the
+     * overview. Like the endpoint URI, the group is a parameter to the
+     * endpoint constructor.
      *
      * @return the group the endpoint belongs to
      *
@@ -99,39 +107,46 @@ public interface Endpoint {
     public abstract String getGroup ();
 
     /**
-     * <br> Find out if an endpoint is blocked <br><br>
+     * <br> Check if the cycle is allowed to harvest the endpoint <br><br>
      *
-     * If blocked, the cycle will not try to harvest the endpoint, regardless
-     * of any other specification. <br><br>
+     * If and only if the endpoint's block attribute is set to true, and the
+     * harvest cycle is in retry mode, it is effectively granted to harvest
+     * the endpoint. If blocked, the cycle will not try to harvest the endpoint,
+     * regardless of any other specification. <br><br>
      *
      * Note: there is no method for blocking the endpoint. The decision to
      * block an endpoint is not part of the harvesting lifecycle itself. It
      * could be taken, for example, in case the endpoint fails to perform
-     * correctly.
+     * correctly. Likely, the implementation of overview, contains a definition
+     * of the attribute.
      *
      * @return true if the endpoint should be skipped, false otherwise
      */
     public abstract boolean blocked ();
 
     /**
-     * <br> Check if the cycle can retry harvesting the endpoint <br><br>
+     * <br> Check if the cycle is allow to retry harvesting the endpoint <br><br>
      *
-     * Only if the harvest cycle itself is in retry mode, it can effectively
-     * retry harvesting the endpoint. <br><br>
+     * When the cycle itself is in retry mode, and the endpoint's retry
+     * attribute is set to true, it should retry harvesting the endpoint.
      *
      * Note: like getURI, blocked and allowIncremental harvest, the interface
-     * does not provide a method that can set the value of the retry attribute.
+     * itself does not provide a method that can set the value of the retry
+     * attribute. It needs to be specified elsewhere, for example in a file
+     * that contains the endpoint and general cycle attributes.
      *
      * @return true is a retry is allowed, false otherwise
      */
     public abstract boolean retry();
 
     /**
-     * <br> Check if the cycle can harvest the endpoint incrementally<br><br>
+     * <br> Check if the cycle should incrementally harvest the endpoint <br><br>
      *
-     * In case cycle can harvest the endpoint incrementally, the date of the
-     * previous successful harvest determines which records it will be request
-     * from the endpoint. <br><br>
+     * On harvesting the endpoint, if the cycle is allowed to incrementally
+     * harvest the endpoint, it will use the 'harvested' endpoint attribute to
+     * determine the selective harvest OAI request. It will try to obtain the
+     * records that were added to the endpoint since the most recent successful
+     * attempt.
      *
      * Note: there is no method for setting the value indicating whether or
      * not incremental harvesting is allowed. The value needs to be specified
@@ -145,10 +160,10 @@ public interface Endpoint {
     /**
      * <br> Get the scenario for harvesting <br><br>
      *
-     * A cycle applies a specific scenario for harvesting records. It can,
-     * for example, first harvest a list of identifiers to metadata elements,
-     * and after that, harvest the records one by one. Alternatively, it can
-     * harvest the records directly.
+     * Depending on the endpoint, the cycle will apply a specific scenario for
+     * harvesting records. It can, for example, first harvest a list of
+     * identifiers to metadata elements, and after that, harvest the records
+     * one by one. Alternatively, it can harvest the records directly. <br><br>
      *
      * Note: there is no method for setting the scenario. The value needs to
      * be specified independently from the harvest cycle.
@@ -158,13 +173,17 @@ public interface Endpoint {
     public abstract Overview.Scenario getScenario ();
 
     /**
-     * <br> Return the date for incrementally harvesting <br><br>
+     * <br> Return the date to base a selective harvest attempt on <br><br>
      *
-     * If recorded, the method will return the date, YYYY-MM-DD, of the most
-     * recent and successful harvest of the endpoint. A subsequent cycle will
-     * use this date when harvesting the endpoint incrementally. <br><br>
+     * After each successful harvest of an endpoint, the cycle will record the
+     * date at the time of the harvest attempt in the overview. A subsequent
+     * cycle can use this date in the parameters supplied in a selective OAI
+     * harvest request.
      *
-     * Note: a harvesting cycle needs to set the date by invoking the
+     * Note: the method will supply the date in YYYY-MM-DD format, the format
+     * supported by the OAI protocol.
+     *
+     * Note: a harvesting cycle will implicitly set the date by invoking the
      * doneHarvesting method.
      *
      * @return the empty string if not recorded, otherwise the date
@@ -175,14 +194,21 @@ public interface Endpoint {
      * <br> Indicate success or failure <br><br>
      *
      * Regardless of success, the method sets the attempted attribute to the
-     * current date. If done, the method also updates the harvested attribute.
+     * current date. If done, it also updates the harvested attribute, thus
+     * recording the date of the most recent successful attempt of harvesting
+     * the endpoint.
      *
      * @param done true in case of success, false otherwise
      */
     public abstract void doneHarvesting(Boolean done);
 
     /**
-     * <br> Get the record count
+     * <br> Get the record count <br><br>
+     *
+     * The record count reflect the overall total of records harvested. The
+     * counting starts when first harvesting the endpoint, or when the cycle
+     * is in refresh mode. When it is, the cycle needs to set the record count
+     * to the number of records harvested.
      *
      * @return the number of records harvested
      */
@@ -198,9 +224,8 @@ public interface Endpoint {
     /**
      * <br> Get the record increment <br><br>
      *
-     * The number of records incrementally harvested from the endpoint in
-     * the most recent harvest cycle. If the endpoint was not incrementally
-     * harvested, the increment will be zero.
+     * The number of records harvested from the endpoint in the most recent
+     * harvest cycle.
      *
      * @return the increment
      */
@@ -209,9 +234,8 @@ public interface Endpoint {
     /**
      * <br> Set the record increment <br><br>
      *
-     * The number of records incrementally harvested from the endpoint in the
-     * most recent harvest cycle. If the endpoint was not incrementally
-     * harvested, the increment will be zero.
+     * The number of records harvested from the endpoint in the most recent
+     * harvest cycle.
      *
      * @param increment the increment
      */

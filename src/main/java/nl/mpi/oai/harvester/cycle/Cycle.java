@@ -27,10 +27,10 @@ package nl.mpi.oai.harvester.cycle;
  * in the cycle.
  *
  * A method could also return the parameters defined in the cycle. If the
- * client to the package, the worker, the harvesting package need the general
- * parameters, they can be made available through the cycle object. Otherwise,
- * the parameters could be made private to the package. They will then only be
- * available to classes inside the package. kj: need to decide this
+ * client to the package, the worker, needs the general parameters, these can
+ * be made available through the overview object. Otherwise, the parameters
+ * could be made private to the package. They will then only be available to
+ * classes inside the package. kj: need to decide this
  *
  * @author Kees Jan van de Looij (MPI-PL)
  */
@@ -38,6 +38,7 @@ public interface Cycle {
 
     /**
      * Get next endpoint by externally supplied URI
+     *
      * @param URI reference to the endpoint
      * @return the endpoint
      */
@@ -53,6 +54,22 @@ public interface Cycle {
     public Endpoint next ();
 
     /**
+     * Check if the endpoint should be harvested
+     *
+     * @param endpoint
+     * @return
+     */
+    public boolean doHarvest (Endpoint endpoint);
+
+    /**
+     * Check if the endpoint indicated by the URI should be harvested
+     *
+     * @param URI
+     * @return
+     */
+    public boolean doHarvest (String URI);
+
+    /**
      * Indicate whether all the endpoints in the cycle have been visited
      *
      * @return
@@ -61,6 +78,7 @@ public interface Cycle {
 
     /**
      * Retry the endpoints that gave rise to errors
+     *
      */
     public void retry ();
 }

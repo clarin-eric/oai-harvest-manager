@@ -22,9 +22,12 @@ package nl.mpi.oai.harvester.cycle;
  * <br> Access to general harvest cycle attributes <br><br>
  *
  * A harvest cycle visits OAI endpoints with the intention to obtain metadata
- * records. The cycle can use the cycle and the endpoint interface to query the
- * general harvest cycle characteristics and state of the endpoint in order to
- * decide whether or not to harvest and to determine OAI verb and parameters.
+ * records. The cycle can query the general and endpoint attributes recorded in
+ * the overview in order to decide whether or not to harvest.
+ *
+ * The cycle can also query the attributes when it needs to build the list of
+ * parameters in an OAI request to the endpoint. It can, for example, use the
+ * harvested attribute to specify a date for selective harvesting <br><br>
  *
  * General characteristics of cycle include the mode of harvesting, the date
  * specified in a incremental or selective harvesting request, and the intended
@@ -52,21 +55,19 @@ package nl.mpi.oai.harvester.cycle;
  * outside the governance of the harvesting cycle. This means that a class that
  * implements the interface can leave room for manual specification.
  *
- * Note: for a description of the role of adapter classes, please refer to the
- * description in the Endpoint interface.
- *
- * Note: for more information on the OAI protocol, please refer to
- * <a href="http://www.openarchives.org/OAI/openarchivesprotocol.htm">
- *     its specification</a>.
+ * Note: the interface has package private access. This means that classes
+ * outside the package cannot declare objects of the Overview type. Because
+ * other classes in the package could implement the class publicly, the access
+ * to the methods specified in the interface is implicitly public.
  *
  * @author Kees Jan van de Looij (MPI-PL)
  */
-public interface Overview {
+interface Overview {
 
     /**
      * Mode of harvesting
      */
-    public enum Mode {
+    enum Mode {
 
         /**
          * The cycle will, in normal mode, harvest incrementally. However, only
@@ -107,7 +108,7 @@ public interface Overview {
      * the identifiers of metadata records and request the identified records,
      * or alternatively, harvest the records directly.
      */
-    public enum Scenario {
+    enum Scenario {
 
         /**
          * Query the metadata prefixes the endpoint supports. The cycle uses
@@ -137,7 +138,7 @@ public interface Overview {
      *
      * @return the harvesting mode
      */
-    public abstract Mode getHarvestMode();
+    abstract Mode getHarvestMode();
 
     /**
      * <br> Returns the date to use when refreshing <br<br>
@@ -148,7 +149,7 @@ public interface Overview {
      *
      * @return the date
      */
-    public abstract String getHarvestFromDate();
+    abstract String getHarvestFromDate();
 
     /**
      * <br> Get the harvesting scenario <br><br>
@@ -158,5 +159,5 @@ public interface Overview {
      *
      * @return the scenario
      */
-    public abstract Scenario getScenario ();
+    abstract Scenario getScenario ();
 }

@@ -44,6 +44,10 @@ import org.w3c.dom.Document;
  * should create the list of identifiers, and the parseResponse method should
  * use the GetRecord verb to get the records one by one.
  *
+ * Note: for more information on the OAI protocol, please refer to
+ * <a href="http://www.openarchives.org/OAI/openarchivesprotocol.htm">
+ *     its specification</a>.
+ *
  * @author Kees Jan van de Looij (MPI-PL)
  */
 public interface Harvesting {

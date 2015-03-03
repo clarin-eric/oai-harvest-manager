@@ -29,7 +29,7 @@ package nl.mpi.oai.harvester.cycle;
 public class CycleFactory {
 
     public Cycle createCycle(String Overview){
-        Cycle cycle = new XMLOverviewCycle();
+        Cycle cycle = new XMLBasedCycle();
 
         // kj: do something to create the cycle
 
