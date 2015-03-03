@@ -16,13 +16,13 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-package nl.mpi.oai.harvester.overview;
+package nl.mpi.oai.harvester.cycle;
 
 /**
  * <br> Create cycle type object <br><br>
  *
- * The factory returns a CycleParam type object. Different types of endpoint stores
- * could be supported, for the moment, there is only XML overview.
+ * The factory returns a Overview type object. Different types of endpoint stores
+ * could be supported, for the moment, there is only XML cycle.
  *
  * @author Kees Jan van de Looij (MPI-PL)
  */

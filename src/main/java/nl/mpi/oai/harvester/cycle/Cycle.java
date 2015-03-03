@@ -16,17 +16,17 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-package nl.mpi.oai.harvester.overview;
+package nl.mpi.oai.harvester.cycle;
 
 /**
  * <br> Iterate over endpoints <br><br>
  *
  * You can iterate by supplying the name, or by iterating over the endpoints
- * in the overview. The methods on a Cycle type of object return
+ * in the cycle. The methods on a Cycle type of object return
  * endpoints, either by a URI specified externally, or by the endpoints stored
- * in the overview.
+ * in the cycle.
  *
- * A method could also return the parameters defined in the overview. If the
+ * A method could also return the parameters defined in the cycle. If the
  * client to the package, the worker, the harvesting package need the general
  * parameters, they can be made available through the cycle object. Otherwise,
  * the parameters could be made private to the package. They will then only be
@@ -44,7 +44,7 @@ public interface Cycle {
     public Endpoint next (String URI);
 
     /**
-     * Get the next endpoint in the overview
+     * Get the next endpoint in the cycle
      *
      * Note:
      *
@@ -53,7 +53,7 @@ public interface Cycle {
     public Endpoint next ();
 
     /**
-     * Indicate whether all the endpoints in the overview have been visited
+     * Indicate whether all the endpoints in the cycle have been visited
      *
      * @return
      */

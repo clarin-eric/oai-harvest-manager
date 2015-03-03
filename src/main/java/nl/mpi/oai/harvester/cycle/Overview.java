@@ -16,13 +16,10 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-package nl.mpi.oai.harvester.overview;
+package nl.mpi.oai.harvester.cycle;
 
 /**
  * <br> Access to general harvest cycle attributes <br><br>
- *
- * kj: refactor
- * CycleParam, CycleParamAdapter -> Restriction, RestrictionAdapter
  *
  * A harvest cycle visits OAI endpoints with the intention to obtain metadata
  * records. The cycle can use the cycle and the endpoint interface to query the
@@ -46,7 +43,7 @@ package nl.mpi.oai.harvester.overview;
  * </td>
  * </table>
  *
- * These are the elements conveyed through the CycleParam interface. The elements
+ * These are the elements conveyed through the Overview interface. The elements
  * listed are optional, the methods use default values, and reflect these
  * through the interface.
  *
@@ -64,7 +61,7 @@ package nl.mpi.oai.harvester.overview;
  *
  * @author Kees Jan van de Looij (MPI-PL)
  */
-public interface CycleParam {
+public interface Overview {
 
     /**
      * Mode of harvesting

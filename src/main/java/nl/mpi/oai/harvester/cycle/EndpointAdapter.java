@@ -16,7 +16,7 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-package nl.mpi.oai.harvester.overview;
+package nl.mpi.oai.harvester.cycle;
 
 import nl.mpi.oai.harvester.generated.EndpointType;
 import nl.mpi.oai.harvester.generated.ObjectFactory;
@@ -38,7 +38,7 @@ import java.util.logging.Logger;
  * method on the adapter object. <br><br>
  *
  * This class depends on JAXB to generate classes representing the XML harvest
- * overview file. When an adapter method needs to obtain an endpoint attribute,
+ * cycle file. When an adapter method needs to obtain an endpoint attribute,
  * it will invoke a corresponding method on the EndpointType object. The class
  * also depends on the JAXB factory for creating endpoint elements and the
  * elements enclosed in them.
@@ -47,7 +47,7 @@ import java.util.logging.Logger;
  */
 class EndpointAdapter implements Endpoint {
 
-    // the JAXB representation of the harvest overview
+    // the JAXB representation of the harvest cycle
     private final OverviewType overviewType;
 
     // the endpoint referenced by the URI supplied to the constructor
@@ -79,10 +79,10 @@ class EndpointAdapter implements Endpoint {
     }
 
     /**
-     * Look for the endpoint in the overview, use an URI as the as the key
+     * Look for the endpoint in the cycle, use an URI as the as the key
      *
      * @param endpointURI the URI identifying the endpoint
-     * @return            null if the overview does not contain the endpoint,
+     * @return            null if the cycle does not contain the endpoint,
      *                    the intended endpoint otherwise
      */
     private EndpointType FindEndpoint(String endpointURI) {
@@ -108,37 +108,37 @@ class EndpointAdapter implements Endpoint {
     }
 
     /**
-     * Associate the adapter with a URI, a group, an overview, and a factory <br><br>
+     * Associate the adapter with a URI, a group, an cycle, and a factory <br><br>
      *
      * Precondition: endpointURI, group, overviewType and factory are not null <br><br>
      *
      * In case the constructor cannot find the endpoint URI specified in the
-     * overview elements, it will create a new endpoint and add to the endpoints
-     * already present in the overview. <br><br>
+     * cycle elements, it will create a new endpoint and add to the endpoints
+     * already present in the cycle. <br><br>
      *
      * @param endpointURI  the URI of the endpoint the cycle should attempt to
      *                     harvest
      * @param group        the group the endpoint belongs to
-     * @param overviewType the JAXB representation of the harvest overview
+     * @param overviewType the JAXB representation of the harvest cycle
      *                     element
-     * @param factory      the JAXB factory for harvest overview elements
+     * @param factory      the JAXB factory for harvest cycle elements
      *
      */
      EndpointAdapter(String endpointURI, String group,
                      OverviewType overviewType, ObjectFactory factory) {
 
-        // remember the overview, remember the factory
+        // remember the cycle, remember the factory
         this.overviewType = overviewType;
         this.factory      = factory;
 
-        // look for the endpoint in the overview
+        // look for the endpoint in the cycle
         endpointType = FindEndpoint(endpointURI);
 
         if (endpointType == null) {
-            // if it is not in the overview, create a default endpoint
+            // if it is not in the cycle, create a default endpoint
             endpointType = CreateDefault(endpointURI, group);
 
-            // and add it to the overview
+            // and add it to the cycle
             overviewType.getEndpoint().add(endpointType);
         }
     }
@@ -171,7 +171,7 @@ class EndpointAdapter implements Endpoint {
         Boolean blocked = endpointType.isBlock();
 
         if (blocked == null){
-            // attribute not XML overview element, add it to it
+            // attribute not XML cycle element, add it to it
             endpointType.setBlock(false);
             return false;
         } else {
@@ -186,7 +186,7 @@ class EndpointAdapter implements Endpoint {
         Boolean retry = endpointType.isRetry();
 
         if (retry == null){
-            // attribute not XML overview element, add it to it
+            // attribute not XML cycle element, add it to it
             endpointType.setRetry(false);
             return false;
         } else {
@@ -202,7 +202,7 @@ class EndpointAdapter implements Endpoint {
         Boolean allow = endpointType.isIncremental();
 
         if (allow == null){
-            // attribute not XML overview element, add it to it
+            // attribute not XML cycle element, add it to it
             endpointType.setIncremental(false);
             return false;
         } else {
@@ -211,23 +211,23 @@ class EndpointAdapter implements Endpoint {
     }
 
     @Override
-    public CycleParam.Scenario getScenario() {
+    public Overview.Scenario getScenario() {
 
         // try to get attribute
         ScenarioType scenarioType = endpointType.getScenario();
 
         if (scenarioType == null) {
-            // attribute not XML overview element, add it to it
+            // attribute not XML cycle element, add it to it
             endpointType.setScenario(ScenarioType.LIST_RECORDS);
-            return CycleParam.Scenario.ListRecords;
+            return Overview.Scenario.ListRecords;
         } else {
             switch (scenarioType) {
                 case LIST_PREFIXES:
-                    return CycleParam.Scenario.ListPrefixes;
+                    return Overview.Scenario.ListPrefixes;
                 case LIST_IDENTIFIERS:
-                    return CycleParam.Scenario.ListIdentifiers;
+                    return Overview.Scenario.ListIdentifiers;
                 default:
-                    return CycleParam.Scenario.ListRecords;
+                    return Overview.Scenario.ListRecords;
             }
         }
     }
@@ -283,7 +283,7 @@ class EndpointAdapter implements Endpoint {
         Long count = endpointType.getCount();
 
         if (count == null) {
-            // attribute not XML overview element, add it to it
+            // attribute not XML cycle element, add it to it
             endpointType.setCount((long) 0);
             return 0;
         } else {
@@ -304,7 +304,7 @@ class EndpointAdapter implements Endpoint {
         Long increment = endpointType.getIncrement();
 
         if (increment == null){
-            // attribute not XML overview element, add it to it
+            // attribute not XML cycle element, add it to it
             endpointType.setIncrement((long) 0);
             return 0;
         } else {

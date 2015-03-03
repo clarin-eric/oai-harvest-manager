@@ -93,7 +93,7 @@ public class RegistryReader {
      * Extract links to all provider information pages from the summary
      * document returned by the centre registry
      * 
-     * @param doc centre registry overview response
+     * @param doc centre registry cycle response
      * @return list of URLs of provider-specific info pages
      */
     public List<String> getProviderInfoUrls(Document doc) throws XPathExpressionException {

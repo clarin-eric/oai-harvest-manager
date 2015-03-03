@@ -17,7 +17,7 @@
  *
  */
 
-package nl.mpi.oai.harvester.overview;
+package nl.mpi.oai.harvester.cycle;
 
 import nl.mpi.oai.harvester.generated.ModeType;
 import nl.mpi.oai.harvester.generated.OverviewType;
@@ -40,7 +40,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
  *
  * @author Kees Jan van de Looij (MPI-PL)
  */
-public class CycleParamAdapter implements CycleParam {
+public class OverviewAdapter implements Overview {
 
     // the JAXB created object representing elements from the XML file
     private final OverviewType overviewType;
@@ -48,9 +48,9 @@ public class CycleParamAdapter implements CycleParam {
     /**
      * Associate the adapter with a CycleType object
      *
-     * @param overviewType JAXB representation of the cycle overview file
+     * @param overviewType JAXB representation of the cycle cycle file
      */
-    public CycleParamAdapter(OverviewType overviewType) {
+    public OverviewAdapter(OverviewType overviewType) {
         this.overviewType = overviewType;
     }
 

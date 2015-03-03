@@ -16,7 +16,7 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-package nl.mpi.oai.harvester.overview;
+package nl.mpi.oai.harvester.cycle;
 
 /**
  * <br> Access to endpoint attributes <br><br>
@@ -155,7 +155,7 @@ public interface Endpoint {
      *
      * @return the scenario
      */
-    public abstract CycleParam.Scenario getScenario ();
+    public abstract Overview.Scenario getScenario ();
 
     /**
      * <br> Return the date for incrementally harvesting <br><br>

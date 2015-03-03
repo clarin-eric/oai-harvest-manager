@@ -16,7 +16,7 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-package nl.mpi.oai.harvester.overview;
+package nl.mpi.oai.harvester.cycle;
 
 import nl.mpi.oai.harvester.generated.ObjectFactory;
 import nl.mpi.oai.harvester.generated.OverviewType;
@@ -31,17 +31,17 @@ import java.util.logging.Logger;
 /**
  * <br> CycleType object marshalling <br><br>
  *
- * By returning CycleParamAdapter or EndpointAdapter class objects through the the
- * CycleParam and Endpoint interfaces, the methods on the objects in this class make
+ * By returning OverviewAdapter or EndpointAdapter class objects through the the
+ * Overview and Endpoint interfaces, the methods on the objects in this class make
  * available XML defined attributes of the harvesting cycle. Note: the XSD
- * defining the cycle overview XML files resides in the src/xsd directory. <br><br>
+ * defining the cycle cycle XML files resides in the src/xsd directory. <br><br>
  *
  * By supplying its URI, the harvest cycle can identify an endpoint. By
  * interpreting the attributes recorded, it can decide if it needs to harvest
  * the endpoint, and also, which method of harvesting it should apply. The
  * cycle can update the endpoint attributes to reflect the harvest attempt. <br><br>
  *
- * When harvesting is done, the harvesting overview should be finalised. If it
+ * When harvesting is done, the harvesting cycle should be finalised. If it
  * is not, the changes made to the endpoint data will not be saved.
  *
  * @author Kees Jan van de Looij (MPI-PL)
@@ -58,10 +58,10 @@ public final class XMLOverview {
     ObjectFactory factory;
 
     /**
-     * <br> Associate the overview with an XML file <br><br>
+     * <br> Associate the cycle with an XML file <br><br>
      *
      * This constructor initialises the harvestingType and endpointType objects
-     * wrapped in the overview class with data from the file.
+     * wrapped in the cycle class with data from the file.
      *
      * @param fileName name of the file
      */
@@ -100,9 +100,9 @@ public final class XMLOverview {
      *
      * @return cycle attributes
      */
-    public CycleParam getCycle() {
+    public Overview getCycle() {
 
-        return new CycleParamAdapter(overviewType);
+        return new OverviewAdapter(overviewType);
     }
 
     /**
@@ -133,7 +133,7 @@ public final class XMLOverview {
     }
 
     /**
-     * Save harvesting overview
+     * Save harvesting cycle
      *
      */
     @Override
