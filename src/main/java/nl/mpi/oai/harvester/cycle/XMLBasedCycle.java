@@ -23,7 +23,9 @@ package nl.mpi.oai.harvester.cycle;
  *
  * kj: implement the interface
  *
- * Note: some methods need to be synchronised
+ * Note: some methods need to be synchronised.
+ *
+ * Note: use the adapters to access the attributes defined in the XML file.
  *
  * @author Kees Jan van de Looij (MPI-PL)
  */

@@ -44,6 +44,8 @@ import java.util.logging.Logger;
  * When harvesting is done, the harvesting cycle should be finalised. If it
  * is not, the changes made to the endpoint data will not be saved.
  *
+ * kj: these methods should be moved into the XMLBasedCycle class
+ *
  * @author Kees Jan van de Looij (MPI-PL)
  */
 public final class XMLOverview {
