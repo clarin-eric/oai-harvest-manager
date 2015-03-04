@@ -36,7 +36,7 @@ import java.util.logging.Logger;
  * stored as XML elements. To access a desired attribute, invoke the designated
  * method on the adapter object. <br><br>
  *
- * This class depends on JAXB to generate classes representing the XML harvest
+ * This class depends on JAXB to generate types representing the XML harvest
  * cycle file. When an adapter method needs to obtain an endpoint attribute,
  * it will invoke a corresponding method on the EndpointType object. The class
  * also depends on the JAXB factory for creating endpoint elements and the

@@ -30,8 +30,7 @@ package nl.mpi.oai.harvester.cycle;
  * decide if it needs to harvest the endpoint, and also, which method of
  * harvesting it should apply. <br><br>
  *
- * kj: where to put this
- * Whenever the client changes an attribute, the change will be reflected
+ * Note: whenever the client changes an attribute, the change will be reflected
  * back to the XML file. The adapter will perform this task. <br><br>
  *
  * Note: the interface does not make available general cycle attributes. To
@@ -50,9 +49,10 @@ public interface Cycle {
      * of endpoints in the overview that are elligable for harvesting.
      *
      * @param URI reference to the endpoint
+     * @param group the group the endpoint belongs to
      * @return the endpoint
      */
-    public Endpoint next (String URI);
+    public Endpoint next (String URI, String group);
 
     /**
      * Get the next endpoint in the cycle <br><br>

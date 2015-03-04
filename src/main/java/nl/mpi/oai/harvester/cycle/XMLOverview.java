@@ -38,6 +38,16 @@ import java.io.File;
  * endpoint object, it needs to write back the overview to the file. It can do
  * so by invoking the finalize method in this class.
  *
+ * Note: this class relies on JAXB to generate the types that reflect the XSD
+ * defined overviews.
+ *
+ * kj: consider adding a getNextEndpoint () method
+ * A method like this would be used for traversing, rather than searching. Also
+ * add a getEndpoint for resetting the traversal. However, things might become
+ * complicated, because an endpoint could be added in parallel somewhere in the
+ * file, making traversing difficult. A getEndpoint (EndpointType endpointType)
+ * method could also work.
+ *
  * @author Kees Jan van de Looij (MPI-PL)
  */
 public final class XMLOverview {
@@ -45,11 +55,11 @@ public final class XMLOverview {
     // the file supplied on construction
     private final File file;
 
-    // reference to a generated overviewType object representing the XML
+    // reference to a JAXB generated overviewType object representing the XML
     OverviewType overviewType;
 
     // factory that creates objects of the generated classes
-    ObjectFactory factory;
+    final ObjectFactory factory;
 
     /**
      * <br> Associate the cycle with an XML file <br><br>
