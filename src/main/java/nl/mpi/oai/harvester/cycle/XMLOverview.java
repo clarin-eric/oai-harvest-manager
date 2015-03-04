@@ -25,26 +25,18 @@ import nl.mpi.oai.harvester.harvesting.HarvestingException;
 import javax.xml.bind.*;
 
 import java.io.File;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
- * <br> CycleType object marshalling <br><br>
+ * <br> OverviewType object marshalling <br><br>
  *
- * By returning OverviewAdapter or EndpointAdapter class objects through the the
- * Overview and Endpoint interfaces, the methods on the objects in this class make
- * available XML defined attributes of the harvesting cycle. Note: the XSD
- * defining the cycle cycle XML files resides in the src/xsd directory. <br><br>
+ * Read and write an overview to and from an XML file by using the adapters
+ * defined in the package. The methods in this class communicate the general
+ * cycle and endpoint attributes through the overview and endpoint interfaces.
  *
- * By supplying its URI, the harvest cycle can identify an endpoint. By
- * interpreting the attributes recorded, it can decide if it needs to harvest
- * the endpoint, and also, which method of harvesting it should apply. The
- * cycle can update the endpoint attributes to reflect the harvest attempt. <br><br>
- *
- * When harvesting is done, the harvesting cycle should be finalised. If it
- * is not, the changes made to the endpoint data will not be saved.
- *
- * kj: these methods should be moved into the XMLBasedCycle class
+ * After the XML file is read by the constructor, the getOverview and
+ * getEndpoint methods can be invoked. When a client modifies an overview or
+ * endpoint object, it needs to write back the overview to the file. It can do
+ * so by invoking the finalize method in this class.
  *
  * @author Kees Jan van de Looij (MPI-PL)
  */
@@ -54,7 +46,7 @@ public final class XMLOverview {
     private final File file;
 
     // reference to a generated overviewType object representing the XML
-    private OverviewType overviewType;
+    OverviewType overviewType;
 
     // factory that creates objects of the generated classes
     ObjectFactory factory;
@@ -102,9 +94,9 @@ public final class XMLOverview {
      *
      * @return cycle attributes
      */
-    public Overview getCycle() {
+    public Overview getOverview() {
 
-        return new OverviewAdapter(overviewType);
+        return new OverviewAdapter(this);
     }
 
     /**
@@ -122,7 +114,7 @@ public final class XMLOverview {
      * @param group       the group the endpoint belongs to
      * @return            endpoint attributes
      */
-    public Endpoint getEndPoint(String endpointURI, String group) {
+    public Endpoint getEndpoint(String endpointURI, String group) {
 
         if (endpointURI == null){
             throw new IllegalArgumentException("endpoint URI is null");
@@ -131,25 +123,15 @@ public final class XMLOverview {
             throw new IllegalArgumentException("endpoint group is null");
         }
 
-        return new EndpointAdapter(endpointURI, group, overviewType, factory);
+        return new EndpointAdapter(endpointURI, group, this);
     }
 
     /**
-     * Save harvesting cycle
-     *
+     * Save the overview
      */
-    @Override
-    protected void finalize (){
+    protected synchronized void save (){
 
-        // try to invoke superclass finalization
-        try {
-            super.finalize();
-        } catch (Throwable e) {
-            Logger.getLogger(XMLOverview.class.getName()).log(
-                    Level.SEVERE, null, e);
-        }
-
-        // finalize the harvesting data
+        // marshall the overview
         JAXB.marshal(overviewType, file);
     }
 }

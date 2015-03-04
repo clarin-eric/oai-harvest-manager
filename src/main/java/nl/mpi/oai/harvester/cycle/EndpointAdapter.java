@@ -19,7 +19,6 @@
 package nl.mpi.oai.harvester.cycle;
 
 import nl.mpi.oai.harvester.generated.EndpointType;
-import nl.mpi.oai.harvester.generated.ObjectFactory;
 import nl.mpi.oai.harvester.generated.OverviewType;
 import nl.mpi.oai.harvester.generated.ScenarioType;
 
@@ -47,14 +46,11 @@ import java.util.logging.Logger;
  */
 class EndpointAdapter implements Endpoint {
 
-    // the JAXB representation of the harvest cycle
-    private final OverviewType overviewType;
-
     // the endpoint referenced by the URI supplied to the constructor
     private EndpointType endpointType;
 
-    // the JAXB factory, needed to create a default endpoint
-    private final ObjectFactory factory;
+    // overview marshalling object
+    private XMLOverview xmlOverview;
 
     /**
      * Create a default endpoint
@@ -67,13 +63,16 @@ class EndpointAdapter implements Endpoint {
         /* Because of the constructor, the factory is in place. Ask it to
            create a new endpoint.
          */
-        endpointType = factory.createEndpointType();
+        endpointType = xmlOverview.factory.createEndpointType();
 
         // create the endpoint fields, and set them to default values
         endpointType.setBlock(Boolean.FALSE);
         endpointType.setIncremental(Boolean.TRUE);
         endpointType.setURI(endpointURI);
         endpointType.setGroup(group);
+
+        // save the newly created endpoint to the overview
+        xmlOverview.save();
 
         return endpointType;
     }
@@ -93,6 +92,9 @@ class EndpointAdapter implements Endpoint {
         // iterate over the elements in the harvested element
         Boolean found = false;
 
+        // JAXB representation of the overview
+        OverviewType overviewType = xmlOverview.overviewType;
+
         for (int i = 0; i < overviewType.getEndpoint().size() && !found; i++) {
             endpointType = overviewType.getEndpoint().get(i);
             if (endpointType.getURI().compareTo(endpointURI) == 0) {
@@ -110,7 +112,7 @@ class EndpointAdapter implements Endpoint {
     /**
      * Associate the adapter with a URI, a group, an cycle, and a factory <br><br>
      *
-     * Precondition: endpointURI, group, overviewType and factory are not null <br><br>
+     * Precondition: endpointURI, group, xmlOverview fields are in place <br><br>
      *
      * In case the constructor cannot find the endpoint URI specified in the
      * cycle elements, it will create a new endpoint and add to the endpoints
@@ -119,17 +121,13 @@ class EndpointAdapter implements Endpoint {
      * @param endpointURI  the URI of the endpoint the cycle should attempt to
      *                     harvest
      * @param group        the group the endpoint belongs to
-     * @param overviewType the JAXB representation of the harvest cycle
-     *                     element
-     * @param factory      the JAXB factory for harvest cycle elements
+     * @param xmlOverview  overview marshalling object
      *
      */
-     EndpointAdapter(String endpointURI, String group,
-                     OverviewType overviewType, ObjectFactory factory) {
+     EndpointAdapter(String endpointURI, String group, XMLOverview xmlOverview) {
 
         // remember the cycle, remember the factory
-        this.overviewType = overviewType;
-        this.factory      = factory;
+        this.xmlOverview  = xmlOverview;
 
         // look for the endpoint in the cycle
         endpointType = FindEndpoint(endpointURI);
@@ -139,7 +137,7 @@ class EndpointAdapter implements Endpoint {
             endpointType = CreateDefault(endpointURI, group);
 
             // and add it to the cycle
-            overviewType.getEndpoint().add(endpointType);
+            xmlOverview.overviewType.getEndpoint().add(endpointType);
         }
     }
 
@@ -269,6 +267,8 @@ class EndpointAdapter implements Endpoint {
                 endpointType.setHarvested(XMLDate);
             }
 
+            xmlOverview.save();
+
         } catch (DatatypeConfigurationException e) {
             // report the error, we cannot continue
             Logger.getLogger(EndpointAdapter.class.getName()).log(
@@ -294,7 +294,10 @@ class EndpointAdapter implements Endpoint {
     @Override
     public void setCount(long count) {
 
+        // update the count
         endpointType.setCount(count);
+        // update the overview
+        xmlOverview.save();
     }
 
     @Override
@@ -315,6 +318,9 @@ class EndpointAdapter implements Endpoint {
     @Override
     public void setIncrement(long increment) {
 
+        // update the increment
         endpointType.setIncrement(increment);
+        // update the overview
+        xmlOverview.save();
     }
 }

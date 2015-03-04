@@ -23,13 +23,37 @@ package nl.mpi.oai.harvester.cycle;
  *
  * kj: implement the interface
  *
- * Note: some methods need to be synchronised.
- *
- * Note: use the adapters to access the attributes defined in the XML file.
+ * note: use the methods in the XMLOverview class, receive objects through the
+ * Overview and Endpoint interface
  *
  * @author Kees Jan van de Looij (MPI-PL)
  */
 public class XMLBasedCycle implements Cycle {
+
+    /**
+     *
+     * @param filename
+     */
+    public XMLBasedCycle (String filename){
+
+        /* Create an XMLOverview class object by using the JAXB generated types
+           reflecting the OverviewType XSD
+         */
+        XMLOverview xmlOverview = new XMLOverview(filename);
+
+        Overview overview;
+
+        overview = xmlOverview.getOverview();
+
+        // in the overview you only get the general attributes
+        // use the overview interface
+
+        xmlOverview.getEndpoint("endpointURI", "group");
+
+        /* Note: there should be a setEndpoint also, for reflecting back
+           changes to the overview file.
+        */
+    }
 
     @Override
     public synchronized Endpoint next(String URI) {

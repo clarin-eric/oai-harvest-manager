@@ -48,10 +48,11 @@ public class OverviewAdapter implements Overview {
     /**
      * Associate the adapter with a CycleType object
      *
-     * @param overviewType JAXB representation of the cycle cycle file
+     * @param xmlOverview overview marshalling object
      */
-    public OverviewAdapter(OverviewType overviewType) {
-        this.overviewType = overviewType;
+    public OverviewAdapter(XMLOverview xmlOverview) {
+
+        this.overviewType = xmlOverview.overviewType;
     }
 
     /**

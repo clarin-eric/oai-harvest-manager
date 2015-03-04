@@ -21,17 +21,22 @@ package nl.mpi.oai.harvester.cycle;
 /**
  * <br> Create cycle type object <br><br>
  *
- * The factory returns a Overview type object. Different types of endpoint stores
- * could be supported, for the moment, there is only XML cycle.
+ * The factory returns a cycle type object. Different types of overviews could
+ * be supported. The cycle package supports overviews in the form of XML files
+ * through XMLOverview class objects.
  *
  * @author Kees Jan van de Looij (MPI-PL)
  */
 public class CycleFactory {
 
-    public Cycle createCycle(String Overview){
-        Cycle cycle = new XMLBasedCycle();
-
-        // kj: do something to create the cycle
+    /**
+     * Create a new cycle
+     *
+     * @param filename local XML file defining the overview
+     * @return a cycle based on the overview
+     */
+    public Cycle createCycle(String filename){
+        Cycle cycle = new XMLBasedCycle(filename);
 
         return cycle;
     };
