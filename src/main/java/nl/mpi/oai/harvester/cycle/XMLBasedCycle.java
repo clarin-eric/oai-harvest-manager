@@ -20,11 +20,10 @@ package nl.mpi.oai.harvester.cycle;
 
 import nl.mpi.oai.harvester.generated.EndpointType;
 import nl.mpi.oai.harvester.generated.OverviewType;
+import org.joda.time.DateTime;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
+import java.util.Date;
 
 /**
  * <br> Implement Cycle based on XML overview <br><br>
@@ -45,7 +44,7 @@ public class XMLBasedCycle implements Cycle {
     private final Overview overview;
 
     // the endpoint URIs returned to the client in the current cycle
-    private ArrayList<String> endpointsCycled;
+    private static ArrayList<String> endpointsCycled = new ArrayList<>();
 
     /**
      * Associate the cycle with the XML file defining the overview
@@ -73,51 +72,52 @@ public class XMLBasedCycle implements Cycle {
 
     @Override
     /**
-     * Note: the method needs synchronisation because endpoints might be
-     * harvested in parallel.
+     * <br> Get the next residual endpoint in the cycle <br><br>
+     *
+     * Since the cycle supports parallel endpoint harvesting, by adding
+     * endpoint URIs to a list, this method checks if a particular endpoint not
+     * yet marked as having been attempted, is currently being attempted. In
+     * the method ensures that every endpoint is returned to the client at most
+     * once.
      *
      * @return the next endpoint elligable for harvesting, null if all
      *         endpoints have been cycled over.
      */
     public synchronized Endpoint next() {
 
-        // JAXB generated type
-        OverviewType overviewType = xmlOverview.overviewType;
+        int endpointCount = xmlOverview.overviewType.getEndpoint().size();
 
-        EndpointType endpointType = null;
+        // find an endpoint not yet returned in this cycle
+        for (int i = 0; i < endpointCount; i++) {
 
-        boolean found = false;
+            EndpointType endpointType =
+                    xmlOverview.overviewType.getEndpoint().get(i);
 
-        /* Only respond with particular endpoint once. In order to decide
-           compare today's date to the date of the last attempt. This date
-           will be set when the harvest attempt is done, either successful
-           or not. So we have to keep track of the endpoints returned by
-           remembering their URI's
-         */
+            // get today's date
+            Date date = new Date ();
+            // prepare it for ISO8601 representation
+            DateTime dateTime = new DateTime(date);
 
-        for (int i = 0; i < overviewType.getEndpoint().size() && !found; i++) {
-            endpointType = overviewType.getEndpoint().get(i);
-
-            // kj: consider joda time
-            // get today's date in ISO 8601 format
-            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-            Calendar calendar = Calendar.getInstance();
-            String today = dateFormat.format(calendar.getTime());
-
-            // get the date of the most recent attempt in XML format
+            // get the date of the most recent attempt
             String attemptedDate = endpointType.getAttempted().toString();
 
-            if (attemptedDate.equals(today)){
-                // skip the endpoint
+            if (attemptedDate.equals(dateTime.toString())){
+                // endpoint was attempted today, skip it
             } else {
-                found = true;
-                // add the endpoint to the list
-                endpointsCycled.add(endpointType.getURI());
-                //
-                return xmlOverview.getEndpoint(endpointType);
+                if (endpointsCycled.contains(endpointType.getURI())){
+                    // endpoint is being attempted, skip it
+                } else {
+                    // add the endpoint to the list of endpoints attempted
+                    endpointsCycled.add(endpointType.getURI());
+                    /* Return an adapter for the endpoint by supplying the
+                       generated type.
+                     */
+                    return xmlOverview.getEndpoint(endpointType);
+                }
             }
         }
 
+        // no residual endpoint found
         return null;
     }
 

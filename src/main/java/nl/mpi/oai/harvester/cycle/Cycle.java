@@ -42,7 +42,7 @@ package nl.mpi.oai.harvester.cycle;
 public interface Cycle {
 
     /**
-     * Get the next endpoint by externally supplied URI <br><br>
+     * <br> Get the next endpoint by an externally supplied URI <br><br>
      *
      * By invoking next on a Cycle type object, a client receives the URI
      * identified endpoint. The cycle will remove the endpoint from the list
@@ -55,7 +55,7 @@ public interface Cycle {
     public Endpoint next (String URI, String group);
 
     /**
-     * Get the next endpoint in the cycle <br><br>
+     * <br> Get the next residual endpoint in the cycle <br><br>
      *
      * Next to endpoints the client identifies, there might be endpoints in
      * the overview that have, in the current cycle, for some reason, not been
@@ -68,7 +68,7 @@ public interface Cycle {
     public Endpoint next ();
 
     /**
-     * Check if the endpoint should be harvested <br><br>
+     * <br> Check if the endpoint should be harvested <br><br>
      *
      * When it decides whether or not the endpoint given should be harvested,
      * the method will consider both the general cycle attributes as well as
@@ -95,7 +95,7 @@ public interface Cycle {
     public boolean doHarvest (Endpoint endpoint);
 
     /**
-     * Check if the endpoint indicated by the URI should be harvested <br><br>
+     * <br> Check if the endpoint indicated by the URI should be harvested <br><br>
      *
      * For this method, the same applies as in the case of the doHarvest method
      * with an EndpointType parameter.
@@ -106,7 +106,7 @@ public interface Cycle {
     public boolean doHarvest (String URI);
 
     /**
-     * Indicate whether all the endpoints in the overview were returned for
+     * <br> Indicate whether all the endpoints in the overview were returned for
      * harvesting <br><br>
      *
      * In deciding whether or not the end of the cycle has been reached, the
@@ -119,7 +119,7 @@ public interface Cycle {
     public boolean doneHarvesting ();
 
     /**
-     * Retry the endpoints that gave rise to errors <br><br>
+     * <br> Retry the endpoints that gave rise to errors <br><br>
      *
      * When a client invokes the retry method on the cycle object, it restarts
      * the harvest cycle. The cycle will, from that moment on, only consider
