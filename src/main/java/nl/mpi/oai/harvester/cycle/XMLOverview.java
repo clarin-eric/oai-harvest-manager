@@ -18,6 +18,7 @@
 
 package nl.mpi.oai.harvester.cycle;
 
+import nl.mpi.oai.harvester.generated.EndpointType;
 import nl.mpi.oai.harvester.generated.ObjectFactory;
 import nl.mpi.oai.harvester.generated.OverviewType;
 import nl.mpi.oai.harvester.harvesting.HarvestingException;
@@ -40,13 +41,6 @@ import java.io.File;
  *
  * Note: this class relies on JAXB to generate the types that reflect the XSD
  * defined overviews.
- *
- * kj: consider adding a getNextEndpoint () method
- * A method like this would be used for traversing, rather than searching. Also
- * add a getEndpoint for resetting the traversal. However, things might become
- * complicated, because an endpoint could be added in parallel somewhere in the
- * file, making traversing difficult. A getEndpoint (EndpointType endpointType)
- * method could also work.
  *
  * @author Kees Jan van de Looij (MPI-PL)
  */
@@ -95,12 +89,9 @@ public final class XMLOverview {
     }
 
     /**
-     * <br> Create an adapter for the harvestingType object <br><br>
+     * <br> Create an adapter for the overviewType object <br><br>
      *
-     * Note: at the level of the XSD, the endpoints are part of harvesting, at
-     * the level of the interface the general harvesting characteristics are
-     * separate from the list of endpoints. In fact, the client never gets the
-     * complete list, it gets an endpoint referred to by the URI.
+     * Note:
      *
      * @return cycle attributes
      */
@@ -112,20 +103,21 @@ public final class XMLOverview {
     /**
      * <br> Create an adapter for an endpointType object <br><br>
      *
-     * This method returns the adapter object for the endpoint indicated
-     * by the endpointURI
+     * This method returns the adapter object for the endpoint indicated. <br><br>
      *
-     * Note: at the level of the XSD, the endpoints are part of harvesting, at
-     * the level of the interface the general harvesting characteristics are
-     * separate from the list of endpoints. In fact, the client never gets the
-     * complete list, it gets an endpoint referred to by the URI.
+     * Note: the adapter only makes available the attributes for the endpoint
+     * indicated. Other endpoints or general attributes defined in the overview
+     * are outside the scope of the adapter.
      *
-     * @param endpointURI the URI of the endpoint state requested
+     * @param endpointURI the URI of the endpoint requested
      * @param group       the group the endpoint belongs to
      * @return            endpoint attributes
      */
     public Endpoint getEndpoint(String endpointURI, String group) {
 
+        /* Since methods outside the package can invoke this method, check for
+           the parameter object to be in place.
+         */
         if (endpointURI == null){
             throw new IllegalArgumentException("endpoint URI is null");
         }
@@ -137,6 +129,27 @@ public final class XMLOverview {
     }
 
     /**
+     * Create an adapter for an endpointType object <br><br>
+     *
+     * This method returns the adapter object for the endpoint indicated. <br><br>
+     *
+     * Note: the adapter only makes available the attributes for the endpoint
+     * indicated. Other endpoints or general attributes defined in the overview
+     * are outside the scope of the adapter.
+     *
+     * @param endpointType the endpoint indicated
+     * @return endpoint attributes
+     */
+    Endpoint getEndpoint (EndpointType endpointType){
+
+        /* Since only methods in the package can invoke this method, assume the
+           endpointType is in place.
+         */
+        return new EndpointAdapter(endpointType.getURI(),
+                endpointType.getGroup(), this);
+    }
+
+    /**
      * Save the overview
      */
     protected synchronized void save (){
@@ -144,4 +157,5 @@ public final class XMLOverview {
         // marshall the overview
         JAXB.marshal(overviewType, file);
     }
+
 }

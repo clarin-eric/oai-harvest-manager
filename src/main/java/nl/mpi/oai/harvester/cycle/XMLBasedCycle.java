@@ -76,8 +76,8 @@ public class XMLBasedCycle implements Cycle {
      * Note: the method needs synchronisation because endpoints might be
      * harvested in parallel.
      *
-     * kj: this method might return null
-     * This could be prevented by invoking doneHarvesting()
+     * @return the next endpoint elligable for harvesting, null if all
+     *         endpoints have been cycled over.
      */
     public synchronized Endpoint next() {
 
@@ -113,7 +113,8 @@ public class XMLBasedCycle implements Cycle {
                 found = true;
                 // add the endpoint to the list
                 endpointsCycled.add(endpointType.getURI());
-                return xmlOverview.getEndpoint(endpointType.getURI(), endpointType.getGroup());
+                //
+                return xmlOverview.getEndpoint(endpointType);
             }
         }
 
