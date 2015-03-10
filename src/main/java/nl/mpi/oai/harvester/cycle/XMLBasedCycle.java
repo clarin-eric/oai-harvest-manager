@@ -19,17 +19,16 @@
 package nl.mpi.oai.harvester.cycle;
 
 import nl.mpi.oai.harvester.generated.EndpointType;
-import nl.mpi.oai.harvester.generated.OverviewType;
 import org.joda.time.DateTime;
 
 import java.util.ArrayList;
 import java.util.Date;
 
 /**
- * <br> Implement Cycle based on XML overview <br><br>
+ * <br> Implement Cycle based on XML properties <br><br>
  *
  * note: use the methods in the XMLOverview class, receive objects through the
- * Overview and Endpoint interface
+ * Properties and Endpoint interface
  *
  * note: this class relies on JAXB generated types.
  *
@@ -40,23 +39,23 @@ public class XMLBasedCycle implements Cycle {
     // overview marshalling object
     private final XMLOverview xmlOverview;
 
-    // the general attributes defined by the XML file
-    private final Overview overview;
+    // the general properties defined by the XML file
+    private final Properties properties;
 
     // the endpoint URIs returned to the client in the current cycle
     private static ArrayList<String> endpointsCycled = new ArrayList<>();
 
     /**
-     * Associate the cycle with the XML file defining the overview
+     * Associate the cycle with the XML file defining the properties
      *
-     * @param filename name of the XML file defining the overview
+     * @param filename name of the XML file defining the properties
      */
     public XMLBasedCycle (String filename){
 
-        // create an overview marshalling object
+        // create an properties marshalling object
         xmlOverview = new XMLOverview(filename);
 
-        overview = xmlOverview.getOverview();
+        properties = xmlOverview.getOverview();
     }
 
     @Override
@@ -121,16 +120,38 @@ public class XMLBasedCycle implements Cycle {
         return null;
     }
 
-    // kj: implement the interface
-
     @Override
     public boolean doHarvest(Endpoint endpoint) {
 
         // decide whether or not the endpoint should be harvested
 
-        if (overview.getHarvestFromDate().toString().equals("")) {
-            // this is an example
-        } else {
+        switch (properties.getHarvestMode()){
+
+            case normal:
+                if (endpoint.blocked()){
+                    return false;
+                } else {
+                    return true;
+                }
+
+            case retry:
+                DateTime attempted, harvested;
+
+                attempted = endpoint.getAttemptedDate();
+                harvested = endpoint.getHarvestedDate();
+
+                if (attempted.equals(harvested)) {
+                    return false;
+                } else {
+                    return true;
+                }
+
+            case refresh:
+                if (endpoint.blocked()){
+                    return false;
+                } else {
+                    return true;
+                }
         }
 
         return false;
@@ -141,10 +162,34 @@ public class XMLBasedCycle implements Cycle {
 
         Endpoint endpoint = null;
 
+        // kj: implement the interface from here
+
         // find the endpoint
 
         // invoke the doHarvest method, now send it the endpoint
         return doHarvest(endpoint);
+    }
+
+    @Override
+    public DateTime getRequestDate(Endpoint endpoint) {
+
+        // if incremental harvesting, compare cycle and endpoint property
+
+        if (endpoint.allowIncrementalHarvest()){
+
+            DateTime cycleDate = properties.getHarvestFromDate();
+            DateTime endpointDate = endpoint.getHarvestedDate();
+
+            if (endpointDate.isBefore(cycleDate)){
+                return (cycleDate);
+            } else {
+                return (new DateTime());
+            }
+        } else {
+            // use today
+            DateTime today = new DateTime (new Date());
+            return today;
+        }
     }
 
     @Override

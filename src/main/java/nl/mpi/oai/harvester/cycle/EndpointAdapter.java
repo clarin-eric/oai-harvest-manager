@@ -21,6 +21,7 @@ package nl.mpi.oai.harvester.cycle;
 import nl.mpi.oai.harvester.generated.EndpointType;
 import nl.mpi.oai.harvester.generated.OverviewType;
 import nl.mpi.oai.harvester.generated.ScenarioType;
+import org.joda.time.DateTime;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
@@ -30,9 +31,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * <br> Access to endpoint attributes <br><br>
+ * <br> Access to endpoint properties <br><br>
  *
- * An endpoint adapter is an object providing access to endpoint attributes
+ * An endpoint adapter is an object providing access to endpoint properties
  * stored as XML elements. To access a desired attribute, invoke the designated
  * method on the adapter object. <br><br>
  *
@@ -209,7 +210,7 @@ class EndpointAdapter implements Endpoint {
     }
 
     @Override
-    public Overview.Scenario getScenario() {
+    public Properties.Scenario getScenario() {
 
         // try to get attribute
         ScenarioType scenarioType = endpointType.getScenario();
@@ -217,30 +218,45 @@ class EndpointAdapter implements Endpoint {
         if (scenarioType == null) {
             // attribute not XML cycle element, add it to it
             endpointType.setScenario(ScenarioType.LIST_RECORDS);
-            return Overview.Scenario.ListRecords;
+            return Properties.Scenario.ListRecords;
         } else {
             switch (scenarioType) {
                 case LIST_PREFIXES:
-                    return Overview.Scenario.ListPrefixes;
+                    return Properties.Scenario.ListPrefixes;
                 case LIST_IDENTIFIERS:
-                    return Overview.Scenario.ListIdentifiers;
+                    return Properties.Scenario.ListIdentifiers;
                 default:
-                    return Overview.Scenario.ListRecords;
+                    return Properties.Scenario.ListRecords;
             }
         }
     }
 
     @Override
-    public String getRecentHarvestDate() {
+    public DateTime getAttemptedDate() {
+
+        XMLGregorianCalendar XMLDate;
+        XMLDate = endpointType.getAttempted();
+
+        if (XMLDate == null){
+            // kj: check what returning DateTime() means
+            return new DateTime();
+        } else {
+            // convert XMLGregorianCalendar
+            return new DateTime(XMLDate);
+        }
+    }
+
+    @Override
+    public DateTime getHarvestedDate() {
 
         XMLGregorianCalendar XMLDate;
         XMLDate = endpointType.getHarvested();
 
         if (XMLDate == null){
-            return "";
+            return new DateTime();
         } else {
             // convert XMLGregorianCalendar to string
-            return XMLDate.toString();
+            return new DateTime(XMLDate);
         }
     }
 

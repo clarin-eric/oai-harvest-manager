@@ -32,7 +32,7 @@ import java.io.File;
  *
  * Read and write an overview to and from an XML file by using the adapters
  * defined in the package. The methods in this class communicate the general
- * cycle and endpoint attributes through the overview and endpoint interfaces.
+ * cycle and endpoint properties through the overview and endpoint interfaces.
  *
  * After the XML file is read by the constructor, the getOverview and
  * getEndpoint methods can be invoked. When a client modifies an overview or
@@ -93,11 +93,11 @@ public final class XMLOverview {
      *
      * Note:
      *
-     * @return cycle attributes
+     * @return cycle properties
      */
-    public Overview getOverview() {
+    public Properties getOverview() {
 
-        return new OverviewAdapter(this);
+        return new PropertiesAdapter(this);
     }
 
     /**
@@ -105,13 +105,13 @@ public final class XMLOverview {
      *
      * This method returns the adapter object for the endpoint indicated. <br><br>
      *
-     * Note: the adapter only makes available the attributes for the endpoint
-     * indicated. Other endpoints or general attributes defined in the overview
+     * Note: the adapter only makes available the properties for the endpoint
+     * indicated. Other endpoints or general properties defined in the overview
      * are outside the scope of the adapter.
      *
      * @param endpointURI the URI of the endpoint requested
      * @param group       the group the endpoint belongs to
-     * @return            endpoint attributes
+     * @return            endpoint properties
      */
     public Endpoint getEndpoint(String endpointURI, String group) {
 
@@ -133,12 +133,12 @@ public final class XMLOverview {
      *
      * This method returns the adapter object for the endpoint indicated. <br><br>
      *
-     * Note: the adapter only makes available the attributes for the endpoint
-     * indicated. Other endpoints or general attributes defined in the overview
+     * Note: the adapter only makes available the properties for the endpoint
+     * indicated. Other endpoints or general properties defined in the overview
      * are outside the scope of the adapter.
      *
      * @param endpointType the endpoint indicated
-     * @return endpoint attributes
+     * @return endpoint properties
      */
     Endpoint getEndpoint (EndpointType endpointType){
 

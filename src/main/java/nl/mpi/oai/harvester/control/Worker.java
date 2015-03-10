@@ -24,9 +24,6 @@ import java.util.concurrent.Semaphore;
 
 import nl.mpi.oai.harvester.StaticProvider;
 import nl.mpi.oai.harvester.action.ActionSequence;
-import nl.mpi.oai.harvester.cycle.Cycle;
-import nl.mpi.oai.harvester.cycle.CycleFactory;
-import nl.mpi.oai.harvester.cycle.OverviewAdapter;
 import nl.mpi.oai.harvester.harvesting.*;
 import nl.mpi.oai.harvester.metadata.Metadata;
 import nl.mpi.oai.harvester.Provider;

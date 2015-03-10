@@ -18,6 +18,8 @@
 
 package nl.mpi.oai.harvester.cycle;
 
+import org.joda.time.DateTime;
+
 /**
  * <br> Iterate over endpoints <br><br>
  *
@@ -26,14 +28,14 @@ package nl.mpi.oai.harvester.cycle;
  * present in the overview, or it can ask for a specific endpoint by supplying
  * its URI. <br><br>
  *
- * By interpreting the attributes recorded in the overview, the client can
+ * By interpreting the properties recorded in the overview, the client can
  * decide if it needs to harvest the endpoint, and also, which method of
  * harvesting it should apply. <br><br>
  *
  * Note: whenever the client changes an attribute, the change will be reflected
  * back to the XML file. The adapter will perform this task. <br><br>
  *
- * Note: the interface does not make available general cycle attributes. To
+ * Note: the interface does not make available general cycle properties. To
  * determine whether or not to harvest an endpoint, the cycle should invoke
  * the doHarvest methods.
  *
@@ -71,8 +73,8 @@ public interface Cycle {
      * <br> Check if the endpoint should be harvested <br><br>
      *
      * When it decides whether or not the endpoint given should be harvested,
-     * the method will consider both the general cycle attributes as well as
-     * and endpoint attributes. <br><br>
+     * the method will consider both the general cycle properties as well as
+     * the endpoint properties. <br><br>
      *
      * If the cycle is in normal mode, the method will allow the client to
      * harvest the endpoint if endpoint's block attribute equals false. It will
@@ -104,6 +106,13 @@ public interface Cycle {
      * @return true if and only if the endpoint should be harvested
      */
     public boolean doHarvest (String URI);
+
+    /**
+     * <br> Get the date needed when issuing the OAI request <br><br>
+     *
+     * kj: complete specification
+     */
+    public DateTime getRequestDate (Endpoint endPoint);
 
     /**
      * <br> Indicate whether all the endpoints in the overview were returned for

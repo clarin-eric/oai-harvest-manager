@@ -18,14 +18,16 @@
 
 package nl.mpi.oai.harvester.cycle;
 
+import org.joda.time.DateTime;
+
 /**
- * <br> Access to general harvest cycle attributes <br><br>
+ * <br> Access to general harvest cycle properties <br><br>
  *
  * A harvest cycle visits OAI endpoints with the intention to obtain metadata
- * records. The cycle can query the general and endpoint attributes recorded in
- * the overview in order to decide whether or not to harvest.
+ * records. The cycle can query the general and endpoint properties recorded in
+ * the properties in order to decide whether or not to harvest.
  *
- * The cycle can also query the attributes when it needs to build the list of
+ * The cycle can also query the properties when it needs to build the list of
  * parameters in an OAI request to the endpoint. It can, for example, use the
  * harvested attribute to specify a date for selective harvesting <br><br>
  *
@@ -46,17 +48,17 @@ package nl.mpi.oai.harvester.cycle;
  * </td>
  * </table>
  *
- * These are the elements conveyed through the Overview interface. The elements
+ * These are the elements conveyed through the Properties interface. The elements
  * listed are optional, the methods use default values, and reflect these
  * through the interface.
  *
- * While the interface specifies methods for getting the attributes, it does
- * not specify methods for setting them. The general cycle attributes fall
+ * While the interface specifies methods for getting the properties, it does
+ * not specify methods for setting them. The general cycle properties fall
  * outside the governance of the harvesting cycle. This means that a class that
  * implements the interface can leave room for manual specification.
  *
  * Note: the interface has package private access. This means that classes
- * outside the package cannot declare objects of the Overview type. Because
+ * outside the package cannot declare objects of the Properties type. Because
  * other classes in the package could implement the class publicly, the access
  * to the methods specified in the interface is implicitly public.
  *
@@ -64,7 +66,7 @@ package nl.mpi.oai.harvester.cycle;
  *
  * @author Kees Jan van de Looij (MPI-PL)
  */
-interface Overview {
+interface Properties {
 
     /**
      * Mode of harvesting
@@ -83,7 +85,7 @@ interface Overview {
         /**
          * In this mode the cycle will try to harvest those endpoints that gave
          * rise to errors once again. If the date of the most recent completed
-         * attempt differs from the date of the most recent attempt, the cycle
+         * attempt differs from the of the most recent attempt, the cycle
          * assumes that harvesting the endpoint was not successful.
          */
         retry, 
@@ -151,7 +153,7 @@ interface Overview {
      *
      * @return the date
      */
-    abstract String getHarvestFromDate();
+    abstract DateTime getHarvestFromDate();
 
     /**
      * <br> Get the harvesting scenario <br><br>

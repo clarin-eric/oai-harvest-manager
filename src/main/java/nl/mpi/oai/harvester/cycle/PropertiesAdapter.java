@@ -22,13 +22,14 @@ package nl.mpi.oai.harvester.cycle;
 import nl.mpi.oai.harvester.generated.ModeType;
 import nl.mpi.oai.harvester.generated.OverviewType;
 import nl.mpi.oai.harvester.generated.ScenarioType;
+import org.joda.time.DateTime;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
 /**
- * <br> Access to general harvest cycle attributes stored as XML elements <br><br>
+ * <br> Access to general harvest cycle properties stored as XML elements <br><br>
  *
  * A CycleAdaptor object associates itself with a CycleType object that was
  * created by the JAXB factory. When an adapter method needs to access a cycle
@@ -40,7 +41,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
  *
  * @author Kees Jan van de Looij (MPI-PL)
  */
-public class OverviewAdapter implements Overview {
+public class PropertiesAdapter implements Properties {
 
     // the JAXB created object representing elements from the XML file
     private final OverviewType overviewType;
@@ -50,7 +51,7 @@ public class OverviewAdapter implements Overview {
      *
      * @param xmlOverview overview marshalling object
      */
-    public OverviewAdapter(XMLOverview xmlOverview) {
+    public PropertiesAdapter(XMLOverview xmlOverview) {
 
         this.overviewType = xmlOverview.overviewType;
     }
@@ -102,7 +103,7 @@ public class OverviewAdapter implements Overview {
      * @return the date
      */
     @Override
-    public String getHarvestFromDate() {
+    public DateTime getHarvestFromDate() {
 
         // convert XMLGregorianCalendar to string
 
@@ -122,9 +123,9 @@ public class OverviewAdapter implements Overview {
                 e.printStackTrace();
             }
 
-            return "1970-01-01";
+            return new DateTime(1970, 1, 1, 0, 0);
         } else {
-            return XMLDate.toString();
+            return new DateTime (XMLDate);
         }
     }
 

@@ -18,10 +18,12 @@
 
 package nl.mpi.oai.harvester.cycle;
 
+import org.joda.time.DateTime;
+
 /**
- * <br> Access to endpoint attributes <br><br>
+ * <br> Access to endpoint properties <br><br>
  *
- * Apart from initialising them to a default value, the following attributes
+ * Apart from initialising them to a default value, the following properties
  * fall outside the governance of the harvest cycle. This leaves room for manual
  * intervention. Setting the block attribute to true, for example, will prevent
  * the cycle from harvesting an endpoint that causes trouble. <br><br>
@@ -63,10 +65,10 @@ package nl.mpi.oai.harvester.cycle;
  * provides a large number of records. <br><br>
  *
  * Note: the doneHarvesting method sets both the attempted and harvested
- * attributes. These attributes do not have a method that sets their value
+ * properties. These properties do not have a method that sets their value
  * individually. <br><br>
  *
- * A class implementing the interface should initialise the attributes. This
+ * A class implementing the interface should initialise the properties. This
  * means that every individual method should, once it needs get the value of
  * an attribute that has not been defined, provide the default listed in the
  * table above. By doing this, it defines the attribute, and because of this,
@@ -170,7 +172,13 @@ public interface Endpoint {
      *
      * @return the scenario
      */
-    public abstract Overview.Scenario getScenario ();
+    public abstract Properties.Scenario getScenario ();
+
+    /**
+     * kj: specify
+     * @return
+     */
+    public abstract DateTime getAttemptedDate();
 
     /**
      * <br> Return the date to base a selective harvest attempt on <br><br>
@@ -188,7 +196,7 @@ public interface Endpoint {
      *
      * @return the empty string if not recorded, otherwise the date
      */
-    public abstract String getRecentHarvestDate();
+    public abstract DateTime getHarvestedDate();
 
     /**
      * <br> Indicate success or failure <br><br>
