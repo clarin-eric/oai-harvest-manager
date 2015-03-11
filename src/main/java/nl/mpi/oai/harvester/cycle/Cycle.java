@@ -125,25 +125,12 @@ public interface Cycle {
     public DateTime getRequestDate (Endpoint endPoint);
 
     /**
-     * <br> Indicate whether all the endpoints in the overview were returned for
-     * harvesting <br><br>
-     *
-     * In deciding whether or not the end of the cycle has been reached, the
-     * method considers the endpoints stored in the overview. It cannot know
-     * about endpoints the client would present the cycle with by passing an
-     * identification to the next method.
-     *
-     * @return true if the end of the cycle has been reached, false otherwise
-     */
-    public boolean doneHarvesting ();
-
-    /**
      * <br> Retry the endpoints that gave rise to errors <br><br>
      *
      * When a client invokes the retry method on the cycle object, it restarts
      * the harvest cycle. The cycle will, from that moment on, only consider
      * endpoints that gave rise to errors. It will only consider an endpoint
-     * which harvested and attempted attributes differ.
+     * which harvested and attempted properties differ.
      */
     public void retry ();
 }

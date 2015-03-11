@@ -73,11 +73,24 @@ public class XMLBasedCycle implements Cycle {
     /**
      * <br> Get the next residual endpoint in the cycle <br><br>
      *
+     * As long as an endpoint recorded in the overview has not been returned
+     * to the client by the next method that accepts an externally supplied URI
+     * and group, consider it 'residual'. This method will return the residual
+     * endpoints. <br><br>
+     *
+     * Note: only consider a cycle 'finished' if there are no residual
+     * endpoints. <br><br>
+     *
      * Since the cycle supports parallel endpoint harvesting, by adding
      * endpoint URIs to a list, this method checks if a particular endpoint not
      * yet marked as having been attempted, is currently being attempted. In
      * the method ensures that every endpoint is returned to the client at most
-     * once.
+     * once. <br><br>
+     *
+     * In deciding whether or not the end of the cycle has been reached, the
+     * method considers the endpoints stored in the overview. It cannot know
+     * about endpoints the client would present the cycle with by passing an
+     * identification to the next method. <br><br>
      *
      * @return the next endpoint elligable for harvesting, null if all
      *         endpoints have been cycled over.
@@ -264,11 +277,6 @@ public class XMLBasedCycle implements Cycle {
     }
 
     // kj: implement the interface from here
-
-    @Override
-    public synchronized boolean doneHarvesting() {
-        return false;
-    }
 
     @Override
     public void retry() {
