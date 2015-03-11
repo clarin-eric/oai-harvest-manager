@@ -110,19 +110,17 @@ public interface Cycle {
     /**
      * <br> Get the date needed when issuing the OAI request <br><br>
      *
-     * kj: complete specification
+     * The date returned depends both on the mode of the cycle as well as on
+     * the properties of the endpoint.
      *
-     * Here, the incremental property needs to be considered. For example, in
-     * the case of a refresh, the refresh date is of importance if and only if
-     * an incremental harvest is allowed. If not, the endpoint needs to be
-     * harvested all over again.
+     * In normal mode, it will return the date for harvesting, provided the
+     * endpoint has not been blocked. In retry mode, it will return the date,
+     * only if the endpoint allows a retry. In refresh mode, the method will
+     * always return the epoch date.
      *
-     * Note: still consider combining this method with the doHarvest methods
-     * already define.
-     *
-     * Note: before issuing a request, the cycle should first find out if it
-     * should harvest the endpoint. After that, it can determine the date it
-     * should use for building the request.
+     * Note: before issuing an OAI request, the cycle should first find out if
+     * it should harvest the endpoint or not. After that, it can determine the
+     * date it should use for building the request.
      */
     public DateTime getRequestDate (Endpoint endPoint);
 

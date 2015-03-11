@@ -195,27 +195,34 @@ public interface Endpoint {
     public abstract CycleProperties.Scenario getScenario ();
 
     /**
-     * kj: specify
+     * <br> Return the date of the most recent harvest attempt <br><br>
      *
-     * @return the date or null
+     * By remembering the date on which the cycle most recently attempted to
+     * harvest an endpoint, it can, by comparing this date to the date on which
+     * it successfully harvested the endpoint, if it needs to retry by issuing
+     * the very same OAI request once again.
+     *
+     * Note: the harvest cycle will implicitly set the date by invoking the
+     * doneHarvesting method.
+     *
+     * @return epoch date if the overview does not contain the date, otherwise
+     * the date of the most recent harvest attempt
      */
     public abstract DateTime getAttemptedDate();
 
     /**
-     * <br> Return the date to base a selective harvest attempt on <br><br>
+     * <br> Return the date of the most recent successful harvest attempt <br><br>
      *
-     * After each successful harvest of an endpoint, the cycle will record the
-     * date at the time of the harvest attempt in the overview. A subsequent
-     * cycle can use this date in the parameters supplied in a selective OAI
-     * harvest request.
+     * After successfully harvesting an endpoint, the cycle should remember the
+     * date. A subsequent cycle can use this date in the parameters supplied in
+     * a selective OAI harvest request. This method returns it, so the cycle
+     * can use it to create a selective harvest request.
      *
-     * Note: the method will supply the date in YYYY-MM-DD format, the format
-     * supported by the OAI protocol.
+     * Note: like in the case of the attempted date, the cycle will implicitly
+     * set the date by invoking the doneHarvesting method.
      *
-     * Note: a harvesting cycle will implicitly set the date by invoking the
-     * doneHarvesting method.
-     *
-     * @return the empty string if not recorded, otherwise the date
+     * @return epoch date if the overview does not contain the date, otherwise
+     * the date of the most recent successful harvest attempt
      */
     public abstract DateTime getHarvestedDate();
 

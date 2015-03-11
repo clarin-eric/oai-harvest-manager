@@ -210,12 +210,12 @@ public class XMLBasedCycle implements Cycle {
                     /* Since the cycle should not harvest the endpoint, it
                        does not need a date.
                      */
-                    return new DateTime ();
+                    return new DateTime(0);
                 } else {
                     // consider a selective harvest
                     if (! endpoint.allowIncrementalHarvest()){
                         // again, the cycle does not need a date
-                        return new DateTime ();
+                        return new DateTime(0);
                     } else {
                         /* The cycle should use the date of the most recent
                            successful attempt
@@ -229,7 +229,7 @@ public class XMLBasedCycle implements Cycle {
 
                 if (! endpoint.retry()){
                     // the cycle should not retry, so it does not need a date
-                    return new DateTime ();
+                    return new DateTime(0);
                 } else {
                     attempted = endpoint.getAttemptedDate();
                     harvested = endpoint.getHarvestedDate();
@@ -239,7 +239,7 @@ public class XMLBasedCycle implements Cycle {
                            the endpoint. Therefore, there is no need for it to
                            retry.
                          */
-                        return new DateTime ();
+                        return new DateTime(0);
                     } else {
                         /* After the most recent success, the cycle attempted
                            to harvest the endpoint but did not succeed. It can
@@ -255,7 +255,7 @@ public class XMLBasedCycle implements Cycle {
                    it, the cycle can do without a date. Return the epoch date.
                  */
 
-                return new DateTime();
+                return new DateTime(0);
 
             default:
                 // all the members of the mode should be covered
