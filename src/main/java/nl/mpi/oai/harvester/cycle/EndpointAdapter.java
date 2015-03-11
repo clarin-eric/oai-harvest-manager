@@ -210,7 +210,22 @@ class EndpointAdapter implements Endpoint {
     }
 
     @Override
-    public Properties.Scenario getScenario() {
+    public boolean allowRefresh() {
+
+        // try to get attribute, use boolean reference type to check for null
+        Boolean allow = endpointType.isRefresh();
+
+        if (allow == null){
+            // attribute not XML cycle element, add it to it
+            endpointType.setRefresh(false);
+            return false;
+        } else {
+            return allow;
+        }
+    }
+
+    @Override
+    public CycleProperties.Scenario getScenario() {
 
         // try to get attribute
         ScenarioType scenarioType = endpointType.getScenario();
@@ -218,15 +233,15 @@ class EndpointAdapter implements Endpoint {
         if (scenarioType == null) {
             // attribute not XML cycle element, add it to it
             endpointType.setScenario(ScenarioType.LIST_RECORDS);
-            return Properties.Scenario.ListRecords;
+            return CycleProperties.Scenario.ListRecords;
         } else {
             switch (scenarioType) {
                 case LIST_PREFIXES:
-                    return Properties.Scenario.ListPrefixes;
+                    return CycleProperties.Scenario.ListPrefixes;
                 case LIST_IDENTIFIERS:
-                    return Properties.Scenario.ListIdentifiers;
+                    return CycleProperties.Scenario.ListIdentifiers;
                 default:
-                    return Properties.Scenario.ListRecords;
+                    return CycleProperties.Scenario.ListRecords;
             }
         }
     }
@@ -238,8 +253,10 @@ class EndpointAdapter implements Endpoint {
         XMLDate = endpointType.getAttempted();
 
         if (XMLDate == null){
-            // kj: check what returning DateTime() means
-            return new DateTime();
+            /* Since there is no default value for this property, there is no
+               need to set the date in the overview now. Return the epoch date.
+             */
+            return new DateTime(0);
         } else {
             // convert XMLGregorianCalendar
             return new DateTime(XMLDate);
@@ -253,7 +270,10 @@ class EndpointAdapter implements Endpoint {
         XMLDate = endpointType.getHarvested();
 
         if (XMLDate == null){
-            return new DateTime();
+            /* Since there is no default value for this property, there is no
+               need to set the date in the overview now. Return the epoch date.
+             */
+            return new DateTime(0);
         } else {
             // convert XMLGregorianCalendar to string
             return new DateTime(XMLDate);
@@ -263,24 +283,27 @@ class EndpointAdapter implements Endpoint {
     @Override
     public void doneHarvesting(Boolean done) {
 
-        // get the current date
-        XMLGregorianCalendar XMLDate;
+        /* Store the current date in a XMLGregorianCalendar object. Note: at
+           the XML level, the date will be represented in ISO8601 format.
+         */
+        XMLGregorianCalendar xmlGregorianCalendar;
 
         try {
-            XMLDate = DatatypeFactory.newInstance().newXMLGregorianCalendar();
+            xmlGregorianCalendar =
+                    DatatypeFactory.newInstance().newXMLGregorianCalendar();
 
             Calendar c = Calendar.getInstance();
             c.getTime();
-            XMLDate.setDay(c.get(Calendar.DAY_OF_MONTH));
-            XMLDate.setMonth(c.get(Calendar.MONTH) + 1);
-            XMLDate.setYear(c.get(Calendar.YEAR));
+            xmlGregorianCalendar.setDay(c.get(Calendar.DAY_OF_MONTH));
+            xmlGregorianCalendar.setMonth(c.get(Calendar.MONTH) + 1);
+            xmlGregorianCalendar.setYear(c.get(Calendar.YEAR));
 
-            // initialise the attribute representing the date of the attempt
-            endpointType.setAttempted(XMLDate);
+            // set the property representing the date of the attempt
+            endpointType.setAttempted(xmlGregorianCalendar);
 
             if (done) {
                 // successful attempt, also set attribute representing this
-                endpointType.setHarvested(XMLDate);
+                endpointType.setHarvested(xmlGregorianCalendar);
             }
 
             xmlOverview.save();

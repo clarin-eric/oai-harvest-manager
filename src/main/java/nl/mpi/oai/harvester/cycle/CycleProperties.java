@@ -48,25 +48,23 @@ import org.joda.time.DateTime;
  * </td>
  * </table>
  *
- * These are the elements conveyed through the Properties interface. The elements
- * listed are optional, the methods use default values, and reflect these
- * through the interface.
+ * These are the elements conveyed through the CycleProperties interface. The
+ * elements listed are optional, the methods use default values, and reflect
+ * these through the interface.
  *
  * While the interface specifies methods for getting the properties, it does
  * not specify methods for setting them. The general cycle properties fall
  * outside the governance of the harvesting cycle. This means that a class that
  * implements the interface can leave room for manual specification.
  *
- * Note: the interface has package private access. This means that classes
- * outside the package cannot declare objects of the Properties type. Because
- * other classes in the package could implement the class publicly, the access
- * to the methods specified in the interface is implicitly public.
- *
- *
+ * Note: the interface is attributed package private access. This means that
+ * classes outside the package cannot declare objects of the CycleProperties
+ * type. Since other classes in the package could implement the class publicly,
+ * the access to the methods specified in the interface is implicitly public.
  *
  * @author Kees Jan van de Looij (MPI-PL)
  */
-interface Properties {
+interface CycleProperties {
 
     /**
      * Mode of harvesting
@@ -93,7 +91,7 @@ interface Properties {
         /**
          * When refreshing, the cycle will harvest records that were added to
          * the endpoint after a specific date. The cycle will use the general
-         * date attribute returned by the getHarvestFromDate method when it
+         * date property returned by the getHarvestFromDate method when it
          * constructs a harvesting request. If the endpoint is not blocked, the
          * cycle will try to harvest it selectively, taking the date specified
          * into account.
@@ -143,17 +141,6 @@ interface Properties {
      * @return the harvesting mode
      */
     abstract Mode getHarvestMode();
-
-    /**
-     * <br> Returns the date to use when refreshing <br<br>
-     * 
-     * Only records added to the endpoint after this data will be harvested. By
-     * returning the epoch zero date the method indicated that there was no
-     * previous harvesting attempt.
-     *
-     * @return the date
-     */
-    abstract DateTime getHarvestFromDate();
 
     /**
      * <br> Get the harvesting scenario <br><br>

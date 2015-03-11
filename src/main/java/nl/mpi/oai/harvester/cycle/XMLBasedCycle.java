@@ -28,7 +28,7 @@ import java.util.Date;
  * <br> Implement Cycle based on XML properties <br><br>
  *
  * note: use the methods in the XMLOverview class, receive objects through the
- * Properties and Endpoint interface
+ * CycleProperties and Endpoint interface
  *
  * note: this class relies on JAXB generated types.
  *
@@ -40,22 +40,22 @@ public class XMLBasedCycle implements Cycle {
     private final XMLOverview xmlOverview;
 
     // the general properties defined by the XML file
-    private final Properties properties;
+    private final CycleProperties cycleProperties;
 
     // the endpoint URIs returned to the client in the current cycle
     private static ArrayList<String> endpointsCycled = new ArrayList<>();
 
     /**
-     * Associate the cycle with the XML file defining the properties
+     * Associate the cycle with the XML file defining the cycleProperties
      *
-     * @param filename name of the XML file defining the properties
+     * @param filename name of the XML file defining the cycleProperties
      */
     public XMLBasedCycle (String filename){
 
-        // create an properties marshalling object
+        // create an cycleProperties marshalling object
         xmlOverview = new XMLOverview(filename);
 
-        properties = xmlOverview.getOverview();
+        cycleProperties = xmlOverview.getOverview();
     }
 
     @Override
@@ -125,10 +125,11 @@ public class XMLBasedCycle implements Cycle {
 
         // decide whether or not the endpoint should be harvested
 
-        switch (properties.getHarvestMode()){
+        switch (cycleProperties.getHarvestMode()){
 
             case normal:
                 if (endpoint.blocked()){
+                    // endpoint has been (temporarily) removed from the cycle
                     return false;
                 } else {
                     return true;
@@ -137,17 +138,31 @@ public class XMLBasedCycle implements Cycle {
             case retry:
                 DateTime attempted, harvested;
 
-                attempted = endpoint.getAttemptedDate();
-                harvested = endpoint.getHarvestedDate();
-
-                if (attempted.equals(harvested)) {
+                if (! endpoint.retry()){
+                    // endpoint should not be retried
                     return false;
                 } else {
-                    return true;
+                    attempted = endpoint.getAttemptedDate();
+                    harvested = endpoint.getHarvestedDate();
+
+                    if (attempted.equals(harvested)) {
+                        /* At some point in time the cycle tried and harvested
+                           the endpoint. Therefore, there is no need for it to
+                           retry.
+                         */
+                        return false;
+                    } else {
+                        /* After the most recent success, the cycle attempted
+                           to harvest the endpoint but did not succeed. It can
+                           therefore retry.
+                         */
+                        return true;
+                    }
                 }
 
             case refresh:
                 if (endpoint.blocked()){
+                    // at the moment, the cycle cannot harvest the endpoint
                     return false;
                 } else {
                     return true;
@@ -160,37 +175,95 @@ public class XMLBasedCycle implements Cycle {
     @Override
     public boolean doHarvest(String URI) {
 
-        Endpoint endpoint = null;
+        int endpointCount = xmlOverview.overviewType.getEndpoint().size();
 
-        // kj: implement the interface from here
+        // find an endpoint
+        for (int i = 0; i < endpointCount; i++) {
 
-        // find the endpoint
+            EndpointType endpointType =
+                    xmlOverview.overviewType.getEndpoint().get(i);
 
-        // invoke the doHarvest method, now send it the endpoint
-        return doHarvest(endpoint);
+            if (endpointType.getURI().equals(URI)) {
+                /* Found the endpoint, use adapter to return the endpoint that
+                   corresponds to endpointType.
+                 */
+
+                return doHarvest(xmlOverview.getEndpoint(endpointType));
+            }
+        }
+
+        /* The URI does not match the URI of any of the endpoints in the
+           overview
+         */
+        return false;
     }
 
     @Override
     public DateTime getRequestDate(Endpoint endpoint) {
 
-        // if incremental harvesting, compare cycle and endpoint property
+        // decide on a date the cycle can use when issuing an OAI request
 
-        if (endpoint.allowIncrementalHarvest()){
+        switch (cycleProperties.getHarvestMode()){
 
-            DateTime cycleDate = properties.getHarvestFromDate();
-            DateTime endpointDate = endpoint.getHarvestedDate();
+            case normal:
+                if (endpoint.blocked()){
+                    /* Since the cycle should not harvest the endpoint, it
+                       does not need a date.
+                     */
+                    return new DateTime ();
+                } else {
+                    // consider a selective harvest
+                    if (! endpoint.allowIncrementalHarvest()){
+                        // again, the cycle does not need a date
+                        return new DateTime ();
+                    } else {
+                        /* The cycle should use the date of the most recent
+                           successful attempt
+                         */
+                        return new DateTime(endpoint.getHarvestedDate());
+                    }
+                }
 
-            if (endpointDate.isBefore(cycleDate)){
-                return (cycleDate);
-            } else {
-                return (new DateTime());
-            }
-        } else {
-            // use today
-            DateTime today = new DateTime (new Date());
-            return today;
+            case retry:
+                DateTime attempted, harvested;
+
+                if (! endpoint.retry()){
+                    // the cycle should not retry, so it does not need a date
+                    return new DateTime ();
+                } else {
+                    attempted = endpoint.getAttemptedDate();
+                    harvested = endpoint.getHarvestedDate();
+
+                    if (attempted.equals(harvested)) {
+                        /* At some point in time the cycle tried and harvested
+                           the endpoint. Therefore, there is no need for it to
+                           retry.
+                         */
+                        return new DateTime ();
+                    } else {
+                        /* After the most recent success, the cycle attempted
+                           to harvest the endpoint but did not succeed. It can
+                           therefore retry.
+                         */
+                        return new DateTime (endpoint.getAttemptedDate());
+                    }
+                }
+
+            case refresh:
+
+                /* No matter what the state of the endpoint is, for refreshing
+                   it, the cycle can do without a date. Return the epoch date.
+                 */
+
+                return new DateTime();
+
+            default:
+                // all the members of the mode should be covered
+                throw new Exception();
         }
     }
+
+    // kj: implement the interface from here
 
     @Override
     public synchronized boolean doneHarvesting() {

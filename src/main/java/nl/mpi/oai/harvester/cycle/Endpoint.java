@@ -34,12 +34,14 @@ import org.joda.time.DateTime;
  * group       <br>
  * block       <br>
  * retry       <br>
+ * refresh     <br>
  * incremental <br>
  * scenario    <br>
  * </td>
  * <td>
  * cycle needs to supply it  <br>
  * cycle needs to supply it  <br>
+ * defaults to false         <br>
  * defaults to false         <br>
  * defaults to false         <br>
  * defaults to false         <br>
@@ -70,8 +72,8 @@ import org.joda.time.DateTime;
  *
  * A class implementing the interface should initialise the properties. This
  * means that every individual method should, once it needs get the value of
- * an attribute that has not been defined, provide the default listed in the
- * table above. By doing this, it defines the attribute, and because of this,
+ * a property that has not been defined, provide the default listed in the
+ * table above. By doing this, it defines the property, and because of this,
  * it should record the value for later reference. <br><br>
  *
  * A typical implementation of the Endpoint interface would be an adapter class
@@ -145,10 +147,10 @@ public interface Endpoint {
      * <br> Check if the cycle should incrementally harvest the endpoint <br><br>
      *
      * On harvesting the endpoint, if the cycle is allowed to incrementally
-     * harvest the endpoint, it will use the 'harvested' endpoint attribute to
-     * determine the selective harvest OAI request. It will try to obtain the
-     * records that were added to the endpoint since the most recent successful
-     * attempt.
+     * harvest the endpoint, it will use the 'harvested' endpoint property,
+     * the date of the most recent successful harvest attempt, to determine
+     * the selective harvest OAI request. It will try to obtain the records
+     * that were added since.
      *
      * Note: there is no method for setting the value indicating whether or
      * not incremental harvesting is allowed. The value needs to be specified
@@ -158,6 +160,24 @@ public interface Endpoint {
      * @return true if incremental harvesting is allowed, false otherwise
      */
     public abstract boolean allowIncrementalHarvest ();
+
+    /**
+     * <br> Check if the cycle should refresh the endpoint <br><br>
+     *
+     * Refreshing the endpoint means that the cycle will create a request to
+     * harvest all the records the endpoint provides. A request like this is
+     * required, for example, when due to an error, the set of records can no
+     * longer be considered complete.
+     *
+     * Note: the cycle will only refresh the endpoints records if it is in
+     * refresh mode.
+     *
+     * Note: like in the case of the possibility of incremental harvest, the
+     * cycle does set the property by itself.
+     *
+     * @return true if a refresh is allowed, false otherwise
+     */
+    public abstract boolean allowRefresh ();
 
     /**
      * <br> Get the scenario for harvesting <br><br>
@@ -172,11 +192,12 @@ public interface Endpoint {
      *
      * @return the scenario
      */
-    public abstract Properties.Scenario getScenario ();
+    public abstract CycleProperties.Scenario getScenario ();
 
     /**
      * kj: specify
-     * @return
+     *
+     * @return the date or null
      */
     public abstract DateTime getAttemptedDate();
 

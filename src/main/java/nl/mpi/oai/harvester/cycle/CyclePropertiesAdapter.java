@@ -19,8 +19,8 @@
 
 package nl.mpi.oai.harvester.cycle;
 
-import nl.mpi.oai.harvester.generated.ModeType;
 import nl.mpi.oai.harvester.generated.OverviewType;
+import nl.mpi.oai.harvester.generated.ModeType;
 import nl.mpi.oai.harvester.generated.ScenarioType;
 import org.joda.time.DateTime;
 
@@ -41,7 +41,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
  *
  * @author Kees Jan van de Looij (MPI-PL)
  */
-public class PropertiesAdapter implements Properties {
+public class CyclePropertiesAdapter implements CycleProperties {
 
     // the JAXB created object representing elements from the XML file
     private final OverviewType overviewType;
@@ -51,7 +51,7 @@ public class PropertiesAdapter implements Properties {
      *
      * @param xmlOverview overview marshalling object
      */
-    public PropertiesAdapter(XMLOverview xmlOverview) {
+    public CyclePropertiesAdapter(XMLOverview xmlOverview) {
 
         this.overviewType = xmlOverview.overviewType;
     }
@@ -91,43 +91,6 @@ public class PropertiesAdapter implements Properties {
         return mode;
     }
 
-    /**
-     * <br> Return the date attribute by invoking the appropriate generated
-     * method <br><br>
-     *
-     * The method returns the date in YYYY-MM-DD format, a format the OAI
-     * protocol accepts as a parameter to the verbs that allow for selective
-     * harvesting. As a return value, the epoch zero date indicates that no
-     * attempt to harvest the endpoint has been made.
-     *
-     * @return the date
-     */
-    @Override
-    public DateTime getHarvestFromDate() {
-
-        // convert XMLGregorianCalendar to string
-
-        XMLGregorianCalendar XMLDate;
-        XMLDate = overviewType.getHarvestFromDate();
-
-        if (XMLDate == null){
-            try {
-                XMLDate = DatatypeFactory.newInstance().newXMLGregorianCalendar();
-                XMLDate.setYear(1970);
-                XMLDate.setMonth(1);
-                XMLDate.setDay(1);
-                // provide epoch zero as a default
-                overviewType.setHarvestFromDate(XMLDate);
-
-            } catch (DatatypeConfigurationException e) {
-                e.printStackTrace();
-            }
-
-            return new DateTime(1970, 1, 1, 0, 0);
-        } else {
-            return new DateTime (XMLDate);
-        }
-    }
 
     /**
      * Return the scenario attribute by invoking the appropriate generated

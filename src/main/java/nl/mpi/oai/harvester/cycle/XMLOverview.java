@@ -18,9 +18,9 @@
 
 package nl.mpi.oai.harvester.cycle;
 
+import nl.mpi.oai.harvester.generated.OverviewType;
 import nl.mpi.oai.harvester.generated.EndpointType;
 import nl.mpi.oai.harvester.generated.ObjectFactory;
-import nl.mpi.oai.harvester.generated.OverviewType;
 import nl.mpi.oai.harvester.harvesting.HarvestingException;
 
 import javax.xml.bind.*;
@@ -82,7 +82,7 @@ public final class XMLOverview {
            otherwise it is.
           */
         if (object == null) {
-            throw new HarvestingException();
+            throw new Exception();
         } else {
             overviewType = (OverviewType) object;
         }
@@ -95,9 +95,9 @@ public final class XMLOverview {
      *
      * @return cycle properties
      */
-    public Properties getOverview() {
+    public CycleProperties getOverview() {
 
-        return new PropertiesAdapter(this);
+        return new CyclePropertiesAdapter(this);
     }
 
     /**

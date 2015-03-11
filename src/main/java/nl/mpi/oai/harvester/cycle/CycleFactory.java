@@ -39,5 +39,5 @@ public class CycleFactory {
         Cycle cycle = new XMLBasedCycle(filename);
 
         return cycle;
-    };
+    }
 }

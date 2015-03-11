@@ -14,9 +14,7 @@
  * A copy of the GNU General Public License is included in the file
  * LICENSE-gpl-3.0.txt. If that file is missing, see
  * <http://www.gnu.org/licenses/>.
- */
-
-package nl.mpi.oai.harvester.harvesting;
+ */package nl.mpi.oai.harvester.cycle;
 
 /**
  * <br> Raise a runtime exception because of incorrectly applying the
@@ -24,6 +22,13 @@ package nl.mpi.oai.harvester.harvesting;
  *
  * @author Kees Jan van de Looij (MPI-PL)
  */
-public final class HarvestingException extends RuntimeException {
-
+public class Exception extends RuntimeException{
 }
+
+
+
+
+
+
+
+

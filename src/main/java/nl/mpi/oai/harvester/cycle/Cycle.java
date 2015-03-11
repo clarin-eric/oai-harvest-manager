@@ -111,6 +111,18 @@ public interface Cycle {
      * <br> Get the date needed when issuing the OAI request <br><br>
      *
      * kj: complete specification
+     *
+     * Here, the incremental property needs to be considered. For example, in
+     * the case of a refresh, the refresh date is of importance if and only if
+     * an incremental harvest is allowed. If not, the endpoint needs to be
+     * harvested all over again.
+     *
+     * Note: still consider combining this method with the doHarvest methods
+     * already define.
+     *
+     * Note: before issuing a request, the cycle should first find out if it
+     * should harvest the endpoint. After that, it can determine the date it
+     * should use for building the request.
      */
     public DateTime getRequestDate (Endpoint endPoint);
 
