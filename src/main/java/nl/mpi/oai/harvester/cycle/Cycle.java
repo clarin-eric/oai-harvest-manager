@@ -124,13 +124,4 @@ public interface Cycle {
      */
     public DateTime getRequestDate (Endpoint endPoint);
 
-    /**
-     * <br> Retry the endpoints that gave rise to errors <br><br>
-     *
-     * When a client invokes the retry method on the cycle object, it restarts
-     * the harvest cycle. The cycle will, from that moment on, only consider
-     * endpoints that gave rise to errors. It will only consider an endpoint
-     * which harvested and attempted properties differ.
-     */
-    public void retry ();
 }

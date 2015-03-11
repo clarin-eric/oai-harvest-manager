@@ -275,11 +275,4 @@ public class XMLBasedCycle implements Cycle {
                 throw new Exception();
         }
     }
-
-    // kj: implement the interface from here
-
-    @Override
-    public void retry() {
-
-    }
 }
