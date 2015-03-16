@@ -79,14 +79,9 @@
            the exclusion only applies to the registry element, not to the 
            provider elements 
       -->
-      <exclude url="http://www.meertens.knaw.nl/oai/oai_server.php?verb=Identify"/>
-      <exclude url="http://talkbank.org/cgi-bin/oai/XMLFile/TalkBank/oai.pl?verb=Identify"/>
+      <exclude url="http://www.meertens.knaw.nl/oai/oai_server.php"/>
+      <exclude url="http://oaipmh.huygens.knaw.nl/oai"/>
     </import>
-    <!-- temporary added the CMU endpoints -->
-    <provider url="http://alpha.talkbank.org:8089/talkbank-oai/provider"/>
-    <provider url="http://alpha.talkbank.org:8089/childes-oai/provider"/>
-    <!-- temporary added to overcome a bug in the harvester that only allows one endpoint per center -->
-    <provider url="http://repository.sfb833.uni-tuebingen.de:8080/oaiprovider/?verb=Identify"/>
     <!-- Virtual Collection Registry -->
      <provider url="http://clarin.ids-mannheim.de/vcr/oai?verb=Identify"/> 
     <!--
