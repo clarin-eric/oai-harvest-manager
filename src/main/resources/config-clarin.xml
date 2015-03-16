@@ -72,7 +72,7 @@
   <!-- ### list of providers ### -->
   <providers>
     <import>
-      <registry url="http://centerregistry-clarin.esc.rzg.mpg.de/restxml/"/>
+      <registry url="http://centres.clarin.eu/restxml/"/>
       <!-- Block harvesting from a specific provider defined in the registry 
            element by supplying its endpoint URL as an child element tagged 
            'exclude'. You can add multiple exclude elements. Please note that
