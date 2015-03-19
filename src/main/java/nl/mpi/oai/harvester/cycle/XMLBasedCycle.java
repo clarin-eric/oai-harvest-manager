@@ -25,12 +25,22 @@ import java.util.ArrayList;
 import java.util.Date;
 
 /**
- * <br> Implement Cycle based on XML properties <br><br>
+ * <br> A harvest cycle implementation based on XML properties <br><br>
  *
- * note: use the methods in the XMLOverview class, receive objects through the
- * CycleProperties and Endpoint interface
+ * A client to the cycle package can invoke the methods in this class to cycle
+ * over the endpoints given by an overview. This class implements a cycle based
+ * on endpoints represented in an XML file.
  *
- * note: this class relies on JAXB generated types.
+ * The client will need a CycleFactory object to create an XMLBasedCycle. After
+ * receiving a cycle from it, the client can invoke methods on this object that
+ * return the next endpoint in the cycle.
+ *
+ * The doHarvest methods will inform the client whether it should harvest the
+ * endpoint or not, and also, in case of incremental harvesting, what the date
+ * needed to create an OAI request would be.
+ *
+ * Note: this class relies on JAXB generated types directly. Its methods return
+ * adapters to the endpoint stored in the overview.
  *
  * @author Kees Jan van de Looij (MPI-PL)
  */
@@ -46,16 +56,17 @@ public class XMLBasedCycle implements Cycle {
     private static ArrayList<String> endpointsCycled = new ArrayList<>();
 
     /**
-     * Associate the cycle with the XML file defining the cycleProperties
+     * Associate the cycle with the XML file defining the cycle and endpoint
+     * properties
      *
-     * @param filename name of the XML file defining the cycleProperties
+     * @param filename name of the XML file defining the properties
      */
     public XMLBasedCycle (String filename){
 
         // create an cycleProperties marshalling object
         xmlOverview = new XMLOverview(filename);
 
-        cycleProperties = xmlOverview.getOverview();
+        cycleProperties = xmlOverview.getCycleProperties();
     }
 
     @Override
@@ -102,29 +113,31 @@ public class XMLBasedCycle implements Cycle {
         // find an endpoint not yet returned in this cycle
         for (int i = 0; i < endpointCount; i++) {
 
+            // get the next endpoint in the overview
             EndpointType endpointType =
                     xmlOverview.overviewType.getEndpoint().get(i);
+            // get the endpoint's adapter
+            Endpoint endpoint = xmlOverview.getEndpoint(endpointType);
 
             // get today's date
             Date date = new Date ();
             // prepare it for ISO8601 representation
             DateTime dateTime = new DateTime(date);
 
-            // get the date of the most recent attempt
-            String attemptedDate = endpointType.getAttempted().toString();
+            // get the date the endpoint was attempted
+            DateTime attemptedDate = endpoint.getAttemptedDate();
 
-            if (attemptedDate.equals(dateTime.toString())){
+            // check if the endpoint was attempted today
+            if (attemptedDate.toString().equals(dateTime.toString())) {
                 // endpoint was attempted today, skip it
             } else {
-                if (endpointsCycled.contains(endpointType.getURI())){
+                if (endpointsCycled.contains(endpointType.getURI())) {
                     // endpoint is being attempted, skip it
                 } else {
                     // add the endpoint to the list of endpoints attempted
                     endpointsCycled.add(endpointType.getURI());
-                    /* Return an adapter for the endpoint by supplying the
-                       generated type.
-                     */
-                    return xmlOverview.getEndpoint(endpointType);
+                    // like before, return an adapter
+                    return endpoint;
                 }
             }
         }
@@ -159,17 +172,28 @@ public class XMLBasedCycle implements Cycle {
                     harvested = endpoint.getHarvestedDate();
 
                     if (attempted.equals(harvested)) {
-                        /* At some point in time the cycle tried and harvested
-                           the endpoint. Therefore, there is no need for it to
-                           retry.
-                         */
-                        return false;
+                        // check if anything has happened
+                        if (attempted.equals(new DateTime(0))){
+                            // apparently not, do harvest
+                            return true;
+                        } else {
+                            /* At some point in time the cycle tried and
+                               harvested the endpoint. Therefore, there is no
+                               need for it to retry.
+                             */
+                            return false;
+                        }
                     } else {
-                        /* After the most recent success, the cycle attempted
-                           to harvest the endpoint but did not succeed. It can
-                           therefore retry.
-                         */
-                        return true;
+                        if (attempted.isBefore(harvested)){
+                            // this will not happen normally
+                            return false;
+                        } else {
+                            /* After the most recent success, the cycle
+                               attempted to harvest the endpoint but did not
+                               succeed. It can therefore retry.
+                            */
+                            return true;
+                        }
                     }
                 }
 

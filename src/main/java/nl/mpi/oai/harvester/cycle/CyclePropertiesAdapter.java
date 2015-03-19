@@ -22,11 +22,6 @@ package nl.mpi.oai.harvester.cycle;
 import nl.mpi.oai.harvester.generated.OverviewType;
 import nl.mpi.oai.harvester.generated.ModeType;
 import nl.mpi.oai.harvester.generated.ScenarioType;
-import org.joda.time.DateTime;
-
-import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeFactory;
-import javax.xml.datatype.XMLGregorianCalendar;
 
 /**
  * <br> Access to general harvest cycle properties stored as XML elements <br><br>
@@ -41,7 +36,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
  *
  * @author Kees Jan van de Looij (MPI-PL)
  */
-public class CyclePropertiesAdapter implements CycleProperties {
+class CyclePropertiesAdapter implements CycleProperties {
 
     // the JAXB created object representing elements from the XML file
     private final OverviewType overviewType;

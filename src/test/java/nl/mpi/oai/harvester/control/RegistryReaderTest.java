@@ -16,7 +16,7 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-package nl.mpi.oai.harvester;
+package nl.mpi.oai.harvester.control;
 
 import java.util.List;
 import javax.xml.parsers.DocumentBuilder;

@@ -22,7 +22,7 @@
  *
  * @author Kees Jan van de Looij (MPI-PL)
  */
-public class Exception extends RuntimeException{
+class Exception extends RuntimeException{
 }
 
 

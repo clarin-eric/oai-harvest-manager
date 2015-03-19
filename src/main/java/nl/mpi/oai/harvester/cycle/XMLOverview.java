@@ -21,7 +21,6 @@ package nl.mpi.oai.harvester.cycle;
 import nl.mpi.oai.harvester.generated.OverviewType;
 import nl.mpi.oai.harvester.generated.EndpointType;
 import nl.mpi.oai.harvester.generated.ObjectFactory;
-import nl.mpi.oai.harvester.harvesting.HarvestingException;
 
 import javax.xml.bind.*;
 
@@ -32,19 +31,20 @@ import java.io.File;
  *
  * Read and write an overview to and from an XML file by using the adapters
  * defined in the package. The methods in this class communicate the general
- * cycle and endpoint properties through the overview and endpoint interfaces.
+ * cycle and endpoint properties through the CycleProperties and Endpoint
+ * interfaces.
  *
- * After the XML file is read by the constructor, the getOverview and
- * getEndpoint methods can be invoked. When a client modifies an overview or
- * endpoint object, it needs to write back the overview to the file. It can do
- * so by invoking the finalize method in this class.
+ * After the XML file is read by the constructor, a client obtains properties
+ * through the getCycleProperties and getEndpoint methods. When it modifies
+ * general or endpoint properties, it needs to write back the overview to the
+ * file. The client can do so by invoking the finalize method in this class.
  *
  * Note: this class relies on JAXB to generate the types that reflect the XSD
  * defined overviews.
  *
  * @author Kees Jan van de Looij (MPI-PL)
  */
-public final class XMLOverview {
+final class XMLOverview {
 
     // the file supplied on construction
     private final File file;
@@ -58,8 +58,8 @@ public final class XMLOverview {
     /**
      * <br> Associate the cycle with an XML file <br><br>
      *
-     * This constructor initialises the harvestingType and endpointType objects
-     * wrapped in the cycle class with data from the file.
+     * This constructor initialises the OverviewType object with data from the
+     * file.
      *
      * @param fileName name of the file
      */
@@ -77,7 +77,7 @@ public final class XMLOverview {
         // get the XML from this file
         Object object = JAXB.unmarshal(file, OverviewType.class);
 
-        /* Check if the object is in the CycleType class. Note: if the
+        /* Check if the object is in the OverviewType class. Note: if the
            unmarshalling method returns null, the object is not in the class,
            otherwise it is.
           */
@@ -89,19 +89,20 @@ public final class XMLOverview {
     }
 
     /**
-     * <br> Create an adapter for the overviewType object <br><br>
+     * <br> Create an adapter for the CyclePropertiesType object <br><br>
      *
-     * Note:
+     * This method returns the adapter object for the general properties
+     * enclosed in the EndpointType object. <br><br>
      *
      * @return cycle properties
      */
-    public CycleProperties getOverview() {
+    public CycleProperties getCycleProperties() {
 
         return new CyclePropertiesAdapter(this);
     }
 
     /**
-     * <br> Create an adapter for an endpointType object <br><br>
+     * <br> Create an adapter for an EndpointType object <br><br>
      *
      * This method returns the adapter object for the endpoint indicated. <br><br>
      *

@@ -21,7 +21,13 @@ package nl.mpi.oai.harvester.cycle;
 import org.joda.time.DateTime;
 
 /**
- * <br> Iterate over endpoints <br><br>
+ * <br> The way to iterate over OAI endpoints <br><br>
+ *
+ * This is the main interface of the cycle package. A client to the package
+ * can invoke methods specified in this interface to iterate over the endpoints
+ * in an overview. They return endpoint after endpoint, or give an indication
+ * whether or not the endpoint should be harvested. In case it should, the
+ * client can invoke a method to obtain the date to build an OAI request on.
  *
  * A harvesting cycle is a guide to the client, a path along the endpoints
  * defined in the overview. A client can iterate over the endpoints already
@@ -33,11 +39,14 @@ import org.joda.time.DateTime;
  * harvesting it should apply. <br><br>
  *
  * Note: whenever the client changes an attribute, the change will be reflected
- * back to the XML file. The adapter will perform this task. <br><br>
+ * back to the XML file. The endpoint adapter will perform this task. <br><br>
  *
  * Note: the interface does not make available general cycle properties. To
  * determine whether or not to harvest an endpoint, the cycle should invoke
  * the doHarvest methods.
+ *
+ * Note: the XMLBasedCycle class included in the package is an example of an
+ * implementation of the interface.
  *
  * @author Kees Jan van de Looij (MPI-PL)
  */

@@ -18,8 +18,6 @@
 
 package nl.mpi.oai.harvester.cycle;
 
-import org.joda.time.DateTime;
-
 /**
  * <br> Access to general harvest cycle properties <br><br>
  *

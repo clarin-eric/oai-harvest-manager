@@ -259,7 +259,7 @@ class EndpointAdapter implements Endpoint {
             return new DateTime(0);
         } else {
             // convert XMLGregorianCalendar
-            return new DateTime(XMLDate);
+            return new DateTime(XMLDate.toString());
         }
     }
 
@@ -276,7 +276,7 @@ class EndpointAdapter implements Endpoint {
             return new DateTime(0);
         } else {
             // convert XMLGregorianCalendar to string
-            return new DateTime(XMLDate);
+            return new DateTime(XMLDate.toString());
         }
     }
 

@@ -36,8 +36,7 @@ public class CycleFactory {
      * @return a cycle based on the overview
      */
     public Cycle createCycle(String filename){
-        Cycle cycle = new XMLBasedCycle(filename);
 
-        return cycle;
+        return new XMLBasedCycle(filename);
     }
 }
