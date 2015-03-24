@@ -282,7 +282,7 @@ public class XMLBasedCycle implements Cycle {
                            to harvest the endpoint but did not succeed. It can
                            therefore retry.
                          */
-                        return new DateTime (endpoint.getAttemptedDate());
+                        return new DateTime (endpoint.getHarvestedDate());
                     }
                 }
 
