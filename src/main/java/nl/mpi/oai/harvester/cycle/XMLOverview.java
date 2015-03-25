@@ -48,7 +48,7 @@ import java.io.File;
 final class XMLOverview {
 
     // the file supplied on construction
-    private final File file;
+    private File file;
 
     // reference to a JAXB generated overviewType object representing the XML
     OverviewType overviewType;
@@ -167,16 +167,13 @@ final class XMLOverview {
      * from the one that contained the overview the cycle started with. Note:
      * the method will not modify the original file.
      */
-    synchronized void save (String filename){
+    synchronized void save (File file){
 
-        // get the path from the original name, and add the new name to it
-        String newName = file.getPath() + filename;
-
-        // create the file
-        File newFile = new File (newName);
+        // remember the new file
+        this.file = file;
 
         // marshall the overview
-        JAXB.marshal(overviewType, newName);
+        JAXB.marshal(overviewType, file);
     }
 
     /**
@@ -191,8 +188,8 @@ final class XMLOverview {
 
         // get the original path and name
 
-        String path = file.getPath();
-        String name = file.getName();
+        String parent = file.getParent();
+        String name   = file.getName();
 
         int dot = name.lastIndexOf(".");
 
@@ -203,8 +200,8 @@ final class XMLOverview {
         DateTime dateTime = new DateTime ();
 
         // append the date and time and extension
-        String newName = path + nameWithoutExtension + dateTime.toString() +
-                "." + extension;
+        String newName = parent + "/"+ nameWithoutExtension + " at " +
+                dateTime.toString() + "." + extension;
 
         // create a new file
         File newFile = new File (newName);
@@ -213,8 +210,7 @@ final class XMLOverview {
         file.renameTo(newFile);
 
         // create another new file
-        File anotherNewFile = new File (path + nameWithoutExtension + "." +
-                extension);
+        File anotherNewFile = new File (parent + "/" + nameWithoutExtension + "." + extension);
 
         // marshall the overview under the name of the original file
         JAXB.marshal(overviewType, anotherNewFile);

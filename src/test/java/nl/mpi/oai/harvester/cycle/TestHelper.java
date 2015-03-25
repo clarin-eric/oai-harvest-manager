@@ -22,6 +22,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 
+import static org.apache.log4j.helpers.Loader.getResource;
 import static org.junit.Assert.fail;
 
 /**
@@ -40,7 +41,7 @@ class TestHelper {
     static String getFilename (String resourceName){
 
         // get the URL of the test file in the resources directory
-        URL url = CycleTest.class.getResource(resourceName);
+        URL url = TestHelper.class.getResource(resourceName);
 
         if (url == null){
             // fail the test

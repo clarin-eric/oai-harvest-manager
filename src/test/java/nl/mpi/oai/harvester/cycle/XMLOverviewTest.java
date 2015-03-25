@@ -29,8 +29,12 @@ import org.junit.rules.TemporaryFolder;
 import java.io.File;
 import java.io.IOException;
 import java.lang.*;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.Iterator;
 
+import static org.apache.log4j.helpers.Loader.getResource;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -67,7 +71,7 @@ public class XMLOverviewTest {
                     "CopyOfNormalModeFile.xml");
 
             // save the overview in the temporary file, creating a copy
-            xmlOverview.save(newFile.getPath()+newFile.getName());
+            xmlOverview.save(newFile);
 
             // compare the copy to the original file
             try {
@@ -93,13 +97,12 @@ public class XMLOverviewTest {
                 "/OverviewNormalMode.xml"));
 
         // first save a copy of the overview in a temporary folder
-
         try {
             final File newFile = temporaryFolder.newFile(
                     "CopyOfNormalModeFile.xml");
 
             // save the overview in the temporary file, creating a copy
-            xmlOverview.save(newFile.getPath()+newFile.getName());
+            xmlOverview.save(newFile);
 
         } catch (IOException e) {
             fail();
@@ -110,7 +113,6 @@ public class XMLOverviewTest {
         xmlOverview.rotateAndSave();
 
         // iterate over the temporary files
-
         String[] extensions = new String[] {"xml"};
         IOFileFilter filter = new SuffixFileFilter(extensions,
                 IOCase.SENSITIVE);
