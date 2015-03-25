@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<overviewType>
+    <mode>normal</mode>
+    <endpoint>
+        <URI>http://www.endpoint1.org</URI>
+        <block>false</block>
+        <retry>true</retry>
+        <incremental>true</incremental>
+    </endpoint>
+    <endpoint>
+        <URI>http://www.endpoint2.org</URI>
+        <block>false</block>
+        <retry>true</retry>
+        <incremental>false</incremental>
+        <attempted>2014-07-24</attempted>
+        <harvested>2014-07-21</harvested>
+    </endpoint>
+    <endpoint>
+        <URI>http://www.endpoint3.org</URI>
+        <block>true</block>
+        <retry>true</retry>
+        <incremental>false</incremental>
+        <attempted>2014-12-17</attempted>
+        <harvested>2014-12-11</harvested>
+    </endpoint>
+    <endpoint>
+        <URI>http://www.endpoint4.org</URI>
+        <block>false</block>
+        <retry>false</retry>
+        <incremental>false</incremental>
+        <attempted>2014-07-19</attempted>
+    </endpoint>
+    <endpoint>
+        <URI>http://www.endpoint5.org</URI>
+        <block>false</block>
+        <retry>false</retry>
+        <incremental>true</incremental>
+        <attempted>2014-07-19</attempted>
+        <harvested>2014-07-19</harvested>
+    </endpoint>
+</overviewType>
