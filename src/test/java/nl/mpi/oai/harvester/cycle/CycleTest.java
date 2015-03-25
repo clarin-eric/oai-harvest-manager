@@ -16,64 +16,24 @@
  * LICENSE-gpl-3.0.txt. If that file is missing, see
  * <http://www.gnu.org/licenses/>.
  */
+
 package nl.mpi.oai.harvester.cycle;
 
 import org.junit.Test;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-
 import static org.junit.Assert.*;
 
 /**
- * <br> Tests targeting cycle package <br><br>
+ * <br> Tests targeting the cycle package <br><br>
  *
- * The methods in this class should check if the cycle package correctly
- * reflects the data gathered in the overview, data collected during previous
- * harvest attempts. The methods should also check if the Cycle class methods
- * correctly decide on if and when to harvest an endpoint.
+ * The methods in this class should check if the cycle class correctly reflects
+ * the data gathered in the overview, data collected during previous harvest
+ * attempts. The methods should also check if the Cycle class methods correctly
+ * decide on if and when to harvest an endpoint.
  *
- * @author Kees Jan van de Looij (MPI-PL)
+ * @author Kees Jan van de Looij (Max Planck Institute for Psycholinguistics)
  */
 public class CycleTest {
-
-    /**
-     * Get the path and filename of a resource
-     *
-     * @param resourceName the resource
-     * @return the path and filename of the resource
-     */
-    private String getFilename (String resourceName){
-
-        // get the URL of the test file in the resources directory
-        URL url = CycleTest.class.getResource(resourceName);
-
-        if (url == null){
-            // fail the test
-            fail();
-        }
-
-        // convert it to a URI to be able to convert the escaped path component
-        URI uri;
-        try {
-            uri = url.toURI();
-        } catch (URISyntaxException e) {
-            uri = null;
-            e.printStackTrace();
-        }
-
-        if (uri == null){
-            // fail the test
-            fail();
-        }
-
-        String filename;
-        // get the path without escape characters as needed by the CycleFactory
-        filename = uri.getPath();
-
-        return filename;
-    }
 
     @Test
     /**
@@ -86,7 +46,7 @@ public class CycleTest {
         CycleFactory factory = new CycleFactory();
 
         // get a cycle based on the test file
-        Cycle cycle = factory.createCycle(getFilename(
+        Cycle cycle = factory.createCycle(TestHelper.getFilename(
                 "/OverviewNormalMode.xml"));
 
         // first endpoint
@@ -140,7 +100,7 @@ public class CycleTest {
         CycleFactory factory = new CycleFactory();
 
         // get a cycle based on the test file
-        Cycle cycle = factory.createCycle(getFilename(
+        Cycle cycle = factory.createCycle(TestHelper.getFilename(
                 "/OverviewRetryMode.xml"));
 
         // first endpoint
@@ -200,7 +160,7 @@ public class CycleTest {
         CycleFactory factory = new CycleFactory();
 
         // get a cycle based on the test file
-        Cycle cycle = factory.createCycle(getFilename(
+        Cycle cycle = factory.createCycle(TestHelper.getFilename(
                 "/OverviewRefreshMode.xml"));
 
         // walk over the elements in the file, and assert some of its values

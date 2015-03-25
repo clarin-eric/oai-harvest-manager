@@ -79,7 +79,7 @@ import org.joda.time.DateTime;
  * A typical implementation of the Endpoint interface would be an adapter class
  * that reads from and writes to an XML file.
  *
- * @author Kees Jan van de Looij (MPI-PL)
+ * @author Kees Jan van de Looij (Max Planck Institute for Psycholinguistics)
  */
 public interface Endpoint {
 

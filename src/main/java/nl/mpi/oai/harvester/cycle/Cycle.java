@@ -48,7 +48,7 @@ import org.joda.time.DateTime;
  * Note: the XMLBasedCycle class included in the package is an example of an
  * implementation of the interface.
  *
- * @author Kees Jan van de Looij (MPI-PL)
+ * @author Kees Jan van de Looij (Max Planck Institute for Psycholinguistics)
  */
 public interface Cycle {
 

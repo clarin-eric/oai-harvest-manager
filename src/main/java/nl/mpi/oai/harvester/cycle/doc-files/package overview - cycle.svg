@@ -69,14 +69,14 @@
      inkscape:pageshadow="0"
      inkscape:zoom="1.4"
      inkscape:cx="335.09578"
-     inkscape:cy="196.49701"
+     inkscape:cy="225.06844"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
      inkscape:window-width="1328"
      inkscape:window-height="956"
-     inkscape:window-x="52"
-     inkscape:window-y="125"
+     inkscape:window-x="51"
+     inkscape:window-y="68"
      inkscape:window-maximized="0"
      showguides="true"
      inkscape:guide-bbox="true" />
@@ -118,7 +118,7 @@
          sodipodi:role="line"
          x="446.58472"
          y="750.03619"
-         id="tspan3017">EndPoint</tspan><tspan
+         id="tspan3017">Endpoint</tspan><tspan
          sodipodi:role="line"
          x="446.58472"
          y="765.03619"
@@ -225,49 +225,37 @@
        d="m 408.14632,490.58532 62.07156,34.29005 -0.34093,98.64144"
        id="path3238"
        inkscape:connector-curvature="0" />
-    <path
-       style="opacity:0.5;fill:none;stroke:#000000;stroke-width:1.68925273;stroke-linecap:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-       d="m 675.84368,856.54012 c 3.99679,0 7.21444,3.5673 7.21444,7.99844 m 0,41.36144 c 0,4.4312 -3.21765,7.9985 -7.21444,7.9985 m -75.97307,0 c -3.9968,0 -7.21444,-3.5673 -7.21444,-7.9985 m 0,-41.36144 c 0,-4.43114 3.21764,-7.99844 7.21444,-7.99844"
-       id="rect3394"
-       inkscape:connector-curvature="0"
-       sodipodi:nodetypes="cccccccc" />
     <text
        xml:space="preserve"
        style="font-size:12px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;opacity:0.53497943;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
-       x="609.44189"
+       x="615.87048"
        y="883.60748"
        id="text3403"
        sodipodi:linespacing="125%"
        inkscape:transform-center-y="-4.6435547"><tspan
          sodipodi:role="line"
-         x="609.44189"
+         x="615.87048"
          y="883.60748"
          id="tspan3413">harvest</tspan><tspan
          sodipodi:role="line"
-         x="609.44189"
+         x="615.87048"
          y="898.60748"
          id="tspan3427">overview</tspan></text>
-    <path
-       sodipodi:nodetypes="cccccccc"
-       inkscape:connector-curvature="0"
-       id="path3419"
-       d="m 675.84368,428.68298 c 3.99679,0 7.21444,3.5673 7.21444,7.99844 m 0,41.36144 c 0,4.4312 -3.21765,7.9985 -7.21444,7.9985 m -75.97307,0 c -3.9968,0 -7.21444,-3.5673 -7.21444,-7.9985 m 0,-41.36144 c 0,-4.43114 3.21764,-7.99844 7.21444,-7.99844"
-       style="opacity:0.5;fill:none;stroke:#000000;stroke-width:1.68925273;stroke-linecap:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
     <text
        sodipodi:linespacing="125%"
        id="text3421"
-       y="461.46466"
+       y="425.0361"
        x="597.29901"
        style="font-size:12px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;opacity:0.53497943;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
        xml:space="preserve"><tspan
          id="tspan3423"
-         y="461.46466"
+         y="425.0361"
          x="597.29901"
          sodipodi:role="line">OAI endpoints</tspan></text>
     <path
        inkscape:connector-curvature="0"
        id="path3425"
-       d="m 638.1706,853.84708 0.0713,-237.86148 0.34093,-124.35573"
+       d="m 638.1706,853.84708 0.0713,-237.86148 0.34093,-154.35573"
        style="opacity:0.5;fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker-end:url(#TriangleOutL)"
        sodipodi:nodetypes="ccc" />
     <text

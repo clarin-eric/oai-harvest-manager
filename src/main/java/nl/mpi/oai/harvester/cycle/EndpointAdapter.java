@@ -43,7 +43,7 @@ import java.util.logging.Logger;
  * also depends on the JAXB factory for creating endpoint elements and the
  * elements enclosed in them.
  *
- * @author Kees Jan van de Looij (MPI-PL)
+ * @author Kees Jan van de Looij (Max Planck Institute for Psycholinguistics)
  */
 class EndpointAdapter implements Endpoint {
 
@@ -51,7 +51,7 @@ class EndpointAdapter implements Endpoint {
     private EndpointType endpointType;
 
     // overview marshalling object
-    private XMLFileOverview xmlFileOverview;
+    private XMLOverview xmlOverview;
 
     /**
      * Create a default endpoint
@@ -64,7 +64,7 @@ class EndpointAdapter implements Endpoint {
         /* Because of the constructor, the factory is in place. Ask it to
            create a new endpoint.
          */
-        endpointType = xmlFileOverview.factory.createEndpointType();
+        endpointType = xmlOverview.factory.createEndpointType();
 
         // create the endpoint fields, and set them to default values
         endpointType.setBlock(Boolean.FALSE);
@@ -73,7 +73,7 @@ class EndpointAdapter implements Endpoint {
         endpointType.setGroup(group);
 
         // save the newly created endpoint to the overview
-        xmlFileOverview.save();
+        xmlOverview.save();
 
         return endpointType;
     }
@@ -94,7 +94,7 @@ class EndpointAdapter implements Endpoint {
         Boolean found = false;
 
         // JAXB representation of the overview
-        OverviewType overviewType = xmlFileOverview.overviewType;
+        OverviewType overviewType = xmlOverview.overviewType;
 
         for (int i = 0; i < overviewType.getEndpoint().size() && !found; i++) {
             endpointType = overviewType.getEndpoint().get(i);
@@ -122,14 +122,14 @@ class EndpointAdapter implements Endpoint {
      * @param endpointURI  the URI of the endpoint the cycle should attempt to
      *                     harvest
      * @param group        the group the endpoint belongs to
-     * @param xmlFileOverview  overview marshalling object
+     * @param xmlOverview  overview marshalling object
      *
      */
-     EndpointAdapter(String endpointURI, String group, XMLFileOverview
-             xmlFileOverview) {
+     EndpointAdapter(String endpointURI, String group, XMLOverview
+             xmlOverview) {
 
         // remember the cycle, remember the factory
-        this.xmlFileOverview = xmlFileOverview;
+        this.xmlOverview = xmlOverview;
 
         // look for the endpoint in the cycle
         endpointType = FindEndpoint(endpointURI);
@@ -139,7 +139,7 @@ class EndpointAdapter implements Endpoint {
             endpointType = CreateDefault(endpointURI, group);
 
             // and add it to the cycle
-            xmlFileOverview.overviewType.getEndpoint().add(endpointType);
+            xmlOverview.overviewType.getEndpoint().add(endpointType);
         }
     }
 
@@ -307,7 +307,7 @@ class EndpointAdapter implements Endpoint {
                 endpointType.setHarvested(xmlGregorianCalendar);
             }
 
-            xmlFileOverview.save();
+            xmlOverview.save();
 
         } catch (DatatypeConfigurationException e) {
             // report the error, we cannot continue
@@ -337,7 +337,7 @@ class EndpointAdapter implements Endpoint {
         // update the count
         endpointType.setCount(count);
         // update the overview
-        xmlFileOverview.save();
+        xmlOverview.save();
     }
 
     @Override
@@ -361,6 +361,6 @@ class EndpointAdapter implements Endpoint {
         // update the increment
         endpointType.setIncrement(increment);
         // update the overview
-        xmlFileOverview.save();
+        xmlOverview.save();
     }
 }

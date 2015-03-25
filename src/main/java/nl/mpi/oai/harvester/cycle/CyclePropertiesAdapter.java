@@ -34,7 +34,7 @@ import nl.mpi.oai.harvester.generated.ScenarioType;
  * also depends on the JAXB factory for creating the elements used in the XML
  * file.
  *
- * @author Kees Jan van de Looij (MPI-PL)
+ * @author Kees Jan van de Looij (Max Planck Institute for Psycholinguistics)
  */
 class CyclePropertiesAdapter implements CycleProperties {
 
@@ -44,11 +44,11 @@ class CyclePropertiesAdapter implements CycleProperties {
     /**
      * Associate the adapter with a CycleType object
      *
-     * @param xmlFileOverview overview marshalling object
+     * @param xmlOverview overview marshalling object
      */
-    public CyclePropertiesAdapter(XMLFileOverview xmlFileOverview) {
+    public CyclePropertiesAdapter(XMLOverview xmlOverview) {
 
-        this.overviewType = xmlFileOverview.overviewType;
+        this.overviewType = xmlOverview.overviewType;
     }
 
     /**

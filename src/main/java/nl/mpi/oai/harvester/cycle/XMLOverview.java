@@ -43,9 +43,9 @@ import java.io.File;
  * Note: this class relies on JAXB to generate the types that reflect the XSD
  * defined overviews.
  *
- * @author Kees Jan van de Looij (MPI-PL)
+ * @author Kees Jan van de Looij (Max Planck Institute for Psycholinguistics)
  */
-final class XMLFileOverview {
+final class XMLOverview {
 
     // the file supplied on construction
     private final File file;
@@ -64,7 +64,7 @@ final class XMLFileOverview {
      *
      * @param fileName name of the file
      */
-    public XMLFileOverview(String fileName) {
+    public XMLOverview(String fileName) {
 
         // create factory that creates objects of the generated classes
         factory = new ObjectFactory();

@@ -18,25 +18,30 @@
 
 package nl.mpi.oai.harvester.cycle;
 
+import org.junit.Test;
+
 /**
- * <br> Create cycle type object <br><br>
+ * <br> Tests targeting the cycle package <br><br>
  *
- * The factory returns a cycle type object. Different types of overviews could
- * be supported. The cycle package supports overviews in the form of XML files
- * through XMLOverview class objects.
+ * The methods in this class intend to check if the cycle properties and
+ * endpoint adapter classes correctly substitute defaults for elements missing
+ * from the overview file.
  *
  * @author Kees Jan van de Looij (Max Planck Institute for Psycholinguistics)
+ *
  */
-public class CycleFactory {
+public class AdapterTest {
 
-    /**
-     * Create a new cycle
-     *
-     * @param filename local XML file defining the overview
-     * @return a cycle based on the overview
-     */
-    public Cycle createCycle(String filename){
+    @Test
+    public void CyclePropertiesTest (){
 
-        return new XMLBasedCycle(filename);
     }
+
+    @Test
+    public void EndpointAdapterTest (){
+
+    }
+
 }
+
+

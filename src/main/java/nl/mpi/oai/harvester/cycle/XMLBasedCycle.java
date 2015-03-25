@@ -42,12 +42,12 @@ import java.util.Date;
  * Note: this class relies on JAXB generated types directly. Its methods return
  * adapters to the endpoint stored in the overview.
  *
- * @author Kees Jan van de Looij (MPI-PL)
+ * @author Kees Jan van de Looij (Max Planck Institute for Psycholinguistics)
  */
-public class XMLFileCycle implements Cycle {
+public class XMLBasedCycle implements Cycle {
 
     // overview marshalling object
-    private final XMLFileOverview xmlFileOverview;
+    private final XMLOverview xmlOverview;
 
     // the general properties defined by the XML file
     private final CycleProperties cycleProperties;
@@ -61,12 +61,12 @@ public class XMLFileCycle implements Cycle {
      *
      * @param filename name of the XML file defining the properties
      */
-    public XMLFileCycle(String filename){
+    public XMLBasedCycle(String filename){
 
         // create an cycleProperties marshalling object
-        xmlFileOverview = new XMLFileOverview(filename);
+        xmlOverview = new XMLOverview(filename);
 
-        cycleProperties = xmlFileOverview.getCycleProperties();
+        cycleProperties = xmlOverview.getCycleProperties();
 
         // no longer consider endpoints cycled before
         endpointsCycled = new ArrayList<>();
@@ -80,7 +80,7 @@ public class XMLFileCycle implements Cycle {
     public synchronized Endpoint next(String URI, String group) {
 
         // get the endpoint from the overview
-        return xmlFileOverview.getEndpoint(URI, group);
+        return xmlOverview.getEndpoint(URI, group);
     }
 
     @Override
@@ -111,16 +111,16 @@ public class XMLFileCycle implements Cycle {
      */
     public synchronized Endpoint next() {
 
-        int endpointCount = xmlFileOverview.overviewType.getEndpoint().size();
+        int endpointCount = xmlOverview.overviewType.getEndpoint().size();
 
         // find an endpoint not yet returned in this cycle
         for (int i = 0; i < endpointCount; i++) {
 
             // get the next endpoint in the overview
             EndpointType endpointType =
-                    xmlFileOverview.overviewType.getEndpoint().get(i);
+                    xmlOverview.overviewType.getEndpoint().get(i);
             // get the endpoint's adapter
-            Endpoint endpoint = xmlFileOverview.getEndpoint(endpointType);
+            Endpoint endpoint = xmlOverview.getEndpoint(endpointType);
 
             // get today's date
             Date date = new Date ();
@@ -215,20 +215,20 @@ public class XMLFileCycle implements Cycle {
     @Override
     public boolean doHarvest(String URI) {
 
-        int endpointCount = xmlFileOverview.overviewType.getEndpoint().size();
+        int endpointCount = xmlOverview.overviewType.getEndpoint().size();
 
         // find an endpoint
         for (int i = 0; i < endpointCount; i++) {
 
             EndpointType endpointType =
-                    xmlFileOverview.overviewType.getEndpoint().get(i);
+                    xmlOverview.overviewType.getEndpoint().get(i);
 
             if (endpointType.getURI().equals(URI)) {
                 /* Found the endpoint, use adapter to return the endpoint that
                    corresponds to endpointType.
                  */
 
-                return doHarvest(xmlFileOverview.getEndpoint(endpointType));
+                return doHarvest(xmlOverview.getEndpoint(endpointType));
             }
         }
 

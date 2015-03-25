@@ -60,7 +60,7 @@ package nl.mpi.oai.harvester.cycle;
  * type. Since other classes in the package could implement the class publicly,
  * the access to the methods specified in the interface is implicitly public.
  *
- * @author Kees Jan van de Looij (MPI-PL)
+ * @author Kees Jan van de Looij (Max Planck Institute for Psycholinguistics)
  */
 interface CycleProperties {
 
