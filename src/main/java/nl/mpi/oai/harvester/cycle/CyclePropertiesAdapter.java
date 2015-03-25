@@ -44,11 +44,11 @@ class CyclePropertiesAdapter implements CycleProperties {
     /**
      * Associate the adapter with a CycleType object
      *
-     * @param xmlOverview overview marshalling object
+     * @param xmlFileOverview overview marshalling object
      */
-    public CyclePropertiesAdapter(XMLOverview xmlOverview) {
+    public CyclePropertiesAdapter(XMLFileOverview xmlFileOverview) {
 
-        this.overviewType = xmlOverview.overviewType;
+        this.overviewType = xmlFileOverview.overviewType;
     }
 
     /**

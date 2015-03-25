@@ -21,6 +21,7 @@ package nl.mpi.oai.harvester.cycle;
 import nl.mpi.oai.harvester.generated.OverviewType;
 import nl.mpi.oai.harvester.generated.EndpointType;
 import nl.mpi.oai.harvester.generated.ObjectFactory;
+import org.joda.time.DateTime;
 
 import javax.xml.bind.*;
 
@@ -44,7 +45,7 @@ import java.io.File;
  *
  * @author Kees Jan van de Looij (MPI-PL)
  */
-final class XMLOverview {
+final class XMLFileOverview {
 
     // the file supplied on construction
     private final File file;
@@ -63,7 +64,7 @@ final class XMLOverview {
      *
      * @param fileName name of the file
      */
-    public XMLOverview(String fileName) {
+    public XMLFileOverview(String fileName) {
 
         // create factory that creates objects of the generated classes
         factory = new ObjectFactory();
@@ -130,7 +131,7 @@ final class XMLOverview {
     }
 
     /**
-     * Create an adapter for an endpointType object <br><br>
+     * <br> Create an adapter for an endpointType object <br><br>
      *
      * This method returns the adapter object for the endpoint indicated. <br><br>
      *
@@ -141,7 +142,7 @@ final class XMLOverview {
      * @param endpointType the endpoint indicated
      * @return endpoint properties
      */
-    Endpoint getEndpoint (EndpointType endpointType){
+    public Endpoint getEndpoint (EndpointType endpointType){
 
         /* Since only methods in the package can invoke this method, assume the
            endpointType is in place.
@@ -151,12 +152,72 @@ final class XMLOverview {
     }
 
     /**
-     * Save the overview
+     * <br> Save the overview <br><br>
      */
-    protected synchronized void save (){
+    public synchronized void save (){
 
         // marshall the overview
         JAXB.marshal(overviewType, file);
+    }
+
+    /**
+     * <br> Save the overview in a file different from the original one <br><br>
+     *
+     * For testing, allow the client to save the overview in a file different
+     * from the one that contained the overview the cycle started with. Note:
+     * the method will not modify the original file.
+     */
+    synchronized void save (String filename){
+
+        // get the path from the original name, and add the new name to it
+        String newName = file.getPath() + filename;
+
+        // create the file
+        File newFile = new File (newName);
+
+        // marshall the overview
+        JAXB.marshal(overviewType, newName);
+    }
+
+    /**
+     * <br> Save the overview in a file different from the original one <br><br>
+     *
+     * Allow the client to rotate the file. The method will rename the
+     * original file to reflect the current date and time. Next to this,
+     * the method will store the overview of the current harvest attempts
+     * in a file with the named after the original file.
+     */
+    public synchronized void rotateAndSave (){
+
+        // get the original path and name
+
+        String path = file.getPath();
+        String name = file.getName();
+
+        int dot = name.lastIndexOf(".");
+
+        String nameWithoutExtension = name.substring(0, dot);
+        String extension = name.substring(dot + 1);
+
+        // get the date and time
+        DateTime dateTime = new DateTime ();
+
+        // append the date and time and extension
+        String newName = path + nameWithoutExtension + dateTime.toString() +
+                "." + extension;
+
+        // create a new file
+        File newFile = new File (newName);
+
+        // rename the original file
+        file.renameTo(newFile);
+
+        // create another new file
+        File anotherNewFile = new File (path + nameWithoutExtension + "." +
+                extension);
+
+        // marshall the overview under the name of the original file
+        JAXB.marshal(overviewType, anotherNewFile);
     }
 
 }

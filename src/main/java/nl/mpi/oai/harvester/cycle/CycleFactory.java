@@ -37,6 +37,6 @@ public class CycleFactory {
      */
     public Cycle createCycle(String filename){
 
-        return new XMLBasedCycle(filename);
+        return new XMLFileCycle(filename);
     }
 }
