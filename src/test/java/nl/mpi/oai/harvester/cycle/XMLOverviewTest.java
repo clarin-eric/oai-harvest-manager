@@ -179,12 +179,12 @@ public class XMLOverviewTest {
 
         // the path of the files up to the timestamp should be equal
         String partOfRotated = rotatedFile.getPath().substring(0, atIndex);
-        String partOfNew =     newFile.getPath().substring(0, atIndex);
+        String partOfNew = newFile.getPath().substring(0, atIndex);
         assertTrue(partOfRotated.equals(partOfNew));
 
         // both files should have equal content
         try {
-            assertTrue(FileUtils.contentEquals(file1, file2));
+            assertTrue(FileUtils.contentEquals(rotatedFile, newFile));
         } catch (IOException e) {
             fail();
             e.printStackTrace();

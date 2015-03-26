@@ -3,6 +3,7 @@
     <mode>normal</mode>
     <endpoint>
         <URI>http://www.endpoint1.org</URI>
+        <group>group1</group>
         <block>false</block>
         <retry>true</retry>
         <incremental>true</incremental>
