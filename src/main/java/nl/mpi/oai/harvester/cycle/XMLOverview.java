@@ -191,10 +191,10 @@ final class XMLOverview {
         String parent = file.getParent();
         String name   = file.getName();
 
-        int dot = name.lastIndexOf(".");
+        int index = name.lastIndexOf(".");
 
-        String nameWithoutExtension = name.substring(0, dot);
-        String extension = name.substring(dot + 1);
+        String nameWithoutExtension = name.substring(0, index);
+        String extension = name.substring(index + 1);
 
         // get the date and time
         DateTime dateTime = new DateTime ();
@@ -210,7 +210,8 @@ final class XMLOverview {
         file.renameTo(newFile);
 
         // create another new file
-        File anotherNewFile = new File (parent + "/" + nameWithoutExtension + "." + extension);
+        File anotherNewFile = new File (parent + "/" + nameWithoutExtension +
+                "." + extension);
 
         // marshall the overview under the name of the original file
         JAXB.marshal(overviewType, anotherNewFile);

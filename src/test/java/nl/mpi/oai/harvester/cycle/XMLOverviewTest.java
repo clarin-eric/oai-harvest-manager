@@ -22,6 +22,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOCase;
 import org.apache.commons.io.filefilter.IOFileFilter;
 import org.apache.commons.io.filefilter.SuffixFileFilter;
+import org.joda.time.DateTime;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -49,31 +50,34 @@ import static org.junit.Assert.fail;
  */
 public class XMLOverviewTest {
 
+    // setup a temporary folder for the test, use the junit rule for it
     @Rule
     public TemporaryFolder temporaryFolder = new TemporaryFolder();
 
     @Test
     /**
-     * Test saving an overview in a file different from the original one
+     * Test saving a harvest overview in a file different from the original one
      */
     public void testAlternativeOverview () {
 
         // get the overview from an existing test XML overview file
-        XMLOverview xmlOverview = new XMLOverview(TestHelper.getFilename(
+        final XMLOverview xmlOverview = new XMLOverview(TestHelper.getFilename(
                 "/OverviewNormalMode.xml"));
 
-        File originalFile = new File(TestHelper.getFilename(
+        // get the file containing the overview
+        final File originalFile = new File(TestHelper.getFilename(
                 "/OverviewNormalMode.xml"));
 
-        // save the overview under another name
+        // try to save the overview under another name
         try {
+            // create a new temporary file
             final File newFile = temporaryFolder.newFile(
                     "CopyOfNormalModeFile.xml");
 
             // save the overview in the temporary file, creating a copy
             xmlOverview.save(newFile);
 
-            // compare the copy to the original file
+            // try to compare the copy to the original file
             try {
                 assertTrue(FileUtils.contentEquals(originalFile, newFile));
             } catch (IOException e) {
@@ -93,11 +97,15 @@ public class XMLOverviewTest {
     public void testOverviewRotate (){
 
         // get the overview from a test XML overview file
-        XMLOverview xmlOverview = new XMLOverview(TestHelper.getFilename(
+        final XMLOverview xmlOverview = new XMLOverview(TestHelper.getFilename(
                 "/OverviewNormalMode.xml"));
 
-        // first save a copy of the overview in a temporary folder
+        /* Instead of rotating the overview file itself, test by rotating a
+           copy of this file. Therefore, try to save a copy of the overview
+           in a temporary folder first.
+         */
         try {
+            // create a new temporary file
             final File newFile = temporaryFolder.newFile(
                     "CopyOfNormalModeFile.xml");
 
@@ -109,16 +117,23 @@ public class XMLOverviewTest {
             e.printStackTrace();
         }
 
-        // rotate the copy, it will remain in the temporary directory
+
+        /* Now rotate the copy. This will create a file with a date and
+           timestamp, and a new file containing the overview.
+         */
         xmlOverview.rotateAndSave();
 
-        // iterate over the temporary files
-        String[] extensions = new String[] {"xml"};
-        IOFileFilter filter = new SuffixFileFilter(extensions,
+
+        // create a filter for finding the overview XML files
+        String[] allowedExtensions = new String[] {"xml"};
+        IOFileFilter filter = new SuffixFileFilter(allowedExtensions,
                 IOCase.SENSITIVE);
+
+        // create an iterator based on the filter
         Iterator iterator = FileUtils.iterateFiles(temporaryFolder.getRoot(),
                 filter, null);
 
+        // iterate over the temporary files
         File file1 = (File) iterator.next();
         File file2 = (File) iterator.next();
 
@@ -127,7 +142,47 @@ public class XMLOverviewTest {
             fail();
         }
 
-        // both files should be equal
+        // determine which file is the rotated file and which is the new file
+        File rotatedFile, newFile;
+
+        int atIndex = file1.getPath().lastIndexOf(" at ");
+
+        if (atIndex < 0){
+            // did not find it in this file
+            atIndex = file2.getPath().lastIndexOf(" at ");
+            if (atIndex < 0){
+                // did not find it in this file either
+                rotatedFile = null;
+                newFile = null;
+                fail();
+            } else {
+                rotatedFile = file2;
+                newFile = file1;
+            }
+        } else {
+            rotatedFile = file1;
+            newFile = file2;
+        }
+
+        // determine the index of the first character in the timestamp
+        int first = atIndex + 4;
+
+        // determine the index of the last character in the timestamp
+        int last = rotatedFile.getPath().lastIndexOf("xml") - 1;
+
+        // get the timestamp from the rotated file
+        String timeStamp = rotatedFile.getPath().substring(first, last);
+
+        // the timestamp should be before now
+        DateTime rotatedAt = new DateTime(timeStamp);
+        assertTrue(rotatedAt.isBeforeNow());
+
+        // the path of the files up to the timestamp should be equal
+        String partOfRotated = rotatedFile.getPath().substring(0, atIndex);
+        String partOfNew =     newFile.getPath().substring(0, atIndex);
+        assertTrue(partOfRotated.equals(partOfNew));
+
+        // both files should have equal content
         try {
             assertTrue(FileUtils.contentEquals(file1, file2));
         } catch (IOException e) {
