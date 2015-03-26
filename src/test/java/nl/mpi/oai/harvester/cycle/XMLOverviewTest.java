@@ -60,6 +60,8 @@ public class XMLOverviewTest {
      */
     public void testAlternativeOverview () {
 
+        // kj: invoke the copyToTemporary method instead
+
         // get the overview from an existing test XML overview file
         final XMLOverview xmlOverview = new XMLOverview(TestHelper.getFilename(
                 "/OverviewNormalMode.xml"));

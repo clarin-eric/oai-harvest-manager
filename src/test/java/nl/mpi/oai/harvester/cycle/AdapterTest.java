@@ -19,7 +19,9 @@
 package nl.mpi.oai.harvester.cycle;
 
 import org.joda.time.DateTime;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -40,6 +42,10 @@ public class AdapterTest {
     DateTime newAttempted, newHarvested;
     Long newCount, newIncrement;
 
+    // setup a temporary folder for the test, use the junit rule for it
+    @Rule
+    public TemporaryFolder temporaryFolder = new TemporaryFolder();
+
     @Test
     public void CyclePropertiesTest (){
         // kj: determine what to include in this test
@@ -59,14 +65,17 @@ public class AdapterTest {
      */
     public void EndpointAdapterTest (){
 
+        // work on a temporary copy of a resources overview file
+        TestHelper.copyToTemporary(temporaryFolder,
+                "/OverviewNormalMode.xml",
+                "CopyOfOverviewNormalMode.xml");
+
         // create a CycleFactory
         CycleFactory factory = new CycleFactory();
 
         // get a cycle based on the test file
-        Cycle cycle = factory.createCycle(TestHelper.getFilename(
-                "/OverviewNormalMode.xml"));
-
-        // kj: work on a copy of the overview file instead, check read back
+        Cycle cycle = factory.createCycle(temporaryFolder.getRoot() +
+                "/CopyOfOverviewNormalMode.xml");
 
         // first endpoint
         Endpoint endpoint = cycle.next();
@@ -123,6 +132,8 @@ public class AdapterTest {
         endpoint.setIncrement(27L);
         newCount = endpoint.getIncrement();
         assertEquals((Long)27L, newIncrement);
+
+        // kj: save the overview and check read back the new values
     }
 
 }

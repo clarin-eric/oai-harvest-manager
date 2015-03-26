@@ -18,11 +18,17 @@
 
 package nl.mpi.oai.harvester.cycle;
 
+import org.apache.commons.io.FileUtils;
+import org.junit.rules.TemporaryFolder;
+
+import java.io.File;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 
 import static org.apache.log4j.helpers.Loader.getResource;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 /**
@@ -67,5 +73,37 @@ class TestHelper {
         filename = uri.getPath();
 
         return filename;
+    }
+
+    /**
+     * kj: add specification
+     *
+     * @param temporaryFolder
+     * @param fileName
+     * @param newFileName
+     */
+    static void copyToTemporary (TemporaryFolder temporaryFolder,
+                                 String fileName, String newFileName) {
+
+        // get the overview from an existing test XML overview file
+        final XMLOverview xmlOverview = new XMLOverview(TestHelper.getFilename(
+                fileName));
+
+        // get the file containing the overview
+        final File originalFile = new File(TestHelper.getFilename(fileName));
+
+        // try to save the overview under another, new name
+        File newFile = null;
+
+        try {
+            // create a new temporary file
+            newFile = temporaryFolder.newFile(newFileName);
+
+            // save the overview in the temporary file, creating a copy
+            xmlOverview.save(newFile);
+        } catch (IOException e) {
+            fail();
+            e.printStackTrace();
+        }
     }
 }
