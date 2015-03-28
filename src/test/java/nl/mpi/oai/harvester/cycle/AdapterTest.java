@@ -130,7 +130,7 @@ public class AdapterTest {
 
         // set the increment, and compare it to the increment reported
         endpoint.setIncrement(27L);
-        newCount = endpoint.getIncrement();
+        newIncrement = endpoint.getIncrement();
         assertEquals((Long)27L, newIncrement);
 
         // kj: save the overview and check read back the new values
