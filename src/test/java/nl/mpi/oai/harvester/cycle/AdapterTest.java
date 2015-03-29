@@ -23,6 +23,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
+import java.io.File;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
@@ -66,16 +68,15 @@ public class AdapterTest {
     public void EndpointAdapterTest (){
 
         // work on a temporary copy of a resources overview file
-        TestHelper.copyToTemporary(temporaryFolder,
-                "/OverviewNormalMode.xml",
+        File overviewFile = TestHelper.getFile("/OverviewNormalMode.xml");
+        TestHelper.copyToTemporary(temporaryFolder, overviewFile,
                 "CopyOfOverviewNormalMode.xml");
 
         // create a CycleFactory
         CycleFactory factory = new CycleFactory();
 
         // get a cycle based on the test file
-        Cycle cycle = factory.createCycle(temporaryFolder.getRoot() +
-                "/CopyOfOverviewNormalMode.xml");
+        Cycle cycle = factory.createCycle(overviewFile);
 
         // first endpoint
         Endpoint endpoint = cycle.next();
@@ -134,6 +135,14 @@ public class AdapterTest {
         assertEquals((Long)27L, newIncrement);
 
         // kj: save the overview and check read back the new values
+
+        /* new values are stored in the global variables:
+
+           DateTime newAttempted, newHarvested;
+           Long newCount, newIncrement;
+         */
+
+
     }
 
 }

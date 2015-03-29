@@ -21,10 +21,6 @@ package nl.mpi.oai.harvester.cycle;
 
 import org.junit.Test;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-
 import static org.junit.Assert.*;
 
 /**
@@ -50,7 +46,7 @@ public class CycleTest {
         CycleFactory factory = new CycleFactory();
 
         // get a cycle based on the test file
-        Cycle cycle = factory.createCycle(TestHelper.getFilename(
+        Cycle cycle = factory.createCycle(TestHelper.getFile(
                 "/OverviewNormalMode.xml"));
 
         // first endpoint
@@ -104,7 +100,7 @@ public class CycleTest {
         CycleFactory factory = new CycleFactory();
 
         // get a cycle based on the test file
-        Cycle cycle = factory.createCycle(TestHelper.getFilename(
+        Cycle cycle = factory.createCycle(TestHelper.getFile(
                 "/OverviewRetryMode.xml"));
 
         // first endpoint
@@ -164,7 +160,7 @@ public class CycleTest {
         CycleFactory factory = new CycleFactory();
 
         // get a cycle based on the test file
-        Cycle cycle = factory.createCycle(TestHelper.getFilename(
+        Cycle cycle = factory.createCycle(TestHelper.getFile(
                 "/OverviewRefreshMode.xml"));
 
         // walk over the elements in the file, and assert some of its values

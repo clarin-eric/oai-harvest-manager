@@ -62,9 +62,9 @@ final class XMLOverview {
      * This constructor initialises the OverviewType object with data from the
      * file.
      *
-     * @param fileName name of the file
+     * @param overviewFile name of the file
      */
-    public XMLOverview(String fileName) {
+    public XMLOverview(File overviewFile) {
 
         // create factory that creates objects of the generated classes
         factory = new ObjectFactory();
@@ -73,7 +73,7 @@ final class XMLOverview {
         overviewType = factory.createOverviewType();
 
         // remember the XML file
-        file = new File(fileName);
+        file = overviewFile;
 
         // get the XML from this file
         Object object = JAXB.unmarshal(file, OverviewType.class);

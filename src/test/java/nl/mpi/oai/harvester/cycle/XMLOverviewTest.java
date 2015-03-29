@@ -30,9 +30,6 @@ import org.junit.rules.TemporaryFolder;
 import java.io.File;
 import java.io.IOException;
 import java.lang.*;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.Iterator;
 
 import static org.apache.log4j.helpers.Loader.getResource;
@@ -60,32 +57,18 @@ public class XMLOverviewTest {
      */
     public void testAlternativeOverview () {
 
-        // kj: invoke the copyToTemporary method instead
+        File originalFile = TestHelper.getFile("/OverviewNormalMode.xml");
 
         // get the overview from an existing test XML overview file
-        final XMLOverview xmlOverview = new XMLOverview(TestHelper.getFilename(
-                "/OverviewNormalMode.xml"));
+        final XMLOverview xmlOverview = new XMLOverview(originalFile);
 
-        // get the file containing the overview
-        final File originalFile = new File(TestHelper.getFilename(
-                "/OverviewNormalMode.xml"));
+        // create a new temporary file
+        File newFile = TestHelper.copyToTemporary(temporaryFolder, originalFile,
+                "\"CopyOfNormalModeFile.xml\"");
 
-        // try to save the overview under another name
+        // the content of both the original and the new file should be the same
         try {
-            // create a new temporary file
-            final File newFile = temporaryFolder.newFile(
-                    "CopyOfNormalModeFile.xml");
-
-            // save the overview in the temporary file, creating a copy
-            xmlOverview.save(newFile);
-
-            // try to compare the copy to the original file
-            try {
-                assertTrue(FileUtils.contentEquals(originalFile, newFile));
-            } catch (IOException e) {
-                fail();
-                e.printStackTrace();
-            }
+            assertTrue(FileUtils.contentEquals(originalFile, newFile));
         } catch (IOException e) {
             fail();
             e.printStackTrace();
@@ -99,7 +82,7 @@ public class XMLOverviewTest {
     public void testOverviewRotate (){
 
         // get the overview from a test XML overview file
-        final XMLOverview xmlOverview = new XMLOverview(TestHelper.getFilename(
+        final XMLOverview xmlOverview = new XMLOverview(TestHelper.getFile(
                 "/OverviewNormalMode.xml"));
 
         /* Instead of rotating the overview file itself, test by rotating a

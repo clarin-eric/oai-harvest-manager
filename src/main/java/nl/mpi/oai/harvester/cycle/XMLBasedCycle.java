@@ -21,6 +21,7 @@ package nl.mpi.oai.harvester.cycle;
 import nl.mpi.oai.harvester.generated.EndpointType;
 import org.joda.time.DateTime;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -61,10 +62,10 @@ public class XMLBasedCycle implements Cycle {
      *
      * @param filename name of the XML file defining the properties
      */
-    public XMLBasedCycle(String filename){
+    public XMLBasedCycle(File overviewFile){
 
         // create an cycleProperties marshalling object
-        xmlOverview = new XMLOverview(filename);
+        xmlOverview = new XMLOverview(overviewFile);
 
         cycleProperties = xmlOverview.getCycleProperties();
 

@@ -18,7 +18,6 @@
 
 package nl.mpi.oai.harvester.cycle;
 
-import org.apache.commons.io.FileUtils;
 import org.junit.rules.TemporaryFolder;
 
 import java.io.File;
@@ -39,12 +38,14 @@ import static org.junit.Assert.fail;
 class TestHelper {
 
     /**
-     * Get the path and filename of a resource
+     * <br> Get the resource as a File type object <br><br>
      *
-     * @param resourceName the resource
-     * @return the path and filename of the resource
+     * Note: the file name does not include a parent path specification
+     *
+     * @param resourceName file name of the resource
+     * @return a File type object reference to the resource
      */
-    static String getFilename (String resourceName){
+    static File getFile(String resourceName){
 
         // get the URL of the test file in the resources directory
         URL url = TestHelper.class.getResource(resourceName);
@@ -72,29 +73,32 @@ class TestHelper {
         // get the path without escape characters as needed by the CycleFactory
         filename = uri.getPath();
 
-        return filename;
+        return new File (uri.getPath());
     }
 
     /**
-     * kj: add specification
+     * <br> Copy a file to a temporary folder <br><br>
      *
-     * @param temporaryFolder
-     * @param fileName
-     * @param newFileName
+     * Note: by creating a copy of a file in the resources folder, tests can
+     * change the contents of a file without consequences.
+     *
+     * Note: there might be easier ways to copy a file. By creating a copy
+     * of the overview by invoking the save method on an overview object, the
+     * helper method is a test in itself.
+     *
+     * @param temporaryFolder folder in which to create the new file
+     * @param originalFile the original file
+     * @param newFileName file name, no path
+     * @return the new file as a file type object
      */
-    static void copyToTemporary (TemporaryFolder temporaryFolder,
-                                 String fileName, String newFileName) {
+    static File copyToTemporary (TemporaryFolder temporaryFolder,
+                                 File originalFile, String newFileName) {
 
         // get the overview from an existing test XML overview file
-        final XMLOverview xmlOverview = new XMLOverview(TestHelper.getFilename(
-                fileName));
-
-        // get the file containing the overview
-        final File originalFile = new File(TestHelper.getFilename(fileName));
+        final XMLOverview xmlOverview = new XMLOverview(originalFile);
 
         // try to save the overview under another, new name
         File newFile = null;
-
         try {
             // create a new temporary file
             newFile = temporaryFolder.newFile(newFileName);
@@ -105,5 +109,7 @@ class TestHelper {
             fail();
             e.printStackTrace();
         }
+
+        return newFile;
     }
 }

@@ -18,6 +18,8 @@
 
 package nl.mpi.oai.harvester.cycle;
 
+import java.io.File;
+
 /**
  * <br> Create cycle type object <br><br>
  *
@@ -32,11 +34,11 @@ public class CycleFactory {
     /**
      * Create a new cycle
      *
-     * @param filename local XML file defining the overview
+     * @param overviewFile local XML file defining the overview
      * @return a cycle based on the overview
      */
-    public Cycle createCycle(String filename){
+    public Cycle createCycle(File overviewFile){
 
-        return new XMLBasedCycle(filename);
+        return new XMLBasedCycle(overviewFile);
     }
 }
