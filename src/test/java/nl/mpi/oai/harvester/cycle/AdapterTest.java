@@ -42,7 +42,7 @@ public class AdapterTest {
 
     // remember the new value when reading back from the updated overview
     DateTime newAttempted, newHarvested;
-    Long newCount, newIncrement;
+    long newCount, newIncrement;
 
     // setup a temporary folder for the test, use the junit rule for it
     @Rule
@@ -55,9 +55,9 @@ public class AdapterTest {
 
     @Test
     /**
-     * <br> Test adapter methods in the EndpointAdapter class. Also test the
-     * establishment of default values. Test if the adapter correctly reflects
-     * the changes induced by the test.
+     * <br> Test methods in the EndpointAdapter class: check if the methods
+     * provide the correct default values, and check if the methods correctly
+     * reflect test induced changes back to the overview file. <br><br>
      *
      * Note: the test only covers the methods in the endpoint interface that
      * the methods in the CycleTest class do not cover. These methods typically
@@ -67,18 +67,21 @@ public class AdapterTest {
      */
     public void EndpointAdapterTest (){
 
-        // work on a temporary copy of a resources overview file
-        File overviewFile = TestHelper.getFile("/OverviewNormalMode.xml");
-        TestHelper.copyToTemporary(temporaryFolder, overviewFile,
-                "CopyOfOverviewNormalMode.xml");
+
+        // get an overview file from the resources
+        File overview = TestHelper.getFile("/OverviewNormalMode.xml");
+
+        // copy it to the temporary folder
+        File copyOfOverview = TestHelper.copyToTemporary(temporaryFolder,
+                overview, "copy.xml");
 
         // create a CycleFactory
         CycleFactory factory = new CycleFactory();
 
-        // get a cycle based on the test file
-        Cycle cycle = factory.createCycle(overviewFile);
+        // work on the temporary copy of a resources overview file
+        Cycle cycle = factory.createCycle(copyOfOverview);
 
-        // first endpoint
+        // look at the first endpoint
         Endpoint endpoint = cycle.next();
 
         // check the endpoint URI
@@ -124,7 +127,7 @@ public class AdapterTest {
         // set the count, and compare it to the count reported
         endpoint.setCount(314L);
         newCount = endpoint.getCount();
-        assertEquals((Long)314L, newCount);
+        assertEquals(314L, newCount);
 
         // by default, the increment should also be zero
         assertEquals(endpoint.getIncrement(), 0);
@@ -132,19 +135,21 @@ public class AdapterTest {
         // set the increment, and compare it to the increment reported
         endpoint.setIncrement(27L);
         newIncrement = endpoint.getIncrement();
-        assertEquals((Long)27L, newIncrement);
+        assertEquals(27L, newIncrement);
 
-        // kj: save the overview and check read back the new values
+        // create a new cycle based on the changed file
+        cycle = factory.createCycle(copyOfOverview);
 
-        /* new values are stored in the global variables:
+        // look at the first endpoint again
+        endpoint = cycle.next();
 
-           DateTime newAttempted, newHarvested;
-           Long newCount, newIncrement;
-         */
+        // read back the new values, and check if they have indeed been changed
 
-
+        assertEquals(endpoint.getAttemptedDate(), newAttempted);
+        assertEquals(endpoint.getHarvestedDate(), newHarvested);
+        assertEquals(endpoint.getCount(), newCount);
+        assertEquals(endpoint.getIncrement(), newIncrement);
     }
-
 }
 
 
