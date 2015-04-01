@@ -18,6 +18,8 @@
 
 package nl.mpi.oai.harvester.cycle;
 
+import nl.mpi.oai.harvester.cycle.CycleProperties.Mode;
+import nl.mpi.oai.harvester.cycle.CycleProperties.Scenario;
 import org.joda.time.DateTime;
 import org.junit.Rule;
 import org.junit.Test;
@@ -49,8 +51,27 @@ public class AdapterTest {
     public TemporaryFolder temporaryFolder = new TemporaryFolder();
 
     @Test
+    /**
+     * Test the methods in the CycleProperties adapter class.
+     */
     public void CyclePropertiesTest (){
-        // kj: determine what to include in this test
+
+        // get an overview file from the resources folder
+        File overviewFile = TestHelper.getFile("/OverviewNormalMode.xml");
+
+        // get the overview from an existing test XML overview file
+        final XMLOverview xmlOverview = new XMLOverview(overviewFile);
+
+        // check if the CycleProperties adapter returns the expected values
+        Scenario scenario;
+        Mode mode;
+
+        mode = xmlOverview.getCycleProperties().getHarvestMode();
+        scenario = xmlOverview.getCycleProperties().getScenario();
+
+        // compare the object values against those defined in the overview file
+        assertEquals(mode.toString(), "normal");
+        assertEquals(scenario.toString(), "ListRecords");
     }
 
     @Test
@@ -67,8 +88,7 @@ public class AdapterTest {
      */
     public void EndpointAdapterTest (){
 
-
-        // get an overview file from the resources
+        // get an overview file from the resources folder
         File overview = TestHelper.getFile("/OverviewNormalMode.xml");
 
         // copy it to the temporary folder
@@ -90,9 +110,8 @@ public class AdapterTest {
         // check the group the endpoint belongs to
         assertEquals("group1", endpoint.getGroup());
 
-        /* Test the doneHarvesting method. First get both the attempted and
-           harvested date.
-         */
+        // Test the doneHarvesting method. First get both the attempted and
+        // harvested date.
         DateTime attempted = endpoint.getAttemptedDate();
         DateTime harvested = endpoint.getHarvestedDate();
 
@@ -110,6 +129,7 @@ public class AdapterTest {
         // now indicate success
         endpoint.doneHarvesting(true);
 
+        // remember the date of the attempt en harvest
         newAttempted = endpoint.getAttemptedDate();
         newHarvested = endpoint.getHarvestedDate();
 

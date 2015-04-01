@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <overviewType>
     <mode>normal</mode>
+    <scenario>ListRecords</scenario>
     <endpoint>
         <URI>http://www.endpoint1.org</URI>
         <group>group1</group>
