@@ -48,6 +48,7 @@ public abstract class AbstractHarvesting implements Harvesting {
      *
      */
     List<String> prefixes;
+
     /**
      * <br> Pointer to current prefix
      *

@@ -60,7 +60,7 @@ public class XMLBasedCycle implements Cycle {
      * Associate the cycle with the XML file defining the cycle and endpoint
      * properties
      *
-     * @param filename name of the XML file defining the properties
+     * @param overviewFile name of the XML file defining the properties
      */
     public XMLBasedCycle(File overviewFile){
 
@@ -70,6 +70,7 @@ public class XMLBasedCycle implements Cycle {
         cycleProperties = xmlOverview.getCycleProperties();
 
         // no longer consider endpoints cycled before
+        //  kj: findbugs reports 'Write to static field from instance method'
         endpointsCycled = new ArrayList<>();
     }
 

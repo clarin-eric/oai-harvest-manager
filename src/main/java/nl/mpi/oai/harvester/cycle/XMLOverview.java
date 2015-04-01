@@ -207,6 +207,7 @@ final class XMLOverview {
         File newFile = new File (newName);
 
         // rename the original file
+        // kj: findbugs reports 'Method ignores exceptional return value'
         file.renameTo(newFile);
 
         // create another new file

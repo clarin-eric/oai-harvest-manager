@@ -9,12 +9,12 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="124.22251mm"
-   height="130.45671mm"
+   width="1357.9995"
+   height="795.41644"
    id="svg3027"
    version="1.1"
    inkscape:version="0.91 r13725"
-   sodipodi:docname="package overview - cycle.svg">
+   sodipodi:docname="package overview - harvesting.svg">
   <defs
      id="defs3">
     <marker
@@ -185,118 +185,6 @@
          transform="scale(0.8,0.8)"
          inkscape:connector-curvature="0" />
     </marker>
-    <marker
-       inkscape:stockid="TriangleOutL"
-       orient="auto"
-       refY="0"
-       refX="0"
-       id="TriangleOutL-3"
-       style="overflow:visible">
-      <path
-         id="path4526-7"
-         d="m 5.77,0 -8.65,5 0,-10 8.65,5 z"
-         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt"
-         transform="scale(0.8,0.8)"
-         inkscape:connector-curvature="0" />
-    </marker>
-    <marker
-       inkscape:stockid="TriangleOutL"
-       orient="auto"
-       refY="0"
-       refX="0"
-       id="marker5036"
-       style="overflow:visible">
-      <path
-         id="path5038"
-         d="m 5.77,0 -8.65,5 0,-10 8.65,5 z"
-         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt"
-         transform="scale(0.8,0.8)"
-         inkscape:connector-curvature="0" />
-    </marker>
-    <marker
-       inkscape:stockid="TriangleOutL"
-       orient="auto"
-       refY="0"
-       refX="0"
-       id="marker5040"
-       style="overflow:visible">
-      <path
-         id="path5042"
-         d="m 5.77,0 -8.65,5 0,-10 8.65,5 z"
-         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt"
-         transform="scale(0.8,0.8)"
-         inkscape:connector-curvature="0" />
-    </marker>
-    <marker
-       inkscape:stockid="TriangleOutL"
-       orient="auto"
-       refY="0"
-       refX="0"
-       id="marker5044"
-       style="overflow:visible">
-      <path
-         id="path5046"
-         d="m 5.77,0 -8.65,5 0,-10 8.65,5 z"
-         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt"
-         transform="scale(0.8,0.8)"
-         inkscape:connector-curvature="0" />
-    </marker>
-    <marker
-       inkscape:stockid="TriangleOutL"
-       orient="auto"
-       refY="0"
-       refX="0"
-       id="marker5048"
-       style="overflow:visible">
-      <path
-         id="path5050"
-         d="m 5.77,0 -8.65,5 0,-10 8.65,5 z"
-         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt"
-         transform="scale(0.8,0.8)"
-         inkscape:connector-curvature="0" />
-    </marker>
-    <marker
-       inkscape:stockid="TriangleOutL"
-       orient="auto"
-       refY="0"
-       refX="0"
-       id="marker5052"
-       style="overflow:visible">
-      <path
-         id="path5054"
-         d="m 5.77,0 -8.65,5 0,-10 8.65,5 z"
-         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt"
-         transform="scale(0.8,0.8)"
-         inkscape:connector-curvature="0" />
-    </marker>
-    <marker
-       inkscape:stockid="TriangleOutL"
-       orient="auto"
-       refY="0"
-       refX="0"
-       id="marker5056"
-       style="overflow:visible">
-      <path
-         id="path5058"
-         d="m 5.77,0 -8.65,5 0,-10 8.65,5 z"
-         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt"
-         transform="scale(0.8,0.8)"
-         inkscape:connector-curvature="0" />
-    </marker>
-    <marker
-       inkscape:stockid="TriangleOutL"
-       orient="auto"
-       refY="0"
-       refX="0"
-       id="marker5060"
-       style="overflow:visible">
-      <path
-         id="path5062"
-         d="m 5.77,0 -8.65,5 0,-10 8.65,5 z"
-         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt"
-         transform="scale(0.8,0.8)"
-         inkscape:connector-curvature="0" />
-    </marker>
   </defs>
   <sodipodi:namedview
      inkscape:document-units="mm"
@@ -306,19 +194,19 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.74933746"
-     inkscape:cx="124.81008"
-     inkscape:cy="92.518884"
+     inkscape:zoom="0.5298616"
+     inkscape:cx="773.35621"
+     inkscape:cy="270.44379"
      inkscape:current-layer="svg3027"
      showgrid="true"
      inkscape:showpageshadow="false"
      units="mm"
      inkscape:snap-grids="true"
-     inkscape:window-width="1610"
-     inkscape:window-height="957"
-     inkscape:window-x="0"
-     inkscape:window-y="70"
-     inkscape:window-maximized="1"
+     inkscape:window-width="1088"
+     inkscape:window-height="965"
+     inkscape:window-x="358"
+     inkscape:window-y="16"
+     inkscape:window-maximized="0"
      showguides="false"
      inkscape:snap-from-guide="true"
      gridtolerance="10000"
@@ -356,49 +244,49 @@
        dotted="false"
        spacingx="1mm"
        spacingy="1mm"
-       originx="0"
-       originy="-6.6725683" />
+       originx="634.64624"
+       originy="177.28583" />
     <sodipodi:guide
        orientation="1,0"
-       position="42.091477,473.74629"
+       position="-176.99944,-418.27302"
        id="guide4086" />
     <sodipodi:guide
        orientation="1,0"
-       position="573.58753,30.832903"
+       position="354.49663,-861.18637"
        id="guide4088" />
     <sodipodi:guide
        orientation="1,0"
-       position="307.83951,388.70692"
+       position="88.74859,-503.31239"
        id="guide4102" />
     <sodipodi:guide
        orientation="0,1"
-       position="73.981237,466.65967"
+       position="-145.10968,-425.35964"
        id="guide4106" />
     <sodipodi:guide
        orientation="0,1"
-       position="356.90085,-64.732037"
+       position="137.80993,-956.75137"
        id="guide4108" />
     <sodipodi:guide
        orientation="0,1"
-       position="98.784387,-142.78915"
+       position="-120.30653,-1034.8085"
        id="guide4130" />
     <sodipodi:guide
        orientation="1,0"
-       position="361.28758,184.84796"
+       position="142.19666,-707.17135"
        id="guide3044" />
     <inkscape:grid
        type="xygrid"
        id="grid3066"
        units="mm"
        empspacing="10"
-       visible="true"
+       visible="false"
        enabled="false"
        snapvisiblegridlinesonly="false"
        spacingx="0.5mm"
        spacingy="0.5mm"
        dotted="false"
-       originx="-46.491193"
-       originy="-330.58443" />
+       originx="634.64624"
+       originy="177.28583" />
   </sodipodi:namedview>
   <metadata
      id="metadata4">
@@ -415,207 +303,282 @@
     </rdf:RDF>
   </metadata>
   <text
-     sodipodi:linespacing="125%"
-     id="text4188"
-     y="173.75096"
-     x="102.18338"
-     style="font-style:normal;font-weight:normal;font-size:12px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;opacity:0.53497943;fill:#000000;fill-opacity:1;stroke:none"
-     xml:space="preserve"><tspan
-       id="tspan4194"
-       y="173.75096"
-       x="102.18338"
-       sodipodi:role="line">XMLBasedCycle</tspan></text>
-  <text
      xml:space="preserve"
      style="font-style:normal;font-weight:normal;font-size:12px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;opacity:0.53497943;fill:#000000;fill-opacity:1;stroke:none"
-     x="206.42203"
-     y="320.51309"
+     x="633.92554"
+     y="156.73547"
      id="text3015"
      sodipodi:linespacing="125%"><tspan
        sodipodi:role="line"
-       x="206.42203"
-       y="320.51309"
-       id="tspan3017">Endpoint</tspan><tspan
+       x="633.92554"
+       y="156.73547"
+       id="tspan3240">IdentifierListHarvesting</tspan><tspan
        sodipodi:role="line"
-       x="206.42203"
-       y="335.51309"
-       id="tspan3240">Adapter</tspan></text>
+       x="633.92554"
+       y="171.73547"
+       id="tspan3600">adds </tspan><tspan
+       sodipodi:role="line"
+       x="633.92554"
+       y="186.73547"
+       id="tspan4221">ListIdentifiers verb </tspan><tspan
+       sodipodi:role="line"
+       x="633.92554"
+       y="201.73547"
+       id="tspan3602" /></text>
   <text
      xml:space="preserve"
      style="font-style:normal;font-weight:normal;font-size:12px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;opacity:0.53497943;fill:#000000;fill-opacity:1;stroke:none"
-     x="100.75476"
-     y="36.549389"
+     x="928.6521"
+     y="9.4486694"
      id="text3180"
      sodipodi:linespacing="125%"><tspan
        sodipodi:role="line"
-       x="100.75476"
-       y="36.549389"
+       x="928.6521"
+       y="9.4486694"
        id="tspan3182">client</tspan></text>
   <text
      xml:space="preserve"
      style="font-style:normal;font-weight:normal;font-size:12px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;opacity:0.53497943;fill:#000000;fill-opacity:1;stroke:none"
-     x="-0.67382812"
-     y="172.65594"
+     x="735.67444"
+     y="299.90717"
      id="text3186"
      sodipodi:linespacing="125%"><tspan
        sodipodi:role="line"
-       x="-0.67382812"
-       y="172.65594"
-       id="tspan3188">CycleFactory</tspan></text>
+       x="735.67444"
+       y="299.90717"
+       id="tspan3188">ListHarvesting</tspan><tspan
+       sodipodi:role="line"
+       x="735.67444"
+       y="314.90717"
+       id="tspan3594">adds</tspan><tspan
+       sodipodi:role="line"
+       x="735.67444"
+       y="329.90717"
+       id="tspan4227">OAI request</tspan></text>
+  <path
+     inkscape:connector-curvature="0"
+     id="path3192"
+     d="m 705.28406,200.20687 0,35.43307 38.97636,42.51968"
+     style="opacity:0.5;fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;marker-end:url(#TriangleOutL)"
+     sodipodi:nodetypes="ccc" />
   <path
      sodipodi:nodetypes="ccc"
-     style="opacity:0.5;fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;marker-end:url(#TriangleOutL-3)"
-     d="m 132.93769,217.08851 -62.071548,32.1472 0.34093,35.07002"
+     style="opacity:0.5;fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;marker-end:url(#TriangleOutL)"
+     d="m 776.15019,338.39584 0.0713,31.4329 0.34093,35.07002"
      id="path3202"
      inkscape:connector-curvature="0" />
   <text
      xml:space="preserve"
      style="font-style:normal;font-weight:normal;font-size:12px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;opacity:0.53497943;fill:#000000;fill-opacity:1;stroke:none"
-     x="49.296818"
-     y="320.17941"
+     x="712.32043"
+     y="430.87701"
      id="text3214"
      sodipodi:linespacing="125%"><tspan
        sodipodi:role="line"
-       x="49.296818"
-       y="320.17941"
-       id="tspan3216">CycleProperties</tspan><tspan
+       x="712.32043"
+       y="430.87701"
+       id="tspan3218">AbstractListHarvesting</tspan><tspan
        sodipodi:role="line"
-       x="49.296818"
-       y="335.17941"
-       id="tspan3218">Adapter</tspan></text>
-  <path
-     sodipodi:nodetypes="ccc"
-     style="opacity:0.5;fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;marker-end:url(#TriangleOutL-3)"
-     d="m 113.38583,61.440431 35.43307,31.88977 0,46.062989"
-     id="path3222"
-     inkscape:connector-curvature="0" />
+       x="712.32043"
+       y="445.87701"
+       id="tspan3590">adds</tspan><tspan
+       sodipodi:role="line"
+       x="712.32043"
+       y="460.87701"
+       id="tspan4229">list based store</tspan></text>
   <text
      sodipodi:linespacing="125%"
      id="text3226"
-     y="454.12711"
-     x="115.61365"
+     y="585.63452"
+     x="918.92554"
      style="font-style:normal;font-weight:normal;font-size:12px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;opacity:0.53497943;fill:#000000;fill-opacity:1;stroke:none"
      xml:space="preserve"><tspan
        id="tspan3230"
-       y="454.12711"
-       x="115.61365"
-       sodipodi:role="line">XMLOverview</tspan></text>
+       y="585.63452"
+       x="918.92554"
+       sodipodi:role="line">AbstractHarvesting</tspan><tspan
+       y="600.63452"
+       x="918.92554"
+       sodipodi:role="line"
+       id="tspan3592">adds </tspan><tspan
+       y="615.63452"
+       x="918.92554"
+       sodipodi:role="line"
+       id="tspan4250">indices and response</tspan></text>
   <path
      inkscape:connector-curvature="0"
      id="path3232"
-     d="m 70.866142,355.53492 60.577148,28.70951 -0.34093,38.61333"
-     style="opacity:0.5;fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;marker-end:url(#TriangleOutL-3)"
+     d="m 776.15019,473.04151 -0.0713,31.43291 63.85082,35.88994"
+     style="opacity:0.5;fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;marker-end:url(#TriangleOutL)"
      sodipodi:nodetypes="ccc" />
-  <path
-     sodipodi:nodetypes="ccc"
-     style="opacity:0.5;fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;marker-end:url(#TriangleOutL-3)"
-     d="m 166.53543,61.440431 64.12046,32.46093 -0.34093,98.641439"
-     id="path3238"
-     inkscape:connector-curvature="0" />
   <text
      xml:space="preserve"
      style="font-style:normal;font-weight:normal;font-size:12px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;opacity:0.53497943;fill:#000000;fill-opacity:1;stroke:none"
-     x="375.04053"
-     y="447.07825"
+     x="1299.1069"
+     y="585.98712"
      id="text3403"
      sodipodi:linespacing="125%"
      inkscape:transform-center-y="-4.6435547"><tspan
        sodipodi:role="line"
-       x="375.04053"
-       y="447.07825"
-       id="tspan3413">harvest</tspan><tspan
+       x="1299.1069"
+       y="585.98712"
+       id="tspan3427">OAI </tspan><tspan
        sodipodi:role="line"
-       x="375.04053"
-       y="462.07825"
-       id="tspan3427">overview</tspan></text>
+       x="1299.1069"
+       y="600.98712"
+       id="tspan3616">endpoints</tspan></text>
   <text
      sodipodi:linespacing="125%"
      id="text3421"
-     y="36.215633"
-     x="356.46906"
+     y="9.1171875"
+     x="1289.2249"
      style="font-style:normal;font-weight:normal;font-size:12px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;opacity:0.53497943;fill:#000000;fill-opacity:1;stroke:none"
      xml:space="preserve"><tspan
        id="tspan3423"
-       y="36.215633"
-       x="356.46906"
-       sodipodi:role="line">OAI endpoints</tspan></text>
+       y="9.1171875"
+       x="1289.2249"
+       sodipodi:role="line">records</tspan><tspan
+       y="24.117188"
+       x="1289.2249"
+       sodipodi:role="line"
+       id="tspan3668">and </tspan><tspan
+       y="39.117188"
+       x="1289.2249"
+       sodipodi:role="line"
+       id="tspan4252">identifiers</tspan></text>
   <path
      inkscape:connector-curvature="0"
      id="path3425"
-     d="m 396.85039,426.40106 0.56154,-209.05512 0.34093,-24.80314"
-     style="opacity:0.5;fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;marker-end:url(#TriangleOutL-3)"
+     d="m 1321.4072,543.90766 0.071,-262.41541 0.341,-154.35573"
+     style="opacity:0.5;fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;marker-end:url(#TriangleOutL)"
      sodipodi:nodetypes="ccc" />
   <text
      sodipodi:linespacing="125%"
-     id="text5265"
-     y="-52.529308"
-     x="100.75476"
+     id="text3606"
+     y="156.73547"
+     x="788.92554"
      style="font-style:normal;font-weight:normal;font-size:12px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;opacity:0.53497943;fill:#000000;fill-opacity:1;stroke:none"
      xml:space="preserve"><tspan
-       id="tspan5267"
-       y="-52.529308"
-       x="100.75476"
+       id="tspan3608"
+       y="156.73547"
+       x="788.92554"
+       sodipodi:role="line">RecordListHarvesting</tspan><tspan
+       id="tspan3610"
+       y="171.73547"
+       x="788.92554"
+       sodipodi:role="line">adds</tspan><tspan
+       y="186.73547"
+       x="788.92554"
+       sodipodi:role="line"
+       id="tspan4219">LIstRecords verb </tspan><tspan
+       id="tspan3612"
+       y="201.73547"
+       x="788.92554"
        sodipodi:role="line" /></text>
   <text
-     sodipodi:linespacing="125%"
-     id="text5269"
-     y="-52.195679"
-     x="100.75476"
-     style="font-style:normal;font-weight:normal;font-size:12px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;opacity:0.53497943;fill:#000000;fill-opacity:1;stroke:none"
-     xml:space="preserve"><tspan
-       id="tspan5271"
-       y="-52.195679"
-       x="100.75476"
-       sodipodi:role="line" /></text>
-  <text
-     sodipodi:linespacing="125%"
-     id="text5273"
-     y="-57.867359"
-     x="100.75476"
-     style="font-style:normal;font-weight:normal;font-size:12px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;opacity:0.53497943;fill:#000000;fill-opacity:1;stroke:none"
-     xml:space="preserve"><tspan
-       id="tspan5275"
-       y="-57.867359"
-       x="100.75476"
-       sodipodi:role="line" /></text>
-  <flowRoot
      xml:space="preserve"
-     id="flowRoot5277"
-     style="font-style:normal;font-weight:normal;font-size:40px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-     transform="translate(0,-13.937797)"><flowRegion
-       id="flowRegion5279"><rect
-         id="rect5281"
-         width="70.866142"
-         height="46.062992"
-         x="77.524551"
-         y="-68.426498" /></flowRegion><flowPara
-       id="flowPara5283" /></flowRoot>  <path
+     style="font-style:normal;font-weight:normal;font-size:12px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;opacity:0.53497943;fill:#000000;fill-opacity:1;stroke:none"
+     x="944.93726"
+     y="156.8266"
+     id="text3620"
+     sodipodi:linespacing="125%"><tspan
+       sodipodi:role="line"
+       x="944.93726"
+       y="156.8266"
+       id="tspan3622">RecordHarvesting</tspan><tspan
+       sodipodi:role="line"
+       x="944.93726"
+       y="171.8266"
+       id="tspan3624">adds</tspan><tspan
+       sodipodi:role="line"
+       x="944.93726"
+       y="186.8266"
+       id="tspan4223">GetRecord verb </tspan><tspan
+       sodipodi:role="line"
+       x="944.93726"
+       y="201.8266"
+       id="tspan3626" /></text>
+  <path
+     inkscape:connector-curvature="0"
+     id="path3628"
+     d="m 977.70645,200.20687 0.0713,305.18425 0.34093,35.07002"
+     style="opacity:0.5;fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;marker-end:url(#TriangleOutL)"
+     sodipodi:nodetypes="ccc" />
+  <path
      sodipodi:nodetypes="ccc"
-     style="opacity:0.5;fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;marker-end:url(#TriangleOutL-3)"
-     d="m 237.7425,355.53492 -60.57715,28.70951 0.34093,38.61333"
-     id="path5381"
+     style="opacity:0.5;fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;marker-end:url(#TriangleOutL)"
+     d="m 1173.0006,200.20687 0,304.72442 -63.8509,35.88994"
+     id="path3630"
+     inkscape:connector-curvature="0" />
+  <text
+     sodipodi:linespacing="125%"
+     id="text3646"
+     y="156.80191"
+     x="1111.7264"
+     style="font-style:normal;font-weight:normal;font-size:12px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;opacity:0.53497943;fill:#000000;fill-opacity:1;stroke:none"
+     xml:space="preserve"><tspan
+       id="tspan3648"
+       y="156.80191"
+       x="1111.7264"
+       sodipodi:role="line">PrefixHarvesting</tspan><tspan
+       id="tspan3650"
+       y="171.80191"
+       x="1111.7264"
+       sodipodi:role="line">adds</tspan><tspan
+       y="186.80191"
+       x="1111.7264"
+       sodipodi:role="line"
+       id="tspan4225">ListMetadataFormats verb</tspan></text>
+  <path
+     sodipodi:nodetypes="ccc"
+     style="opacity:0.5;fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;marker-end:url(#TriangleOutL)"
+     d="m 847.01632,44.301359 -141.73226,38.976372 0,42.519689"
+     id="path3652"
+     inkscape:connector-curvature="0" />
+  <path
+     sodipodi:nodetypes="ccc"
+     style="opacity:0.5;fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;marker-end:url(#TriangleOutL)"
+     d="m 977.70645,44.301359 -0.0713,28.028192 0.0713,53.467869"
+     id="path3656"
      inkscape:connector-curvature="0" />
   <path
      inkscape:connector-curvature="0"
-     id="path5383"
-     d="m 170.07874,217.34594 62.07155,32.1472 -0.34093,35.07002"
-     style="opacity:0.5;fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;marker-end:url(#TriangleOutL-3)"
+     id="path3662"
+     d="m 917.88247,44.301359 -67.32284,38.976372 0,42.519689"
+     style="opacity:0.5;fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;marker-end:url(#TriangleOutL)"
      sodipodi:nodetypes="ccc" />
   <path
+     sodipodi:nodetypes="ccc"
+     style="opacity:0.5;fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;marker-end:url(#TriangleOutL)"
+     d="m 850.55963,200.20687 0,35.43307 -38.97638,42.51968"
+     id="path4856"
+     inkscape:connector-curvature="0" />
+  <text
+     sodipodi:linespacing="125%"
+     id="text5804"
+     y="795.24652"
+     x="-0.66210938"
+     style="font-style:normal;font-weight:normal;font-size:12px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;opacity:0.53497943;fill:#ffffff;fill-opacity:1;stroke:none"
+     xml:space="preserve"><tspan
+       id="tspan5806"
+       y="795.24652"
+       x="-0.66210938"
+       sodipodi:role="line">client</tspan></text>
+  <path
      inkscape:connector-curvature="0"
-     id="path5385"
-     d="m 70.866142,61.440431 -35.43307,31.88977 0,46.062989"
-     style="opacity:0.5;fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;marker-end:url(#TriangleOutL-3)"
+     id="path5812"
+     d="m 1031.2683,44.301359 141.7323,38.976372 0,42.519689"
+     style="opacity:0.5;fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;marker-end:url(#TriangleOutL)"
      sodipodi:nodetypes="ccc" />
   <text
      sodipodi:linespacing="125%"
-     id="text5387"
-     y="0"
-     x="100.75476"
+     id="text6082"
+     y="-37.733459"
+     x="928.6521"
      style="font-style:normal;font-weight:normal;font-size:12px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;opacity:0.53497943;fill:#000000;fill-opacity:1;stroke:none"
      xml:space="preserve"><tspan
-       id="tspan5389"
-       y="0"
-       x="100.75476"
-       sodipodi:role="line"> </tspan></text>
+       id="tspan6084"
+       y="-37.733459"
+       x="928.6521"
+       sodipodi:role="line" /></text>
 </svg>
