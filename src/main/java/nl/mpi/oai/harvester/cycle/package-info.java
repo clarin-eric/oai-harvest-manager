@@ -17,22 +17,31 @@
  */
 
 /**
- * kj: this was taken from the cycle interface, try to adapt it
+ * When each endpoint maintained by the manager has been harvested, or at least
+ * an attempted to harvest the endpoint has been made, one harvesting cycle has
+ * been completed. Through the cycle and endpoint interfaces, the cycle package
+ * provides a framework to a client that needs to decide whether, when and how
+ * an endpoint should be harvested. <br><br>
  *
- * A harvesting cycle is a guide to the client, a path along the endpoints
- * defined in the overview. A client can iterate over the endpoints already
- * present in the overview, or it can ask for a specific endpoint by supplying
- * its URI. <br><br>
+ * The client can specify endpoints to the cycle package. However, if the
+ * client desires it, the package will also consider endpoints attempted in the
+ * past. To this end, it records details about attempts in a harvest overview. <br><br>
  *
- * By interpreting the properties recorded in the overview, the client can
- * decide if it needs to harvest the endpoint, and also, which method of
- * harvesting it should apply. <br><br>
+ * Depending on the implementation of the overview, the client to the package
+ * can add definitions to the overview that define whether and when and how a
+ * specific endpoint should be harvested. The package implements the overview
+ * as an XML file. It adapts the XML definitions to objects used by the XML
+ * based cycle and vice versa. <br><br>
  *
- * Note: the XMLBasedCycle class included in the package is an example of an
- * implementation of the interface.
+ * The XML implementation offers the advantage of changing the cycle and
+ * endpoint properties manually. This provides the necessary flexibility for
+ * managing exceptions in the unfolding of the harvesting cycle.<br><br>
+ *
+ * For interpretation of the definition in the overview file, please refer to
+ * the Endpoint and CycleProperties interfaces.<br><br>
  *
  * <p><IMG SRC="doc-files/package overview - cycle.svg">
  *
- * @author Kees Jan van de Looij (MPI-PL)
+ * @author Kees Jan van de Looij (Max Planck Institute for Psycholinguistics)
  */
 package nl.mpi.oai.harvester.cycle;

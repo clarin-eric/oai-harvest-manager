@@ -24,12 +24,12 @@
  *
  * To harvest records from the endpoint the specified to the package, the client
  * can engage itself in different scenarios: listing metadata formats, listing
- * identifiers and records, or listing records directly.
+ * identifiers and records, or listing records directly.<br><br>
  *
  * The package will apply the ListMetadataFormats verb to harvest a list of
  * formats. An endpoint should at least support one of: metadata prefix,
  * namespace or schema. The package transforms the response to the metadata
- * format query into a list of metadata prefixes.
+ * format query into a list of metadata prefixes.<br><br>
  *
  * A prefix identifies the type of record provided by the endpoint, like for
  * example: dc (Dublin Core), olac (Open Language Archives Community), or cmdi
@@ -49,6 +49,6 @@
  * be returned more than once if the client were to specify more than one set in
  * which the record occurs.<br><br>
  *
- * @author Kees Jan van de Looij (MPI-PL)
+ * @author Kees Jan van de Looij (Max Planck Institute for Psycholinguistics)
  */
 package nl.mpi.oai.harvester.harvesting;
