@@ -184,7 +184,7 @@ final class XMLOverview {
      * the method will store the overview of the current harvest attempts
      * in a file with the named after the original file.
      */
-    public synchronized void rotateAndSave (){
+    public synchronized boolean rotateAndSave (){
 
         // get the original path and name
 
@@ -207,15 +207,20 @@ final class XMLOverview {
         File newFile = new File (newName);
 
         // rename the original file
-        // kj: findbugs reports 'Method ignores exceptional return value'
-        file.renameTo(newFile);
+        boolean done = file.renameTo(newFile);
 
-        // create another new file
-        File anotherNewFile = new File (parent + "/" + nameWithoutExtension +
-                "." + extension);
+        if (! done){
+            return false;
+        } else {
+            // create another new file
+            File anotherNewFile = new File (parent + "/" + nameWithoutExtension +
+                    "." + extension);
 
-        // marshall the overview under the name of the original file
-        JAXB.marshal(overviewType, anotherNewFile);
+            // marshall the overview under the name of the original file
+            JAXB.marshal(overviewType, anotherNewFile);
+
+            return true;
+        }
     }
 
 }

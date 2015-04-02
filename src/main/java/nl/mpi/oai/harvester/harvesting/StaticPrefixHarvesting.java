@@ -38,7 +38,7 @@ import java.io.IOException;
  * @author Kees Jan van de Looij (MPI-PL)
  *         xpath parsing by Lari Lampen (MPI-PL)
  */
-public final class StaticPrefixHarvesting extends PrefixHarvesting
+public final class StaticPrefixHarvesting extends FormatHarvesting
         implements Harvesting {
 
     private static final Logger logger = Logger.getLogger(

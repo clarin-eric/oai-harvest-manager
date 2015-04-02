@@ -106,8 +106,11 @@ public class XMLOverviewTest {
         /* Now rotate the copy. This will create a file with a date and
            timestamp, and a new file containing the overview.
          */
-        xmlOverview.rotateAndSave();
+        boolean done = xmlOverview.rotateAndSave();
 
+        if (! done){
+            fail();
+        }
 
         // create a filter for finding the overview XML files
         String[] allowedExtensions = new String[] {"xml"};

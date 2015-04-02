@@ -281,7 +281,7 @@ class Worker implements Runnable {
             // check if harvesting of static content applies
 
             if (provider instanceof StaticProvider) {
-                provider.prefixHarvesting = new StaticFormatHarvesting(
+                provider.prefixHarvesting = new StaticPrefixHarvesting(
                         (StaticProvider)provider, actionSequence);
 
             } else {

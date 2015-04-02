@@ -54,7 +54,7 @@ public class XMLBasedCycle implements Cycle {
     private final CycleProperties cycleProperties;
 
     // the endpoint URIs returned to the client in the current cycle
-    private static ArrayList<String> endpointsCycled = new ArrayList<>();
+    private ArrayList<String> endpointsCycled = new ArrayList<>();
 
     /**
      * Associate the cycle with the XML file defining the cycle and endpoint
@@ -70,7 +70,6 @@ public class XMLBasedCycle implements Cycle {
         cycleProperties = xmlOverview.getCycleProperties();
 
         // no longer consider endpoints cycled before
-        //  kj: findbugs reports 'Write to static field from instance method'
         endpointsCycled = new ArrayList<>();
     }
 
