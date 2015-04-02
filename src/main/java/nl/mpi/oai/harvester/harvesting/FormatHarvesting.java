@@ -38,18 +38,18 @@ import org.xml.sax.SAXException;
 /**
  * <br> Prefix harvesting <br><br>
  *
- * This class provides for a way to obtain the prefixes supported by an OAI
- * endpoint. A client can request prefixes matching the format supplied by an
+ * This class provides for a way to obtain the formats supported by an OAI
+ * endpoint. A client can request formats matching the format supplied by an
  * action. After processing the endpoint's response, the client can obtain the
- * prefixes one after the other by parsing.
+ * formats one after the other by parsing.
  *
  * @author Kees Jan van de Looij (MPI-PL)
  */
-public class PrefixHarvesting extends AbstractHarvesting implements
+public class FormatHarvesting extends AbstractHarvesting implements
         Harvesting {
     
     private static final Logger logger = Logger.getLogger(
-            PrefixHarvesting.class);
+            FormatHarvesting.class);
 
     /**
      * <br> List response elements to be parsed and made available
@@ -77,7 +77,7 @@ public class PrefixHarvesting extends AbstractHarvesting implements
      * @param provider the endpoint to address in the request
      * @param actions  specify the format requested
      */
-    public PrefixHarvesting(Provider provider, ActionSequence actions) {
+    public FormatHarvesting(Provider provider, ActionSequence actions) {
         super (provider);
         this.response = null;
         this.provider = provider;
@@ -94,7 +94,7 @@ public class PrefixHarvesting extends AbstractHarvesting implements
     @Override
     public boolean request() {
         
-        logger.debug("Requesting prefixes for format " + actions.getInputFormat());
+        logger.debug("Requesting formats matching " + actions.getInputFormat());
 
         try {
             // try to get a response from the provider's endpoint
@@ -108,7 +108,7 @@ public class PrefixHarvesting extends AbstractHarvesting implements
             */
             logger.error(e.getMessage(), e);
             logger.info ("Cannot obtain " + actions.getInputFormat() + 
-                    " metadata prefixes from endpoint " + provider.oaiUrl);
+                    " metadata formats from endpoint " + provider.oaiUrl);
             return false;
         }
 
@@ -166,7 +166,7 @@ public class PrefixHarvesting extends AbstractHarvesting implements
                     formats.getDocument(), XPathConstants.NODESET);
         } catch (XPathExpressionException e) {
             logger.error(e.getMessage(), e);
-            logger.info("Cannot create list of prefixes for format " +
+            logger.info("Cannot create list of formats matching " +
                     actions.getInputFormat() + " obtained from endpoint "
                     + provider.oaiUrl);
             // something went wrong when creating the list, try another endpoint
@@ -215,7 +215,7 @@ public class PrefixHarvesting extends AbstractHarvesting implements
         } catch (XPathExpressionException e) {
             // something went wrong parsing, try another prefix
             logger.error(e.getMessage(), e);
-            logger.info("Error parsing response for prefix");
+            logger.info("Error parsing response for format");
             return null;
         }
         
@@ -246,6 +246,14 @@ public class PrefixHarvesting extends AbstractHarvesting implements
                 level of schema or namespace, the prefix will still be part of 
                 the response. So for example, requesting a cmdi prefix will 
                 match cmdi0554, cmdi0571, cmdi2312 or cmdi9836.
+
+                kj: some clarification needed here.
+
+                The method always returns a prefix regardless of the type
+                provided. If this type could be a name space, then the string
+                returned by the protocol will still contain a reference to a
+                prefix. When the method extracts the prefix, it does so even
+                the provided response type is of type name space or schema.
             */
             logger.debug("Found suitable prefix: " + prefix);
             return prefix;
