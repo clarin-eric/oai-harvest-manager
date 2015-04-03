@@ -88,6 +88,18 @@ public class FormatHarvesting extends AbstractHarvesting implements
     }
 
     /**
+     * kj: using a mockito spy
+     */
+    public ListMetadataFormats make (String url) throws
+            ParserConfigurationException,
+            TransformerException,
+            SAXException,
+            IOException {
+
+        return new ListMetadataFormats(url);
+    }
+
+    /**
      * <br> Request prefixes
      * 
      * @return false if there was an error, true otherwise
@@ -99,7 +111,7 @@ public class FormatHarvesting extends AbstractHarvesting implements
 
         try {
             // try to get a response from the provider's endpoint
-            response = new ListMetadataFormats(provider.oaiUrl);
+            response = make(provider.oaiUrl);
         } catch ( TransformerException 
                 | ParserConfigurationException 
                 | SAXException 
@@ -123,6 +135,7 @@ public class FormatHarvesting extends AbstractHarvesting implements
         if (response == null){
             throw new HarvestingException();
         } else {
+            // response holds 'listMetadataFormats', mock needed in test method
             return response.getDocument();
         }
     }
@@ -152,6 +165,7 @@ public class FormatHarvesting extends AbstractHarvesting implements
         ListMetadataFormats formats;
 
         // check if the response is in the expected ListMetadataFormats class
+        // kj: mock not possible, different approach needed
         if (! (response instanceof ListMetadataFormats)){
             throw new UnsupportedOperationException("Protocol error");
         } else {

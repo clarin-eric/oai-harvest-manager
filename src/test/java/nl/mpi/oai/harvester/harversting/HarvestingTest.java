@@ -18,6 +18,7 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,8 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.fail;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * <br> Tests targeting the harvesting package <br><br>
@@ -50,14 +50,10 @@ public class HarvestingTest {
     static Provider provider;
     static ActionSequence actionSequence;
 
-    // set up the ListMetadataFormats class for mocking
-    @Mock
-    HarvesterVerb response;
+    @Mock private ListMetadataFormats listMetadataFormats;
 
-    @InjectMocks
-    // mock the FormatHarvesting
-    FormatHarvesting harvesting = new FormatHarvesting(provider,
-            actionSequence);
+    private FormatHarvesting formatHarvesting = spy (new FormatHarvesting(
+            provider, actionSequence));
 
     /**
      *
@@ -104,22 +100,30 @@ public class HarvestingTest {
         File testFile = new File ("/response-ListMetadataFormats.xml");
         Document testDoc = getDocumentFromFile(testFile);
 
-        // define the mock for the method in FormatHarvesting method
-        when(response.getDocument()).thenReturn(testDoc);
+        when(listMetadataFormats.getDocument()).thenReturn(testDoc);
+        // when(listMetadataFormats instanceof ListMetadataFormats).thenReturn(true);
+
+        try {
+            doReturn(listMetadataFormats).when(formatHarvesting).make(any(String.class));
+        } catch (TransformerException e) {
+            e.printStackTrace();
+        }
 
         // now invoke any desired format harvesting method
         boolean done;
-        done = harvesting.request();
+        done = formatHarvesting.request();
         if (! done){
             fail();
         }
 
-        done = harvesting.processResponse();
+        Document document = formatHarvesting.getResponse();
+
+        done = formatHarvesting.processResponse();
         if (! done){
             fail();
         }
 
-        done = harvesting.fullyParsed();
+        done = formatHarvesting.fullyParsed();
         if (! done){
             fail();
         }
@@ -127,8 +131,8 @@ public class HarvestingTest {
         final List<String> prefixes = new ArrayList<>();
 
         for (;;){
-            if (harvesting.fullyParsed()) break;
-            String prefix = (String) harvesting.parseResponse();
+            if (formatHarvesting.fullyParsed()) break;
+            String prefix = (String) formatHarvesting.parseResponse();
             if (prefix != null) {
                 prefixes.add(prefix);
             }
