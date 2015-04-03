@@ -20,8 +20,8 @@
  * When each endpoint maintained by the manager has been harvested, or at least
  * an attempted to harvest the endpoint has been made, one harvesting cycle has
  * been completed. Through the cycle and endpoint interfaces, the cycle package
- * provides a framework to a client that needs to decide whether, when and how
- * an endpoint should be harvested. <br><br>
+ * provides a framework to a client that needs to decide whether and how an
+ * endpoint should be harvested. <br><br>
  *
  * The client can specify endpoints to the cycle package. However, if the
  * client desires it, the package will also consider endpoints attempted in the

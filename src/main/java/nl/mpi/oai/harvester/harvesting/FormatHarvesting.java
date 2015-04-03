@@ -21,6 +21,7 @@ package nl.mpi.oai.harvester.harvesting;
 
 import ORG.oclc.oai.harvester2.verb.ListMetadataFormats;
 import java.io.IOException;
+import javax.annotation.Resource;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.xpath.XPathConstants;
@@ -107,8 +108,8 @@ public class FormatHarvesting extends AbstractHarvesting implements
                for this endpoint.
             */
             logger.error(e.getMessage(), e);
-            logger.info ("Cannot obtain " + actions.getInputFormat() + 
-                    " metadata formats from endpoint " + provider.oaiUrl);
+            logger.info ("Cannot obtain metadata formats from endpoint " +
+                    provider.getOaiUrl());
             return false;
         }
 

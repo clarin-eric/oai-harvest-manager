@@ -21,6 +21,7 @@ package nl.mpi.oai.harvester.harvesting;
 import ORG.oclc.oai.harvester2.verb.HarvesterVerb;
 import nl.mpi.oai.harvester.Provider;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 /**
@@ -60,6 +61,7 @@ public abstract class AbstractHarvesting implements Harvesting {
     /**
      * <br> Response to the OAI request
      */
+    @Resource
     HarvesterVerb response;
 
     /**

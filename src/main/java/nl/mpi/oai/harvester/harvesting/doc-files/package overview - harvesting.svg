@@ -194,9 +194,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.2649308"
-     inkscape:cx="544.13308"
-     inkscape:cy="162.64526"
+     inkscape:zoom="1.0597232"
+     inkscape:cx="110.35998"
+     inkscape:cy="223.88831"
      inkscape:current-layer="svg3027"
      showgrid="true"
      inkscape:showpageshadow="false"
@@ -204,8 +204,8 @@
      inkscape:snap-grids="true"
      inkscape:window-width="1610"
      inkscape:window-height="957"
-     inkscape:window-x="0"
-     inkscape:window-y="70"
+     inkscape:window-x="1104"
+     inkscape:window-y="619"
      inkscape:window-maximized="1"
      showguides="true"
      inkscape:snap-from-guide="true"
@@ -312,7 +312,7 @@
        sodipodi:role="line"
        x="164.56226"
        y="293.46539"
-       id="tspan3600">adds </tspan><tspan
+       id="tspan3600">provides the</tspan><tspan
        sodipodi:role="line"
        x="164.56226"
        y="308.46539"
@@ -350,11 +350,11 @@
        sodipodi:role="line"
        x="96.160828"
        y="436.63708"
-       id="tspan4227">combines </tspan><tspan
+       id="tspan4227">uses </tspan><tspan
        sodipodi:role="line"
        x="96.160828"
        y="451.63708"
-       id="tspan4247">the List* verbs</tspan></text>
+       id="tspan4247">a List* verb</tspan></text>
   <path
      inkscape:connector-curvature="0"
      id="path3192"
@@ -381,11 +381,11 @@
        sodipodi:role="line"
        x="72.806824"
        y="567.60693"
-       id="tspan3590">adds</tspan><tspan
+       id="tspan4229">provides </tspan><tspan
        sodipodi:role="line"
        x="72.806824"
        y="582.60693"
-       id="tspan4229">a list based store</tspan></text>
+       id="tspan4255">a list based store</tspan></text>
   <text
      sodipodi:linespacing="125%"
      id="text3226"
@@ -474,7 +474,7 @@
        id="tspan3610"
        y="293.46539"
        x="-0.72070312"
-       sodipodi:role="line">adds</tspan><tspan
+       sodipodi:role="line">provides the </tspan><tspan
        y="308.46539"
        x="-0.72070312"
        sodipodi:role="line"
@@ -509,7 +509,7 @@
        id="tspan3650"
        y="293.5318"
        x="472.2128"
-       sodipodi:role="line">adds</tspan><tspan
+       sodipodi:role="line">provides the</tspan><tspan
        y="308.5318"
        x="472.2128"
        sodipodi:role="line"
@@ -601,14 +601,14 @@
      x="305.42361"
      style="font-style:normal;font-weight:normal;font-size:12px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;opacity:0.53497943;fill:#000000;fill-opacity:1;stroke:none"
      xml:space="preserve"><tspan
-       id="tspan4240"
+       id="tspan4242"
        y="421.01569"
        x="305.42361"
        sodipodi:role="line">RecordHarvesting</tspan><tspan
-       id="tspan4242"
        y="436.01569"
        x="305.42361"
-       sodipodi:role="line">adds</tspan><tspan
+       sodipodi:role="line"
+       id="tspan4245">provides the</tspan><tspan
        id="tspan4244"
        y="451.01569"
        x="305.42361"
