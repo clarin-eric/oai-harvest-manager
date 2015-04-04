@@ -31,7 +31,7 @@ import static org.mockito.Mockito.*;
 /**
  * <br> Tests targeting the harvesting package <br><br>
  *
- * Trying out mockito
+ * Trying out mockito, kj: document and clean up the test
  *
  * @author Kees Jan van de Looij (Max Planck Institute for Psycholinguistics)
  */
@@ -100,8 +100,7 @@ public class HarvestingTest {
         File testFile = new File ("/response-ListMetadataFormats.xml");
         Document testDoc = getDocumentFromFile(testFile);
 
-        when(listMetadataFormats.getDocument()).thenReturn(testDoc);
-        // when(listMetadataFormats instanceof ListMetadataFormats).thenReturn(true);
+        doReturn(testDoc).when(formatHarvesting).getResponse();
 
         try {
             doReturn(listMetadataFormats).when(formatHarvesting).make(any(String.class));
@@ -118,7 +117,7 @@ public class HarvestingTest {
 
         Document document = formatHarvesting.getResponse();
 
-        done = formatHarvesting.processResponse();
+        done = formatHarvesting.processResponse(document);
         if (! done){
             fail();
         }

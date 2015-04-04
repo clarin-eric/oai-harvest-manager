@@ -53,6 +53,15 @@ public class FormatHarvesting extends AbstractHarvesting implements
             FormatHarvesting.class);
 
     /**
+     * kj: to replace the response
+     *
+     * note: when the other harvesting classes have been adapted to mockito,
+     * we no longer need the response (to be in a superclass)
+     */
+    Document document;
+
+
+    /**
      * <br> List response elements to be parsed and made available
      */
     NodeList nodeList;
@@ -81,6 +90,7 @@ public class FormatHarvesting extends AbstractHarvesting implements
     public FormatHarvesting(Provider provider, ActionSequence actions) {
         super (provider);
         this.response = null;
+        this.document = null;
         this.provider = provider;
         this.actions  = actions;
         // get ready for parsing
@@ -132,11 +142,16 @@ public class FormatHarvesting extends AbstractHarvesting implements
     @Override
     public Document getResponse() {
         // check for protocol error
-        if (response == null){
+        if (document == null){
             throw new HarvestingException();
         } else {
-            // response holds 'listMetadataFormats', mock needed in test method
-            return response.getDocument();
+            /* When testing, the response holds 'listMetadataFormats'. Mock
+               mock invocations of this method to supply FormatHarvesting with
+               data.
+             */
+            document = ((ListMetadataFormats)response).getDocument();
+
+            return document;
         }
     }
 
@@ -149,6 +164,11 @@ public class FormatHarvesting extends AbstractHarvesting implements
         throw new HarvestingException();
     }
 
+    @Override
+    public boolean processResponse (){
+        return false;
+    }
+
     /**
      * <br> Create a list of prefixes from the response <br><br>
      *
@@ -159,26 +179,24 @@ public class FormatHarvesting extends AbstractHarvesting implements
      *
      * @return true if the list was successfully created, false otherwise
      */
-    @Override
-    public boolean processResponse() {
+    // @Override kj: temporary
+    public boolean processResponse(Document document) {
 
         ListMetadataFormats formats;
 
-        // check if the response is in the expected ListMetadataFormats class
-        // kj: mock not possible, different approach needed
-        if (! (response instanceof ListMetadataFormats)){
+        // check for protocol errors
+        if (document == null){
             throw new UnsupportedOperationException("Protocol error");
-        } else {
-            formats = (ListMetadataFormats) response;
         }
 
         try {
             /* Try to create a list of prefixes from the response. On failure,
                stop the work on the endpoint.
              */
+            // kj: when testing, provider is mocked
             nodeList = (NodeList) provider.xpath.evaluate(
                     "//*[local-name() = 'metadataFormat']",
-                    formats.getDocument(), XPathConstants.NODESET);
+                    document, XPathConstants.NODESET);
         } catch (XPathExpressionException e) {
             logger.error(e.getMessage(), e);
             logger.info("Cannot create list of formats matching " +
