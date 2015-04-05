@@ -25,13 +25,14 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.*;
 
 /**
  * <br> Tests targeting the harvesting package <br><br>
  *
- * Trying out mockito, kj: document and clean up the test
+ * kj: work on the documentation
  *
  * @author Kees Jan van de Looij (Max Planck Institute for Psycholinguistics)
  */
@@ -40,20 +41,7 @@ public class HarvestingTest {
 
     @BeforeClass
     public static void beforeAll() {
-        // mock the Provider
-        provider = mock(Provider.class);
-
-        // mock the actionSequence
-        actionSequence = mock(ActionSequence.class);
     }
-
-    static Provider provider;
-    static ActionSequence actionSequence;
-
-    @Mock private ListMetadataFormats listMetadataFormats;
-
-    private FormatHarvesting formatHarvesting = spy (new FormatHarvesting(
-            provider, actionSequence));
 
     /**
      *
@@ -79,6 +67,8 @@ public class HarvestingTest {
         return document;
     }
 
+    @Mock ListMetadataFormats listMetadataFormats;
+
     @Test
     /**
      * Testing the FormatHarvesting class
@@ -87,23 +77,20 @@ public class HarvestingTest {
             SAXException,
             ParserConfigurationException {
 
-        // create a metadata format
+        // create a real metadata format
         MetadataFormat format = new MetadataFormat("prefix", "oai_dc");
 
+        ActionSequence actionSequence = mock(ActionSequence.class);
         // define the mock for the actionSequence object
         when (actionSequence.getInputFormat()).thenReturn(format);
 
-        // define the mock for the provider
-        when(provider.getOaiUrl()).thenReturn("http://www.endpoint.org");
-
-        // get a document from a file
-        File testFile = new File ("/response-ListMetadataFormats.xml");
-        Document testDoc = getDocumentFromFile(testFile);
-
-        doReturn(testDoc).when(formatHarvesting).getResponse();
+        // create a real provider
+        Provider provider = new Provider("http://www.endpoint.org", 0);
+        FormatHarvesting formatHarvesting = spy (new FormatHarvesting(
+                provider, actionSequence));
 
         try {
-            doReturn(listMetadataFormats).when(formatHarvesting).make(any(String.class));
+            doReturn(listMetadataFormats).when(formatHarvesting).getResponse(any(String.class));
         } catch (TransformerException e) {
             e.printStackTrace();
         }
@@ -115,14 +102,18 @@ public class HarvestingTest {
             fail();
         }
 
+        // get a document from a file
+        File testFile = new File ("/response-ListMetadataFormats.xml");
+        Document testDoc = getDocumentFromFile(testFile);
+
+        // mock a response
+        doReturn(testDoc).when(formatHarvesting).getResponse();
+
+        // get the response
         Document document = formatHarvesting.getResponse();
 
+        // process the response
         done = formatHarvesting.processResponse(document);
-        if (! done){
-            fail();
-        }
-
-        done = formatHarvesting.fullyParsed();
         if (! done){
             fail();
         }
@@ -138,6 +129,6 @@ public class HarvestingTest {
         }
 
         // compare the list of prefixes to what was is expected
-
+        assertEquals(prefixes.toString(),"oai_dc");
     }
 }

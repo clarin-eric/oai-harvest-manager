@@ -53,13 +53,12 @@ public class FormatHarvesting extends AbstractHarvesting implements
             FormatHarvesting.class);
 
     /**
-     * kj: to replace the response
+     * kj: to replace the role of the response
      *
      * note: when the other harvesting classes have been adapted to mockito,
      * we no longer need the response (to be in a superclass)
      */
     Document document;
-
 
     /**
      * <br> List response elements to be parsed and made available
@@ -98,9 +97,12 @@ public class FormatHarvesting extends AbstractHarvesting implements
     }
 
     /**
-     * kj: using a mockito spy
+     * <br> Get a response from the endpoint <br><br>
+     *
+     * Instead of invoking the ListMetadataFormats constructor from the request
+     * method, create an opportunity for mockito to spy.
      */
-    public ListMetadataFormats make (String url) throws
+    public ListMetadataFormats getResponse (String url) throws
             ParserConfigurationException,
             TransformerException,
             SAXException,
@@ -121,7 +123,7 @@ public class FormatHarvesting extends AbstractHarvesting implements
 
         try {
             // try to get a response from the provider's endpoint
-            response = make(provider.oaiUrl);
+            response = getResponse(provider.oaiUrl);
         } catch ( TransformerException 
                 | ParserConfigurationException 
                 | SAXException 
@@ -142,7 +144,7 @@ public class FormatHarvesting extends AbstractHarvesting implements
     @Override
     public Document getResponse() {
         // check for protocol error
-        if (document == null){
+        if (response == null){
             throw new HarvestingException();
         } else {
             /* When testing, the response holds 'listMetadataFormats'. Mock
@@ -177,9 +179,13 @@ public class FormatHarvesting extends AbstractHarvesting implements
      * that holds the prefixes. The parseResponse method takes the list of
      * nodes as input.
      *
+     * kj: replace every invocation of processResponse() by this method
+     *
+     * While migrating to an adapted interface, define a placeholder for the
+     * version of the method that does not have a parameter.
+     *
      * @return true if the list was successfully created, false otherwise
      */
-    // @Override kj: temporary
     public boolean processResponse(Document document) {
 
         ListMetadataFormats formats;
@@ -193,7 +199,6 @@ public class FormatHarvesting extends AbstractHarvesting implements
             /* Try to create a list of prefixes from the response. On failure,
                stop the work on the endpoint.
              */
-            // kj: when testing, provider is mocked
             nodeList = (NodeList) provider.xpath.evaluate(
                     "//*[local-name() = 'metadataFormat']",
                     document, XPathConstants.NODESET);
@@ -304,6 +309,7 @@ public class FormatHarvesting extends AbstractHarvesting implements
      */
     @Override
     public boolean fullyParsed() {
+
         return index == nodeList.getLength();
     }
 }
