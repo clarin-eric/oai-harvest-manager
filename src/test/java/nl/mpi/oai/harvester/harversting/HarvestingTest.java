@@ -1,15 +1,12 @@
 package nl.mpi.oai.harvester.harversting;
 
-import ORG.oclc.oai.harvester2.verb.HarvesterVerb;
 import ORG.oclc.oai.harvester2.verb.ListMetadataFormats;
 import nl.mpi.oai.harvester.Provider;
 import nl.mpi.oai.harvester.action.ActionSequence;
 import nl.mpi.oai.harvester.harvesting.FormatHarvesting;
 import nl.mpi.oai.harvester.metadata.MetadataFormat;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.w3c.dom.Document;
@@ -19,7 +16,6 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -32,21 +28,26 @@ import static org.mockito.Mockito.*;
 /**
  * <br> Tests targeting the harvesting package <br><br>
  *
- * kj: work on the documentation
+ * None of the tests in this package will utilise the OAI protocol. The tests
+ * will run without connecting to any endpoint. The response that in the real
+ * world will be obtained from endpoint, come from the XML files in the
+ * resources folder.
+ *
+ * The files contain endpoint responses in XML format. By comparing the results
+ * of the processing by the methods in the harvesting package, to what is
+ * expected given the contents of the mocked responses, the test verify the
+ * classes in the package.
  *
  * @author Kees Jan van de Looij (Max Planck Institute for Psycholinguistics)
  */
 @RunWith(MockitoJUnitRunner.class)
 public class HarvestingTest {
 
-    @BeforeClass
-    public static void beforeAll() {
-    }
-
     /**
+     * Get a mocked response from a file
      *
-     * @param file
-     * @return
+     * @param file containing and endpoint response in XML form
+     * @return the response in document form
      * @throws ParserConfigurationException
      * @throws IOException
      * @throws SAXException
@@ -60,18 +61,20 @@ public class HarvestingTest {
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         // set up a document builder
         DocumentBuilder db = dbf.newDocumentBuilder();
-        // create a document from the file
-        Document document = db.parse(getClass().getResourceAsStream(
-                file.getAbsolutePath()));
-
-        return document;
+        // return the document contained in the file
+        return db.parse(getClass().getResourceAsStream(file.getAbsolutePath()));
     }
 
-    @Mock ListMetadataFormats listMetadataFormats;
+    /* When not testing, the ListMetadataFormats constructor will return the
+       formats supported by the endpoint. Since the test does not apply the OAI
+       protocol, and therefore does not connect to any endpoint, mock the
+       response.
+     */
+    @Mock ListMetadataFormats response;
 
     @Test
     /**
-     * Testing the FormatHarvesting class
+     * Test format harvesting without connecting to an endpoint
      */
     public void formatHarvestingTest() throws IOException,
             SAXException,
@@ -80,22 +83,30 @@ public class HarvestingTest {
         // create a real metadata format
         MetadataFormat format = new MetadataFormat("prefix", "oai_dc");
 
+        // Since the test only needs the input format, and not a fully fledged
+        // action sequence, mock the sequence
         ActionSequence actionSequence = mock(ActionSequence.class);
-        // define the mock for the actionSequence object
+        // let the getInputFormat method return the metadata format defined
         when (actionSequence.getInputFormat()).thenReturn(format);
 
         // create a real provider
         Provider provider = new Provider("http://www.endpoint.org", 0);
+
+        // spy on format harvesting
         FormatHarvesting formatHarvesting = spy (new FormatHarvesting(
                 provider, actionSequence));
 
+        /* Whenever the formatHarvesting Request method would invoke the
+           constructor of the ListMetadataFormats class, return the mocked
+           response. This object will not be referred to.
+         */
         try {
-            doReturn(listMetadataFormats).when(formatHarvesting).getResponse(any(String.class));
+            doReturn(response).when(formatHarvesting).getResponse(any(String.class));
         } catch (TransformerException e) {
             e.printStackTrace();
         }
 
-        // now invoke any desired format harvesting method
+        // the FormatHarvesting class is now set up for spying
         boolean done;
         done = formatHarvesting.request();
         if (! done){
@@ -106,13 +117,20 @@ public class HarvestingTest {
         File testFile = new File ("/response-ListMetadataFormats.xml");
         Document testDoc = getDocumentFromFile(testFile);
 
-        // mock a response
+        /* Because we do not know what a response would look like, mock the
+           getResponse() method by returning the document containing the
+           response.
+         */
         doReturn(testDoc).when(formatHarvesting).getResponse();
 
         // get the response
         Document document = formatHarvesting.getResponse();
 
-        // process the response
+        /* All the necessary mocks have been defined. Invoke any of the
+           remaining methods in the FormatHarvesting class to create any
+           test desired.
+         */
+
         done = formatHarvesting.processResponse(document);
         if (! done){
             fail();
@@ -129,6 +147,6 @@ public class HarvestingTest {
         }
 
         // compare the list of prefixes to what was is expected
-        assertEquals(prefixes.toString(),"oai_dc");
+        assertEquals(prefixes.toString(),"[oai_dc]");
     }
 }

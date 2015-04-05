@@ -37,7 +37,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 /**
- * <br> Prefix harvesting <br><br>
+ * <br> Format harvesting <br><br>
  *
  * This class provides for a way to obtain the formats supported by an OAI
  * endpoint. A client can request formats matching the format supplied by an
@@ -101,6 +101,8 @@ public class FormatHarvesting extends AbstractHarvesting implements
      *
      * Instead of invoking the ListMetadataFormats constructor from the request
      * method, create an opportunity for mockito to spy.
+     *
+     * kj: name might be confusing
      */
     public ListMetadataFormats getResponse (String url) throws
             ParserConfigurationException,
@@ -158,7 +160,7 @@ public class FormatHarvesting extends AbstractHarvesting implements
     }
 
     /**
-     * <br>
+     * <br> kj: document this
      */
     @Override
     public boolean requestMore() {
