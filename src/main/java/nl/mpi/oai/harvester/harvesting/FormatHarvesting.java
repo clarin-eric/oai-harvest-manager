@@ -188,6 +188,7 @@ public class FormatHarvesting extends AbstractHarvesting implements
      *
      * @return true if the list was successfully created, false otherwise
      */
+    @Override
     public boolean processResponse(Document document) {
 
         ListMetadataFormats formats;

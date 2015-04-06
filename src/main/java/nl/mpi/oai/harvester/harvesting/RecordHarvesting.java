@@ -120,6 +120,12 @@ public final class RecordHarvesting extends AbstractHarvesting {
         throw new HarvestingException();
     }
 
+    // kj: migrate
+    @Override
+    public boolean processResponse(Document document){
+        return false;
+    }
+
     /**
      * Return a metadata element
      *

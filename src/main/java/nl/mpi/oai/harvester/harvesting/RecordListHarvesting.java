@@ -203,6 +203,12 @@ public final class RecordListHarvesting extends ListHarvesting
         return true;
     }
 
+    // kj: migrate
+    @Override
+    public boolean processResponse(Document document){
+        return false;
+    }
+
     /**
      * <br> Return the next metadata element in the list <br><br>
      *

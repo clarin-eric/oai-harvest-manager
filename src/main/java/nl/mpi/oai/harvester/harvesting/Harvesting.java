@@ -102,6 +102,24 @@ public interface Harvesting {
      * @return  false if there was an error, true otherwise
      */
     public boolean processResponse ();
+
+    /**
+     * <br> Create metadata elements from the response <br><br>
+     *
+     * This method is concerned with setting up the data conveyed by the
+     * response into a structure suitable for further processing. The choice
+     * of this structure is up to the implementing class or classes.
+     *
+     * The internal structure serves as a temporary store for the metadata
+     * received. To illustrate this: sometimes all responses need to be
+     * inspected before the data can be handed over to a client class. Think,
+     * for example, of duplicate records that need to be removed.
+     *
+     * Please note that after every request, this method needs to be invoked.
+     *
+     * @return  false if there was an error, true otherwise
+     */
+    public boolean processResponse (Document document);
     
     /**
      * <br> Return the next metadata element <br><br>

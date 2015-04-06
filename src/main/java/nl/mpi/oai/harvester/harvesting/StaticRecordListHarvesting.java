@@ -179,6 +179,12 @@ public final class StaticRecordListHarvesting extends AbstractListHarvesting
         return true;
     }
 
+    // kj: migrate
+    @Override
+    public boolean processResponse(Document document){
+        return false;
+    }
+
     /**
      * <br> Retrieve the next record form the 'targets' store
      *

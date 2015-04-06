@@ -30,6 +30,7 @@ import javax.xml.xpath.XPathExpressionException;
 
 import nl.mpi.oai.harvester.Provider;
 import org.apache.log4j.Logger;
+import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
@@ -207,6 +208,11 @@ public final class IdentifierListHarvesting extends ListHarvesting
         }
         
         return true;
+    }
+
+    @Override
+    public boolean processResponse(Document document){
+        return false;
     }
 
     /**

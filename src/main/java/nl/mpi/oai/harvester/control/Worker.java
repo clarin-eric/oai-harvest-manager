@@ -95,25 +95,37 @@ class Worker implements Runnable {
      * @return false on parser or input output error
      */
     private boolean prefixesScenario(Provider provider, ActionSequence actions){
-        
-        if (!provider.prefixHarvesting.request() ||
-            !provider.prefixHarvesting.processResponse()) {
-            // something went wrong, or no prefixes for this endpoint
+
+        // kj: change name
+        Document document;
+
+        if (!provider.prefixHarvesting.request()){
             return false;
         } else {
-            // received response 
-            if (provider.prefixHarvesting.fullyParsed()) {
-                // no matches
-                logger.info("No matching prefixes for format "
-                        + actions.getInputFormat());
+            document = provider.prefixHarvesting.getResponse();
+
+            if (document == null){
                 return false;
-            }
-            // get the prefixes
-            for (;;){
-                if (provider.prefixHarvesting.fullyParsed()) break;
-                String prefix = (String) provider.prefixHarvesting.parseResponse();
-                if (prefix != null) {
-                    prefixes.add(prefix);
+            } else {
+                if (!provider.prefixHarvesting.processResponse(document)) {
+                    // something went wrong, or no prefixes for this endpoint
+                    return false;
+                } else {
+                    // received response
+                    if (provider.prefixHarvesting.fullyParsed()) {
+                        // no matches
+                        logger.info("No matching prefixes for format "
+                                + actions.getInputFormat());
+                        return false;
+                    }
+                    // get the prefixes
+                    for (; ; ) {
+                        if (provider.prefixHarvesting.fullyParsed()) break;
+                        String prefix = (String) provider.prefixHarvesting.parseResponse();
+                        if (prefix != null) {
+                            prefixes.add(prefix);
+                        }
+                    }
                 }
             }
         }
