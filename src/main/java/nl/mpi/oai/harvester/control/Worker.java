@@ -149,18 +149,31 @@ class Worker implements Runnable {
      */
     private boolean listIdentifiersScenario(ActionSequence actions) {
 
-        for (;;) {// request a list of identifier and prefix pairs
-            if (!provider.listHarvesting.request() ||
-                !provider.listHarvesting.processResponse()) {
-                // something went wrong, no identifiers for this endpoint
+        Document identifiers;
+
+        for (;;) {
+            if (!provider.listHarvesting.request()) {
                 return false;
             } else {
-                // received response 
-                if (!provider.listHarvesting.requestMore()) {
-                    // finished requesting
-                    break;
+                identifiers = provider.listHarvesting.getResponse();
+
+                if (identifiers == null) {
+                    return false;
+                } else {
+                    if (!provider.listHarvesting.processResponse(identifiers)) {
+                        // something went wrong, no identifiers for this endpoint
+                        return false;
+                    } else {
+                        // received response
+
+                        if (!provider.listHarvesting.requestMore()) {
+                            // finished requesting
+                            break;
+                        }
+                    }
                 }
             }
+
         }
 
         /* Iterate over the list of pairs, for each pair, get the record it
@@ -199,68 +212,77 @@ class Worker implements Runnable {
      */
     private boolean listRecordsScenario(ActionSequence actions) {
 
+        Document records;
+
         Integer n = 0;
 
-        for (; ; ) {
-            if (!provider.listHarvesting.request() ||
-                !provider.listHarvesting.processResponse()) {
-                // something went wrong with the request, try the next prefix
-                break;
+        for (;;) {
+            if (!provider.listHarvesting.request()) {
+                return false;
             } else {
+                records = provider.listHarvesting.getResponse();
+                if (records == null) {
+                    return false;
+                } else {
+                    if (!provider.listHarvesting.processResponse(records)) {
+                        return false;
+                    } else {
+                        if (actions.containsSaveResponse()) {
 
-                if (actions.containsSaveResponse()) {
-                    /* Saving the response in the list record scenario means:
-                       to save a list of records enclosed in an envelope. */
+                            /* Saving the response in the list records scenario
+                               means: to save a list of records in one file.
+                             */
+                            String id;
+                            id = String.format("%07d", n);
 
-                    Document response = provider.listHarvesting.getResponse();
+                            Metadata metadata = new Metadata(
+                                    provider.getName() + "-" + id,
+                                    records, this.provider, true, true);
 
-                    // generate id: sequence number, provide leading zeros
+                            n++;
 
-                    String id;
-                    id = String.format("%07d", n);
+                            // apply the action sequence to the records
+                            actions.runActions(metadata);
+                        }
 
-                    Metadata records = new Metadata(
-                            provider.getName() + "-" + id,
-                            response, this.provider, true, true);
+                        if (actions.containsStripResponse()) {
 
-                    n++;
+                            /* Stripping in the list record scenario means:
+                               processing each record in the response. Skip
+                               to the next request is no strip action is
+                               demanded.
+                             */
+                            for (; ; ) {
+                                if (provider.listHarvesting.fullyParsed()) {
+                                    break;
+                                }
+                                Metadata metadata = (Metadata)
+                                        provider.listHarvesting.parseResponse();
 
-                    // apply the action sequence to the record
-                    actions.runActions(records);
-                }
+                                if (metadata == null) {
+                                    /* Something went wrong or the record has
+                                       already been released, either way: skip
+                                       it.
+                                     */
+                                } else {
+                                    // apply the action sequence to the record
+                                    actions.runActions(metadata);
+                                }
+                            }
+                        }
 
-                if (actions.containsStripResponse()) {
-
-                    /* Stripping in the list record scenario means: processing
-                       each and every record in the response. Skip to the next
-                       request is no strip action is demanded.
-                     */
-                    for (; ; ) {
-                        if (provider.listHarvesting.fullyParsed()) {
+                        /* Check if in principle another response would be
+                           available.
+                         */
+                        if (!provider.listHarvesting.requestMore()) {
                             break;
                         }
-                        Metadata record = (Metadata)
-                                provider.listHarvesting.parseResponse();
-
-                        if (record == null) {
-                        /* Something went wrong or the record has already been
-                           released, either way: skip it
-                         */
-                        } else {
-                            // apply the action sequence to the record
-                            actions.runActions(record);
-                        }
                     }
-                }
-
-                // check if in principle another response would be available
-                if (!provider.listHarvesting.requestMore()) {
-                    break;
                 }
             }
         }
 
-        return true;
+        return  true;
     }
     
     /**
