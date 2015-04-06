@@ -152,6 +152,11 @@ public final class IdentifierListHarvesting extends ListHarvesting
         return ((ListIdentifiers) this.response).getResumptionToken();
     }
 
+    @Override
+    public boolean processResponse(){
+        return false;
+    }
+
     /**
      * <br> Create a list of metadata elements from the response <br><br>
      *
@@ -167,7 +172,7 @@ public final class IdentifierListHarvesting extends ListHarvesting
      * @return true if the response was processed successfully, false otherwise
      */
     @Override
-    public boolean processResponse() {
+    public boolean processResponse(Document document) {
         
         // check for protocol error
         if (response == null){
@@ -185,7 +190,7 @@ public final class IdentifierListHarvesting extends ListHarvesting
                     "//*[starts-with(local-name(),'identifier') "
                             + "and parent::*[local-name()='header' "
                             + "and not(@status='deleted')]]/text()",
-                    response.getDocument(), XPathConstants.NODESET);
+                    document, XPathConstants.NODESET);
         } catch (XPathExpressionException e) {
             // something went wrong when creating the list, try another prefix
             logger.error(e.getMessage(), e);
@@ -208,11 +213,6 @@ public final class IdentifierListHarvesting extends ListHarvesting
         }
         
         return true;
-    }
-
-    @Override
-    public boolean processResponse(Document document){
-        return false;
     }
 
     /**

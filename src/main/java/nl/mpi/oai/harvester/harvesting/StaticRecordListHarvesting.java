@@ -110,13 +110,18 @@ public final class StaticRecordListHarvesting extends AbstractListHarvesting
         return response.getDocument();
     }
 
+    @Override
+    public boolean processResponse(){
+        return false;
+    }
+
     /**
      * <br> Store the records in the response in the 'targets' array
      *
      * @return false if there was an error, true otherwise
      */
     @Override
-    public boolean processResponse() {
+    public boolean processResponse(Document document) {
 
         // check for protocol errors
         if (pIndex >= prefixes.size()) {
@@ -132,7 +137,6 @@ public final class StaticRecordListHarvesting extends AbstractListHarvesting
         /* No protocol error, so the constructor establishes that the response
            contains the static endpoint content.
          */
-        Document document = response.getDocument();
 
         // parse the content
         Node node;
@@ -177,12 +181,6 @@ public final class StaticRecordListHarvesting extends AbstractListHarvesting
 
         // the prefix identifier pair list is ready
         return true;
-    }
-
-    // kj: migrate
-    @Override
-    public boolean processResponse(Document document){
-        return false;
     }
 
     /**

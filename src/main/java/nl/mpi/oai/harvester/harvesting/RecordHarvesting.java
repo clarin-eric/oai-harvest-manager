@@ -67,6 +67,19 @@ public final class RecordHarvesting extends AbstractHarvesting {
     }
 
     /**
+     *
+     */
+    public GetRecord getResponse (String Url, String identifier, String prefix)
+            throws
+            ParserConfigurationException,
+            TransformerException,
+            SAXException,
+            IOException {
+
+        return new GetRecord(provider.oaiUrl, identifier, prefix);
+    }
+
+    /**
      * Request a record, retry if needed <br><br>
      * 
      * @return false if an error occurred, true otherwise
@@ -77,7 +90,7 @@ public final class RecordHarvesting extends AbstractHarvesting {
         int i = 0;
         for (;;) {
             try {
-                response = new GetRecord(provider.oaiUrl, identifier, prefix);
+                response = getResponse(provider.oaiUrl, identifier, prefix);
                 return true;
             } catch ( IOException 
                     | ParserConfigurationException 
@@ -114,20 +127,19 @@ public final class RecordHarvesting extends AbstractHarvesting {
     }
 
     @Override
-    public boolean processResponse() {
+    public boolean processResponse (){
+        return false;
+    }
+
+    @Override
+    public boolean processResponse(Document document){
 
         // response processing not needed
         throw new HarvestingException();
     }
 
-    // kj: migrate
-    @Override
-    public boolean processResponse(Document document){
-        return false;
-    }
-
     /**
-     * Return a metadata element
+     * Return a metadata record
      *
      * @return the element
      */
@@ -135,7 +147,7 @@ public final class RecordHarvesting extends AbstractHarvesting {
     public Object parseResponse() {
 
         // check for protocol error
-        if (response == null){
+        if (document == null){
             throw new HarvestingException();
         }
 
@@ -145,7 +157,7 @@ public final class RecordHarvesting extends AbstractHarvesting {
         /* Get the OAI envelope from the response. Use it, together with the
            identifier and provider, to create and return a metadata element.
         */
-        return new Metadata(identifier, response.getDocument(), provider, true, false);
+        return new Metadata(identifier, document, provider, true, false);
     }
 
     /**

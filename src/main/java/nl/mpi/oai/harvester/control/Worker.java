@@ -96,18 +96,17 @@ class Worker implements Runnable {
      */
     private boolean prefixesScenario(Provider provider, ActionSequence actions){
 
-        // kj: change name
-        Document document;
+        Document prefixes;
 
         if (!provider.prefixHarvesting.request()){
             return false;
         } else {
-            document = provider.prefixHarvesting.getResponse();
+            prefixes = provider.prefixHarvesting.getResponse();
 
-            if (document == null){
+            if (prefixes == null){
                 return false;
             } else {
-                if (!provider.prefixHarvesting.processResponse(document)) {
+                if (!provider.prefixHarvesting.processResponse(prefixes)) {
                     // something went wrong, or no prefixes for this endpoint
                     return false;
                 } else {
@@ -123,7 +122,7 @@ class Worker implements Runnable {
                         if (provider.prefixHarvesting.fullyParsed()) break;
                         String prefix = (String) provider.prefixHarvesting.parseResponse();
                         if (prefix != null) {
-                            prefixes.add(prefix);
+                            this.prefixes.add(prefix);
                         }
                     }
                 }
@@ -134,7 +133,7 @@ class Worker implements Runnable {
            action sequence needs to be terminated. A succeeding action
            sequence could then provide a match.
          */
-        if (prefixes.size() == 0) {
+        if (this.prefixes.size() == 0) {
             return false;
         } else {
             return true;

@@ -161,6 +161,9 @@ public final class RecordListHarvesting extends ListHarvesting
         return ((ListRecords) this.response).getResumptionToken();
     }
 
+    @Override
+    public boolean processResponse() { return false; }
+
     /**
      * <br> Create a list of metadata elements from the response <br><br>
      *
@@ -173,14 +176,14 @@ public final class RecordListHarvesting extends ListHarvesting
      * method does not act on the list of metadata elements gathered from a
      * single request. Instead, it parses list of all identifiers of records
      * available from the endpoint.
-     * 
+     *
      * @return true if the list was successfully created, false otherwise
      */
     @Override
-    public boolean processResponse() {
+    public boolean processResponse(Document document){
 
         // check for protocol error
-        if (response == null){
+        if (document == null){
             throw new HarvestingException();
         }
 
@@ -191,22 +194,16 @@ public final class RecordListHarvesting extends ListHarvesting
              */
             nodeList = (NodeList)provider.xpath.evaluate(
                     "//*[parent::*[local-name()='ListRecords']]",
-                    response.getDocument(), XPathConstants.NODESET);
+                    document, XPathConstants.NODESET);
         } catch (XPathExpressionException e) {
             // something went wrong when creating the list, try another prefix
             logger.error(e.getMessage(), e);
-            logger.info("Cannot create list of " + prefixes.get(pIndex) + 
+            logger.info("Cannot create list of " + prefixes.get(pIndex) +
                     " records for endpoint " + provider.oaiUrl);
             return false;
         }
-        
-        return true;
-    }
 
-    // kj: migrate
-    @Override
-    public boolean processResponse(Document document){
-        return false;
+        return true;
     }
 
     /**

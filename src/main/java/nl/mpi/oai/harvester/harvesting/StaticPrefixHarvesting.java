@@ -90,6 +90,7 @@ public final class StaticPrefixHarvesting extends FormatHarvesting
                 return false;
             }
             // response contains static content, store it in the provider level
+            // kj: store the document instead?
             p.setResponse(response);
 
             return true;
