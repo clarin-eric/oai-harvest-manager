@@ -154,11 +154,6 @@ public class FormatHarvesting extends AbstractHarvesting implements
         throw new HarvestingException();
     }
 
-    @Override
-    public boolean processResponse (){
-        return false;
-    }
-
     /**
      * <br> Create a list of prefixes from the response <br><br>
      *

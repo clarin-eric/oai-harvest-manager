@@ -110,11 +110,6 @@ public final class StaticRecordListHarvesting extends AbstractListHarvesting
         return response.getDocument();
     }
 
-    @Override
-    public boolean processResponse(){
-        return false;
-    }
-
     /**
      * <br> Store the records in the response in the 'targets' array
      *

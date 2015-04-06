@@ -161,9 +161,6 @@ public final class RecordListHarvesting extends ListHarvesting
         return ((ListRecords) this.response).getResumptionToken();
     }
 
-    @Override
-    public boolean processResponse() { return false; }
-
     /**
      * <br> Create a list of metadata elements from the response <br><br>
      *

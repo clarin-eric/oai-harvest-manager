@@ -152,11 +152,6 @@ public final class IdentifierListHarvesting extends ListHarvesting
         return ((ListIdentifiers) this.response).getResumptionToken();
     }
 
-    @Override
-    public boolean processResponse(){
-        return false;
-    }
-
     /**
      * <br> Create a list of metadata elements from the response <br><br>
      *
@@ -241,10 +236,21 @@ public final class IdentifierListHarvesting extends ListHarvesting
         RecordHarvesting p = new RecordHarvesting(provider, pair.prefix,
                 pair.identifier);
 
-        if (p.request()) {
-            return p.parseResponse();
-        } else {
+        if (! p.request()) {
+            // something went wrong
             return null;
+        } else {
+            Document document;
+            document = p.getResponse();
+            if (document == null) {
+                return null;
+            } else {
+                if (!p.processResponse(document)) {
+                    return null;
+                } else {
+                    return p.parseResponse();
+                }
+            }
         }
     }
 }

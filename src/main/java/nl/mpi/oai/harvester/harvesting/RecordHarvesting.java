@@ -127,15 +127,10 @@ public final class RecordHarvesting extends AbstractHarvesting {
     }
 
     @Override
-    public boolean processResponse (){
-        return false;
-    }
-
-    @Override
     public boolean processResponse(Document document){
 
-        // response processing not needed
-        throw new HarvestingException();
+        this.document = document;
+        return true;
     }
 
     /**

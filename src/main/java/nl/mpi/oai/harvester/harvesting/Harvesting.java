@@ -85,9 +85,6 @@ public interface Harvesting {
      */
     public boolean requestMore ();
 
-    // kj: phase out
-    public boolean processResponse ();
-
     /**
      * <br> Create metadata elements from the response <br><br>
      *
