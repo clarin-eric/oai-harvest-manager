@@ -99,6 +99,8 @@ public interface Harvesting {
      *
      * Please note that after every request, this method needs to be invoked.
      *
+     * kj: phase out
+     *
      * @return  false if there was an error, true otherwise
      */
     public boolean processResponse ();

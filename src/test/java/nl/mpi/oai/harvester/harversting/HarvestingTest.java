@@ -81,7 +81,8 @@ public class HarvestingTest {
             ParserConfigurationException {
 
         // create a real metadata format
-        MetadataFormat format = new MetadataFormat("prefix", "oai_dc");
+        // MetadataFormat format = new MetadataFormat("prefix", "oai_dc");
+        MetadataFormat format = new MetadataFormat("namespace", "http://www.clarin.eu/cmd/");
 
         // Since the test only needs the input format, and not a fully fledged
         // action sequence, mock the sequence

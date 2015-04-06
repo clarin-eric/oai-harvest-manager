@@ -21,7 +21,6 @@ package nl.mpi.oai.harvester.harvesting;
 
 import ORG.oclc.oai.harvester2.verb.ListMetadataFormats;
 import java.io.IOException;
-import javax.annotation.Resource;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.xpath.XPathConstants;
@@ -39,8 +38,8 @@ import org.xml.sax.SAXException;
 /**
  * <br> Format harvesting <br><br>
  *
- * This class provides for a way to obtain the formats supported by an OAI
- * endpoint. A client can request formats matching the format supplied by an
+ * This class provides for a way to obtain the metadata formats supported by an
+ * OAI endpoint. A client can request formats matching the format supplied by an
  * action. After processing the endpoint's response, the client can obtain the
  * formats one after the other by parsing.
  *
@@ -53,15 +52,7 @@ public class FormatHarvesting extends AbstractHarvesting implements
             FormatHarvesting.class);
 
     /**
-     * kj: to replace the role of the response
-     *
-     * note: when the other harvesting classes have been adapted to mockito,
-     * we no longer need the response (to be in a superclass)
-     */
-    Document document;
-
-    /**
-     * <br> List response elements to be parsed and made available
+     * <br> What the endpoint responded with
      */
     NodeList nodeList;
     
@@ -101,8 +92,6 @@ public class FormatHarvesting extends AbstractHarvesting implements
      *
      * Instead of invoking the ListMetadataFormats constructor from the request
      * method, create an opportunity for mockito to spy.
-     *
-     * kj: name might be confusing
      */
     public ListMetadataFormats getResponse (String url) throws
             ParserConfigurationException,
@@ -153,15 +142,12 @@ public class FormatHarvesting extends AbstractHarvesting implements
                mock invocations of this method to supply FormatHarvesting with
                data.
              */
-            document = ((ListMetadataFormats)response).getDocument();
+            document = response.getDocument();
 
             return document;
         }
     }
 
-    /**
-     * <br> kj: document this
-     */
     @Override
     public boolean requestMore() {
         // there can only be one request
@@ -181,17 +167,10 @@ public class FormatHarvesting extends AbstractHarvesting implements
      * that holds the prefixes. The parseResponse method takes the list of
      * nodes as input.
      *
-     * kj: replace every invocation of processResponse() by this method
-     *
-     * While migrating to an adapted interface, define a placeholder for the
-     * version of the method that does not have a parameter.
-     *
      * @return true if the list was successfully created, false otherwise
      */
     @Override
     public boolean processResponse(Document document) {
-
-        ListMetadataFormats formats;
 
         // check for protocol errors
         if (document == null){
@@ -219,7 +198,7 @@ public class FormatHarvesting extends AbstractHarvesting implements
                     + this.provider.oaiUrl + "endpoint looks empty");
         }
 
-        // nodeList contains a list of prefixes, het ready for parsing
+        // nodeList contains a list of prefixes, ready for parsing
         index = 0;
 
         return true;
@@ -232,26 +211,28 @@ public class FormatHarvesting extends AbstractHarvesting implements
      * created by the processResponse method. It applies XPath filtering to
      * the metadataPrefix, schema and metadataNamespace elements.
      *
-     * @return null if an error occurred or the prefix in the response does
-     *         not match the specified type, otherwise the next prefix
+     * @return null if an error occurred or the response does contain the
+     *         specified type, otherwise the next prefix
      */
     @Override
     public Object parseResponse() {
 
-        // index points to the next prefix node added to the list
+        // index points to the next prefix node in the list
 
         Node node = nodeList.item(index);
         index++;
         
-        // try to extract prefix, schema, and namespace from the response
+        /* Try to extract the value from the type specifications the response
+           includes. Only look at the 'prefix', 'schema' or 'namespace' types.
+         */
 
-        String prefix, schema, ns;
+        String prefixValue, schemaValue, nsValue;
         try {
-            prefix = Util.getNodeText(provider.xpath,
+            prefixValue = Util.getNodeText(provider.xpath,
                     "./*[local-name() = 'metadataPrefix']/text()", node);
-            schema = Util.getNodeText(provider.xpath,
+            schemaValue = Util.getNodeText(provider.xpath,
                     "./*[local-name() = 'schema']/text()", node);
-            ns = Util.getNodeText(provider.xpath,
+            nsValue = Util.getNodeText(provider.xpath,
                     "./*[local-name() = 'metadataNamespace']/text()", node);
         } catch (XPathExpressionException e) {
             // something went wrong parsing, try another prefix
@@ -260,44 +241,40 @@ public class FormatHarvesting extends AbstractHarvesting implements
             return null;
         }
         
-        // compare the requested format to what the response offers
-        
-        String providedType;
+        /* Remember the value of the type the action sequence indicates as the
+           desired type
+         */
+
+        String providedValue;
         switch (actions.getInputFormat().getType()) {
             case "prefix":
-                providedType = prefix;
+                providedValue = prefixValue;
                 break;
             case "schema":
-                providedType = schema;
+                providedValue = schemaValue;
                 break;
             case "namespace":
-                providedType = ns;
+                providedValue = nsValue;
                 break;
             default:
                 logger.error("Unknown match type "
                         + actions.getInputFormat().getType());
-                providedType = null;
+                providedValue = null;
         }
 
-        if (!actions.getInputFormat().getValue().equals(providedType)) {
+        // check if the value offered matches the value desired
+        if (!actions.getInputFormat().getValue().equals(providedValue)) {
             // the response does not match the requested type
             return null;
         } else {
-            /*  Please note that if the response matches the request at the 
-                level of schema or namespace, the prefix will still be part of 
-                the response. So for example, requesting a cmdi prefix will 
-                match cmdi0554, cmdi0571, cmdi2312 or cmdi9836.
-
-                kj: some clarification needed here.
-
-                The method always returns a prefix regardless of the type
-                provided. If this type could be a name space, then the string
-                returned by the protocol will still contain a reference to a
-                prefix. When the method extracts the prefix, it does so even
-                the provided response type is of type name space or schema.
+            /* Regardless of the level of the match, be it prefix, schema or
+               namespace, return the metadata prefix the endpoint supports. This
+               means that while requesting a cmdi prefix will match cmdi0554,
+               cmdi0571, cmdi2312 or cmdi9836, for example, requesting a cmdi
+               namespace can just as well yield any of these prefixes.
             */
-            logger.debug("Found suitable prefix: " + prefix);
-            return prefix;
+            logger.debug("Found suitable prefix: " + prefixValue);
+            return prefixValue;
         }
     }
     

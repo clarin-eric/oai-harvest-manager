@@ -20,6 +20,7 @@ package nl.mpi.oai.harvester.harvesting;
 
 import ORG.oclc.oai.harvester2.verb.HarvesterVerb;
 import nl.mpi.oai.harvester.Provider;
+import org.w3c.dom.Document;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -61,8 +62,13 @@ public abstract class AbstractHarvesting implements Harvesting {
     /**
      * <br> Response to the OAI request
      */
-    @Resource
     HarvesterVerb response;
+
+
+    /**
+     * <br> Response to the OAI request in the form of an XML document
+     */
+    Document document;
 
     /**
      * <br> The resumption token send by the previous request
