@@ -108,39 +108,47 @@ class Worker implements Runnable {
         for (final ActionSequence actionSequence : actionSequences) {
 
             // list of prefixes provided by the endpoint
-            final List<String> prefixes = new ArrayList<>();
+            List<String> prefixes = new ArrayList<>();
 
             Scenario scenario = new Scenario(provider, actionSequence);
 
             if (provider instanceof StaticProvider) {
 
                 // get the prefixes
-                scenario.getPrefixes(new StaticPrefixHarvesting(
+                prefixes = scenario.getPrefixes(new StaticPrefixHarvesting(
                         (StaticProvider) provider,
                         actionSequence));
 
-                // get the records
-                scenario.listRecords(new StaticRecordListHarvesting(
-                        (StaticProvider) provider, prefixes));
-
+                if (prefixes.size() == 0) {
+                    done = false;
+                } else {
+                    // get the records
+                    done = scenario.listRecords(new StaticRecordListHarvesting(
+                            (StaticProvider) provider, prefixes));
+                }
             } else {
 
                 // get the prefixes
-                scenario.getPrefixes(new FormatHarvesting(provider,
+                prefixes = scenario.getPrefixes(new FormatHarvesting(provider,
                         actionSequence));
 
-                // get the records, this depends
-                if (scenario.equals("ListIdentifiers")) {
-                    scenario.listIdentifiers(
-                            new RecordListHarvesting(provider, prefixes));
+                done = (prefixes.size()!= 0);
+                if (prefixes.size() == 0) {
+                    // no match
+                    done = false;
                 } else {
-                    scenario.listRecords(new RecordListHarvesting(
-                            provider, prefixes));
+                    // get the records, this depends
+                    if (scenarioName.equals("ListIdentifiers")) {
+                        done = scenario.listIdentifiers(
+                                new IdentifierListHarvesting(provider, prefixes));
+                    } else {
+                        done = scenario.listRecords(new RecordListHarvesting(
+                                provider, prefixes));
+                    }
                 }
             }
 
             // break after an action sequence has completed successfully
-
             if (done) break;
 
         }

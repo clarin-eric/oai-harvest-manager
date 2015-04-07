@@ -36,8 +36,7 @@ public class Scenario {
 
     private static final Logger logger = Logger.getLogger(Scenario.class);
 
-    // list of prefixes provided by the endpoint
-    private final List<String> prefixes = new ArrayList<>();
+
 
     //
     Provider provider;
@@ -57,50 +56,44 @@ public class Scenario {
      *
      * @return false on parser or input output error
      */
-    public boolean getPrefixes(Harvesting harvesting){
+    public List<String> getPrefixes(Harvesting harvesting){
 
-        Document prefixes;
+        //
+        Document document;
 
-        if (!harvesting.request()) {
-            return false;
-        } else {
-            prefixes = harvesting.getResponse();
+        // list of prefixes provided by the endpoint
+        final List<String> prefixes = new ArrayList<>();
 
-            if (prefixes == null){
-                return false;
-            } else {
-                if (!harvesting.processResponse(prefixes)) {
-                    // something went wrong, or no prefixes for this endpoint
-                    return false;
-                } else {
+        if (harvesting.request()) {
+            // everything went fine
+            document = harvesting.getResponse();
+
+            if (document != null){
+                if (harvesting.processResponse(document)) {
                     // received response
                     if (harvesting.fullyParsed()) {
                         // no matches
                         logger.info("No matching prefixes for format "
                                 + actionSequence.getInputFormat());
-                        return false;
+                        return prefixes;
                     }
                     // get the prefixes
                     for (; ; ) {
                         if (harvesting.fullyParsed()) break;
                         String prefix = (String) harvesting.parseResponse();
                         if (prefix != null) {
-                            this.prefixes.add(prefix);
+                            prefixes.add(prefix);
                         }
                     }
                 }
             }
         }
 
-        /* If there are no matches, return false. In this case the
+        /* If there are no matches, return an empty list. In this case the
            action sequence needs to be terminated. A succeeding action
            sequence could then provide a match.
          */
-        if (this.prefixes.size() == 0) {
-            return false;
-        } else {
-            return true;
-        }
+        return prefixes;
     }
 
     /**
