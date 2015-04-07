@@ -25,10 +25,8 @@ import java.util.concurrent.Semaphore;
 import nl.mpi.oai.harvester.StaticProvider;
 import nl.mpi.oai.harvester.action.ActionSequence;
 import nl.mpi.oai.harvester.harvesting.*;
-import nl.mpi.oai.harvester.metadata.Metadata;
 import nl.mpi.oai.harvester.Provider;
 import org.apache.log4j.Logger;
-import org.w3c.dom.Document;
 
 /**
  * This class represents a single processing thread in the harvesting actions
@@ -57,10 +55,7 @@ class Worker implements Runnable {
        retrieve each record in the list individually. ListRecords: skip the
        list, retrieve multiple records per request.
      */
-    private final String scenario;
-
-    // list of prefixes provided by the endpoint
-    private final List<String> prefixes = new ArrayList<>();
+    private final String scenarioName;
 
     /**
      * Set the maximum number of concurrent worker threads.
@@ -76,215 +71,16 @@ class Worker implements Runnable {
      *
      * @param provider OAI-PMH provider that this thread will harvest
      * @param actionSequences list of actions to take on harvested metadata
-     * @param scenario the scenario to be applied
+     * @param scenarioName the scenario to be applied
      *
      */
     public Worker(Provider provider, List<ActionSequence> actionSequences,
-                  String scenario) {
+                  String scenarioName) {
 	this.provider  = provider;
 	this.actionSequences = actionSequences;
-    this.scenario  = scenario;
+    this.scenarioName = scenarioName;
     }
 
-    /**
-     * <br>Get the list of metadata prefixes supported by the endpoint<br><br>
-     *
-     * The list created is based on the format specified in the configuration.
-     *
-     * @param actions sequence of actions that should be performed
-     * @return false on parser or input output error
-     */
-    private boolean prefixesScenario(Provider provider, ActionSequence actions){
-
-        Document prefixes;
-
-        if (!provider.prefixHarvesting.request()){
-            return false;
-        } else {
-            prefixes = provider.prefixHarvesting.getResponse();
-
-            if (prefixes == null){
-                return false;
-            } else {
-                if (!provider.prefixHarvesting.processResponse(prefixes)) {
-                    // something went wrong, or no prefixes for this endpoint
-                    return false;
-                } else {
-                    // received response
-                    if (provider.prefixHarvesting.fullyParsed()) {
-                        // no matches
-                        logger.info("No matching prefixes for format "
-                                + actions.getInputFormat());
-                        return false;
-                    }
-                    // get the prefixes
-                    for (; ; ) {
-                        if (provider.prefixHarvesting.fullyParsed()) break;
-                        String prefix = (String) provider.prefixHarvesting.parseResponse();
-                        if (prefix != null) {
-                            this.prefixes.add(prefix);
-                        }
-                    }
-                }
-            }
-        }
-
-        /* If there are no matches, return false. In this case the
-           action sequence needs to be terminated. A succeeding action
-           sequence could then provide a match.
-         */
-        if (this.prefixes.size() == 0) {
-            return false;
-        } else {
-            return true;
-        }
-    }
-    
-    /**
-     * Get metadata records indirectly, that is by first obtaining a list of
-     * identifiers pointing to them <br><br>
-     *
-     * @param actions the sequence of actions
-     * @return false on parser or input output error
-     */
-    private boolean listIdentifiersScenario(ActionSequence actions) {
-
-        Document identifiers;
-
-        for (;;) {
-            if (!provider.listHarvesting.request()) {
-                return false;
-            } else {
-                identifiers = provider.listHarvesting.getResponse();
-
-                if (identifiers == null) {
-                    return false;
-                } else {
-                    if (!provider.listHarvesting.processResponse(identifiers)) {
-                        // something went wrong, no identifiers for this endpoint
-                        return false;
-                    } else {
-                        // received response
-
-                        if (!provider.listHarvesting.requestMore()) {
-                            // finished requesting
-                            break;
-                        }
-                    }
-                }
-            }
-
-        }
-
-        /* Iterate over the list of pairs, for each pair, get the record it
-           identifies.
-         */
-        for (;;) {
-            if (provider.listHarvesting.fullyParsed()) {
-                break;
-            }
-            Metadata record = (Metadata)
-                    provider.listHarvesting.parseResponse();
-
-            if (record == null) {
-                // something went wrong, skip the record
-            } else {
-                // apply the action sequence to the record
-                actions.runActions(record);
-            }
-        }
-        
-        return true;
-    }
-    
-    /**
-     * <br>Get metadata records directly, that is without first obtaining a list
-     * of identifiers pointing to them <br><br>
-     *
-     * In this scenario, a save action specified before a strip action is
-     * interpreted to apply the the response of the GetRecords verb. Also, the
-     * presence of a strip action in the sequence, is interpreted to apply to
-     * the response also. Since the sequence of actions will be applied to an
-     * individual record, in the sequence both will be disabled.
-
-     * @param actions the sequence of actions
-     * @return false on parser or input output error
-     */
-    private boolean listRecordsScenario(ActionSequence actions) {
-
-        Document records;
-
-        Integer n = 0;
-
-        for (;;) {
-            if (!provider.listHarvesting.request()) {
-                return false;
-            } else {
-                records = provider.listHarvesting.getResponse();
-                if (records == null) {
-                    return false;
-                } else {
-                    if (!provider.listHarvesting.processResponse(records)) {
-                        return false;
-                    } else {
-                        if (actions.containsSaveResponse()) {
-
-                            /* Saving the response in the list records scenario
-                               means: to save a list of records in one file.
-                             */
-                            String id;
-                            id = String.format("%07d", n);
-
-                            Metadata metadata = new Metadata(
-                                    provider.getName() + "-" + id,
-                                    records, this.provider, true, true);
-
-                            n++;
-
-                            // apply the action sequence to the records
-                            actions.runActions(metadata);
-                        }
-
-                        if (actions.containsStripResponse()) {
-
-                            /* Stripping in the list record scenario means:
-                               processing each record in the response. Skip
-                               to the next request is no strip action is
-                               demanded.
-                             */
-                            for (; ; ) {
-                                if (provider.listHarvesting.fullyParsed()) {
-                                    break;
-                                }
-                                Metadata metadata = (Metadata)
-                                        provider.listHarvesting.parseResponse();
-
-                                if (metadata == null) {
-                                    /* Something went wrong or the record has
-                                       already been released, either way: skip
-                                       it.
-                                     */
-                                } else {
-                                    // apply the action sequence to the record
-                                    actions.runActions(metadata);
-                                }
-                            }
-                        }
-
-                        /* Check if in principle another response would be
-                           available.
-                         */
-                        if (!provider.listHarvesting.requestMore()) {
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-
-        return  true;
-    }
-    
     /**
      * <br>Start this worker thread <br><br>
      *
@@ -311,38 +107,35 @@ class Worker implements Runnable {
         logger.info("Processing provider " + provider);
         for (final ActionSequence actionSequence : actionSequences) {
 
-            // check if harvesting of static content applies
+            // list of prefixes provided by the endpoint
+            final List<String> prefixes = new ArrayList<>();
+
+            Scenario scenario = new Scenario(provider, actionSequence);
 
             if (provider instanceof StaticProvider) {
-                provider.prefixHarvesting = new StaticPrefixHarvesting(
-                        (StaticProvider)provider, actionSequence);
+
+                // get the prefixes
+                scenario.getPrefixes(new StaticPrefixHarvesting(
+                        (StaticProvider) provider,
+                        actionSequence));
+
+                // get the records
+                scenario.listRecords(new StaticRecordListHarvesting(
+                        (StaticProvider) provider, prefixes));
 
             } else {
-                provider.prefixHarvesting= new FormatHarvesting(provider,
-                        actionSequence);
-            }
 
-            // check if the endpoint supports the formats specified with the actions
+                // get the prefixes
+                scenario.getPrefixes(new FormatHarvesting(provider,
+                        actionSequence));
 
-            if (prefixesScenario(provider, actionSequence)) {
-
-                if (provider instanceof StaticProvider){
-                    provider.listHarvesting = new StaticRecordListHarvesting(
-                            (StaticProvider) provider, prefixes);
-                } else {
-                    if (scenario.equals("ListRecords")) {
-                        provider.listHarvesting = new RecordListHarvesting(
-                                provider, prefixes);
-                    } else {
-                        provider.listHarvesting = new IdentifierListHarvesting(
-                                provider, prefixes);
-                    }
-                }
-
+                // get the records, this depends
                 if (scenario.equals("ListIdentifiers")) {
-                    done = listIdentifiersScenario(actionSequence);
+                    scenario.listIdentifiers(
+                            new RecordListHarvesting(provider, prefixes));
                 } else {
-                    done = listRecordsScenario(actionSequence);
+                    scenario.listRecords(new RecordListHarvesting(
+                            provider, prefixes));
                 }
             }
 
