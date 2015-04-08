@@ -88,12 +88,12 @@ public class FormatHarvesting extends AbstractHarvesting implements
     }
 
     /**
-     * <br> Get a response from the endpoint <br><br>
+     * <br> Get metadata formats from the endpoint <br><br>
      *
      * Instead of invoking the ListMetadataFormats constructor from the request
-     * method, create an opportunity for mockito to spy.
+     * method, create an opportunity for mockito to spy on.
      */
-    public ListMetadataFormats getResponse (String url) throws
+    public ListMetadataFormats getMetadataFormats(String url) throws
             ParserConfigurationException,
             TransformerException,
             SAXException,
@@ -103,7 +103,7 @@ public class FormatHarvesting extends AbstractHarvesting implements
     }
 
     /**
-     * <br> Request prefixes
+     * <br> Request metadata formats
      * 
      * @return false if there was an error, true otherwise
      */
@@ -114,7 +114,7 @@ public class FormatHarvesting extends AbstractHarvesting implements
 
         try {
             // try to get a response from the provider's endpoint
-            response = getResponse(provider.oaiUrl);
+            response = getMetadataFormats(provider.oaiUrl);
         } catch ( TransformerException 
                 | ParserConfigurationException 
                 | SAXException 

@@ -30,7 +30,7 @@ import java.util.List;
 /**
  * Scenarios for harvesting
  *
- * @author Kees Jan van de Looij (MPI-PL)
+ * @author Kees Jan van de Looij (Max Planck Institute for Psycholinguistics)
  */
 public class Scenario {
 

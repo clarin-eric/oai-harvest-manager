@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2015, The Max Planck Institute for
+ * Psycholinguistics.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, version 3 of the License.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
+ *
+ * A copy of the GNU General Public License is included in the file
+ * LICENSE-gpl-3.0.txt. If that file is missing, see
+ * <http://www.gnu.org/licenses/>.
+ */
+
 package nl.mpi.oai.harvester.harversting;
 
 import ORG.oclc.oai.harvester2.verb.ListMetadataFormats;
@@ -97,32 +115,35 @@ public class HarvestingTest {
         FormatHarvesting formatHarvesting = spy (new FormatHarvesting(
                 provider, actionSequence));
 
-        /* Whenever the formatHarvesting Request method would invoke the
-           constructor of the ListMetadataFormats class, return the mocked
-           response. This object will not be referred to.
+        /* Whenever the request method would invoke the ListMetadataFormats
+           constructor, return the mocked response instead of the real one.
          */
         try {
-            doReturn(response).when(formatHarvesting).getResponse(any(String.class));
+            doReturn(response).when(formatHarvesting).getMetadataFormats(
+                    any(String.class));
         } catch (TransformerException e) {
             e.printStackTrace();
         }
 
+        /* Note that the test will not refer to the mocked response. Instead,
+           whenever the test invokes getResponse() it will return a document it
+           obtained from a file.
+         */
+        File testFile = new File ("/response-ListMetadataFormats.xml");
+        Document testDoc = getDocumentFromFile(testFile);
+
+        /* Whenever getResponse() is invoked, return the document from the file
+           instead of the document in the response.
+         */
+        doReturn(testDoc).when(formatHarvesting).getResponse();
+
         // the FormatHarvesting class is now set up for spying
+
         boolean done;
         done = formatHarvesting.request();
         if (! done){
             fail();
         }
-
-        // get a document from a file
-        File testFile = new File ("/response-ListMetadataFormats.xml");
-        Document testDoc = getDocumentFromFile(testFile);
-
-        /* Because we do not know what a response would look like, mock the
-           getResponse() method by returning the document containing the
-           response.
-         */
-        doReturn(testDoc).when(formatHarvesting).getResponse();
 
         // get the response
         Document document = formatHarvesting.getResponse();
@@ -148,6 +169,6 @@ public class HarvestingTest {
         }
 
         // compare the list of prefixes to what was is expected
-        assertEquals(prefixes.toString(),"[oai_dc]");
+        assertEquals(prefixes.toString(),"[cmdi_lexRes, cmdi_teiHdr, cmdi_textCorpus, cmdi_collection]");
     }
 }
