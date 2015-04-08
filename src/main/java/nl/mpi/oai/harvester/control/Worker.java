@@ -114,36 +114,52 @@ class Worker implements Runnable {
 
             if (provider instanceof StaticProvider) {
 
-                // get the prefixes
-                prefixes = scenario.getPrefixes(new StaticPrefixHarvesting(
+                // set type of format harvesting to apply
+                Harvesting harvesting = new StaticPrefixHarvesting(
                         (StaticProvider) provider,
-                        actionSequence));
+                        actionSequence);
+
+                // get the prefixes
+                prefixes = scenario.getPrefixes(harvesting);
 
                 if (prefixes.size() == 0) {
                     done = false;
                 } else {
+                    // set type of record harvesting to apply
+                    harvesting = new StaticRecordListHarvesting(
+                            (StaticProvider) provider, prefixes);
+
                     // get the records
-                    done = scenario.listRecords(new StaticRecordListHarvesting(
-                            (StaticProvider) provider, prefixes));
+                    done = scenario.listRecords(harvesting);
                 }
             } else {
 
+                // set type of format harvesting to apply
+                Harvesting harvesting = new FormatHarvesting(provider,
+                        actionSequence);
+
                 // get the prefixes
-                prefixes = scenario.getPrefixes(new FormatHarvesting(provider,
-                        actionSequence));
+                prefixes = scenario.getPrefixes(harvesting);
 
                 done = (prefixes.size()!= 0);
                 if (prefixes.size() == 0) {
                     // no match
                     done = false;
                 } else {
-                    // get the records, this depends
+
+                    // determine the type of record harvesting to apply
                     if (scenarioName.equals("ListIdentifiers")) {
-                        done = scenario.listIdentifiers(
-                                new IdentifierListHarvesting(provider, prefixes));
+                        harvesting = new IdentifierListHarvesting(provider,
+                                prefixes);
+
+                        // get the records
+                        done = scenario.listIdentifiers(harvesting);
                     } else {
-                        done = scenario.listRecords(new RecordListHarvesting(
-                                provider, prefixes));
+                        harvesting = new RecordListHarvesting(
+                                provider, prefixes);
+
+                        // get the records
+                        done = scenario.listRecords(harvesting);
                     }
                 }
             }
