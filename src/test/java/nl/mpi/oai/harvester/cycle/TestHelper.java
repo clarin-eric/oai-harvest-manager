@@ -33,9 +33,13 @@ import static org.junit.Assert.fail;
 /**
  * <br> Helper methods for testing <br><br>
  *
+ * kj: needed to make the class public because of the harvesting test package
+ *
+ * create a getFile method at a higher level, for all the tests to use
+ *
  * @author Kees Jan van de Looij (Max Planck Institute for Psycholinguistics)
  */
-class TestHelper {
+public class TestHelper {
 
     /**
      * <br> Get the resource as a File type object <br><br>
@@ -45,7 +49,7 @@ class TestHelper {
      * @param resourceName file name of the resource
      * @return a File type object reference to the resource
      */
-    static File getFile(String resourceName){
+    public static File getFile(String resourceName){
 
         // get the URL of the test file in the resources directory
         URL url = TestHelper.class.getResource(resourceName);
