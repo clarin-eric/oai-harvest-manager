@@ -55,39 +55,12 @@ import static nl.mpi.oai.harvester.cycle.TestHelper.getFile;
  * subdirectory that actually holds the responses. Both endpoints and responses
  * are enumerated.
  *
- * kj: add the initial table
- *
  * @author Kees Jan van de Looij (Max Planck Institute for Psycholinguistics)
  */
-public class TestHelper {
-
-    /**
-     * <br> A trace keeps track of the metadata the harvester package would
-     * want to create <br><br>
-     *
-     * A trace represents one row in the relation between prefix and record
-     * identifier.
-     */
-    class Trace {
-
-        // create a trace
-        public  Trace (String prefix, String identifier) {
-            this.identifier = identifier;
-            this.prefix = prefix;
-        }
-
-        // the record's metadata prefix
-        String prefix;
-
-        // the record's identifier
-        String identifier;
-    }
-
-    // the relation between prefixes and record identifiers
-    ArrayList<Trace> traces = new ArrayList<>();
+public abstract class TestHelper {
 
     // factory for creating XML documents
-    DocumentBuilder db;
+    private DocumentBuilder db;
 
     /**
      * <br> Get an XML document from a file <br><br>
@@ -196,13 +169,13 @@ public class TestHelper {
     }
 
     // index pointing to the next document for the endpoint
-    int dIndex;
+    private int dIndex;
 
     // list of documents of the current type
-    ArrayList<Document> documentList = new ArrayList<>();
+    private ArrayList<Document> documentList = new ArrayList<>();
 
     // document type
-    String type;
+    private String type;
 
     /**
      * <br> Get the documents for the current endpoint, for the type indicated
@@ -270,7 +243,6 @@ public class TestHelper {
         return document;
     }
 
-
     /**
      * <br> Get the resumption token for the current endpoint and
      * document type <br><br>
@@ -289,6 +261,41 @@ public class TestHelper {
     }
 
     /**
+     * <br> A trace keeps track of the metadata the harvester package would
+     * want to create <br><br>
+     *
+     * A trace represents one row in the relation between prefix and record
+     * identifier.
+     */
+    class Trace {
+
+        // create a trace
+        public  Trace (String endpointURI, String prefix, String identifier) {
+            this.identifier = identifier;
+            this.prefix = prefix;
+        }
+
+        // the record's metadata prefix
+        String endpointURI;
+
+        // the record's metadata prefix
+        String prefix;
+
+        // the record's identifier
+        String identifier;
+    }
+
+    // the relation between prefixes and record identifiers
+    ArrayList<Trace> traces = new ArrayList<>();
+
+    /**
+     * Get the traces specific to a test
+     *
+     * @return the traces needed to run the test
+     */
+    abstract ArrayList<Trace> getTraces ();
+
+    /**
      * <br> Add metadata information to a table <br><br>
      *
      * As an alternative to static initialisation of the table, repeatedly
@@ -297,9 +304,10 @@ public class TestHelper {
      * @param prefix prefix in the trace to add to tbe table
      * @param identifier record identifier in the trace to add to the table
      */
-    private void addToTable(String prefix, String identifier) {
+    private void addToTable(String endpointURI, String prefix,
+                            String identifier) {
 
-        Trace trace = new Trace(prefix, identifier);
+        Trace trace = new Trace(endpointURI, prefix, identifier);
 
         traces.add(trace);
     }
@@ -318,11 +326,12 @@ public class TestHelper {
     private void removeFromTable(Metadata metadata) {
 
         // determine the elements that make up a trace
+        String endpointURI = metadata.getOrigin().getOaiUrl();
         String identifier = metadata.getId();
         String prefix = metadata.getDoc().getPrefix();
 
-        // crate the trace
-        Trace trace = new Trace(prefix, identifier);
+        // create the trace
+        Trace trace = new Trace(endpointURI, prefix, identifier);
 
         // remove the trace from the table
         traces.remove(trace);
