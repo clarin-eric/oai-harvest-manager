@@ -16,12 +16,11 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-package nl.mpi.oai.harvester.harversting;
+package nl.mpi.oai.harvester.harvesting;
 
 import ORG.oclc.oai.harvester2.verb.ListMetadataFormats;
 import nl.mpi.oai.harvester.Provider;
 import nl.mpi.oai.harvester.action.ActionSequence;
-import nl.mpi.oai.harvester.harvesting.FormatHarvesting;
 import nl.mpi.oai.harvester.metadata.MetadataFormat;
 import org.junit.Test;
 import org.junit.runner.RunWith;
