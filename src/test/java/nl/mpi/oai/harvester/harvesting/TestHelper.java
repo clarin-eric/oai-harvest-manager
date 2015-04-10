@@ -59,46 +59,52 @@ import static nl.mpi.oai.harvester.cycle.TestHelper.getFile;
  */
 public abstract class TestHelper {
 
+    /**
+     * <br> Get the URIs of the endpoints involved in the test
+     *
+     * @return the array of endpoint
+     */
+    abstract String[] getEndpointURIs();
+
+    /**
+     * <br> Get the traces specific to a test
+     *
+     * @return the traces needed to run the test
+     */
+    abstract ArrayList<Trace> getTraces();
+
+    /**
+     * <br> Get the name of the resources folder
+     *
+     * @return the name of the designated resources folder
+     */
+    abstract String getTestName();
+
     // factory for creating XML documents
     private DocumentBuilder db;
 
-    /**
-     * <br> Get an XML document from a file <br><br>
-     *
-     * The document can serve as a part of a mocked response.
-     *
-     * @param fileName the file to get the document from
-     * @return the document
-     */
-    public Document getDocumentFromFile(String fileName) {
+    // index pointing to the current endpoint
+    private int eIndex;
 
-        // create a file reference
-        File file = getFile(fileName);
+    // the endpoints involved in the test
+    String[] endpointURIs;
 
-        if (!file.exists()) {
-            return null;
-        } else {
-            // the XML document to obtain from the file
-            Document document;
+    // the relation between prefixes and record identifiers
+    ArrayList<Trace> traces = new ArrayList<>();
 
-            // try to return the document contained in the file
-            try {
-                document = db.parse(getClass().getResourceAsStream(
-                        file.getAbsolutePath()));
-            } catch (SAXException |
-                    IOException e) {
-                document = null;
-                e.printStackTrace();
-            }
-
-            return document;
-        }
-    }
+    // name of the designated resources folder
+    String testName;
 
     /**
      * <br> Create a helper <br><br>
+     *
+     * A helper provides the XML part of the responses carried through the OAI
+     * protocol. It loads the responses from XML files in a resources folder
+     * designated for a particular test.
      */
     public TestHelper(){
+
+        this.testName = testName;
 
         // set up a factory for the document builders
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -108,19 +114,11 @@ public abstract class TestHelper {
         } catch (ParserConfigurationException e) {
             e.printStackTrace();
         }
-    }
 
-    // index pointing to the current endpoint
-    private int eIndex;
-
-    // a table of endpoint URIs
-    final static String[] endpointURIs;
-
-    static {
-        endpointURIs = new String[]{
-                "http://www.endpoint1.org",
-                "http://www.endpoint2.org",
-                "http://www.endpoint3.org"};
+        // load the endpoint URIs
+        endpointURIs = getEndpointURIs(); eIndex = 0;
+        // load the predefined traces
+        traces = getTraces();
     }
 
     /**
@@ -168,7 +166,7 @@ public abstract class TestHelper {
         }
     }
 
-    // index pointing to the next document for the endpoint
+    // index pointing to the next document for the current endpoint
     private int dIndex;
 
     // list of documents of the current type
@@ -176,6 +174,39 @@ public abstract class TestHelper {
 
     // document type
     private String type;
+
+    /**
+     * <br> Get an XML document from a file <br><br>
+     *
+     * The document can serve as a part of a mocked response.
+     *
+     * @param fileName the file to get the document from
+     * @return the document
+     */
+    public Document getDocumentFromFile(String fileName) {
+
+        // create a file reference
+        File file = getFile(fileName);
+
+        if (!file.exists()) {
+            return null;
+        } else {
+            // the XML document to obtain from the file
+            Document document;
+
+            // try to return the document contained in the file
+            try {
+                document = db.parse(getClass().getResourceAsStream(
+                        file.getAbsolutePath()));
+            } catch (SAXException |
+                    IOException e) {
+                document = null;
+                e.printStackTrace();
+            }
+
+            return document;
+        }
+    }
 
     /**
      * <br> Get the documents for the current endpoint, for the type indicated
@@ -198,8 +229,8 @@ public abstract class TestHelper {
             String responseIndex = String.format("%04d", dIndex); dIndex ++;
 
             // create the name of the file
-            String fileName = "/" + type + "/endpoint" + endpointIndex +
-                    "/list" + responseIndex + ".xml";
+            String fileName = "/" + testName + "/endpoint" + endpointIndex +
+                    "/" + type + "/resp" + responseIndex + ".xml";
 
             // try to get the document
             Document document = getDocumentFromFile(fileName);
@@ -284,16 +315,6 @@ public abstract class TestHelper {
         // the record's identifier
         String identifier;
     }
-
-    // the relation between prefixes and record identifiers
-    ArrayList<Trace> traces = new ArrayList<>();
-
-    /**
-     * Get the traces specific to a test
-     *
-     * @return the traces needed to run the test
-     */
-    abstract ArrayList<Trace> getTraces ();
 
     /**
      * <br> Add metadata information to a table <br><br>

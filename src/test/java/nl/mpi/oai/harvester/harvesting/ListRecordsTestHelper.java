@@ -51,4 +51,23 @@ public class ListRecordsTestHelper extends TestHelper {
 
         return traces;
     }
+
+    @Override
+    String[] getEndpointURIs() {
+        // a table of endpoint URIs
+        final String[] endpointURIs;
+
+        endpointURIs = new String[]{
+                "http://www.endpoint1.org",
+                "http://www.endpoint2.org",
+                "http://www.endpoint3.org"};
+
+        return endpointURIs;
+    }
+
+    @Override
+    String getTestName() {
+
+        return "ListRecords";
+    }
 }
