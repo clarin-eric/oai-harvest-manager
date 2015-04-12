@@ -2,15 +2,15 @@
 <OAI-PMH xmlns="http://www.openarchives.org/OAI/2.0/"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/             http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd">
-   <responseDate>2015-04-06T18:45:31Z</responseDate>
-   <request identifier="oai:kielipankki.fi:sh03de30"
+   <responseDate>2015-04-06T18:46:21Z</responseDate>
+   <request identifier="oai:kielipankki.fi:shff9200"
             metadataPrefix="cmdi0571"
             verb="GetRecord">http://metalb.csc.fi/cgi-bin/que</request>
    <GetRecord>
      <record>
          <header>
-            <identifier>oai:kielipankki.fi:sh03de30</identifier>
-            <datestamp>2015-04-01T08:00:44Z</datestamp>
+            <identifier>oai:kielipankki.fi:shff9200</identifier>
+            <datestamp>2015-04-01T08:00:37Z</datestamp>
          </header>
          <metadata>
 
@@ -30,18 +30,22 @@
                <Components>
                   <resourceInfo>
                      <identificationInfo>
-                        <resourceName xml:lang="en">Finnish TreeBank 1</resourceName>
-                        <description xml:lang="en">The example sentences from Iso suomen kielioppi [Large Grammar of Finnish], manually annotated with dependency-syntactic descriptions. This is a Grammar Definition Corpus intended as a model for further automatic analysis of Finnish.
+                        <resourceName xml:lang="fi">Suomen kielen puupankki 3</resourceName>
+                        <resourceName xml:lang="en">Finnish TreeBank 3</resourceName>
+                        <description xml:lang="en">The FinnTreeBank project is creating a treebank and a parsebank for Finnish. This work is licensed under Creative Commons Attribution 3.0.
+
+A parsebank for Finnish based on the Europarl and the JRC-Aquis has been available since June 2012.
+
+Access location: https://korp.csc.fi/#corpus=ftb3_europarl,ftb3_jrcacquis.
 
 Download location: http://www.ling.helsinki.fi/kieliteknologia/tutkimus/treebank/sources/.</description>
-                        <resourceShortName xml:lang="en">FinnTreeBank1</resourceShortName>
-                        <resourceShortName xml:lang="und">FTB1</resourceShortName>
+                        <resourceShortName xml:lang="en">FinnTreeBank 3</resourceShortName>
+                        <resourceShortName xml:lang="und">FTB 3</resourceShortName>
                         <url>http://www.ling.helsinki.fi/kieliteknologia/tutkimus/treebank/</url>
-                        <metaShareId>
-            NOT_DEFINED_FOR_V2
-          </metaShareId>
-                        <identifier>http://urn.fi/urn:nbn:fi:lb-20140730138</identifier>
-                        <identifier>islrn.org/resources/848-939-385-570-0</identifier>
+                        <url>http://urn.fi/urn:nbn:fi:lb-201406021</url>
+                        <metaShareId>NOT_DEFINED_FOR_V2</metaShareId>
+                        <identifier>http://urn.fi/urn:nbn:fi:lb-201406022</identifier>
+                        <identifier>islrn.org/resources/390-027-989-558-3</identifier>
                      </identificationInfo>
                      <distributionInfo>
                         <availability>available-unrestrictedUse</availability>
@@ -49,6 +53,7 @@ Download location: http://www.ling.helsinki.fi/kieliteknologia/tutkimus/treebank
                            <licence>CC-BY</licence>
                            <restrictionsOfUse>attribution</restrictionsOfUse>
                            <distributionAccessMedium>downloadable</distributionAccessMedium>
+                           <downloadLocation>http://www.ling.helsinki.fi/kieliteknologia/tutkimus/treebank/</downloadLocation>
                            <licensorOrganization>
                               <role>licensor</role>
                               <organizationInfo>
@@ -74,8 +79,9 @@ Download location: http://www.ling.helsinki.fi/kieliteknologia/tutkimus/treebank
                            <role>iprHolder</role>
                            <organizationInfo>
                               <organizationName xml:lang="en">University of Helsinki</organizationName>
+                              <organizationShortName xml:lang="en">UHEL</organizationShortName>
                               <communicationInfo>
-                                 <email>HY-kirjaamo@helsinki.fi</email>
+                                 <email>krister.linden@helsinki.fi</email>
                               </communicationInfo>
                            </organizationInfo>
                         </iprHolderOrganization>
@@ -92,28 +98,23 @@ Download location: http://www.ling.helsinki.fi/kieliteknologia/tutkimus/treebank
                         </personInfo>
                      </contactPerson>
                      <metadataInfo>
-                        <metadataCreationDate>2011-11-17</metadataCreationDate>
+                        <metadataCreationDate>2012-12-10</metadataCreationDate>
+                        <originalMetadataLink>http://www.ling.helsinki.fi/kieliteknologia/tutkimus/treebank/</originalMetadataLink>
                         <metadataLanguageName>English</metadataLanguageName>
                         <metadataLanguageId>en</metadataLanguageId>
-                        <metadataLastDateUpdated>2014-04-22</metadataLastDateUpdated>
+                        <metadataLastDateUpdated>2012-12-10</metadataLastDateUpdated>
                         <metadataCreator>
                            <role>metadataCreator</role>
                            <personInfo>
-                              <surname xml:lang="en">Piitulainen</surname>
-                              <givenName xml:lang="en">Jussi</givenName>
+                              <surname xml:lang="en">Bartis</surname>
+                              <givenName xml:lang="en">Imre</givenName>
                               <sex>male</sex>
+                              <position>Project Coordinator</position>
                               <communicationInfo>
-                                 <email>jpiitula@ling.helsinki.fi</email>
+                                 <email>imre.bartis@helsinki.fi</email>
+                                 <city>Helsinki</city>
+                                 <country>Finland</country>
                               </communicationInfo>
-                              <affiliation>
-                                 <role>affiliation</role>
-                                 <organizationInfo>
-                                    <organizationName xml:lang="en">University of Helsinki</organizationName>
-                                    <communicationInfo>
-                                       <email>jpiitula@ling.helsinki.fi</email>
-                                    </communicationInfo>
-                                 </organizationInfo>
-                              </affiliation>
                            </personInfo>
                         </metadataCreator>
                      </metadataInfo>
@@ -123,6 +124,16 @@ Download location: http://www.ling.helsinki.fi/kieliteknologia/tutkimus/treebank
                            <useNLPSpecific>morphologicalAnalysis</useNLPSpecific>
                         </foreseenUseInfo>
                      </usageInfo>
+                     <resourceDocumentationInfo>
+                        <documentationStructured>
+                           <role>documentation</role>
+                           <documentInfo>
+                              <documentType>manual</documentType>
+                              <title xml:lang="en">FinnTreebank Manual</title>
+                              <url>https://kitwiki.csc.fi/twiki/bin/view/FinCLARIN/FinnTreebankHome</url>
+                           </documentInfo>
+                        </documentationStructured>
+                     </resourceDocumentationInfo>
                      <corpusInfo>
                         <resourceType>corpus</resourceType>
                         <corpusMediaType>
@@ -132,26 +143,19 @@ Download location: http://www.ling.helsinki.fi/kieliteknologia/tutkimus/treebank
                                  <lingualityType>monolingual</lingualityType>
                               </lingualityInfo>
                               <languageInfo>
-                                 <languageId>fin</languageId>
+                                 <languageId>fi</languageId>
                                  <languageName>Finnish</languageName>
                               </languageInfo>
-                              <modalityInfo>
-                                 <modalityType>writtenLanguage</modalityType>
-                              </modalityInfo>
                               <sizeInfo>
-                                 <size>160000</size>
+                                 <size>76369439</size>
                                  <sizeUnit>tokens</sizeUnit>
                               </sizeInfo>
                               <sizeInfo>
-                                 <size>19000</size>
+                                 <size>4366955</size>
                                  <sizeUnit>sentences</sizeUnit>
                               </sizeInfo>
                               <annotationInfo>
                                  <annotationType>syntacticAnnotation-treebanks</annotationType>
-                                 <annotationStandoff>false</annotationStandoff>
-                                 <segmentationLevel>sentence</segmentationLevel>
-                                 <segmentationLevel>word</segmentationLevel>
-                                 <annotationMode>manual</annotationMode>
                               </annotationInfo>
                            </corpusTextInfo>
                         </corpusMediaType>

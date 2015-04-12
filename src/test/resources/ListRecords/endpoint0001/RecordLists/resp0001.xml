@@ -1,0 +1,1455 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OAI-PMH xmlns="http://www.openarchives.org/OAI/2.0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/             http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd">
+   <responseDate>2015-04-11T21:14:06Z</responseDate>
+   <request metadataPrefix="cmdi0571" verb="ListRecords">http://metalb.csc.fi/cgi-bin/que</request>
+   <ListRecords>
+     <record>
+         <header>
+            <identifier>oai:kielipankki.fi:sh03de30</identifier>
+            <datestamp>2015-04-01T08:00:44Z</datestamp>
+         </header>
+         <metadata>
+
+            <CMD xmlns="http://www.clarin.eu/cmd/"
+                 CMDVersion="1.1"
+                 xsi:schemaLocation="http://www.clarin.eu/cmd/ http://catalog.clarin.eu/ds/ComponentRegistry/rest/registry/profiles/clarin.eu:cr1:p_1361876010571/xsd">
+               <Header>
+                  <MdCreator>metashareToCmdi.xsl remove_metashare_namespace.xsl</MdCreator>
+                  <MdCreationDate>2015-04-01</MdCreationDate>
+                  <MdProfile>clarin.eu:cr1:p_1361876010571</MdProfile>
+               </Header>
+               <Resources>
+                  <ResourceProxyList/>
+                  <JournalFileProxyList/>
+                  <ResourceRelationList/>
+               </Resources>
+               <Components>
+                  <resourceInfo>
+                     <identificationInfo>
+                        <resourceName xml:lang="en">Finnish TreeBank 1</resourceName>
+                        <description xml:lang="en">The example sentences from Iso suomen kielioppi [Large Grammar of Finnish], manually annotated with dependency-syntactic descriptions. This is a Grammar Definition Corpus intended as a model for further automatic analysis of Finnish.
+
+Download location: http://www.ling.helsinki.fi/kieliteknologia/tutkimus/treebank/sources/.</description>
+                        <resourceShortName xml:lang="en">FinnTreeBank1</resourceShortName>
+                        <resourceShortName xml:lang="und">FTB1</resourceShortName>
+                        <url>http://www.ling.helsinki.fi/kieliteknologia/tutkimus/treebank/</url>
+                        <metaShareId>
+            NOT_DEFINED_FOR_V2
+          </metaShareId>
+                        <identifier>http://urn.fi/urn:nbn:fi:lb-20140730138</identifier>
+                        <identifier>islrn.org/resources/848-939-385-570-0</identifier>
+                     </identificationInfo>
+                     <distributionInfo>
+                        <availability>available-unrestrictedUse</availability>
+                        <licenceInfo>
+                           <licence>CC-BY</licence>
+                           <restrictionsOfUse>attribution</restrictionsOfUse>
+                           <distributionAccessMedium>downloadable</distributionAccessMedium>
+                           <licensorOrganization>
+                              <role>licensor</role>
+                              <organizationInfo>
+                                 <organizationName xml:lang="en">University of Helsinki</organizationName>
+                                 <organizationShortName xml:lang="en">UHEL</organizationShortName>
+                                 <communicationInfo>
+                                    <email>krister.linden@helsinki.fi</email>
+                                 </communicationInfo>
+                              </organizationInfo>
+                           </licensorOrganization>
+                           <distributionRightsHolderOrganization>
+                              <role>distributionRightsHolder</role>
+                              <organizationInfo>
+                                 <organizationName xml:lang="en">University of Helsinki</organizationName>
+                                 <organizationShortName xml:lang="en">UHEL</organizationShortName>
+                                 <communicationInfo>
+                                    <email>krister.linden@helsinki.fi</email>
+                                 </communicationInfo>
+                              </organizationInfo>
+                           </distributionRightsHolderOrganization>
+                        </licenceInfo>
+                        <iprHolderOrganization>
+                           <role>iprHolder</role>
+                           <organizationInfo>
+                              <organizationName xml:lang="en">University of Helsinki</organizationName>
+                              <communicationInfo>
+                                 <email>HY-kirjaamo@helsinki.fi</email>
+                              </communicationInfo>
+                           </organizationInfo>
+                        </iprHolderOrganization>
+                     </distributionInfo>
+                     <contactPerson>
+                        <role>contactPerson</role>
+                        <personInfo>
+                           <surname xml:lang="en">Voutilainen</surname>
+                           <givenName xml:lang="en">Atro</givenName>
+                           <sex>unknown</sex>
+                           <communicationInfo>
+                              <email>atro.voutilainen@helsinki.fi</email>
+                           </communicationInfo>
+                        </personInfo>
+                     </contactPerson>
+                     <metadataInfo>
+                        <metadataCreationDate>2011-11-17</metadataCreationDate>
+                        <metadataLanguageName>English</metadataLanguageName>
+                        <metadataLanguageId>en</metadataLanguageId>
+                        <metadataLastDateUpdated>2014-04-22</metadataLastDateUpdated>
+                        <metadataCreator>
+                           <role>metadataCreator</role>
+                           <personInfo>
+                              <surname xml:lang="en">Piitulainen</surname>
+                              <givenName xml:lang="en">Jussi</givenName>
+                              <sex>male</sex>
+                              <communicationInfo>
+                                 <email>jpiitula@ling.helsinki.fi</email>
+                              </communicationInfo>
+                              <affiliation>
+                                 <role>affiliation</role>
+                                 <organizationInfo>
+                                    <organizationName xml:lang="en">University of Helsinki</organizationName>
+                                    <communicationInfo>
+                                       <email>jpiitula@ling.helsinki.fi</email>
+                                    </communicationInfo>
+                                 </organizationInfo>
+                              </affiliation>
+                           </personInfo>
+                        </metadataCreator>
+                     </metadataInfo>
+                     <usageInfo>
+                        <foreseenUseInfo>
+                           <foreseenUse>nlpApplications</foreseenUse>
+                           <useNLPSpecific>morphologicalAnalysis</useNLPSpecific>
+                        </foreseenUseInfo>
+                     </usageInfo>
+                     <corpusInfo>
+                        <resourceType>corpus</resourceType>
+                        <corpusMediaType>
+                           <corpusTextInfo>
+                              <mediaType>text</mediaType>
+                              <lingualityInfo>
+                                 <lingualityType>monolingual</lingualityType>
+                              </lingualityInfo>
+                              <languageInfo>
+                                 <languageId>fin</languageId>
+                                 <languageName>Finnish</languageName>
+                              </languageInfo>
+                              <modalityInfo>
+                                 <modalityType>writtenLanguage</modalityType>
+                              </modalityInfo>
+                              <sizeInfo>
+                                 <size>160000</size>
+                                 <sizeUnit>tokens</sizeUnit>
+                              </sizeInfo>
+                              <sizeInfo>
+                                 <size>19000</size>
+                                 <sizeUnit>sentences</sizeUnit>
+                              </sizeInfo>
+                              <annotationInfo>
+                                 <annotationType>syntacticAnnotation-treebanks</annotationType>
+                                 <annotationStandoff>false</annotationStandoff>
+                                 <segmentationLevel>sentence</segmentationLevel>
+                                 <segmentationLevel>word</segmentationLevel>
+                                 <annotationMode>manual</annotationMode>
+                              </annotationInfo>
+                           </corpusTextInfo>
+                        </corpusMediaType>
+                     </corpusInfo>
+                  </resourceInfo>
+               </Components>
+            </CMD>
+         </metadata>
+     </record>
+     <record>
+         <header>
+            <identifier>oai:kielipankki.fi:sh7b8760</identifier>
+            <datestamp>2015-04-01T08:00:35Z</datestamp>
+         </header>
+         <metadata>
+
+            <CMD xmlns="http://www.clarin.eu/cmd/"
+                 CMDVersion="1.1"
+                 xsi:schemaLocation="http://www.clarin.eu/cmd/ http://catalog.clarin.eu/ds/ComponentRegistry/rest/registry/profiles/clarin.eu:cr1:p_1361876010571/xsd">
+               <Header>
+                  <MdCreator>metashareToCmdi.xsl remove_metashare_namespace.xsl</MdCreator>
+                  <MdCreationDate>2015-04-01</MdCreationDate>
+                  <MdProfile>clarin.eu:cr1:p_1361876010571</MdProfile>
+               </Header>
+               <Resources>
+                  <ResourceProxyList/>
+                  <JournalFileProxyList/>
+                  <ResourceRelationList/>
+               </Resources>
+               <Components>
+                  <resourceInfo>
+                     <identificationInfo>
+                        <resourceName xml:lang="fi">Kansainvälinen oppijansuomen korpus (ICLFI)</resourceName>
+                        <resourceName xml:lang="en">International Corpus of Learner Finnish (ICLFI)</resourceName>
+                        <description xml:lang="en">The International Corpus of Learner Finnish (ICLFI) is a corpus of written learner language. The corpus mostly consists of raw texts, but certain subcorpora (e.g. texts produced by Estonian, Russian, Dutch, and Swedish learners) are already linguistically annotated. The error-tagging process begins 2013. The texts have been written by students of Finnish as a foreign language from various language backgrounds. They have been compiled with the help of Finnish language teachers around the world.
+
+The corpus contains texts written by basic, independent, and proficient learners of Finnish, and the texts are analyzed according to the Common European Framework of Reference for Languages (CEFR).  The ICLFI comprises a variety of both non-fictional (e.g. essays, argumentative texts) and fictional texts (e.g. narratives, letters). In addition, the corpus provides information on a large number of variables concerning the linguistic background of the learner, the learning task, the learning context, etc.
+
+The corpus will be published also at https://korp.csc.fi/.
+
+The purpose of the resource use must be outlined in a research plan.
+
+Distribution of copies is not allowed. Copies cannot be brought outside the servers of a trusted centre once the resource has been made available at https://korp.csc.fi/.
+
+Important: due to the nature of the material, the resource should be handled with care in order to respect the privacy of the personal data. If samples of the data are published, they must be anonymized according to best practices.
+
+For detailed information on the license of the resource see https://kitwiki.csc.fi/twiki/bin/view/FinCLARIN/ClarinEulaEngResLocInfPdNcReD.</description>
+                        <resourceShortName xml:lang="en">ICLFI</resourceShortName>
+                        <url>http://www.oulu.fi/suomitoisenakielena/node/16078</url>
+                        <metaShareId>NOT_DEFINED_FOR_V2</metaShareId>
+                        <identifier>http://urn.fi/urn:nbn:fi:lb-20140730163</identifier>
+                        <identifier>http://islrn.org/resources/749-730-605-333-7</identifier>
+                     </identificationInfo>
+                     <distributionInfo>
+                        <availability>available-restrictedUse</availability>
+                        <licenceInfo>
+                           <licence>CLARIN_RES</licence>
+                           <restrictionsOfUse>academic-nonCommercialUse</restrictionsOfUse>
+                           <restrictionsOfUse>attribution</restrictionsOfUse>
+                           <restrictionsOfUse>informLicensor</restrictionsOfUse>
+                           <restrictionsOfUse>noRedistribution</restrictionsOfUse>
+                           <restrictionsOfUse>other</restrictionsOfUse>
+                           <restrictionsOfUse>redeposit</restrictionsOfUse>
+                           <distributionAccessMedium>downloadable</distributionAccessMedium>
+                           <downloadLocation>http://www.oulu.fi/hutk/sutvi/oppijankieli/ICLFI/Salainen/index.html</downloadLocation>
+                           <fee>none</fee>
+                           <attributionText xml:lang="fi">Kansainvälinen oppijansuomen korpus (ICLFI). Oppijansuomen sähköinen tutkimusaineisto. Koostettu hankkeessa Korpustutkimus oppijankielen kielikohtaisista ja universaaleista ominaisuuksista Oulun yliopiston suomi toisena ja vieraana kielenä -oppiaineessa. Käyttöaika [päiväys]. Saanti: http://www.oulu.fi/hutk/sutvi/oppijankieli/</attributionText>
+                           <attributionText xml:lang="en">International Corpus of Learner Finnish (ICLFI). Oppijansuomen sähköinen tutkimusaineisto. Koostettu hankkeessa Korpustutkimus oppijankielen kielikohtaisista ja universaaleista ominaisuuksista Oulun yliopiston suomi toisena ja vieraana kielenä -oppiaineessa. Käyttöaika [päiväys]. Saanti: http://www.oulu.fi/hutk/sutvi/oppijankieli/</attributionText>
+                           <licensorOrganization>
+                              <role>licensor</role>
+                              <organizationInfo>
+                                 <organizationName xml:lang="en">University of Oulu</organizationName>
+                                 <communicationInfo>
+                                    <email>firstname.surname@oulu.fi</email>
+                                    <url>http://www.oulu.fi</url>
+                                 </communicationInfo>
+                              </organizationInfo>
+                           </licensorOrganization>
+                           <distributionRightsHolderOrganization>
+                              <role>distributionRightsHolder</role>
+                              <organizationInfo>
+                                 <organizationName xml:lang="en">University of Oulu</organizationName>
+                                 <communicationInfo>
+                                    <email>firstname.surname@oulu.fi</email>
+                                    <url>http://www.oulu.fi</url>
+                                 </communicationInfo>
+                              </organizationInfo>
+                           </distributionRightsHolderOrganization>
+                        </licenceInfo>
+                        <iprHolderOrganization>
+                           <role>iprHolder</role>
+                           <organizationInfo>
+                              <organizationName xml:lang="en">University of Oulu</organizationName>
+                              <communicationInfo>
+                                 <email>firstname.surname@oulu.fi</email>
+                                 <url>http://www.oulu.fi</url>
+                              </communicationInfo>
+                           </organizationInfo>
+                        </iprHolderOrganization>
+                     </distributionInfo>
+                     <contactPerson>
+                        <role>contactPerson</role>
+                        <personInfo>
+                           <surname xml:lang="en">Brunni</surname>
+                           <givenName xml:lang="en">Sisko</givenName>
+                           <sex>female</sex>
+                           <communicationInfo>
+                              <email>sisko.brunni@oulu.fi</email>
+                           </communicationInfo>
+                           <affiliation>
+                              <role>affiliation</role>
+                              <organizationInfo>
+                                 <organizationName xml:lang="en">University of Oulu</organizationName>
+                                 <communicationInfo>
+                                    <email>firstname.surname@oulu.fi</email>
+                                    <url>http://www.oulu.fi</url>
+                                 </communicationInfo>
+                              </organizationInfo>
+                           </affiliation>
+                        </personInfo>
+                     </contactPerson>
+                     <metadataInfo>
+                        <metadataCreationDate>2012-06-14</metadataCreationDate>
+                        <metadataLanguageName>English</metadataLanguageName>
+                        <metadataLanguageId>en</metadataLanguageId>
+                        <metadataLastDateUpdated>2014-04-23</metadataLastDateUpdated>
+                        <metadataCreator>
+                           <role>metadataCreator</role>
+                           <personInfo>
+                              <surname xml:lang="en">Lennes</surname>
+                              <givenName xml:lang="en">Mietta</givenName>
+                              <sex>female</sex>
+                              <communicationInfo>
+                                 <email>mietta.lennes@helsinki.fi</email>
+                                 <url>http://www.helsinki.fi/~lennes</url>
+                                 <city>Helsinki</city>
+                                 <country>Finland</country>
+                              </communicationInfo>
+                              <affiliation>
+                                 <role>affiliation</role>
+                                 <organizationInfo>
+                                    <organizationName xml:lang="en">University of Helsinki</organizationName>
+                                    <organizationShortName xml:lang="en">UHEL</organizationShortName>
+                                    <communicationInfo>
+                                       <email>krister.linden@helsinki.fi</email>
+                                    </communicationInfo>
+                                 </organizationInfo>
+                              </affiliation>
+                           </personInfo>
+                        </metadataCreator>
+                     </metadataInfo>
+                     <usageInfo>
+                        <foreseenUseInfo>
+                           <foreseenUse>humanUse</foreseenUse>
+                           <useNLPSpecific>linguisticResearch</useNLPSpecific>
+                        </foreseenUseInfo>
+                        <actualUseInfo>
+                           <actualUse>humanUse</actualUse>
+                           <useNLPSpecific>linguisticResearch</useNLPSpecific>
+                        </actualUseInfo>
+                     </usageInfo>
+                     <corpusInfo>
+                        <resourceType>corpus</resourceType>
+                        <corpusMediaType>
+                           <corpusTextInfo>
+                              <mediaType>text</mediaType>
+                              <lingualityInfo>
+                                 <lingualityType>monolingual</lingualityType>
+                              </lingualityInfo>
+                              <languageInfo>
+                                 <languageId>fi</languageId>
+                                 <languageName>Finnish</languageName>
+                                 <languageVarietyInfo>
+                                    <languageVarietyType>other</languageVarietyType>
+                                    <languageVarietyName>Learner Finnish</languageVarietyName>
+                                 </languageVarietyInfo>
+                              </languageInfo>
+                              <modalityInfo>
+                                 <modalityType>writtenLanguage</modalityType>
+                              </modalityInfo>
+                              <sizeInfo>
+                                 <size>600000</size>
+                                 <sizeUnit>words</sizeUnit>
+                              </sizeInfo>
+                           </corpusTextInfo>
+                        </corpusMediaType>
+                     </corpusInfo>
+                  </resourceInfo>
+               </Components>
+            </CMD>
+         </metadata>
+     </record>
+     <record>
+         <header>
+            <identifier>oai:kielipankki.fi:sh034a70</identifier>
+            <datestamp>2015-04-01T08:00:36Z</datestamp>
+         </header>
+         <metadata>
+
+            <CMD xmlns="http://www.clarin.eu/cmd/"
+                 CMDVersion="1.1"
+                 xsi:schemaLocation="http://www.clarin.eu/cmd/ http://catalog.clarin.eu/ds/ComponentRegistry/rest/registry/profiles/clarin.eu:cr1:p_1361876010571/xsd">
+               <Header>
+                  <MdCreator>metashareToCmdi.xsl remove_metashare_namespace.xsl</MdCreator>
+                  <MdCreationDate>2015-04-01</MdCreationDate>
+                  <MdProfile>clarin.eu:cr1:p_1361876010571</MdProfile>
+               </Header>
+               <Resources>
+                  <ResourceProxyList/>
+                  <JournalFileProxyList/>
+                  <ResourceRelationList/>
+               </Resources>
+               <Components>
+                  <resourceInfo>
+                     <identificationInfo>
+                        <resourceName xml:lang="en">Corpus Cyrillo-Methodianum Helsingiense: An Electronic Corpus of Old Church Slavonic Texts</resourceName>
+                        <description xml:lang="en">The Corpus Cyrillo-Methodianum Helsingiense (CCMH) is an electronic corpus of the most important Old Church Slavonic (OCS) texts. 
+
+Download location: http://www.helsinki.fi/slaavilaiset/ccmh/.</description>
+                        <url>https://kitwiki.csc.fi/twiki/bin/view/FinCLARIN/FinClarinSiteHY</url>
+                        <url>http://www.helsinki.fi/slaavilaiset/ccmh/</url>
+                        <metaShareId>NOT_DEFINED_FOR_V2</metaShareId>
+                        <identifier>http://urn.fi/urn:nbn:fi:lb-20140730106</identifier>
+                        <identifier>islrn.org/resources/114-536-113-509-3</identifier>
+                     </identificationInfo>
+                     <distributionInfo>
+                        <availability>underNegotiation</availability>
+                        <licenceInfo>
+                           <licence>underNegotiation</licence>
+                           <distributionAccessMedium>downloadable</distributionAccessMedium>
+                           <downloadLocation>http://www.helsinki.fi/slaavilaiset/ccmh/</downloadLocation>
+                           <licensorPerson>
+                              <role>licensor</role>
+                              <personInfo>
+                                 <surname xml:lang="en">Lindstedt</surname>
+                                 <givenName xml:lang="en">Jouko</givenName>
+                                 <sex>male</sex>
+                                 <communicationInfo>
+                                    <email>jouko.lindstedt@helsinki.fi</email>
+                                 </communicationInfo>
+                                 <affiliation>
+                                    <role>affiliation</role>
+                                    <organizationInfo>
+                                       <organizationName xml:lang="en">University of Helsinki</organizationName>
+                                       <organizationShortName xml:lang="en">UHEL</organizationShortName>
+                                       <communicationInfo>
+                                          <email>krister.linden@helsinki.fi</email>
+                                       </communicationInfo>
+                                    </organizationInfo>
+                                 </affiliation>
+                              </personInfo>
+                           </licensorPerson>
+                           <distributionRightsHolderPerson>
+                              <role>distributionRightsHolder</role>
+                              <personInfo>
+                                 <surname xml:lang="en">Lindstedt</surname>
+                                 <givenName xml:lang="en">Jouko</givenName>
+                                 <sex>male</sex>
+                                 <communicationInfo>
+                                    <email>jouko.lindstedt@helsinki.fi</email>
+                                 </communicationInfo>
+                                 <affiliation>
+                                    <role>affiliation</role>
+                                    <organizationInfo>
+                                       <organizationName xml:lang="en">University of Helsinki</organizationName>
+                                       <organizationShortName xml:lang="en">UHEL</organizationShortName>
+                                       <communicationInfo>
+                                          <email>krister.linden@helsinki.fi</email>
+                                       </communicationInfo>
+                                    </organizationInfo>
+                                 </affiliation>
+                              </personInfo>
+                           </distributionRightsHolderPerson>
+                        </licenceInfo>
+                        <iprHolderPerson>
+                           <role>iprHolder</role>
+                           <personInfo>
+                              <surname xml:lang="en">Lindstedt</surname>
+                              <givenName xml:lang="en">Jouko</givenName>
+                              <sex>male</sex>
+                              <communicationInfo>
+                                 <email>jouko.lindstedt@helsinki.fi</email>
+                              </communicationInfo>
+                              <affiliation>
+                                 <role>affiliation</role>
+                                 <organizationInfo>
+                                    <organizationName xml:lang="en">University of Helsinki</organizationName>
+                                    <organizationShortName xml:lang="en">UHEL</organizationShortName>
+                                    <communicationInfo>
+                                       <email>krister.linden@helsinki.fi</email>
+                                    </communicationInfo>
+                                 </organizationInfo>
+                              </affiliation>
+                           </personInfo>
+                        </iprHolderPerson>
+                     </distributionInfo>
+                     <contactPerson>
+                        <role>contactPerson</role>
+                        <personInfo>
+                           <surname xml:lang="en">Lindstedt</surname>
+                           <givenName xml:lang="en">Jouko</givenName>
+                           <sex>male</sex>
+                           <communicationInfo>
+                              <email>jouko.lindstedt@helsinki.fi</email>
+                           </communicationInfo>
+                           <affiliation>
+                              <role>affiliation</role>
+                              <organizationInfo>
+                                 <organizationName xml:lang="en">University of Helsinki</organizationName>
+                                 <organizationShortName xml:lang="en">UHEL</organizationShortName>
+                                 <communicationInfo>
+                                    <email>krister.linden@helsinki.fi</email>
+                                 </communicationInfo>
+                              </organizationInfo>
+                           </affiliation>
+                        </personInfo>
+                     </contactPerson>
+                     <metadataInfo>
+                        <metadataCreationDate>2012-09-04</metadataCreationDate>
+                        <originalMetadataLink>http://www.helsinki.fi/slaavilaiset/ccmh/</originalMetadataLink>
+                        <metadataLanguageName>English</metadataLanguageName>
+                        <metadataLanguageId>en</metadataLanguageId>
+                        <metadataLastDateUpdated>2012-09-04</metadataLastDateUpdated>
+                        <metadataCreator>
+                           <role>metadataCreator</role>
+                           <personInfo>
+                              <surname xml:lang="en">Pöyhönen</surname>
+                              <givenName xml:lang="en">Saara</givenName>
+                              <sex>female</sex>
+                              <communicationInfo>
+                                 <email>saara.poyhonen@helsinki.fi</email>
+                              </communicationInfo>
+                              <affiliation>
+                                 <role>affiliation</role>
+                                 <organizationInfo>
+                                    <organizationName xml:lang="en">University of Helsinki</organizationName>
+                                    <organizationShortName xml:lang="en">UHEL</organizationShortName>
+                                    <communicationInfo>
+                                       <email>krister.linden@helsinki.fi</email>
+                                    </communicationInfo>
+                                 </organizationInfo>
+                              </affiliation>
+                           </personInfo>
+                        </metadataCreator>
+                     </metadataInfo>
+                     <corpusInfo>
+                        <resourceType>corpus</resourceType>
+                        <corpusMediaType>
+                           <corpusTextInfo>
+                              <mediaType>text</mediaType>
+                              <lingualityInfo>
+                                 <lingualityType>monolingual</lingualityType>
+                              </lingualityInfo>
+                              <languageInfo>
+                                 <languageId>cu</languageId>
+                                 <languageName>Old Church Slavonic</languageName>
+                              </languageInfo>
+                              <modalityInfo>
+                                 <modalityType>writtenLanguage</modalityType>
+                              </modalityInfo>
+                              <sizeInfo>
+                                 <size>1</size>
+                                 <sizeUnit>other</sizeUnit>
+                              </sizeInfo>
+                           </corpusTextInfo>
+                        </corpusMediaType>
+                     </corpusInfo>
+                  </resourceInfo>
+               </Components>
+            </CMD>
+         </metadata>
+     </record>
+     <record>
+         <header>
+            <identifier>oai:kielipankki.fi:sh136cd0</identifier>
+            <datestamp>2015-04-01T08:00:35Z</datestamp>
+         </header>
+         <metadata>
+
+            <CMD xmlns="http://www.clarin.eu/cmd/"
+                 CMDVersion="1.1"
+                 xsi:schemaLocation="http://www.clarin.eu/cmd/ http://catalog.clarin.eu/ds/ComponentRegistry/rest/registry/profiles/clarin.eu:cr1:p_1361876010571/xsd">
+               <Header>
+                  <MdCreator>metashareToCmdi.xsl remove_metashare_namespace.xsl</MdCreator>
+                  <MdCreationDate>2015-04-01</MdCreationDate>
+                  <MdProfile>clarin.eu:cr1:p_1361876010571</MdProfile>
+               </Header>
+               <Resources>
+                  <ResourceProxyList/>
+                  <JournalFileProxyList/>
+                  <ResourceRelationList/>
+               </Resources>
+               <Components>
+                  <resourceInfo>
+                     <identificationInfo>
+                        <resourceName xml:lang="en">FinStud86 Corpus</resourceName>
+                        <description xml:lang="en">Finnish language essays / compositions written by Finnish-speaking students taking the matriculation examination in 1986. The corpus will be made available in Korp (https://korp.csc.fi/). For details on the license see https://kitwiki.csc.fi/twiki/bin/view/FinCLARIN/ClarinEulaEngResPd.</description>
+                        <url>https://kitwiki.csc.fi/twiki/bin/view/FinCLARIN/FinClarinSiteJY</url>
+                        <metaShareId>NOT_DEFINED_FOR_V2</metaShareId>
+                        <identifier>http://urn.fi/urn:nbn:fi:lb-20140730158</identifier>
+                        <identifier>http://islrn.org/resources/596-037-998-620-1</identifier>
+                     </identificationInfo>
+                     <distributionInfo>
+                        <availability>available-restrictedUse</availability>
+                        <licenceInfo>
+                           <licence>CLARIN_RES</licence>
+                           <restrictionsOfUse>attribution</restrictionsOfUse>
+                           <restrictionsOfUse>other</restrictionsOfUse>
+                           <attributionText xml:lang="fi">Rahkonen, M. (2014). FinStud86-korpus. http://urn.fi/urn:nbn:fi:lb-20140730158.</attributionText>
+                           <licensorPerson>
+                              <role>licensor</role>
+                              <personInfo>
+                                 <surname xml:lang="en">Rahkonen</surname>
+                                 <givenName xml:lang="en">Matti</givenName>
+                                 <communicationInfo>
+                                    <email>mrahkone@gmail.com</email>
+                                 </communicationInfo>
+                                 <affiliation>
+                                    <role>affiliation</role>
+                                    <organizationInfo>
+                                       <organizationName xml:lang="fi">Jyväskylän yliopisto</organizationName>
+                                       <organizationName xml:lang="en">University of Jyväskylä</organizationName>
+                                       <organizationShortName xml:lang="en">JYU</organizationShortName>
+                                       <communicationInfo>
+                                          <email>registry@jyu.fi</email>
+                                          <url>https://www.jyu.fi/en</url>
+                                          <city>Jyväskylä</city>
+                                          <country>Finland</country>
+                                       </communicationInfo>
+                                    </organizationInfo>
+                                 </affiliation>
+                              </personInfo>
+                           </licensorPerson>
+                           <licensorOrganization>
+                              <role>licensor</role>
+                              <organizationInfo>
+                                 <organizationName xml:lang="en">The Matriculation Examination Board</organizationName>
+                                 <communicationInfo>
+                                    <email>firstname.surname@ylioppilastutkinto.fi</email>
+                                    <url>https://www.ylioppilastutkinto.fi/fi/english</url>
+                                    <city>Helsinki</city>
+                                    <country>Finland</country>
+                                 </communicationInfo>
+                              </organizationInfo>
+                           </licensorOrganization>
+                           <distributionRightsHolderOrganization>
+                              <role>distributionRightsHolder</role>
+                              <organizationInfo>
+                                 <organizationName xml:lang="en">University of Helsinki</organizationName>
+                                 <organizationShortName xml:lang="en">UHEL</organizationShortName>
+                                 <communicationInfo>
+                                    <email>krister.linden@helsinki.fi</email>
+                                 </communicationInfo>
+                              </organizationInfo>
+                           </distributionRightsHolderOrganization>
+                           <distributionRightsHolderOrganization>
+                              <role>distributionRightsHolder</role>
+                              <organizationInfo>
+                                 <organizationName xml:lang="fi">CSC - Tieteen tietotekniikan keskus Oy </organizationName>
+                                 <organizationName xml:lang="en">CSC — IT Center for Science Ltd</organizationName>
+                                 <organizationShortName xml:lang="en">CSC</organizationShortName>
+                                 <departmentName xml:lang="en">Kielipankki</departmentName>
+                                 <communicationInfo>
+                                    <email>ling@csc.fi</email>
+                                    <url>http://www.csc.fi/english</url>
+                                    <address>P.O. Box 405</address>
+                                    <zipCode>FI-02101</zipCode>
+                                    <city>Espoo</city>
+                                    <country>Finland</country>
+                                    <telephoneNumber>+358 (0)9 457 2001</telephoneNumber>
+                                    <faxNumber>+358 (0)9 457 2302</faxNumber>
+                                 </communicationInfo>
+                              </organizationInfo>
+                           </distributionRightsHolderOrganization>
+                        </licenceInfo>
+                        <iprHolderPerson>
+                           <role>iprHolder</role>
+                           <personInfo>
+                              <surname xml:lang="en">Rahkonen</surname>
+                              <givenName xml:lang="en">Matti</givenName>
+                              <communicationInfo>
+                                 <email>mrahkone@gmail.com</email>
+                              </communicationInfo>
+                              <affiliation>
+                                 <role>affiliation</role>
+                                 <organizationInfo>
+                                    <organizationName xml:lang="fi">Jyväskylän yliopisto</organizationName>
+                                    <organizationName xml:lang="en">University of Jyväskylä</organizationName>
+                                    <organizationShortName xml:lang="en">JYU</organizationShortName>
+                                    <communicationInfo>
+                                       <email>registry@jyu.fi</email>
+                                       <url>https://www.jyu.fi/en</url>
+                                       <city>Jyväskylä</city>
+                                       <country>Finland</country>
+                                    </communicationInfo>
+                                 </organizationInfo>
+                              </affiliation>
+                           </personInfo>
+                        </iprHolderPerson>
+                        <iprHolderOrganization>
+                           <role>iprHolder</role>
+                           <organizationInfo>
+                              <organizationName xml:lang="en">The Matriculation Examination Board</organizationName>
+                              <communicationInfo>
+                                 <email>firstname.surname@ylioppilastutkinto.fi</email>
+                                 <url>https://www.ylioppilastutkinto.fi/fi/english</url>
+                                 <city>Helsinki</city>
+                                 <country>Finland</country>
+                              </communicationInfo>
+                           </organizationInfo>
+                        </iprHolderOrganization>
+                     </distributionInfo>
+                     <contactPerson>
+                        <role>contactPerson</role>
+                        <personInfo>
+                           <surname xml:lang="en">FIN-CLARIN</surname>
+                           <givenName xml:lang="en">User support</givenName>
+                           <communicationInfo>
+                              <email>finclarin@helsinki.fi</email>
+                           </communicationInfo>
+                        </personInfo>
+                     </contactPerson>
+                     <metadataInfo>
+                        <metadataCreationDate>2012-09-06</metadataCreationDate>
+                        <originalMetadataLink>https://kitwiki.csc.fi/twiki/bin/view/FinCLARIN/FinClarinSiteJY</originalMetadataLink>
+                        <metadataLanguageName>English</metadataLanguageName>
+                        <metadataLanguageId>en</metadataLanguageId>
+                        <metadataLastDateUpdated>2012-09-06</metadataLastDateUpdated>
+                        <metadataCreator>
+                           <role>metadataCreator</role>
+                           <personInfo>
+                              <surname xml:lang="en">Pöyhönen</surname>
+                              <givenName xml:lang="en">Saara</givenName>
+                              <sex>female</sex>
+                              <communicationInfo>
+                                 <email>saara.poyhonen@helsinki.fi</email>
+                              </communicationInfo>
+                              <affiliation>
+                                 <role>affiliation</role>
+                                 <organizationInfo>
+                                    <organizationName xml:lang="en">University of Helsinki</organizationName>
+                                    <organizationShortName xml:lang="en">UHEL</organizationShortName>
+                                    <communicationInfo>
+                                       <email>krister.linden@helsinki.fi</email>
+                                    </communicationInfo>
+                                 </organizationInfo>
+                              </affiliation>
+                           </personInfo>
+                        </metadataCreator>
+                     </metadataInfo>
+                     <corpusInfo>
+                        <resourceType>corpus</resourceType>
+                        <corpusMediaType>
+                           <corpusTextInfo>
+                              <mediaType>text</mediaType>
+                              <lingualityInfo>
+                                 <lingualityType>monolingual</lingualityType>
+                              </lingualityInfo>
+                              <languageInfo>
+                                 <languageId>fi</languageId>
+                                 <languageName>Finnish</languageName>
+                              </languageInfo>
+                              <modalityInfo>
+                                 <modalityType>writtenLanguage</modalityType>
+                              </modalityInfo>
+                              <sizeInfo>
+                                 <size>100000</size>
+                                 <sizeUnit>words</sizeUnit>
+                              </sizeInfo>
+                              <timeCoverageInfo>
+                                 <timeCoverage>1986</timeCoverage>
+                              </timeCoverageInfo>
+                           </corpusTextInfo>
+                        </corpusMediaType>
+                     </corpusInfo>
+                  </resourceInfo>
+               </Components>
+            </CMD>
+         </metadata>
+     </record>
+     <record>
+         <header>
+            <identifier>oai:kielipankki.fi:sh3123d0</identifier>
+            <datestamp>2015-04-01T08:00:46Z</datestamp>
+         </header>
+         <metadata>
+
+            <CMD xmlns="http://www.clarin.eu/cmd/"
+                 CMDVersion="1.1"
+                 xsi:schemaLocation="http://www.clarin.eu/cmd/ http://catalog.clarin.eu/ds/ComponentRegistry/rest/registry/profiles/clarin.eu:cr1:p_1361876010571/xsd">
+               <Header>
+                  <MdCreator>metashareToCmdi.xsl remove_metashare_namespace.xsl</MdCreator>
+                  <MdCreationDate>2015-04-01</MdCreationDate>
+                  <MdProfile>clarin.eu:cr1:p_1361876010571</MdProfile>
+               </Header>
+               <Resources>
+                  <ResourceProxyList/>
+                  <JournalFileProxyList/>
+                  <ResourceRelationList/>
+               </Resources>
+               <Components>
+                  <resourceInfo>
+                     <identificationInfo>
+                        <resourceName xml:lang="fi">Suomenruotsin tekstikokoelma (UHLCS)</resourceName>
+                        <resourceName xml:lang="en">Finland-Swedish Text Corpus (UHLCS)</resourceName>
+                        <resourceName xml:lang="sv">Finlandssvensk textkorpus (UHLCS)</resourceName>
+                        <description xml:lang="fi">Korpus sisältää Suomessa julkaistua kirjoitettua ruotsin kieltä 1990-luvulta. Korpukseen liittyy myös pieni puhutun ruotsin osio. Suomenruotsin tekstikorpus kuuluu UHLCS-korpuskokoelmaan.
+
+UHLCS:llä on monta eri omistajaa. Kokoelmaan liittyvistä asioista voi tiedustella Pirkko Suihkoselta (suihkonen.pirkko@gmail.com).
+
+Lisenssitiedot: http://www.csc.fi/english/research/software/a-lic
+Käyttöoikeuksien hakuohjeet: https://kitwiki.csc.fi/twiki/bin/view/FinCLARIN/KielipankkiKayttooikeudet
+
+Kielivaran käyttötarkoitus tulee määritellä tutkimussuunnitelmassa.</description>
+                        <description xml:lang="en">The corpus contains modern written Swedish texts published in Finland (1990s). The kernel corpus is accompanied by a minor section on spoken language. The Finland Swedish Text Corpus is a part of the UHLCS corpus collection.
+
+UHLCS has many different IPR holders. Should you have any questions regarding the collection, please contact Pirkko Suihkonen (suihkonen.pirkko@gmail.com). 
+
+License details: http://www.csc.fi/english/research/software/a-lic
+Detailed information: http://www.ling.helsinki.fi/uhlcs/ 
+Instructions for applying for access: https://kitwiki.csc.fi/twiki/bin/view/FinCLARIN/KielipankkiAccessRights
+
+The purpose of the resource use must be outlined in a research plan.</description>
+                        <resourceShortName xml:lang="fi">FISC</resourceShortName>
+                        <resourceShortName xml:lang="en">FSTC</resourceShortName>
+                        <url>https://sui.csc.fi/group/sui/language-bank-rights</url>
+                        <url>http://urn.fi/urn:nbn:fi:lb-2014060211</url>
+                        <metaShareId>NOT_DEFINED_FOR_V2</metaShareId>
+                        <identifier>http://urn.fi/urn:nbn:fi:lb-2014032621</identifier>
+                     </identificationInfo>
+                     <distributionInfo>
+                        <availability>available-restrictedUse</availability>
+                        <licenceInfo>
+                           <licence>CLARIN_RES</licence>
+                           <restrictionsOfUse>academic-nonCommercialUse</restrictionsOfUse>
+                           <restrictionsOfUse>noRedistribution</restrictionsOfUse>
+                           <restrictionsOfUse>other</restrictionsOfUse>
+                           <distributionAccessMedium>accessibleThroughInterface</distributionAccessMedium>
+                           <executionLocation>https://sui.csc.fi/login</executionLocation>
+                           <userNature>academic</userNature>
+                           <licensorPerson>
+                              <role>licensor</role>
+                              <personInfo>
+                                 <surname xml:lang="en">Suihkonen</surname>
+                                 <givenName xml:lang="en">Pirkko</givenName>
+                                 <sex>female</sex>
+                                 <communicationInfo>
+                                    <email>suihkonen.pirkko@gmail.com</email>
+                                 </communicationInfo>
+                              </personInfo>
+                           </licensorPerson>
+                           <distributionRightsHolderOrganization>
+                              <role>distributionRightsHolder</role>
+                              <organizationInfo>
+                                 <organizationName xml:lang="en">University of Helsinki</organizationName>
+                                 <organizationShortName xml:lang="en">UHEL</organizationShortName>
+                                 <communicationInfo>
+                                    <email>krister.linden@helsinki.fi</email>
+                                 </communicationInfo>
+                              </organizationInfo>
+                           </distributionRightsHolderOrganization>
+                           <distributionRightsHolderOrganization>
+                              <role>distributionRightsHolder</role>
+                              <organizationInfo>
+                                 <organizationName xml:lang="fi">CSC - Tieteen tietotekniikan keskus Oy </organizationName>
+                                 <organizationName xml:lang="en">CSC — IT Center for Science Ltd</organizationName>
+                                 <organizationShortName xml:lang="en">CSC</organizationShortName>
+                                 <departmentName xml:lang="en">Kielipankki</departmentName>
+                                 <communicationInfo>
+                                    <email>ling@csc.fi</email>
+                                    <url>http://www.csc.fi/english</url>
+                                    <address>P.O. Box 405</address>
+                                    <zipCode>FI-02101</zipCode>
+                                    <city>Espoo</city>
+                                    <country>Finland</country>
+                                    <telephoneNumber>+358 (0)9 457 2001</telephoneNumber>
+                                    <faxNumber>+358 (0)9 457 2302</faxNumber>
+                                 </communicationInfo>
+                              </organizationInfo>
+                           </distributionRightsHolderOrganization>
+                        </licenceInfo>
+                        <iprHolderPerson>
+                           <role>iprHolder</role>
+                           <personInfo>
+                              <surname xml:lang="en">Suihkonen</surname>
+                              <givenName xml:lang="en">Pirkko</givenName>
+                              <sex>female</sex>
+                              <communicationInfo>
+                                 <email>suihkonen.pirkko@gmail.com</email>
+                              </communicationInfo>
+                           </personInfo>
+                        </iprHolderPerson>
+                     </distributionInfo>
+                     <contactPerson>
+                        <role>contactPerson</role>
+                        <personInfo>
+                           <surname xml:lang="en">The Language Bank of Finland</surname>
+                           <givenName xml:lang="en">User support at CSC - IT Center for Science Ltd.</givenName>
+                           <sex>unknown</sex>
+                           <communicationInfo>
+                              <email>ling@csc.fi</email>
+                           </communicationInfo>
+                        </personInfo>
+                     </contactPerson>
+                     <metadataInfo>
+                        <metadataCreationDate>2012-09-04</metadataCreationDate>
+                        <metadataLanguageName>English</metadataLanguageName>
+                        <metadataLanguageName>Finnish</metadataLanguageName>
+                        <metadataLanguageId>en</metadataLanguageId>
+                        <metadataLanguageId>fi</metadataLanguageId>
+                        <metadataLastDateUpdated>2014-05-19</metadataLastDateUpdated>
+                        <metadataCreator>
+                           <role>metadataCreator</role>
+                           <personInfo>
+                              <surname xml:lang="en">Pöyhönen</surname>
+                              <givenName xml:lang="en">Saara</givenName>
+                              <sex>female</sex>
+                              <communicationInfo>
+                                 <email>saara.poyhonen@helsinki.fi</email>
+                              </communicationInfo>
+                              <affiliation>
+                                 <role>affiliation</role>
+                                 <organizationInfo>
+                                    <organizationName xml:lang="en">University of Helsinki</organizationName>
+                                    <organizationShortName xml:lang="en">UHEL</organizationShortName>
+                                    <communicationInfo>
+                                       <email>krister.linden@helsinki.fi</email>
+                                    </communicationInfo>
+                                 </organizationInfo>
+                              </affiliation>
+                           </personInfo>
+                        </metadataCreator>
+                     </metadataInfo>
+                     <resourceDocumentationInfo>
+                        <documentationStructured>
+                           <role>documentation</role>
+                           <documentInfo>
+                              <documentType>manual</documentType>
+                              <title xml:lang="en">FSTC Manual</title>
+                              <url>https://kitwiki.csc.fi/twiki/bin/view/FinCLARIN/KielipankkiAineistotFstc</url>
+                           </documentInfo>
+                        </documentationStructured>
+                     </resourceDocumentationInfo>
+                     <resourceCreationInfo>
+                        <resourceCreatorPerson>
+                           <role>resourceCreator</role>
+                           <personInfo>
+                              <surname xml:lang="en">Lindström</surname>
+                              <givenName xml:lang="en">Jan</givenName>
+                              <sex>male</sex>
+                              <communicationInfo>
+                                 <email>jan.k.lindstrom@helsinki.fi</email>
+                              </communicationInfo>
+                              <affiliation>
+                                 <role>affiliation</role>
+                                 <organizationInfo>
+                                    <organizationName xml:lang="en">University of Helsinki</organizationName>
+                                    <organizationShortName xml:lang="en">UHEL</organizationShortName>
+                                    <communicationInfo>
+                                       <email>krister.linden@helsinki.fi</email>
+                                    </communicationInfo>
+                                 </organizationInfo>
+                              </affiliation>
+                           </personInfo>
+                        </resourceCreatorPerson>
+                     </resourceCreationInfo>
+                     <relationInfo>
+                        <relationType>sub-corpus of</relationType>
+                        <relatedResource>
+                           <targetResourceNameURI>http://metashare.csc.fi/repository/browse/multilingual-resource-collection-of-the-uhlcs/11cc1ddc33f211e2b67c005056be118e667f3ec574ed4aef98fde634b1e1af17/</targetResourceNameURI>
+                        </relatedResource>
+                     </relationInfo>
+                     <corpusInfo>
+                        <resourceType>corpus</resourceType>
+                        <corpusMediaType>
+                           <corpusTextInfo>
+                              <mediaType>text</mediaType>
+                              <lingualityInfo>
+                                 <lingualityType>monolingual</lingualityType>
+                              </lingualityInfo>
+                              <languageInfo>
+                                 <languageId>sv</languageId>
+                                 <languageName>Swedish</languageName>
+                              </languageInfo>
+                              <modalityInfo>
+                                 <modalityType>writtenLanguage</modalityType>
+                              </modalityInfo>
+                              <sizeInfo>
+                                 <size>34412586</size>
+                                 <sizeUnit>words</sizeUnit>
+                              </sizeInfo>
+                           </corpusTextInfo>
+                        </corpusMediaType>
+                     </corpusInfo>
+                  </resourceInfo>
+               </Components>
+            </CMD>
+         </metadata>
+     </record>
+     <record>
+         <header>
+            <identifier>oai:kielipankki.fi:shaccf90</identifier>
+            <datestamp>2015-04-01T08:00:34Z</datestamp>
+         </header>
+         <metadata>
+
+            <CMD xmlns="http://www.clarin.eu/cmd/"
+                 CMDVersion="1.1"
+                 xsi:schemaLocation="http://www.clarin.eu/cmd/ http://catalog.clarin.eu/ds/ComponentRegistry/rest/registry/profiles/clarin.eu:cr1:p_1361876010571/xsd">
+               <Header>
+                  <MdCreator>metashareToCmdi.xsl remove_metashare_namespace.xsl</MdCreator>
+                  <MdCreationDate>2015-04-01</MdCreationDate>
+                  <MdProfile>clarin.eu:cr1:p_1361876010571</MdProfile>
+               </Header>
+               <Resources>
+                  <ResourceProxyList/>
+                  <JournalFileProxyList/>
+                  <ResourceRelationList/>
+               </Resources>
+               <Components>
+                  <resourceInfo>
+                     <identificationInfo>
+                        <resourceName xml:lang="fi">Varhaisnykysuomen korpus</resourceName>
+                        <resourceName xml:lang="en">Corpus of Early Modern Finnish</resourceName>
+                        <description xml:lang="fi">Varhaisnykysuomen korpuksessa on autonomian aikana 1800-luvulla ilmestyneitä eri alojen suomenkielisiä teoksia, vanhimpien aikakaus- ja sanomalehtien vuosikertoja, almanakkakirjoituksia ja asetustekstejä sekä eräitä sanakirjoja.
+
+Mukaan on pyritty saamaan varhaisimmat, tärkeimmät ja (mm. uusintapainosten määrän pohjalta) levinneimmät teokset. Julkaisuja valittaessa on pyritty myös mahdollisimman suureen temaattiseen kattavuuteen, joskin alun perin suomeksi kirjoitettuja teoksia on otettu mukaan enemmän kuin käännöksiä. Nämä on aakkostettu suomentajansa nimellä, kausijulkaisut omalla otsikollaan, muut teokset kirjoittajansa mukaan. Tuntemattomien tekijöiden suomennokset ovat Anonyymi-kansiossa, tuntemattomien kirjoittajien tekstit Muut-kansiossa.
+
+Aineistot kattavat vanhan kirjasuomen ja nykysuomen välissä olevan ajanjakson ja vähän yli. Varhaisin kirja on vuodelta 1809, viimeisin vuodelta 1891, mutta asetustekstejä on aivan vuosisadan loppuun saakka. Suurin osa aineistosta on kuitenkin vuosilta 1810–1880. Tätä myöhempää aineistoa on myös Klassikot-korpuksessa.
+
+Aika: 1809–1899
+
+Lisenssi EUPL (http://ec.europa.eu/idabc/en/document/7774.html).
+
+Korpus julkaistaan Korpissa osoitteessa https://korp.csc.fi/?mode=old_finnish#corpus=vns_asetus,vns_renqvist,vns_renvall.</description>
+                        <description xml:lang="en">Written Finnish from the 19th century (mostly from the years between 1810 and 1880), browsable and searchable on the web. The collection contains published literature, periodicals, newspapers, and dictionaries, among others, with a focus on the earliest and most important publications and a wide thematic coverage. Texts written originally in Finnish were preferred to translations.
+
+License EUPL (http://ec.europa.eu/idabc/en/document/7774.html).
+
+Access location: http://kaino.kotus.fi/korpus/1800/meta/1800_coll_rdf.xml.
+
+The corpus will be made available in Korp (see https://korp.csc.fi/?mode=old_finnish#corpus=vns_asetus,vns_renqvist,vns_renvall).</description>
+                        <resourceShortName xml:lang="en">VNSK</resourceShortName>
+                        <url>http://kaino.kotus.fi/korpus/1800/meta/1800_coll_rdf.xml</url>
+                        <metaShareId>
+            NOT_DEFINED_FOR_V2
+          </metaShareId>
+                        <identifier>http://urn.fi/urn:nbn:fi:lb-20140730147</identifier>
+                     </identificationInfo>
+                     <distributionInfo>
+                        <availability>available-restrictedUse</availability>
+                        <licenceInfo>
+                           <licence>other</licence>
+                           <restrictionsOfUse>other</restrictionsOfUse>
+                           <restrictionsOfUse>shareAlike</restrictionsOfUse>
+                           <distributionAccessMedium>other</distributionAccessMedium>
+                           <attributionText xml:lang="fi">Aineistoon viitataan yleisten käytäntöjen mukaisesti. Viitteessä tulee mainita Kotimaisten kielten keskus.</attributionText>
+                           <attributionText xml:lang="en">When making a bibliographical reference the corpus should be referred to according to the general practice. The reference should include the name of the Institute for the Languages ​​of Finland.</attributionText>
+                           <licensorOrganization>
+                              <role>licensor</role>
+                              <organizationInfo>
+                                 <organizationName xml:lang="fi">Kotimaisten kielten keskus</organizationName>
+                                 <organizationName xml:lang="en">Institute for the Languages of Finland</organizationName>
+                                 <organizationShortName xml:lang="en">Kotus</organizationShortName>
+                                 <communicationInfo>
+                                    <email>firstname.surname@kotus.fi</email>
+                                    <url>http://www.kotus.fi</url>
+                                 </communicationInfo>
+                              </organizationInfo>
+                           </licensorOrganization>
+                           <distributionRightsHolderOrganization>
+                              <role>distributionRightsHolder</role>
+                              <organizationInfo>
+                                 <organizationName xml:lang="en">University of Helsinki</organizationName>
+                                 <organizationShortName xml:lang="en">UHEL</organizationShortName>
+                                 <communicationInfo>
+                                    <email>krister.linden@helsinki.fi</email>
+                                 </communicationInfo>
+                              </organizationInfo>
+                           </distributionRightsHolderOrganization>
+                           <distributionRightsHolderOrganization>
+                              <role>distributionRightsHolder</role>
+                              <organizationInfo>
+                                 <organizationName xml:lang="fi">Kotimaisten kielten keskus</organizationName>
+                                 <organizationName xml:lang="en">Institute for the Languages of Finland</organizationName>
+                                 <organizationShortName xml:lang="en">Kotus</organizationShortName>
+                                 <communicationInfo>
+                                    <email>firstname.surname@kotus.fi</email>
+                                    <url>http://www.kotus.fi</url>
+                                 </communicationInfo>
+                              </organizationInfo>
+                           </distributionRightsHolderOrganization>
+                        </licenceInfo>
+                        <iprHolderOrganization>
+                           <role>iprHolder</role>
+                           <organizationInfo>
+                              <organizationName xml:lang="fi">Kotimaisten kielten keskus</organizationName>
+                              <organizationName xml:lang="en">Institute for the Languages of Finland</organizationName>
+                              <organizationShortName xml:lang="en">Kotus</organizationShortName>
+                              <communicationInfo>
+                                 <email>firstname.surname@kotus.fi</email>
+                                 <url>http://www.kotus.fi</url>
+                              </communicationInfo>
+                           </organizationInfo>
+                        </iprHolderOrganization>
+                     </distributionInfo>
+                     <contactPerson>
+                        <role>contactPerson</role>
+                        <personInfo>
+                           <surname xml:lang="en">Lauerma</surname>
+                           <givenName xml:lang="en">Petri</givenName>
+                           <sex>male</sex>
+                           <communicationInfo>
+                              <email>petri.lauerma@kotus.fi</email>
+                              <telephoneNumber>NA</telephoneNumber>
+                              <faxNumber>NA</faxNumber>
+                           </communicationInfo>
+                           <affiliation>
+                              <role>affiliation</role>
+                              <organizationInfo>
+                                 <organizationName xml:lang="fi">Kotimaisten kielten keskus</organizationName>
+                                 <organizationName xml:lang="en">Institute for the Languages of Finland </organizationName>
+                                 <organizationShortName xml:lang="und">Kotus</organizationShortName>
+                                 <communicationInfo>
+                                    <email>firstname.surname@kotus.fi</email>
+                                    <url>http://www.kotus.fi</url>
+                                 </communicationInfo>
+                              </organizationInfo>
+                           </affiliation>
+                        </personInfo>
+                     </contactPerson>
+                     <metadataInfo>
+                        <metadataCreationDate>2011-11-18</metadataCreationDate>
+                        <metadataLanguageName>English</metadataLanguageName>
+                        <metadataLanguageName>Finnish</metadataLanguageName>
+                        <metadataLanguageId>en</metadataLanguageId>
+                        <metadataLanguageId>fi</metadataLanguageId>
+                        <metadataLastDateUpdated>2014-04-22</metadataLastDateUpdated>
+                        <metadataCreator>
+                           <role>metadataCreator</role>
+                           <personInfo>
+                              <surname xml:lang="en">Piitulainen</surname>
+                              <givenName xml:lang="en">Jussi</givenName>
+                              <sex>male</sex>
+                              <communicationInfo>
+                                 <email>jpiitula@ling.helsinki.fi</email>
+                              </communicationInfo>
+                              <affiliation>
+                                 <role>affiliation</role>
+                                 <organizationInfo>
+                                    <organizationName xml:lang="en">University of Helsinki</organizationName>
+                                    <communicationInfo>
+                                       <email>jpiitula@ling.helsinki.fi</email>
+                                    </communicationInfo>
+                                 </organizationInfo>
+                              </affiliation>
+                           </personInfo>
+                        </metadataCreator>
+                     </metadataInfo>
+                     <corpusInfo>
+                        <resourceType>corpus</resourceType>
+                        <corpusMediaType>
+                           <corpusTextInfo>
+                              <mediaType>text</mediaType>
+                              <lingualityInfo>
+                                 <lingualityType>multilingual</lingualityType>
+                                 <multilingualityType>other</multilingualityType>
+                              </lingualityInfo>
+                              <languageInfo>
+                                 <languageId>fin</languageId>
+                                 <languageName>Finnish</languageName>
+                              </languageInfo>
+                              <languageInfo>
+                                 <languageId>ru</languageId>
+                                 <languageName>Russian</languageName>
+                              </languageInfo>
+                              <languageInfo>
+                                 <languageId>de</languageId>
+                                 <languageName>German</languageName>
+                              </languageInfo>
+                              <languageInfo>
+                                 <languageId>la</languageId>
+                                 <languageName>Latin</languageName>
+                              </languageInfo>
+                              <modalityInfo>
+                                 <modalityType>writtenLanguage</modalityType>
+                              </modalityInfo>
+                              <sizeInfo>
+                                 <size>8600000</size>
+                                 <sizeUnit>words</sizeUnit>
+                              </sizeInfo>
+                              <timeCoverageInfo>
+                                 <timeCoverage>1809-1899</timeCoverage>
+                              </timeCoverageInfo>
+                           </corpusTextInfo>
+                        </corpusMediaType>
+                     </corpusInfo>
+                  </resourceInfo>
+               </Components>
+            </CMD>
+         </metadata>
+     </record>     
+     <record>
+         <header>
+            <identifier>oai:kielipankki.fi:shd0d800</identifier>
+            <datestamp>2015-04-01T08:00:36Z</datestamp>
+         </header>
+         <metadata>
+
+            <CMD xmlns="http://www.clarin.eu/cmd/"
+                 CMDVersion="1.1"
+                 xsi:schemaLocation="http://www.clarin.eu/cmd/ http://catalog.clarin.eu/ds/ComponentRegistry/rest/registry/profiles/clarin.eu:cr1:p_1361876010571/xsd">
+               <Header>
+                  <MdCreator>metashareToCmdi.xsl remove_metashare_namespace.xsl</MdCreator>
+                  <MdCreationDate>2015-04-01</MdCreationDate>
+                  <MdProfile>clarin.eu:cr1:p_1361876010571</MdProfile>
+               </Header>
+               <Resources>
+                  <ResourceProxyList/>
+                  <JournalFileProxyList/>
+                  <ResourceRelationList/>
+               </Resources>
+               <Components>
+                  <resourceInfo>
+                     <identificationInfo>
+                        <resourceName xml:lang="en">Joensuu Corpus of Swedish Compounds</resourceName>
+                        <description xml:lang="en">Computer corpus (list) of Swedish compounds in Göteborgs-Posten (a Swedish newspaper) data-base of 24.2 million word tokens originally collected by Elisabeth Ahlsén (Linguistics, Göteborg University) and eventually morphologically tagged by Matti Laine’s and Patrick Virtanen’s WordMill Lexical Search program (Center for Cognitive Neuroscience, U. Turku).
+      </description>
+                        <url>https://kitwiki.csc.fi/twiki/bin/view/FinCLARIN/FinClarinSiteUEF</url>
+                        <metaShareId>NOT_DEFINED_FOR_V2</metaShareId>
+                        <identifier>http://urn.fi/urn:nbn:fi:lb-20140730122</identifier>
+                        <identifier>http://islrn.org/resources/128-829-996-277-5</identifier>
+                     </identificationInfo>
+                     <distributionInfo>
+                        <availability>available-restrictedUse</availability>
+                        <licenceInfo>
+                           <licence>CLARIN_RES</licence>
+                           <restrictionsOfUse>academic-nonCommercialUse</restrictionsOfUse>
+                           <distributionAccessMedium>hardDisk</distributionAccessMedium>
+                           <userNature>academic</userNature>
+                           <licensorOrganization>
+                              <role>licensor</role>
+                              <organizationInfo>
+                                 <organizationName xml:lang="en">University of Eastern Finland</organizationName>
+                                 <organizationShortName xml:lang="en">UEF</organizationShortName>
+                                 <communicationInfo>
+                                    <email>kirjaamo@uef.fi</email>
+                                    <url>http://www.uef.fi/uef/english</url>
+                                 </communicationInfo>
+                              </organizationInfo>
+                           </licensorOrganization>
+                           <distributionRightsHolderOrganization>
+                              <role>distributionRightsHolder</role>
+                              <organizationInfo>
+                                 <organizationName xml:lang="en">University of Eastern Finland</organizationName>
+                                 <organizationShortName xml:lang="en">UEF</organizationShortName>
+                                 <communicationInfo>
+                                    <email>kirjaamo@uef.fi</email>
+                                    <url>http://www.uef.fi/uef/english</url>
+                                 </communicationInfo>
+                              </organizationInfo>
+                           </distributionRightsHolderOrganization>
+                        </licenceInfo>
+                        <iprHolderOrganization>
+                           <role>iprHolder</role>
+                           <organizationInfo>
+                              <organizationName xml:lang="en">University of Eastern Finland</organizationName>
+                              <organizationShortName xml:lang="en">UEF</organizationShortName>
+                              <communicationInfo>
+                                 <email>kirjaamo@uef.fi</email>
+                                 <url>http://www.uef.fi/uef/english</url>
+                              </communicationInfo>
+                           </organizationInfo>
+                        </iprHolderOrganization>
+                     </distributionInfo>
+                     <contactPerson>
+                        <role>contactPerson</role>
+                        <personInfo>
+                           <surname xml:lang="en">Niemi</surname>
+                           <givenName xml:lang="en">Sinikka</givenName>
+                           <sex>female</sex>
+                           <communicationInfo>
+                              <email>sinikka.niemi@uef.fi</email>
+                           </communicationInfo>
+                           <affiliation>
+                              <role>affiliation</role>
+                              <organizationInfo>
+                                 <organizationName xml:lang="en">University of Eastern Finland</organizationName>
+                                 <organizationShortName xml:lang="en">UEF</organizationShortName>
+                                 <communicationInfo>
+                                    <email>kirjaamo@uef.fi</email>
+                                    <url>http://www.uef.fi/uef/english</url>
+                                 </communicationInfo>
+                              </organizationInfo>
+                           </affiliation>
+                        </personInfo>
+                     </contactPerson>
+                     <metadataInfo>
+                        <metadataCreationDate>2012-08-17</metadataCreationDate>
+                        <originalMetadataLink>https://kitwiki.csc.fi/twiki/bin/view/FinCLARIN/FinClarinSiteUEF</originalMetadataLink>
+                        <metadataLanguageName>English</metadataLanguageName>
+                        <metadataLanguageId>en</metadataLanguageId>
+                        <metadataLastDateUpdated>2012-08-17</metadataLastDateUpdated>
+                        <metadataCreator>
+                           <role>metadataCreator</role>
+                           <personInfo>
+                              <surname xml:lang="en">Bartis</surname>
+                              <givenName xml:lang="en">Imre</givenName>
+                              <sex>male</sex>
+                              <position>Project Coordinator</position>
+                              <communicationInfo>
+                                 <email>imre.bartis@helsinki.fi</email>
+                                 <city>Helsinki</city>
+                                 <country>Finland</country>
+                              </communicationInfo>
+                           </personInfo>
+                        </metadataCreator>
+                     </metadataInfo>
+                     <corpusInfo>
+                        <resourceType>corpus</resourceType>
+                        <corpusMediaType>
+                           <corpusTextInfo>
+                              <mediaType>text</mediaType>
+                              <lingualityInfo>
+                                 <lingualityType>monolingual</lingualityType>
+                              </lingualityInfo>
+                              <languageInfo>
+                                 <languageId>sv</languageId>
+                                 <languageName>Swedish</languageName>
+                              </languageInfo>
+                              <modalityInfo>
+                                 <modalityType>writtenLanguage</modalityType>
+                              </modalityInfo>
+                              <sizeInfo>
+                                 <size>3800</size>
+                                 <sizeUnit>tokens</sizeUnit>
+                              </sizeInfo>
+                           </corpusTextInfo>
+                        </corpusMediaType>
+                     </corpusInfo>
+                  </resourceInfo>
+               </Components>
+            </CMD>
+         </metadata>
+     </record>     
+     <record>
+         <header>
+            <identifier>oai:kielipankki.fi:shff9200</identifier>
+            <datestamp>2015-04-01T08:00:37Z</datestamp>
+         </header>
+         <metadata>
+
+            <CMD xmlns="http://www.clarin.eu/cmd/"
+                 CMDVersion="1.1"
+                 xsi:schemaLocation="http://www.clarin.eu/cmd/ http://catalog.clarin.eu/ds/ComponentRegistry/rest/registry/profiles/clarin.eu:cr1:p_1361876010571/xsd">
+               <Header>
+                  <MdCreator>metashareToCmdi.xsl remove_metashare_namespace.xsl</MdCreator>
+                  <MdCreationDate>2015-04-01</MdCreationDate>
+                  <MdProfile>clarin.eu:cr1:p_1361876010571</MdProfile>
+               </Header>
+               <Resources>
+                  <ResourceProxyList/>
+                  <JournalFileProxyList/>
+                  <ResourceRelationList/>
+               </Resources>
+               <Components>
+                  <resourceInfo>
+                     <identificationInfo>
+                        <resourceName xml:lang="fi">Suomen kielen puupankki 3</resourceName>
+                        <resourceName xml:lang="en">Finnish TreeBank 3</resourceName>
+                        <description xml:lang="en">The FinnTreeBank project is creating a treebank and a parsebank for Finnish. This work is licensed under Creative Commons Attribution 3.0.
+
+A parsebank for Finnish based on the Europarl and the JRC-Aquis has been available since June 2012.
+
+Access location: https://korp.csc.fi/#corpus=ftb3_europarl,ftb3_jrcacquis.
+
+Download location: http://www.ling.helsinki.fi/kieliteknologia/tutkimus/treebank/sources/.</description>
+                        <resourceShortName xml:lang="en">FinnTreeBank 3</resourceShortName>
+                        <resourceShortName xml:lang="und">FTB 3</resourceShortName>
+                        <url>http://www.ling.helsinki.fi/kieliteknologia/tutkimus/treebank/</url>
+                        <url>http://urn.fi/urn:nbn:fi:lb-201406021</url>
+                        <metaShareId>NOT_DEFINED_FOR_V2</metaShareId>
+                        <identifier>http://urn.fi/urn:nbn:fi:lb-201406022</identifier>
+                        <identifier>islrn.org/resources/390-027-989-558-3</identifier>
+                     </identificationInfo>
+                     <distributionInfo>
+                        <availability>available-unrestrictedUse</availability>
+                        <licenceInfo>
+                           <licence>CC-BY</licence>
+                           <restrictionsOfUse>attribution</restrictionsOfUse>
+                           <distributionAccessMedium>downloadable</distributionAccessMedium>
+                           <downloadLocation>http://www.ling.helsinki.fi/kieliteknologia/tutkimus/treebank/</downloadLocation>
+                           <licensorOrganization>
+                              <role>licensor</role>
+                              <organizationInfo>
+                                 <organizationName xml:lang="en">University of Helsinki</organizationName>
+                                 <organizationShortName xml:lang="en">UHEL</organizationShortName>
+                                 <communicationInfo>
+                                    <email>krister.linden@helsinki.fi</email>
+                                 </communicationInfo>
+                              </organizationInfo>
+                           </licensorOrganization>
+                           <distributionRightsHolderOrganization>
+                              <role>distributionRightsHolder</role>
+                              <organizationInfo>
+                                 <organizationName xml:lang="en">University of Helsinki</organizationName>
+                                 <organizationShortName xml:lang="en">UHEL</organizationShortName>
+                                 <communicationInfo>
+                                    <email>krister.linden@helsinki.fi</email>
+                                 </communicationInfo>
+                              </organizationInfo>
+                           </distributionRightsHolderOrganization>
+                        </licenceInfo>
+                        <iprHolderOrganization>
+                           <role>iprHolder</role>
+                           <organizationInfo>
+                              <organizationName xml:lang="en">University of Helsinki</organizationName>
+                              <organizationShortName xml:lang="en">UHEL</organizationShortName>
+                              <communicationInfo>
+                                 <email>krister.linden@helsinki.fi</email>
+                              </communicationInfo>
+                           </organizationInfo>
+                        </iprHolderOrganization>
+                     </distributionInfo>
+                     <contactPerson>
+                        <role>contactPerson</role>
+                        <personInfo>
+                           <surname xml:lang="en">Voutilainen</surname>
+                           <givenName xml:lang="en">Atro</givenName>
+                           <sex>unknown</sex>
+                           <communicationInfo>
+                              <email>atro.voutilainen@helsinki.fi</email>
+                           </communicationInfo>
+                        </personInfo>
+                     </contactPerson>
+                     <metadataInfo>
+                        <metadataCreationDate>2012-12-10</metadataCreationDate>
+                        <originalMetadataLink>http://www.ling.helsinki.fi/kieliteknologia/tutkimus/treebank/</originalMetadataLink>
+                        <metadataLanguageName>English</metadataLanguageName>
+                        <metadataLanguageId>en</metadataLanguageId>
+                        <metadataLastDateUpdated>2012-12-10</metadataLastDateUpdated>
+                        <metadataCreator>
+                           <role>metadataCreator</role>
+                           <personInfo>
+                              <surname xml:lang="en">Bartis</surname>
+                              <givenName xml:lang="en">Imre</givenName>
+                              <sex>male</sex>
+                              <position>Project Coordinator</position>
+                              <communicationInfo>
+                                 <email>imre.bartis@helsinki.fi</email>
+                                 <city>Helsinki</city>
+                                 <country>Finland</country>
+                              </communicationInfo>
+                           </personInfo>
+                        </metadataCreator>
+                     </metadataInfo>
+                     <usageInfo>
+                        <foreseenUseInfo>
+                           <foreseenUse>nlpApplications</foreseenUse>
+                           <useNLPSpecific>morphologicalAnalysis</useNLPSpecific>
+                        </foreseenUseInfo>
+                     </usageInfo>
+                     <resourceDocumentationInfo>
+                        <documentationStructured>
+                           <role>documentation</role>
+                           <documentInfo>
+                              <documentType>manual</documentType>
+                              <title xml:lang="en">FinnTreebank Manual</title>
+                              <url>https://kitwiki.csc.fi/twiki/bin/view/FinCLARIN/FinnTreebankHome</url>
+                           </documentInfo>
+                        </documentationStructured>
+                     </resourceDocumentationInfo>
+                     <corpusInfo>
+                        <resourceType>corpus</resourceType>
+                        <corpusMediaType>
+                           <corpusTextInfo>
+                              <mediaType>text</mediaType>
+                              <lingualityInfo>
+                                 <lingualityType>monolingual</lingualityType>
+                              </lingualityInfo>
+                              <languageInfo>
+                                 <languageId>fi</languageId>
+                                 <languageName>Finnish</languageName>
+                              </languageInfo>
+                              <sizeInfo>
+                                 <size>76369439</size>
+                                 <sizeUnit>tokens</sizeUnit>
+                              </sizeInfo>
+                              <sizeInfo>
+                                 <size>4366955</size>
+                                 <sizeUnit>sentences</sizeUnit>
+                              </sizeInfo>
+                              <annotationInfo>
+                                 <annotationType>syntacticAnnotation-treebanks</annotationType>
+                              </annotationInfo>
+                           </corpusTextInfo>
+                        </corpusMediaType>
+                     </corpusInfo>
+                  </resourceInfo>
+               </Components>
+            </CMD>
+         </metadata>
+     </record>
+   </ListRecords>
+</OAI-PMH>

@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OAI-PMH xmlns="http://www.openarchives.org/OAI/2.0/"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/             http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd">
+   <responseDate>2015-04-06T18:45:37Z</responseDate>
+   <request identifier="oai:kielipankki.fi:sh136cd0"
+            metadataPrefix="cmdi0571"
+            verb="GetRecord">http://metalb.csc.fi/cgi-bin/que</request>
+   <GetRecord>
+     <record>
+         <header>
+            <identifier>oai:kielipankki.fi:sh136cd0</identifier>
+            <datestamp>2015-04-01T08:00:35Z</datestamp>
+         </header>
+         <metadata>
+
+            <CMD xmlns="http://www.clarin.eu/cmd/"
+                 CMDVersion="1.1"
+                 xsi:schemaLocation="http://www.clarin.eu/cmd/ http://catalog.clarin.eu/ds/ComponentRegistry/rest/registry/profiles/clarin.eu:cr1:p_1361876010571/xsd">
+               <Header>
+                  <MdCreator>metashareToCmdi.xsl remove_metashare_namespace.xsl</MdCreator>
+                  <MdCreationDate>2015-04-01</MdCreationDate>
+                  <MdProfile>clarin.eu:cr1:p_1361876010571</MdProfile>
+               </Header>
+               <Resources>
+                  <ResourceProxyList/>
+                  <JournalFileProxyList/>
+                  <ResourceRelationList/>
+               </Resources>
+               <Components>
+                  <resourceInfo>
+                     <identificationInfo>
+                        <resourceName xml:lang="en">FinStud86 Corpus</resourceName>
+                        <description xml:lang="en">Finnish language essays / compositions written by Finnish-speaking students taking the matriculation examination in 1986. The corpus will be made available in Korp (https://korp.csc.fi/). For details on the license see https://kitwiki.csc.fi/twiki/bin/view/FinCLARIN/ClarinEulaEngResPd.</description>
+                        <url>https://kitwiki.csc.fi/twiki/bin/view/FinCLARIN/FinClarinSiteJY</url>
+                        <metaShareId>NOT_DEFINED_FOR_V2</metaShareId>
+                        <identifier>http://urn.fi/urn:nbn:fi:lb-20140730158</identifier>
+                        <identifier>http://islrn.org/resources/596-037-998-620-1</identifier>
+                     </identificationInfo>
+                     <distributionInfo>
+                        <availability>available-restrictedUse</availability>
+                        <licenceInfo>
+                           <licence>CLARIN_RES</licence>
+                           <restrictionsOfUse>attribution</restrictionsOfUse>
+                           <restrictionsOfUse>other</restrictionsOfUse>
+                           <attributionText xml:lang="fi">Rahkonen, M. (2014). FinStud86-korpus. http://urn.fi/urn:nbn:fi:lb-20140730158.</attributionText>
+                           <licensorPerson>
+                              <role>licensor</role>
+                              <personInfo>
+                                 <surname xml:lang="en">Rahkonen</surname>
+                                 <givenName xml:lang="en">Matti</givenName>
+                                 <communicationInfo>
+                                    <email>mrahkone@gmail.com</email>
+                                 </communicationInfo>
+                                 <affiliation>
+                                    <role>affiliation</role>
+                                    <organizationInfo>
+                                       <organizationName xml:lang="fi">Jyväskylän yliopisto</organizationName>
+                                       <organizationName xml:lang="en">University of Jyväskylä</organizationName>
+                                       <organizationShortName xml:lang="en">JYU</organizationShortName>
+                                       <communicationInfo>
+                                          <email>registry@jyu.fi</email>
+                                          <url>https://www.jyu.fi/en</url>
+                                          <city>Jyväskylä</city>
+                                          <country>Finland</country>
+                                       </communicationInfo>
+                                    </organizationInfo>
+                                 </affiliation>
+                              </personInfo>
+                           </licensorPerson>
+                           <licensorOrganization>
+                              <role>licensor</role>
+                              <organizationInfo>
+                                 <organizationName xml:lang="en">The Matriculation Examination Board</organizationName>
+                                 <communicationInfo>
+                                    <email>firstname.surname@ylioppilastutkinto.fi</email>
+                                    <url>https://www.ylioppilastutkinto.fi/fi/english</url>
+                                    <city>Helsinki</city>
+                                    <country>Finland</country>
+                                 </communicationInfo>
+                              </organizationInfo>
+                           </licensorOrganization>
+                           <distributionRightsHolderOrganization>
+                              <role>distributionRightsHolder</role>
+                              <organizationInfo>
+                                 <organizationName xml:lang="en">University of Helsinki</organizationName>
+                                 <organizationShortName xml:lang="en">UHEL</organizationShortName>
+                                 <communicationInfo>
+                                    <email>krister.linden@helsinki.fi</email>
+                                 </communicationInfo>
+                              </organizationInfo>
+                           </distributionRightsHolderOrganization>
+                           <distributionRightsHolderOrganization>
+                              <role>distributionRightsHolder</role>
+                              <organizationInfo>
+                                 <organizationName xml:lang="fi">CSC - Tieteen tietotekniikan keskus Oy </organizationName>
+                                 <organizationName xml:lang="en">CSC — IT Center for Science Ltd</organizationName>
+                                 <organizationShortName xml:lang="en">CSC</organizationShortName>
+                                 <departmentName xml:lang="en">Kielipankki</departmentName>
+                                 <communicationInfo>
+                                    <email>ling@csc.fi</email>
+                                    <url>http://www.csc.fi/english</url>
+                                    <address>P.O. Box 405</address>
+                                    <zipCode>FI-02101</zipCode>
+                                    <city>Espoo</city>
+                                    <country>Finland</country>
+                                    <telephoneNumber>+358 (0)9 457 2001</telephoneNumber>
+                                    <faxNumber>+358 (0)9 457 2302</faxNumber>
+                                 </communicationInfo>
+                              </organizationInfo>
+                           </distributionRightsHolderOrganization>
+                        </licenceInfo>
+                        <iprHolderPerson>
+                           <role>iprHolder</role>
+                           <personInfo>
+                              <surname xml:lang="en">Rahkonen</surname>
+                              <givenName xml:lang="en">Matti</givenName>
+                              <communicationInfo>
+                                 <email>mrahkone@gmail.com</email>
+                              </communicationInfo>
+                              <affiliation>
+                                 <role>affiliation</role>
+                                 <organizationInfo>
+                                    <organizationName xml:lang="fi">Jyväskylän yliopisto</organizationName>
+                                    <organizationName xml:lang="en">University of Jyväskylä</organizationName>
+                                    <organizationShortName xml:lang="en">JYU</organizationShortName>
+                                    <communicationInfo>
+                                       <email>registry@jyu.fi</email>
+                                       <url>https://www.jyu.fi/en</url>
+                                       <city>Jyväskylä</city>
+                                       <country>Finland</country>
+                                    </communicationInfo>
+                                 </organizationInfo>
+                              </affiliation>
+                           </personInfo>
+                        </iprHolderPerson>
+                        <iprHolderOrganization>
+                           <role>iprHolder</role>
+                           <organizationInfo>
+                              <organizationName xml:lang="en">The Matriculation Examination Board</organizationName>
+                              <communicationInfo>
+                                 <email>firstname.surname@ylioppilastutkinto.fi</email>
+                                 <url>https://www.ylioppilastutkinto.fi/fi/english</url>
+                                 <city>Helsinki</city>
+                                 <country>Finland</country>
+                              </communicationInfo>
+                           </organizationInfo>
+                        </iprHolderOrganization>
+                     </distributionInfo>
+                     <contactPerson>
+                        <role>contactPerson</role>
+                        <personInfo>
+                           <surname xml:lang="en">FIN-CLARIN</surname>
+                           <givenName xml:lang="en">User support</givenName>
+                           <communicationInfo>
+                              <email>finclarin@helsinki.fi</email>
+                           </communicationInfo>
+                        </personInfo>
+                     </contactPerson>
+                     <metadataInfo>
+                        <metadataCreationDate>2012-09-06</metadataCreationDate>
+                        <originalMetadataLink>https://kitwiki.csc.fi/twiki/bin/view/FinCLARIN/FinClarinSiteJY</originalMetadataLink>
+                        <metadataLanguageName>English</metadataLanguageName>
+                        <metadataLanguageId>en</metadataLanguageId>
+                        <metadataLastDateUpdated>2012-09-06</metadataLastDateUpdated>
+                        <metadataCreator>
+                           <role>metadataCreator</role>
+                           <personInfo>
+                              <surname xml:lang="en">Pöyhönen</surname>
+                              <givenName xml:lang="en">Saara</givenName>
+                              <sex>female</sex>
+                              <communicationInfo>
+                                 <email>saara.poyhonen@helsinki.fi</email>
+                              </communicationInfo>
+                              <affiliation>
+                                 <role>affiliation</role>
+                                 <organizationInfo>
+                                    <organizationName xml:lang="en">University of Helsinki</organizationName>
+                                    <organizationShortName xml:lang="en">UHEL</organizationShortName>
+                                    <communicationInfo>
+                                       <email>krister.linden@helsinki.fi</email>
+                                    </communicationInfo>
+                                 </organizationInfo>
+                              </affiliation>
+                           </personInfo>
+                        </metadataCreator>
+                     </metadataInfo>
+                     <corpusInfo>
+                        <resourceType>corpus</resourceType>
+                        <corpusMediaType>
+                           <corpusTextInfo>
+                              <mediaType>text</mediaType>
+                              <lingualityInfo>
+                                 <lingualityType>monolingual</lingualityType>
+                              </lingualityInfo>
+                              <languageInfo>
+                                 <languageId>fi</languageId>
+                                 <languageName>Finnish</languageName>
+                              </languageInfo>
+                              <modalityInfo>
+                                 <modalityType>writtenLanguage</modalityType>
+                              </modalityInfo>
+                              <sizeInfo>
+                                 <size>100000</size>
+                                 <sizeUnit>words</sizeUnit>
+                              </sizeInfo>
+                              <timeCoverageInfo>
+                                 <timeCoverage>1986</timeCoverage>
+                              </timeCoverageInfo>
+                           </corpusTextInfo>
+                        </corpusMediaType>
+                     </corpusInfo>
+                  </resourceInfo>
+               </Components>
+            </CMD>
+         </metadata>
+     </record>
+   </GetRecord>
+</OAI-PMH>

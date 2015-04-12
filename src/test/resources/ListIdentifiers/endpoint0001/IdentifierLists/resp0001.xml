@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OAI-PMH xmlns="http://www.openarchives.org/OAI/2.0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/             http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd">
+   <responseDate>2015-04-11T20:49:45Z</responseDate>
+   <request metadataPrefix="cmdi0571" verb="ListIdentifiers">http://metalb.csc.fi/cgi-bin/que</request>
+   <ListIdentifiers>
+<header><identifier>oai:kielipankki.fi:shd0d800</identifier><datestamp>2015-04-01T08:00:36Z</datestamp></header>
+<header><identifier>oai:kielipankki.fi:shaccf90</identifier><datestamp>2015-04-01T08:00:34Z</datestamp></header>
+<header status="deleted"><identifier>oai:kielipankki.fi:sh0cf4d0</identifier><datestamp>2015-04-01T08:00:44Z</datestamp></header>
+<header status="deleted"><identifier>oai:kielipankki.fi:she998b0</identifier><datestamp>2015-04-01T08:00:46Z</datestamp></header>
+<header><identifier>oai:kielipankki.fi:sh7b8760</identifier><datestamp>2015-04-01T08:00:35Z</datestamp></header>
+<header><identifier>oai:kielipankki.fi:sh136cd0</identifier><datestamp>2015-04-01T08:00:35Z</datestamp></header>
+<header><identifier>oai:kielipankki.fi:shff9200</identifier><datestamp>2015-04-01T08:00:37Z</datestamp></header>
+<header><identifier>oai:kielipankki.fi:sh3123d0</identifier><datestamp>2015-04-01T08:00:46Z</datestamp></header>
+<header><identifier>oai:kielipankki.fi:sh034a70</identifier><datestamp>2015-04-01T08:00:36Z</datestamp></header>
+<header><identifier>oai:kielipankki.fi:sh03de30</identifier><datestamp>2015-04-01T08:00:44Z</datestamp></header>
+   </ListIdentifiers>
+</OAI-PMH>

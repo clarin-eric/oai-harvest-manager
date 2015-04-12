@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OAI-PMH xmlns="http://www.openarchives.org/OAI/2.0/"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/             http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd">
+   <responseDate>2015-04-06T18:45:30Z</responseDate>
+   <request identifier="oai:kielipankki.fi:sh034a70"
+            metadataPrefix="cmdi0571"
+            verb="GetRecord">http://metalb.csc.fi/cgi-bin/que</request>
+   <GetRecord>
+     <record>
+         <header>
+            <identifier>oai:kielipankki.fi:sh034a70</identifier>
+            <datestamp>2015-04-01T08:00:36Z</datestamp>
+         </header>
+         <metadata>
+
+            <CMD xmlns="http://www.clarin.eu/cmd/"
+                 CMDVersion="1.1"
+                 xsi:schemaLocation="http://www.clarin.eu/cmd/ http://catalog.clarin.eu/ds/ComponentRegistry/rest/registry/profiles/clarin.eu:cr1:p_1361876010571/xsd">
+               <Header>
+                  <MdCreator>metashareToCmdi.xsl remove_metashare_namespace.xsl</MdCreator>
+                  <MdCreationDate>2015-04-01</MdCreationDate>
+                  <MdProfile>clarin.eu:cr1:p_1361876010571</MdProfile>
+               </Header>
+               <Resources>
+                  <ResourceProxyList/>
+                  <JournalFileProxyList/>
+                  <ResourceRelationList/>
+               </Resources>
+               <Components>
+                  <resourceInfo>
+                     <identificationInfo>
+                        <resourceName xml:lang="en">Corpus Cyrillo-Methodianum Helsingiense: An Electronic Corpus of Old Church Slavonic Texts</resourceName>
+                        <description xml:lang="en">The Corpus Cyrillo-Methodianum Helsingiense (CCMH) is an electronic corpus of the most important Old Church Slavonic (OCS) texts. 
+
+Download location: http://www.helsinki.fi/slaavilaiset/ccmh/.</description>
+                        <url>https://kitwiki.csc.fi/twiki/bin/view/FinCLARIN/FinClarinSiteHY</url>
+                        <url>http://www.helsinki.fi/slaavilaiset/ccmh/</url>
+                        <metaShareId>NOT_DEFINED_FOR_V2</metaShareId>
+                        <identifier>http://urn.fi/urn:nbn:fi:lb-20140730106</identifier>
+                        <identifier>islrn.org/resources/114-536-113-509-3</identifier>
+                     </identificationInfo>
+                     <distributionInfo>
+                        <availability>underNegotiation</availability>
+                        <licenceInfo>
+                           <licence>underNegotiation</licence>
+                           <distributionAccessMedium>downloadable</distributionAccessMedium>
+                           <downloadLocation>http://www.helsinki.fi/slaavilaiset/ccmh/</downloadLocation>
+                           <licensorPerson>
+                              <role>licensor</role>
+                              <personInfo>
+                                 <surname xml:lang="en">Lindstedt</surname>
+                                 <givenName xml:lang="en">Jouko</givenName>
+                                 <sex>male</sex>
+                                 <communicationInfo>
+                                    <email>jouko.lindstedt@helsinki.fi</email>
+                                 </communicationInfo>
+                                 <affiliation>
+                                    <role>affiliation</role>
+                                    <organizationInfo>
+                                       <organizationName xml:lang="en">University of Helsinki</organizationName>
+                                       <organizationShortName xml:lang="en">UHEL</organizationShortName>
+                                       <communicationInfo>
+                                          <email>krister.linden@helsinki.fi</email>
+                                       </communicationInfo>
+                                    </organizationInfo>
+                                 </affiliation>
+                              </personInfo>
+                           </licensorPerson>
+                           <distributionRightsHolderPerson>
+                              <role>distributionRightsHolder</role>
+                              <personInfo>
+                                 <surname xml:lang="en">Lindstedt</surname>
+                                 <givenName xml:lang="en">Jouko</givenName>
+                                 <sex>male</sex>
+                                 <communicationInfo>
+                                    <email>jouko.lindstedt@helsinki.fi</email>
+                                 </communicationInfo>
+                                 <affiliation>
+                                    <role>affiliation</role>
+                                    <organizationInfo>
+                                       <organizationName xml:lang="en">University of Helsinki</organizationName>
+                                       <organizationShortName xml:lang="en">UHEL</organizationShortName>
+                                       <communicationInfo>
+                                          <email>krister.linden@helsinki.fi</email>
+                                       </communicationInfo>
+                                    </organizationInfo>
+                                 </affiliation>
+                              </personInfo>
+                           </distributionRightsHolderPerson>
+                        </licenceInfo>
+                        <iprHolderPerson>
+                           <role>iprHolder</role>
+                           <personInfo>
+                              <surname xml:lang="en">Lindstedt</surname>
+                              <givenName xml:lang="en">Jouko</givenName>
+                              <sex>male</sex>
+                              <communicationInfo>
+                                 <email>jouko.lindstedt@helsinki.fi</email>
+                              </communicationInfo>
+                              <affiliation>
+                                 <role>affiliation</role>
+                                 <organizationInfo>
+                                    <organizationName xml:lang="en">University of Helsinki</organizationName>
+                                    <organizationShortName xml:lang="en">UHEL</organizationShortName>
+                                    <communicationInfo>
+                                       <email>krister.linden@helsinki.fi</email>
+                                    </communicationInfo>
+                                 </organizationInfo>
+                              </affiliation>
+                           </personInfo>
+                        </iprHolderPerson>
+                     </distributionInfo>
+                     <contactPerson>
+                        <role>contactPerson</role>
+                        <personInfo>
+                           <surname xml:lang="en">Lindstedt</surname>
+                           <givenName xml:lang="en">Jouko</givenName>
+                           <sex>male</sex>
+                           <communicationInfo>
+                              <email>jouko.lindstedt@helsinki.fi</email>
+                           </communicationInfo>
+                           <affiliation>
+                              <role>affiliation</role>
+                              <organizationInfo>
+                                 <organizationName xml:lang="en">University of Helsinki</organizationName>
+                                 <organizationShortName xml:lang="en">UHEL</organizationShortName>
+                                 <communicationInfo>
+                                    <email>krister.linden@helsinki.fi</email>
+                                 </communicationInfo>
+                              </organizationInfo>
+                           </affiliation>
+                        </personInfo>
+                     </contactPerson>
+                     <metadataInfo>
+                        <metadataCreationDate>2012-09-04</metadataCreationDate>
+                        <originalMetadataLink>http://www.helsinki.fi/slaavilaiset/ccmh/</originalMetadataLink>
+                        <metadataLanguageName>English</metadataLanguageName>
+                        <metadataLanguageId>en</metadataLanguageId>
+                        <metadataLastDateUpdated>2012-09-04</metadataLastDateUpdated>
+                        <metadataCreator>
+                           <role>metadataCreator</role>
+                           <personInfo>
+                              <surname xml:lang="en">Pöyhönen</surname>
+                              <givenName xml:lang="en">Saara</givenName>
+                              <sex>female</sex>
+                              <communicationInfo>
+                                 <email>saara.poyhonen@helsinki.fi</email>
+                              </communicationInfo>
+                              <affiliation>
+                                 <role>affiliation</role>
+                                 <organizationInfo>
+                                    <organizationName xml:lang="en">University of Helsinki</organizationName>
+                                    <organizationShortName xml:lang="en">UHEL</organizationShortName>
+                                    <communicationInfo>
+                                       <email>krister.linden@helsinki.fi</email>
+                                    </communicationInfo>
+                                 </organizationInfo>
+                              </affiliation>
+                           </personInfo>
+                        </metadataCreator>
+                     </metadataInfo>
+                     <corpusInfo>
+                        <resourceType>corpus</resourceType>
+                        <corpusMediaType>
+                           <corpusTextInfo>
+                              <mediaType>text</mediaType>
+                              <lingualityInfo>
+                                 <lingualityType>monolingual</lingualityType>
+                              </lingualityInfo>
+                              <languageInfo>
+                                 <languageId>cu</languageId>
+                                 <languageName>Old Church Slavonic</languageName>
+                              </languageInfo>
+                              <modalityInfo>
+                                 <modalityType>writtenLanguage</modalityType>
+                              </modalityInfo>
+                              <sizeInfo>
+                                 <size>1</size>
+                                 <sizeUnit>other</sizeUnit>
+                              </sizeInfo>
+                           </corpusTextInfo>
+                        </corpusMediaType>
+                     </corpusInfo>
+                  </resourceInfo>
+               </Components>
+            </CMD>
+         </metadata>
+     </record>
+   </GetRecord>
+</OAI-PMH>

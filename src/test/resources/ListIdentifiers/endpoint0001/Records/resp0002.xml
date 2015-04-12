@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OAI-PMH xmlns="http://www.openarchives.org/OAI/2.0/"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/             http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd">
+   <responseDate>2015-04-06T18:45:57Z</responseDate>
+   <request identifier="oai:kielipankki.fi:sh7b8760"
+            metadataPrefix="cmdi0571"
+            verb="GetRecord">http://metalb.csc.fi/cgi-bin/que</request>
+   <GetRecord>
+     <record>
+         <header>
+            <identifier>oai:kielipankki.fi:sh7b8760</identifier>
+            <datestamp>2015-04-01T08:00:35Z</datestamp>
+         </header>
+         <metadata>
+
+            <CMD xmlns="http://www.clarin.eu/cmd/"
+                 CMDVersion="1.1"
+                 xsi:schemaLocation="http://www.clarin.eu/cmd/ http://catalog.clarin.eu/ds/ComponentRegistry/rest/registry/profiles/clarin.eu:cr1:p_1361876010571/xsd">
+               <Header>
+                  <MdCreator>metashareToCmdi.xsl remove_metashare_namespace.xsl</MdCreator>
+                  <MdCreationDate>2015-04-01</MdCreationDate>
+                  <MdProfile>clarin.eu:cr1:p_1361876010571</MdProfile>
+               </Header>
+               <Resources>
+                  <ResourceProxyList/>
+                  <JournalFileProxyList/>
+                  <ResourceRelationList/>
+               </Resources>
+               <Components>
+                  <resourceInfo>
+                     <identificationInfo>
+                        <resourceName xml:lang="fi">Kansainvälinen oppijansuomen korpus (ICLFI)</resourceName>
+                        <resourceName xml:lang="en">International Corpus of Learner Finnish (ICLFI)</resourceName>
+                        <description xml:lang="en">The International Corpus of Learner Finnish (ICLFI) is a corpus of written learner language. The corpus mostly consists of raw texts, but certain subcorpora (e.g. texts produced by Estonian, Russian, Dutch, and Swedish learners) are already linguistically annotated. The error-tagging process begins 2013. The texts have been written by students of Finnish as a foreign language from various language backgrounds. They have been compiled with the help of Finnish language teachers around the world.
+
+The corpus contains texts written by basic, independent, and proficient learners of Finnish, and the texts are analyzed according to the Common European Framework of Reference for Languages (CEFR).  The ICLFI comprises a variety of both non-fictional (e.g. essays, argumentative texts) and fictional texts (e.g. narratives, letters). In addition, the corpus provides information on a large number of variables concerning the linguistic background of the learner, the learning task, the learning context, etc.
+
+The corpus will be published also at https://korp.csc.fi/.
+
+The purpose of the resource use must be outlined in a research plan.
+
+Distribution of copies is not allowed. Copies cannot be brought outside the servers of a trusted centre once the resource has been made available at https://korp.csc.fi/.
+
+Important: due to the nature of the material, the resource should be handled with care in order to respect the privacy of the personal data. If samples of the data are published, they must be anonymized according to best practices.
+
+For detailed information on the license of the resource see https://kitwiki.csc.fi/twiki/bin/view/FinCLARIN/ClarinEulaEngResLocInfPdNcReD.</description>
+                        <resourceShortName xml:lang="en">ICLFI</resourceShortName>
+                        <url>http://www.oulu.fi/suomitoisenakielena/node/16078</url>
+                        <metaShareId>NOT_DEFINED_FOR_V2</metaShareId>
+                        <identifier>http://urn.fi/urn:nbn:fi:lb-20140730163</identifier>
+                        <identifier>http://islrn.org/resources/749-730-605-333-7</identifier>
+                     </identificationInfo>
+                     <distributionInfo>
+                        <availability>available-restrictedUse</availability>
+                        <licenceInfo>
+                           <licence>CLARIN_RES</licence>
+                           <restrictionsOfUse>academic-nonCommercialUse</restrictionsOfUse>
+                           <restrictionsOfUse>attribution</restrictionsOfUse>
+                           <restrictionsOfUse>informLicensor</restrictionsOfUse>
+                           <restrictionsOfUse>noRedistribution</restrictionsOfUse>
+                           <restrictionsOfUse>other</restrictionsOfUse>
+                           <restrictionsOfUse>redeposit</restrictionsOfUse>
+                           <distributionAccessMedium>downloadable</distributionAccessMedium>
+                           <downloadLocation>http://www.oulu.fi/hutk/sutvi/oppijankieli/ICLFI/Salainen/index.html</downloadLocation>
+                           <fee>none</fee>
+                           <attributionText xml:lang="fi">Kansainvälinen oppijansuomen korpus (ICLFI). Oppijansuomen sähköinen tutkimusaineisto. Koostettu hankkeessa Korpustutkimus oppijankielen kielikohtaisista ja universaaleista ominaisuuksista Oulun yliopiston suomi toisena ja vieraana kielenä -oppiaineessa. Käyttöaika [päiväys]. Saanti: http://www.oulu.fi/hutk/sutvi/oppijankieli/</attributionText>
+                           <attributionText xml:lang="en">International Corpus of Learner Finnish (ICLFI). Oppijansuomen sähköinen tutkimusaineisto. Koostettu hankkeessa Korpustutkimus oppijankielen kielikohtaisista ja universaaleista ominaisuuksista Oulun yliopiston suomi toisena ja vieraana kielenä -oppiaineessa. Käyttöaika [päiväys]. Saanti: http://www.oulu.fi/hutk/sutvi/oppijankieli/</attributionText>
+                           <licensorOrganization>
+                              <role>licensor</role>
+                              <organizationInfo>
+                                 <organizationName xml:lang="en">University of Oulu</organizationName>
+                                 <communicationInfo>
+                                    <email>firstname.surname@oulu.fi</email>
+                                    <url>http://www.oulu.fi</url>
+                                 </communicationInfo>
+                              </organizationInfo>
+                           </licensorOrganization>
+                           <distributionRightsHolderOrganization>
+                              <role>distributionRightsHolder</role>
+                              <organizationInfo>
+                                 <organizationName xml:lang="en">University of Oulu</organizationName>
+                                 <communicationInfo>
+                                    <email>firstname.surname@oulu.fi</email>
+                                    <url>http://www.oulu.fi</url>
+                                 </communicationInfo>
+                              </organizationInfo>
+                           </distributionRightsHolderOrganization>
+                        </licenceInfo>
+                        <iprHolderOrganization>
+                           <role>iprHolder</role>
+                           <organizationInfo>
+                              <organizationName xml:lang="en">University of Oulu</organizationName>
+                              <communicationInfo>
+                                 <email>firstname.surname@oulu.fi</email>
+                                 <url>http://www.oulu.fi</url>
+                              </communicationInfo>
+                           </organizationInfo>
+                        </iprHolderOrganization>
+                     </distributionInfo>
+                     <contactPerson>
+                        <role>contactPerson</role>
+                        <personInfo>
+                           <surname xml:lang="en">Brunni</surname>
+                           <givenName xml:lang="en">Sisko</givenName>
+                           <sex>female</sex>
+                           <communicationInfo>
+                              <email>sisko.brunni@oulu.fi</email>
+                           </communicationInfo>
+                           <affiliation>
+                              <role>affiliation</role>
+                              <organizationInfo>
+                                 <organizationName xml:lang="en">University of Oulu</organizationName>
+                                 <communicationInfo>
+                                    <email>firstname.surname@oulu.fi</email>
+                                    <url>http://www.oulu.fi</url>
+                                 </communicationInfo>
+                              </organizationInfo>
+                           </affiliation>
+                        </personInfo>
+                     </contactPerson>
+                     <metadataInfo>
+                        <metadataCreationDate>2012-06-14</metadataCreationDate>
+                        <metadataLanguageName>English</metadataLanguageName>
+                        <metadataLanguageId>en</metadataLanguageId>
+                        <metadataLastDateUpdated>2014-04-23</metadataLastDateUpdated>
+                        <metadataCreator>
+                           <role>metadataCreator</role>
+                           <personInfo>
+                              <surname xml:lang="en">Lennes</surname>
+                              <givenName xml:lang="en">Mietta</givenName>
+                              <sex>female</sex>
+                              <communicationInfo>
+                                 <email>mietta.lennes@helsinki.fi</email>
+                                 <url>http://www.helsinki.fi/~lennes</url>
+                                 <city>Helsinki</city>
+                                 <country>Finland</country>
+                              </communicationInfo>
+                              <affiliation>
+                                 <role>affiliation</role>
+                                 <organizationInfo>
+                                    <organizationName xml:lang="en">University of Helsinki</organizationName>
+                                    <organizationShortName xml:lang="en">UHEL</organizationShortName>
+                                    <communicationInfo>
+                                       <email>krister.linden@helsinki.fi</email>
+                                    </communicationInfo>
+                                 </organizationInfo>
+                              </affiliation>
+                           </personInfo>
+                        </metadataCreator>
+                     </metadataInfo>
+                     <usageInfo>
+                        <foreseenUseInfo>
+                           <foreseenUse>humanUse</foreseenUse>
+                           <useNLPSpecific>linguisticResearch</useNLPSpecific>
+                        </foreseenUseInfo>
+                        <actualUseInfo>
+                           <actualUse>humanUse</actualUse>
+                           <useNLPSpecific>linguisticResearch</useNLPSpecific>
+                        </actualUseInfo>
+                     </usageInfo>
+                     <corpusInfo>
+                        <resourceType>corpus</resourceType>
+                        <corpusMediaType>
+                           <corpusTextInfo>
+                              <mediaType>text</mediaType>
+                              <lingualityInfo>
+                                 <lingualityType>monolingual</lingualityType>
+                              </lingualityInfo>
+                              <languageInfo>
+                                 <languageId>fi</languageId>
+                                 <languageName>Finnish</languageName>
+                                 <languageVarietyInfo>
+                                    <languageVarietyType>other</languageVarietyType>
+                                    <languageVarietyName>Learner Finnish</languageVarietyName>
+                                 </languageVarietyInfo>
+                              </languageInfo>
+                              <modalityInfo>
+                                 <modalityType>writtenLanguage</modalityType>
+                              </modalityInfo>
+                              <sizeInfo>
+                                 <size>600000</size>
+                                 <sizeUnit>words</sizeUnit>
+                              </sizeInfo>
+                           </corpusTextInfo>
+                        </corpusMediaType>
+                     </corpusInfo>
+                  </resourceInfo>
+               </Components>
+            </CMD>
+         </metadata>
+     </record>
+   </GetRecord>
+</OAI-PMH>

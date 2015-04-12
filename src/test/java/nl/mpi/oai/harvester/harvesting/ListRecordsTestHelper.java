@@ -38,16 +38,14 @@ public class ListRecordsTestHelper extends TestHelper {
 
         ArrayList<Trace> traces= new ArrayList<>();
 
-        traces.add(new Trace ("http://www.endpoint1.org", "cmdi", "0000"));
-        traces.add(new Trace ("http://www.endpoint1.org", "cmdi", "0001"));
-        traces.add(new Trace ("http://www.endpoint1.org", "cmdi", "0002"));
-        traces.add(new Trace ("http://www.endpoint1.org", "cmdi", "0003"));
-        traces.add(new Trace ("http://www.endpoint1.org", "cmdi", "0004"));
-        traces.add(new Trace ("http://www.endpoint1.org", "cmdi", "0005"));
-        traces.add(new Trace ("http://www.endpoint1.org", "cmdi", "0006"));
-        traces.add(new Trace ("http://www.endpoint1.org", "cmdi", "0007"));
-        traces.add(new Trace ("http://www.endpoint1.org", "cmdi", "0008"));
-        traces.add(new Trace ("http://www.endpoint1.org", "cmdi", "0009"));
+        traces.add(new Trace ("http://metalb.csc.fi/cgi-bin/que", "cmdi0571", "oai:kielipankki.fi:sh03de30"));
+        traces.add(new Trace ("http://metalb.csc.fi/cgi-bin/que", "cmdi0571", "oai:kielipankki.fi:sh7b8760"));
+        traces.add(new Trace ("http://metalb.csc.fi/cgi-bin/que", "cmdi0571", "oai:kielipankki.fi:sh034a70"));
+        traces.add(new Trace ("http://metalb.csc.fi/cgi-bin/que", "cmdi0571", "oai:kielipankki.fi:sh136cd0"));
+        traces.add(new Trace ("http://metalb.csc.fi/cgi-bin/que", "cmdi0571", "oai:kielipankki.fi:sh3123d0"));
+        traces.add(new Trace ("http://metalb.csc.fi/cgi-bin/que", "cmdi0571", "oai:kielipankki.fi:shaccf90"));
+        traces.add(new Trace ("http://metalb.csc.fi/cgi-bin/que", "cmdi0571", "oai:kielipankki.fi:shd0d800"));
+        traces.add(new Trace ("http://metalb.csc.fi/cgi-bin/que", "cmdi0571", "oai:kielipankki.fi:shff9200"));
 
         return traces;
     }
@@ -58,9 +56,7 @@ public class ListRecordsTestHelper extends TestHelper {
         final String[] endpointURIs;
 
         endpointURIs = new String[]{
-                "http://www.endpoint1.org",
-                "http://www.endpoint2.org",
-                "http://www.endpoint3.org"};
+                "http://metalb.csc.fi/cgi-bin/que"};
 
         return endpointURIs;
     }

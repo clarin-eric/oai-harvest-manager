@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OAI-PMH xmlns="http://www.openarchives.org/OAI/2.0/"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/             http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd">
+   <responseDate>2015-04-06T18:45:43Z</responseDate>
+   <request identifier="oai:kielipankki.fi:sh3123d0"
+            metadataPrefix="cmdi0571"
+            verb="GetRecord">http://metalb.csc.fi/cgi-bin/que</request>
+   <GetRecord>
+     <record>
+         <header>
+            <identifier>oai:kielipankki.fi:sh3123d0</identifier>
+            <datestamp>2015-04-01T08:00:46Z</datestamp>
+         </header>
+         <metadata>
+
+            <CMD xmlns="http://www.clarin.eu/cmd/"
+                 CMDVersion="1.1"
+                 xsi:schemaLocation="http://www.clarin.eu/cmd/ http://catalog.clarin.eu/ds/ComponentRegistry/rest/registry/profiles/clarin.eu:cr1:p_1361876010571/xsd">
+               <Header>
+                  <MdCreator>metashareToCmdi.xsl remove_metashare_namespace.xsl</MdCreator>
+                  <MdCreationDate>2015-04-01</MdCreationDate>
+                  <MdProfile>clarin.eu:cr1:p_1361876010571</MdProfile>
+               </Header>
+               <Resources>
+                  <ResourceProxyList/>
+                  <JournalFileProxyList/>
+                  <ResourceRelationList/>
+               </Resources>
+               <Components>
+                  <resourceInfo>
+                     <identificationInfo>
+                        <resourceName xml:lang="fi">Suomenruotsin tekstikokoelma (UHLCS)</resourceName>
+                        <resourceName xml:lang="en">Finland-Swedish Text Corpus (UHLCS)</resourceName>
+                        <resourceName xml:lang="sv">Finlandssvensk textkorpus (UHLCS)</resourceName>
+                        <description xml:lang="fi">Korpus sisältää Suomessa julkaistua kirjoitettua ruotsin kieltä 1990-luvulta. Korpukseen liittyy myös pieni puhutun ruotsin osio. Suomenruotsin tekstikorpus kuuluu UHLCS-korpuskokoelmaan.
+
+UHLCS:llä on monta eri omistajaa. Kokoelmaan liittyvistä asioista voi tiedustella Pirkko Suihkoselta (suihkonen.pirkko@gmail.com).
+
+Lisenssitiedot: http://www.csc.fi/english/research/software/a-lic
+Käyttöoikeuksien hakuohjeet: https://kitwiki.csc.fi/twiki/bin/view/FinCLARIN/KielipankkiKayttooikeudet
+
+Kielivaran käyttötarkoitus tulee määritellä tutkimussuunnitelmassa.</description>
+                        <description xml:lang="en">The corpus contains modern written Swedish texts published in Finland (1990s). The kernel corpus is accompanied by a minor section on spoken language. The Finland Swedish Text Corpus is a part of the UHLCS corpus collection.
+
+UHLCS has many different IPR holders. Should you have any questions regarding the collection, please contact Pirkko Suihkonen (suihkonen.pirkko@gmail.com). 
+
+License details: http://www.csc.fi/english/research/software/a-lic
+Detailed information: http://www.ling.helsinki.fi/uhlcs/ 
+Instructions for applying for access: https://kitwiki.csc.fi/twiki/bin/view/FinCLARIN/KielipankkiAccessRights
+
+The purpose of the resource use must be outlined in a research plan.</description>
+                        <resourceShortName xml:lang="fi">FISC</resourceShortName>
+                        <resourceShortName xml:lang="en">FSTC</resourceShortName>
+                        <url>https://sui.csc.fi/group/sui/language-bank-rights</url>
+                        <url>http://urn.fi/urn:nbn:fi:lb-2014060211</url>
+                        <metaShareId>NOT_DEFINED_FOR_V2</metaShareId>
+                        <identifier>http://urn.fi/urn:nbn:fi:lb-2014032621</identifier>
+                     </identificationInfo>
+                     <distributionInfo>
+                        <availability>available-restrictedUse</availability>
+                        <licenceInfo>
+                           <licence>CLARIN_RES</licence>
+                           <restrictionsOfUse>academic-nonCommercialUse</restrictionsOfUse>
+                           <restrictionsOfUse>noRedistribution</restrictionsOfUse>
+                           <restrictionsOfUse>other</restrictionsOfUse>
+                           <distributionAccessMedium>accessibleThroughInterface</distributionAccessMedium>
+                           <executionLocation>https://sui.csc.fi/login</executionLocation>
+                           <userNature>academic</userNature>
+                           <licensorPerson>
+                              <role>licensor</role>
+                              <personInfo>
+                                 <surname xml:lang="en">Suihkonen</surname>
+                                 <givenName xml:lang="en">Pirkko</givenName>
+                                 <sex>female</sex>
+                                 <communicationInfo>
+                                    <email>suihkonen.pirkko@gmail.com</email>
+                                 </communicationInfo>
+                              </personInfo>
+                           </licensorPerson>
+                           <distributionRightsHolderOrganization>
+                              <role>distributionRightsHolder</role>
+                              <organizationInfo>
+                                 <organizationName xml:lang="en">University of Helsinki</organizationName>
+                                 <organizationShortName xml:lang="en">UHEL</organizationShortName>
+                                 <communicationInfo>
+                                    <email>krister.linden@helsinki.fi</email>
+                                 </communicationInfo>
+                              </organizationInfo>
+                           </distributionRightsHolderOrganization>
+                           <distributionRightsHolderOrganization>
+                              <role>distributionRightsHolder</role>
+                              <organizationInfo>
+                                 <organizationName xml:lang="fi">CSC - Tieteen tietotekniikan keskus Oy </organizationName>
+                                 <organizationName xml:lang="en">CSC — IT Center for Science Ltd</organizationName>
+                                 <organizationShortName xml:lang="en">CSC</organizationShortName>
+                                 <departmentName xml:lang="en">Kielipankki</departmentName>
+                                 <communicationInfo>
+                                    <email>ling@csc.fi</email>
+                                    <url>http://www.csc.fi/english</url>
+                                    <address>P.O. Box 405</address>
+                                    <zipCode>FI-02101</zipCode>
+                                    <city>Espoo</city>
+                                    <country>Finland</country>
+                                    <telephoneNumber>+358 (0)9 457 2001</telephoneNumber>
+                                    <faxNumber>+358 (0)9 457 2302</faxNumber>
+                                 </communicationInfo>
+                              </organizationInfo>
+                           </distributionRightsHolderOrganization>
+                        </licenceInfo>
+                        <iprHolderPerson>
+                           <role>iprHolder</role>
+                           <personInfo>
+                              <surname xml:lang="en">Suihkonen</surname>
+                              <givenName xml:lang="en">Pirkko</givenName>
+                              <sex>female</sex>
+                              <communicationInfo>
+                                 <email>suihkonen.pirkko@gmail.com</email>
+                              </communicationInfo>
+                           </personInfo>
+                        </iprHolderPerson>
+                     </distributionInfo>
+                     <contactPerson>
+                        <role>contactPerson</role>
+                        <personInfo>
+                           <surname xml:lang="en">The Language Bank of Finland</surname>
+                           <givenName xml:lang="en">User support at CSC - IT Center for Science Ltd.</givenName>
+                           <sex>unknown</sex>
+                           <communicationInfo>
+                              <email>ling@csc.fi</email>
+                           </communicationInfo>
+                        </personInfo>
+                     </contactPerson>
+                     <metadataInfo>
+                        <metadataCreationDate>2012-09-04</metadataCreationDate>
+                        <metadataLanguageName>English</metadataLanguageName>
+                        <metadataLanguageName>Finnish</metadataLanguageName>
+                        <metadataLanguageId>en</metadataLanguageId>
+                        <metadataLanguageId>fi</metadataLanguageId>
+                        <metadataLastDateUpdated>2014-05-19</metadataLastDateUpdated>
+                        <metadataCreator>
+                           <role>metadataCreator</role>
+                           <personInfo>
+                              <surname xml:lang="en">Pöyhönen</surname>
+                              <givenName xml:lang="en">Saara</givenName>
+                              <sex>female</sex>
+                              <communicationInfo>
+                                 <email>saara.poyhonen@helsinki.fi</email>
+                              </communicationInfo>
+                              <affiliation>
+                                 <role>affiliation</role>
+                                 <organizationInfo>
+                                    <organizationName xml:lang="en">University of Helsinki</organizationName>
+                                    <organizationShortName xml:lang="en">UHEL</organizationShortName>
+                                    <communicationInfo>
+                                       <email>krister.linden@helsinki.fi</email>
+                                    </communicationInfo>
+                                 </organizationInfo>
+                              </affiliation>
+                           </personInfo>
+                        </metadataCreator>
+                     </metadataInfo>
+                     <resourceDocumentationInfo>
+                        <documentationStructured>
+                           <role>documentation</role>
+                           <documentInfo>
+                              <documentType>manual</documentType>
+                              <title xml:lang="en">FSTC Manual</title>
+                              <url>https://kitwiki.csc.fi/twiki/bin/view/FinCLARIN/KielipankkiAineistotFstc</url>
+                           </documentInfo>
+                        </documentationStructured>
+                     </resourceDocumentationInfo>
+                     <resourceCreationInfo>
+                        <resourceCreatorPerson>
+                           <role>resourceCreator</role>
+                           <personInfo>
+                              <surname xml:lang="en">Lindström</surname>
+                              <givenName xml:lang="en">Jan</givenName>
+                              <sex>male</sex>
+                              <communicationInfo>
+                                 <email>jan.k.lindstrom@helsinki.fi</email>
+                              </communicationInfo>
+                              <affiliation>
+                                 <role>affiliation</role>
+                                 <organizationInfo>
+                                    <organizationName xml:lang="en">University of Helsinki</organizationName>
+                                    <organizationShortName xml:lang="en">UHEL</organizationShortName>
+                                    <communicationInfo>
+                                       <email>krister.linden@helsinki.fi</email>
+                                    </communicationInfo>
+                                 </organizationInfo>
+                              </affiliation>
+                           </personInfo>
+                        </resourceCreatorPerson>
+                     </resourceCreationInfo>
+                     <relationInfo>
+                        <relationType>sub-corpus of</relationType>
+                        <relatedResource>
+                           <targetResourceNameURI>http://metashare.csc.fi/repository/browse/multilingual-resource-collection-of-the-uhlcs/11cc1ddc33f211e2b67c005056be118e667f3ec574ed4aef98fde634b1e1af17/</targetResourceNameURI>
+                        </relatedResource>
+                     </relationInfo>
+                     <corpusInfo>
+                        <resourceType>corpus</resourceType>
+                        <corpusMediaType>
+                           <corpusTextInfo>
+                              <mediaType>text</mediaType>
+                              <lingualityInfo>
+                                 <lingualityType>monolingual</lingualityType>
+                              </lingualityInfo>
+                              <languageInfo>
+                                 <languageId>sv</languageId>
+                                 <languageName>Swedish</languageName>
+                              </languageInfo>
+                              <modalityInfo>
+                                 <modalityType>writtenLanguage</modalityType>
+                              </modalityInfo>
+                              <sizeInfo>
+                                 <size>34412586</size>
+                                 <sizeUnit>words</sizeUnit>
+                              </sizeInfo>
+                           </corpusTextInfo>
+                        </corpusMediaType>
+                     </corpusInfo>
+                  </resourceInfo>
+               </Components>
+            </CMD>
+         </metadata>
+     </record>
+   </GetRecord>
+</OAI-PMH>

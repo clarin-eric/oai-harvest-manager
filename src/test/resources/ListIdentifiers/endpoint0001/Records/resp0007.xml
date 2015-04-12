@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OAI-PMH xmlns="http://www.openarchives.org/OAI/2.0/"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/             http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd">
+   <responseDate>2015-04-06T18:46:12Z</responseDate>
+   <request identifier="oai:kielipankki.fi:shd0d800"
+            metadataPrefix="cmdi0571"
+            verb="GetRecord">http://metalb.csc.fi/cgi-bin/que</request>
+   <GetRecord>
+     <record>
+         <header>
+            <identifier>oai:kielipankki.fi:shd0d800</identifier>
+            <datestamp>2015-04-01T08:00:36Z</datestamp>
+         </header>
+         <metadata>
+
+            <CMD xmlns="http://www.clarin.eu/cmd/"
+                 CMDVersion="1.1"
+                 xsi:schemaLocation="http://www.clarin.eu/cmd/ http://catalog.clarin.eu/ds/ComponentRegistry/rest/registry/profiles/clarin.eu:cr1:p_1361876010571/xsd">
+               <Header>
+                  <MdCreator>metashareToCmdi.xsl remove_metashare_namespace.xsl</MdCreator>
+                  <MdCreationDate>2015-04-01</MdCreationDate>
+                  <MdProfile>clarin.eu:cr1:p_1361876010571</MdProfile>
+               </Header>
+               <Resources>
+                  <ResourceProxyList/>
+                  <JournalFileProxyList/>
+                  <ResourceRelationList/>
+               </Resources>
+               <Components>
+                  <resourceInfo>
+                     <identificationInfo>
+                        <resourceName xml:lang="en">Joensuu Corpus of Swedish Compounds</resourceName>
+                        <description xml:lang="en">Computer corpus (list) of Swedish compounds in Göteborgs-Posten (a Swedish newspaper) data-base of 24.2 million word tokens originally collected by Elisabeth Ahlsén (Linguistics, Göteborg University) and eventually morphologically tagged by Matti Laine’s and Patrick Virtanen’s WordMill Lexical Search program (Center for Cognitive Neuroscience, U. Turku).
+      </description>
+                        <url>https://kitwiki.csc.fi/twiki/bin/view/FinCLARIN/FinClarinSiteUEF</url>
+                        <metaShareId>NOT_DEFINED_FOR_V2</metaShareId>
+                        <identifier>http://urn.fi/urn:nbn:fi:lb-20140730122</identifier>
+                        <identifier>http://islrn.org/resources/128-829-996-277-5</identifier>
+                     </identificationInfo>
+                     <distributionInfo>
+                        <availability>available-restrictedUse</availability>
+                        <licenceInfo>
+                           <licence>CLARIN_RES</licence>
+                           <restrictionsOfUse>academic-nonCommercialUse</restrictionsOfUse>
+                           <distributionAccessMedium>hardDisk</distributionAccessMedium>
+                           <userNature>academic</userNature>
+                           <licensorOrganization>
+                              <role>licensor</role>
+                              <organizationInfo>
+                                 <organizationName xml:lang="en">University of Eastern Finland</organizationName>
+                                 <organizationShortName xml:lang="en">UEF</organizationShortName>
+                                 <communicationInfo>
+                                    <email>kirjaamo@uef.fi</email>
+                                    <url>http://www.uef.fi/uef/english</url>
+                                 </communicationInfo>
+                              </organizationInfo>
+                           </licensorOrganization>
+                           <distributionRightsHolderOrganization>
+                              <role>distributionRightsHolder</role>
+                              <organizationInfo>
+                                 <organizationName xml:lang="en">University of Eastern Finland</organizationName>
+                                 <organizationShortName xml:lang="en">UEF</organizationShortName>
+                                 <communicationInfo>
+                                    <email>kirjaamo@uef.fi</email>
+                                    <url>http://www.uef.fi/uef/english</url>
+                                 </communicationInfo>
+                              </organizationInfo>
+                           </distributionRightsHolderOrganization>
+                        </licenceInfo>
+                        <iprHolderOrganization>
+                           <role>iprHolder</role>
+                           <organizationInfo>
+                              <organizationName xml:lang="en">University of Eastern Finland</organizationName>
+                              <organizationShortName xml:lang="en">UEF</organizationShortName>
+                              <communicationInfo>
+                                 <email>kirjaamo@uef.fi</email>
+                                 <url>http://www.uef.fi/uef/english</url>
+                              </communicationInfo>
+                           </organizationInfo>
+                        </iprHolderOrganization>
+                     </distributionInfo>
+                     <contactPerson>
+                        <role>contactPerson</role>
+                        <personInfo>
+                           <surname xml:lang="en">Niemi</surname>
+                           <givenName xml:lang="en">Sinikka</givenName>
+                           <sex>female</sex>
+                           <communicationInfo>
+                              <email>sinikka.niemi@uef.fi</email>
+                           </communicationInfo>
+                           <affiliation>
+                              <role>affiliation</role>
+                              <organizationInfo>
+                                 <organizationName xml:lang="en">University of Eastern Finland</organizationName>
+                                 <organizationShortName xml:lang="en">UEF</organizationShortName>
+                                 <communicationInfo>
+                                    <email>kirjaamo@uef.fi</email>
+                                    <url>http://www.uef.fi/uef/english</url>
+                                 </communicationInfo>
+                              </organizationInfo>
+                           </affiliation>
+                        </personInfo>
+                     </contactPerson>
+                     <metadataInfo>
+                        <metadataCreationDate>2012-08-17</metadataCreationDate>
+                        <originalMetadataLink>https://kitwiki.csc.fi/twiki/bin/view/FinCLARIN/FinClarinSiteUEF</originalMetadataLink>
+                        <metadataLanguageName>English</metadataLanguageName>
+                        <metadataLanguageId>en</metadataLanguageId>
+                        <metadataLastDateUpdated>2012-08-17</metadataLastDateUpdated>
+                        <metadataCreator>
+                           <role>metadataCreator</role>
+                           <personInfo>
+                              <surname xml:lang="en">Bartis</surname>
+                              <givenName xml:lang="en">Imre</givenName>
+                              <sex>male</sex>
+                              <position>Project Coordinator</position>
+                              <communicationInfo>
+                                 <email>imre.bartis@helsinki.fi</email>
+                                 <city>Helsinki</city>
+                                 <country>Finland</country>
+                              </communicationInfo>
+                           </personInfo>
+                        </metadataCreator>
+                     </metadataInfo>
+                     <corpusInfo>
+                        <resourceType>corpus</resourceType>
+                        <corpusMediaType>
+                           <corpusTextInfo>
+                              <mediaType>text</mediaType>
+                              <lingualityInfo>
+                                 <lingualityType>monolingual</lingualityType>
+                              </lingualityInfo>
+                              <languageInfo>
+                                 <languageId>sv</languageId>
+                                 <languageName>Swedish</languageName>
+                              </languageInfo>
+                              <modalityInfo>
+                                 <modalityType>writtenLanguage</modalityType>
+                              </modalityInfo>
+                              <sizeInfo>
+                                 <size>3800</size>
+                                 <sizeUnit>tokens</sizeUnit>
+                              </sizeInfo>
+                           </corpusTextInfo>
+                        </corpusMediaType>
+                     </corpusInfo>
+                  </resourceInfo>
+               </Components>
+            </CMD>
+         </metadata>
+     </record>
+   </GetRecord>
+</OAI-PMH>
