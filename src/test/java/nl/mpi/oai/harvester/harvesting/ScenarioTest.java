@@ -103,7 +103,8 @@ public class ScenarioTest {
             /* Replacing the responses, whenever getResponse() is invoked, let
                the helper return a document containing the prefixes.
              */
-            doReturn(helper.getDocument()).when(formatHarvesting).getResponse();
+            doReturn(helper.getDocument("FormatLists")).when(
+                    formatHarvesting).getResponse();
 
             /* Now, safely invoke the scenario get the prefixes by invoking the
                scenario.
@@ -128,7 +129,7 @@ public class ScenarioTest {
             /* Replacing the responses, whenever getResponse() is invoked, let
                the helper return a document containing the prefixes.
              */
-            doReturn(helper.getDocument()).when(
+            doReturn(helper.getDocument("RecordLists")).when(
                     recordListHarvesting).getResponse();
 
             // harvest the records

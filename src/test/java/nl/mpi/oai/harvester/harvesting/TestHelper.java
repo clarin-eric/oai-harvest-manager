@@ -297,7 +297,10 @@ abstract class TestHelper {
      *
      * @return a response document or null if there are no more documents
      */
-    Document getDocument() {
+    Document getDocument(String type) {
+
+        // remember the type
+        this.type = type;
 
         // check if we need a new list
         if (dIndex == -1) {
