@@ -58,7 +58,7 @@ import static org.mockito.Mockito.*;
  * @author Kees Jan van de Looij (Max Planck Institute for Psycholinguistics)
  */
 @RunWith(MockitoJUnitRunner.class)
-public class HarvestingTest {
+public class ListMetadataFormatsTest {
 
     /**
      * Get a mocked response from a file

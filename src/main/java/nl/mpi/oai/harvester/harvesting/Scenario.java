@@ -36,8 +36,6 @@ public class Scenario {
 
     private static final Logger logger = Logger.getLogger(Scenario.class);
 
-
-
     //
     Provider provider;
 
