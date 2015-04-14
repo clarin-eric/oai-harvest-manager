@@ -52,7 +52,7 @@ public class ScenarioTest {
     @Mock
     ListMetadataFormats formats;
 
-    // similarly, mock the response when listing records
+    // similarly, when listing records mock the response
     @Mock
     ListRecords records;
 
@@ -80,7 +80,7 @@ public class ScenarioTest {
         Provider endpoint = helper.getFirstEndpoint();
         for (;;){
 
-            // create the scenario with the provider and the action sequence
+            // create the scenario with the endpoint and the action sequence
             Scenario scenario = new Scenario(endpoint, actionSequence);
 
             // spy on format harvesting
@@ -88,7 +88,7 @@ public class ScenarioTest {
                     endpoint, actionSequence));
 
              /* Whenever the request method would invoke the ListMetadataFormats
-                constructor, return the mocked formats instead of the real one.
+                constructor, mock its response.
               */
             try {
                 doReturn(formats).when(formatHarvesting).getMetadataFormats(
@@ -107,14 +107,15 @@ public class ScenarioTest {
                     formatHarvesting).getResponse();
 
             /* Now, safely invoke the scenario get the prefixes by invoking the
-               scenario.
+               scenario.Added a method for testing the list records scenario
              */
             List<String> prefixes = scenario.getPrefixes(formatHarvesting);
 
-            // create a harvesting object
+            // turn to harvesting the records now, create a harvesting object
             RecordListHarvesting recordListHarvesting = spy (
                     new RecordListHarvesting(endpoint, prefixes));
 
+            // again, mock the response
             try {
                 doReturn(records).when(recordListHarvesting).verb2(
                         any(String.class), any(String.class));
@@ -132,23 +133,21 @@ public class ScenarioTest {
             doReturn(helper.getDocument("RecordLists")).when(
                     recordListHarvesting).getResponse();
 
-            // harvest the records
+            // follow the record list harvesting scenario
             scenario.listRecords(recordListHarvesting);
 
-            // get the next provider
+            // switch to the next endpoint
             endpoint = helper.getNextEndpoint();
             if (endpoint == null) {
                 break;
             }
         }
 
-        boolean test = helper.success();
-
         // determine if the test was successful
         if (!helper.success()) {
             fail();
         }
-    };
+    }
 
     @Test
     public void ListIdentifiers() {
