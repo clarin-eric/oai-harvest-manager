@@ -28,9 +28,12 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.ArrayList;
 
-import static nl.mpi.oai.harvester.cycle.TestHelper.getFile;
+import static org.junit.Assert.fail;
 
 /**
  * <br> Help mocking the OAI protocol by supplying the XML document part of OAI
@@ -52,11 +55,11 @@ import static nl.mpi.oai.harvester.cycle.TestHelper.getFile;
  * documents in the test resources responses directory. A document is stored
  * in the following form:
  *
- * /resources/testName/endpoint0001/FormatLists/resp0001.xml
+ * /resources/testName/endpoint0000/FormatLists/resp0000.xml
  *
  * In this example
  *
- * resp0001.xml
+ * resp0000.xml
  *
  * document contains the XML part of the OAI response. 'FormatLists' identifies
  * the type of document. The helper supports these types of responses:
@@ -152,6 +155,9 @@ abstract class TestHelper {
 
         // load the predefined traces
         traces = getTraces();
+
+        // get the name of the test
+        testName = getTestName();
     }
 
     /**
@@ -162,7 +168,7 @@ abstract class TestHelper {
     Provider getFirstEndpoint() {
 
         // reset the endpoint index
-        eIndex = 0;
+        eIndex = -1;
         // get the endpoint
         return getNextEndpoint();
     }
@@ -179,7 +185,7 @@ abstract class TestHelper {
         // remember the endpoint
         Provider endpoint;
 
-        if (eIndex == endpointURIs.length){
+        if (eIndex + 1  == endpointURIs.length){
             // no endpoints left for testing
             return null;
         } else {
@@ -214,6 +220,45 @@ abstract class TestHelper {
     private String type;
 
     /**
+     * <br> Get the path to the file <br><br>
+     *
+     * Note: the specification of a resource only includes part of the path to
+     * the file.
+     *
+     * @param resourceName specification of the resource
+     */
+    private String getFileName (String resourceName){
+
+        // get the URL of the test file in the resources directory
+        URL url = TestHelper.class.getResource(resourceName);
+
+        if (url == null) {
+            // the resource indicated does not exist
+            return null;
+        } else {
+            /* Convert the URL to a URI to be able to convert the escaped path
+               component
+             */
+            URI uri;
+
+            try {
+                uri = url.toURI();
+            } catch (URISyntaxException e) {
+                uri = null;
+                e.printStackTrace();
+            }
+
+            if (uri == null) {
+                // something went wrong
+                return null;
+            } else {
+                // get the path without escape characters
+                return uri.getPath();
+            }
+        }
+    }
+
+    /**
      * <br> Get an XML document from a file <br><br>
      *
      * Because the test is not intended to use the OAI protocol, only the XML
@@ -221,25 +266,26 @@ abstract class TestHelper {
      * method obtains the predefined 'responses' from XML files in the resources
      * directory.
      *
-     * @param fileName the file to get the document from
+     * @param resourceName the file to get the document from
      * @return the document
      */
-    Document getDocumentFromFile(String fileName) {
+    Document getDocumentFromFile(String resourceName) {
 
-        // create a file reference
-        File file = getFile(fileName);
+        // get the name of the file
+        String fileName = getFileName (resourceName);
 
-        if (!file.exists()) {
-            // the response has not been defined
+        if (fileName == null) {
+            // the file does not exist
             return null;
         } else {
+
             // the document containing the 'response'
             Document document;
 
             // try to return the document contained in the file
             try {
                 document = db.parse(getClass().getResourceAsStream(
-                        file.getAbsolutePath()));
+                        resourceName));
             } catch (SAXException |
                     IOException e) {
                 document = null;
@@ -266,11 +312,11 @@ abstract class TestHelper {
         String endpointIndex = String.format("%04d", eIndex);
 
         // point to the first document of the type indicated
-        dIndex = 0;
+        int i = 0;
         for (;;) {
 
             // create a string representing the document
-            String responseIndex = String.format("%04d", dIndex); dIndex ++;
+            String responseIndex = String.format("%04d", i); i++;
 
             // create the name of the file
             String fileName = "/" + testName + "/endpoint" + endpointIndex +
@@ -286,7 +332,7 @@ abstract class TestHelper {
                 // add the document to the list
                 documentList.add(document);
                 // point to the next document
-                dIndex ++;
+                i ++;
             }
         }
     }
@@ -298,6 +344,11 @@ abstract class TestHelper {
      * @return a response document or null if there are no more documents
      */
     Document getDocument(String type) {
+
+        if (this.type == null  || ! this.type.equals(type)){
+            // switch document type, reset index
+            dIndex = -1;
+        }
 
         // remember the type
         this.type = type;
@@ -312,7 +363,8 @@ abstract class TestHelper {
 
         // check if there is a document available
         if (dIndex < documentList.size()) {
-            document = documentList.get(dIndex);
+            // point to the next document, and get it
+            dIndex ++; document = documentList.get(dIndex);
         } else {
             // reset the document index
             dIndex = -1;
@@ -391,7 +443,7 @@ abstract class TestHelper {
      *
      * @param metadata metadata to be removed from the table
      */
-    void removeFromTable(Metadata metadata) {
+    boolean removeFromTable(Metadata metadata) {
 
         // determine the elements that make up a trace
         String endpointURI = metadata.getOrigin().getOaiUrl();
@@ -403,6 +455,8 @@ abstract class TestHelper {
 
         // remove the trace from the table
         traces.remove(trace);
+
+        return true;
     }
 
     /**

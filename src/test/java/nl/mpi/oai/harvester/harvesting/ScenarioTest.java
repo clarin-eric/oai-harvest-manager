@@ -25,7 +25,9 @@ import nl.mpi.oai.harvester.Provider;
 import nl.mpi.oai.harvester.action.ActionSequence;
 import nl.mpi.oai.harvester.metadata.MetadataFormat;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -42,6 +44,7 @@ import static org.mockito.Mockito.*;
  *
  * @author Kees Jan van de Looij (Max Planck Institute for Psycholinguistics)
  */
+@RunWith(MockitoJUnitRunner.class)
 public class ScenarioTest {
 
     /* When not testing, the ListMetadataFormats constructor will return the
@@ -111,7 +114,7 @@ public class ScenarioTest {
              */
             List<String> prefixes = scenario.getPrefixes(formatHarvesting);
 
-            // turn to harvesting the records now, create a harvesting object
+            // next, spy on record list harvesting
             RecordListHarvesting recordListHarvesting = spy (
                     new RecordListHarvesting(endpoint, prefixes));
 
@@ -132,6 +135,8 @@ public class ScenarioTest {
              */
             doReturn(helper.getDocument("RecordLists")).when(
                     recordListHarvesting).getResponse();
+
+            // kj: get the current metadata from the record list harvesting class
 
             // follow the record list harvesting scenario
             scenario.listRecords(recordListHarvesting);
