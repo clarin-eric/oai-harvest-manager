@@ -23,15 +23,12 @@ import ORG.oclc.oai.harvester2.verb.ListMetadataFormats;
 import ORG.oclc.oai.harvester2.verb.ListRecords;
 import nl.mpi.oai.harvester.Provider;
 import nl.mpi.oai.harvester.action.ActionSequence;
-import nl.mpi.oai.harvester.metadata.Metadata;
 import nl.mpi.oai.harvester.metadata.MetadataFactory;
 import nl.mpi.oai.harvester.metadata.MetadataFormat;
-import nl.mpi.oai.harvester.metadata.MetadataInterface;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -44,11 +41,28 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
 /**
- * kj: add specification
+ * Test the harvesting scenario class <br><br>
+ *
+ * This tests class provides tests that provide the metadata records defined
+ * in the extensions of the test helper class to the harvesting interface. It
+ * does this by applying mocking and spying made available by Mockito. By
+ * relying on the test helper class, it compares the records defined in the
+ * extensions with the results the harvesting scenario yields. <br><br>
+ *
+ * While the test, by spying, passes mocked OAI records to real methods in the
+ * harvesting package, this package needs to provide the resulting metadata
+ * records to the test helper. This is necessary because the test helper needs
+ * to compare the predefined input to the generated output. To this end the
+ * harvesting classes use a metadata factory instead of creating the metadata
+ * themselves.<br><br>
+ *
+ * Note: doReturn().when() differs from when().thenReturn() in that in the
+ * when applying the second of the two the method indicated is effectively
+ * invoked while in the case of the first expression it is not.
  *
  * @author Kees Jan van de Looij (Max Planck Institute for Psycholinguistics)
  */
-@RunWith(MockitoJUnitRunner.class) // kj: this is important
+@RunWith(MockitoJUnitRunner.class) // initialise @Mock annotated mocks
 public class ScenarioTest {
 
     /* When not testing, the ListMetadataFormats constructor will return the
@@ -108,8 +122,8 @@ public class ScenarioTest {
                 e.printStackTrace();
             }
 
-            /* Replacing the responses, whenever getResponse() is invoked, let
-               the helper return a document containing the prefixes.
+            /* Replacing the real responses, whenever getResponse() is invoked,
+               let the helper return a document containing the prefixes.
              */
             doReturn(helper.getDocument("FormatLists")).when(
                     formatHarvesting).getResponse();
@@ -119,17 +133,16 @@ public class ScenarioTest {
              */
             List<String> prefixes = scenario.getPrefixes(formatHarvesting);
 
-            // kj: spy on the metadata factory
-            MetadataFactory factory = spy (new MetadataFactory());
+            // spy on the metadata factory also
+            MetadataFactory metadataFactory = spy (new MetadataFactory());
             // doReturn(helper).when(factory.getHook());
-            when(factory.getHook()).thenReturn(helper);
+            when(metadataFactory.getHook()).thenReturn(helper);
 
-
-            // next, spy on record list harvesting
+            // finally, define spying on record list harvesting
             RecordListHarvesting recordListHarvesting = spy (
-                    new RecordListHarvesting(endpoint, prefixes, factory));
+                    new RecordListHarvesting(endpoint, prefixes, metadataFactory));
 
-            // again, mock the response
+            // like in the case of format harvesting, again, mock the response
             try {
                 doReturn(records).when(recordListHarvesting).verb2(
                         any(String.class), any(String.class));
@@ -141,15 +154,15 @@ public class ScenarioTest {
                 e.printStackTrace();
             }
 
-            /* Replacing the responses, whenever getResponse() is invoked, let
-               the helper return a document containing the prefixes.
+            /* Replacing the real responses, whenever getResponse() is invoked,
+               let the helper return a document containing the prefixes.
              */
             doReturn(helper.getDocument("RecordLists")).when(
                     recordListHarvesting).getResponse();
 
-            // kj: get the current metadata from the record list harvesting class
-
-            // follow the record list harvesting scenario
+            /* Now, the mocking and spying setup is done. Follow the record list
+               harvesting scenario.
+             */
             scenario.listRecords(recordListHarvesting);
 
             // switch to the next endpoint
@@ -167,6 +180,6 @@ public class ScenarioTest {
 
     @Test
     public void ListIdentifiers() {
-
+        // kj: complete this
     }
 }

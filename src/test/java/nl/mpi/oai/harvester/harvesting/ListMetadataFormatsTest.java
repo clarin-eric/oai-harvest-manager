@@ -48,7 +48,7 @@ import static org.mockito.Mockito.*;
  * None of the tests in this package will utilise the OAI protocol. The tests
  * will run without connecting to any endpoint. The response that in the real
  * world will be obtained from endpoint, come from the XML files in the
- * resources folder.
+ * resources folder. <br><br>
  *
  * The files contain endpoint responses in XML format. By comparing the results
  * of the processing by the methods in the harvesting package, to what is
