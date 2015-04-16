@@ -20,6 +20,7 @@ package nl.mpi.oai.harvester.harvesting;
 
 import nl.mpi.oai.harvester.Provider;
 import nl.mpi.oai.harvester.metadata.Metadata;
+import nl.mpi.oai.harvester.metadata.MetadataInterface;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
@@ -37,7 +38,7 @@ import static org.junit.Assert.fail;
 
 /**
  * <br> Help mocking the OAI protocol by supplying the XML document part of OAI
- * responses
+ * responses <br><br>
  *
  * While the harvesting package tests themselves should create the metadata
  * format, and the action sequences, and set up mocking and spying, the helper
@@ -53,47 +54,47 @@ import static org.junit.Assert.fail;
  *
  * The class constructor creates the table of rows that match the predefined
  * documents in the test resources responses directory. A document is stored
- * in the following form:
+ * in the following form: <br><br>
  *
- * /resources/testName/endpoint0000/FormatLists/resp0000.xml
+ * /resources/testName/endpoint0000/FormatLists/resp0000.xml <br><br>
  *
- * In this example
+ * In this example <br><br>
  *
- * resp0000.xml
+ * resp0000.xml <br><br>
  *
  * document contains the XML part of the OAI response. 'FormatLists' identifies
- * the type of document. The helper supports these types of responses:
+ * the type of document. The helper supports these types of responses: <br><br>
  *
- * FormatLists, IdentifierLists, Records, RecordLists
+ * FormatLists, IdentifierLists, Records, RecordLists <br><br>
  *
  * A test can visit multiple endpoints. Like the documents, the helper
  * enumerates the endpoints. By extending the helper, the endpoint URIs should
- * be defined. The helper's constructor will invoke the
+ * be defined. The helper's constructor will invoke the <br><br>
  *
- * getEndpointURIs
+ * getEndpointURIs <br><br>
  *
  * method to obtain the URIs. Like loading the URI's the constructor will also
- * invoke the
+ * invoke the <br><br>
  *
- * getTraces
+ * getTraces <br><br>
  *
  * method to load the table constituting the endpoint, prefix and record
  * identifier relation. Finally, by including a test name in the path to the
  * XML files, the helper supports multiple tests. By creating a helper for each
  * extension, a test can follow multiple scenarios. It could, for example, first
- * test record list harvesting by creating a
+ * test record list harvesting by creating a <br><br>
  *
- * ListRecordsTestHelper
+ * ListRecordsTestHelper <br><br>
  *
- * object, and after that, create a
+ * object, and after that, create a <br><br>
  *
- * ListIdentifiersTestHelper
+ * ListIdentifiersTestHelper <br><br>
  *
  * object to follow the list identifiers scenario.
  *
  * @author Kees Jan van de Looij (Max Planck Institute for Psycholinguistics)
  */
-abstract class TestHelper {
+abstract class TestHelper implements MetadataInterface {
 
     /**
      * <br> Get the URIs of the endpoints involved in the test
@@ -212,7 +213,7 @@ abstract class TestHelper {
     private int dIndex;
 
     // list of documents of the current type
-    private ArrayList<Document> documentList = new ArrayList<>();
+    private ArrayList<Document> documentList;
 
     /* The type of document. On of: 'FormatLists', 'IdentifierLists', 'Records',
        or 'RecordLists'.
@@ -279,7 +280,7 @@ abstract class TestHelper {
             return null;
         } else {
 
-            // the document containing the 'response'
+            // the document
             Document document;
 
             // try to return the document contained in the file
@@ -316,7 +317,7 @@ abstract class TestHelper {
         for (;;) {
 
             // create a string representing the document
-            String responseIndex = String.format("%04d", i); i++;
+            String responseIndex = String.format("%04d", i);
 
             // create the name of the file
             String fileName = "/" + testName + "/endpoint" + endpointIndex +
@@ -346,7 +347,8 @@ abstract class TestHelper {
     Document getDocument(String type) {
 
         if (this.type == null  || ! this.type.equals(type)){
-            // switch document type, reset index
+            // switch document type, create new list, reset index
+            documentList = new ArrayList<>();
             dIndex = -1;
         }
 
@@ -397,22 +399,41 @@ abstract class TestHelper {
      * want to create. A trace represents one row in the relation between the
      * endpoints, prefixes and record identifiers.
      */
-    class Trace {
+    class Trace extends Object{
 
         // create a trace
-        public  Trace (String endpointURI, String prefix, String identifier) {
+        public Trace (String endpointURI, String prefix, String identifier) {
+
+            this.endpointURI = endpointURI;
             this.identifier = identifier;
-            this.prefix = prefix;
+            // this.prefix = prefix;
         }
 
         // the record's endpoint URI
         String endpointURI;
 
         // the record's metadata prefix
-        String prefix;
+        // String prefix;
 
         // the record's identifier
         String identifier;
+
+        @Override
+        public boolean equals (Object object) {
+
+            if (!(object instanceof Trace)) {
+                return false;
+            } else {
+                Trace trace = (Trace) object;
+                if (! trace.endpointURI.equals(this.endpointURI)){
+                    return false;
+                }
+                if (! trace.identifier.equals(this.identifier)){
+                    return false;
+                }
+                return true;
+            }
+        }
     }
 
     /**
@@ -443,7 +464,7 @@ abstract class TestHelper {
      *
      * @param metadata metadata to be removed from the table
      */
-    boolean removeFromTable(Metadata metadata) {
+    void removeFromTable(Metadata metadata) {
 
         // determine the elements that make up a trace
         String endpointURI = metadata.getOrigin().getOaiUrl();
@@ -455,8 +476,6 @@ abstract class TestHelper {
 
         // remove the trace from the table
         traces.remove(trace);
-
-        return true;
     }
 
     /**
@@ -473,7 +492,16 @@ abstract class TestHelper {
      *
      * @return true if and only if the test is successful
      */
-    boolean success() {
+    boolean success(){
+
         return traces.size() == 0;
     }
+
+    public Metadata newMetadata(Metadata metadata){
+
+        removeFromTable(metadata);
+
+        return metadata;
+    }
+
 }

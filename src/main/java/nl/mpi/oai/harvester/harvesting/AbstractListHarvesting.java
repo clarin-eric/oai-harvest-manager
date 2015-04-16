@@ -19,6 +19,7 @@
 package nl.mpi.oai.harvester.harvesting;
 
 import nl.mpi.oai.harvester.Provider;
+import nl.mpi.oai.harvester.metadata.MetadataFactory;
 import org.apache.log4j.Logger;
 import org.w3c.dom.NodeList;
 
@@ -67,9 +68,9 @@ abstract public class AbstractListHarvesting extends AbstractHarvesting
      * 
      * @param provider the provider
      */
-    AbstractListHarvesting(Provider provider) {
+    AbstractListHarvesting(Provider provider, MetadataFactory metadataFactory) {
 
-        super(provider);
+        super(provider, metadataFactory);
         nIndex          = 0;
         resumptionToken = null;
         tIndex          = 0;

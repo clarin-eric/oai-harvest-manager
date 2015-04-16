@@ -78,7 +78,7 @@ public class FormatHarvesting extends AbstractHarvesting implements
      * @param actions  specify the format requested
      */
     public FormatHarvesting(Provider provider, ActionSequence actions) {
-        super (provider);
+        super (provider, null);
         this.response = null;
         this.document = null;
         this.provider = provider;

@@ -26,6 +26,7 @@ import javax.xml.transform.TransformerException;
 
 import nl.mpi.oai.harvester.metadata.Metadata;
 import nl.mpi.oai.harvester.Provider;
+import nl.mpi.oai.harvester.metadata.MetadataFactory;
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
@@ -58,8 +59,8 @@ public final class RecordHarvesting extends AbstractHarvesting {
      * @param prefix     the prefix of the desired record
      * @param identifier the identifier of the record
      */
-    public RecordHarvesting(Provider provider, String prefix, String identifier){
-        super(provider);
+    public RecordHarvesting(Provider provider, String prefix, String identifier, MetadataFactory metadataFactory){
+        super(provider, metadataFactory);
         this.response    = null;
         this.prefix      = prefix;
         this.identifier  = identifier;

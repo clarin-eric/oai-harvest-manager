@@ -20,6 +20,7 @@ package nl.mpi.oai.harvester.harvesting;
 
 import nl.mpi.oai.harvester.StaticProvider;
 import nl.mpi.oai.harvester.metadata.Metadata;
+import nl.mpi.oai.harvester.metadata.MetadataFactory;
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -63,9 +64,9 @@ public final class StaticRecordListHarvesting extends AbstractListHarvesting
      * @param prefixes the prefixes obtained from the static content
      */
     public StaticRecordListHarvesting(StaticProvider provider,
-                                      List<String> prefixes) {
+                                      List<String> prefixes, MetadataFactory metadataFactory) {
 
-        super(provider);
+        super(provider, metadataFactory);
 
         // get the response stored in the StaticProvider class object
         response = provider.getResponse();

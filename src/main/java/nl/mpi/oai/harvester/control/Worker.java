@@ -26,6 +26,7 @@ import nl.mpi.oai.harvester.StaticProvider;
 import nl.mpi.oai.harvester.action.ActionSequence;
 import nl.mpi.oai.harvester.harvesting.*;
 import nl.mpi.oai.harvester.Provider;
+import nl.mpi.oai.harvester.metadata.MetadataFactory;
 import org.apache.log4j.Logger;
 
 /**
@@ -104,6 +105,8 @@ class Worker implements Runnable {
 
         boolean done = false;
 
+        MetadataFactory metadataFactory = new MetadataFactory();
+
         logger.info("Processing provider " + provider);
         for (final ActionSequence actionSequence : actionSequences) {
 
@@ -127,7 +130,7 @@ class Worker implements Runnable {
                 } else {
                     // set type of record harvesting to apply
                     harvesting = new StaticRecordListHarvesting(
-                            (StaticProvider) provider, prefixes);
+                            (StaticProvider) provider, prefixes, metadataFactory);
 
                     // get the records
                     done = scenario.listRecords(harvesting);
@@ -150,13 +153,13 @@ class Worker implements Runnable {
                     // determine the type of record harvesting to apply
                     if (scenarioName.equals("ListIdentifiers")) {
                         harvesting = new IdentifierListHarvesting(provider,
-                                prefixes);
+                                prefixes, metadataFactory);
 
                         // get the records
                         done = scenario.listIdentifiers(harvesting);
                     } else {
                         harvesting = new RecordListHarvesting(
-                                provider, prefixes);
+                                provider, prefixes, metadataFactory);
 
                         // get the records
                         done = scenario.listRecords(harvesting);
