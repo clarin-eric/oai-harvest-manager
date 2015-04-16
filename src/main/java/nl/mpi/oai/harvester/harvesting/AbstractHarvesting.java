@@ -41,7 +41,7 @@ public abstract class AbstractHarvesting implements Harvesting {
     final Provider provider;
 
     /**
-     * kj: specify
+     * <br> A factory for creating metadata records
      */
     final MetadataFactory metadataFactory;
 

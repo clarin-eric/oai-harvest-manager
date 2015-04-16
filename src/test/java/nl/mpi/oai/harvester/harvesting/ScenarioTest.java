@@ -135,8 +135,8 @@ public class ScenarioTest {
 
             // spy on the metadata factory also
             MetadataFactory metadataFactory = spy (new MetadataFactory());
-            // doReturn(helper).when(factory.getHook());
-            when(metadataFactory.getHook()).thenReturn(helper);
+            // doReturn(helper).when(factory.connectInterface());
+            when(metadataFactory.connectInterface()).thenReturn(helper);
 
             // finally, define spying on record list harvesting
             RecordListHarvesting recordListHarvesting = spy (

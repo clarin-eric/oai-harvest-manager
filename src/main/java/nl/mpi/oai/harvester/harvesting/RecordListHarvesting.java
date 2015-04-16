@@ -51,7 +51,8 @@ import org.xml.sax.SAXException;
  * only once. It uses the list provided by the superclass to remove duplicate
  * identifier and prefix pairs.
  *
- * kj: removed final because of mockito
+ * Note: originally, this class was declared 'final'. With the addition of
+ * tests based on Mockito, this qualifier was removed.
  *
  * @author Kees Jan van de Looij (MPI-PL)
  * @author Lari Lampen (MPI-PL, xpath parsing)
@@ -288,8 +289,10 @@ public class RecordListHarvesting extends ListHarvesting
         // check if the record has already been released by trying to add it to
         IdPrefix idPrefix = new IdPrefix (id, prefixes.get(pIndex));
         if (targets.checkAndInsertSorted(idPrefix)){
-            // inserted, not released to the client before
-            // kj: return new Metadata(id, doc, provider, false, false);
+
+            /* Inserted the metadata in the targets table. Release the metadata
+               to the client by submitting the details to the metadata factory.
+             */
             return metadataFactory.create(id, doc, provider, false, false);
         } else {
             // not inserted, the record has already been released to the client
