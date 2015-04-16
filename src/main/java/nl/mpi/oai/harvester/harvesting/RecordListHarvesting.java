@@ -30,6 +30,7 @@ import javax.xml.xpath.XPathExpressionException;
 
 import nl.mpi.oai.harvester.metadata.Metadata;
 import nl.mpi.oai.harvester.Provider;
+import nl.mpi.oai.harvester.metadata.MetadataFactory;
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -66,9 +67,9 @@ public class RecordListHarvesting extends ListHarvesting
      * @param provider the endpoint to address in the request
      * @param prefixes the prefixes returned by the endpoint 
      */
-    public RecordListHarvesting(Provider provider, List<String> prefixes) {
+    public RecordListHarvesting(Provider provider, List<String> prefixes, MetadataFactory metadataFactory) {
 
-        super (provider, prefixes);
+        super (provider, prefixes, metadataFactory);
         // supply the superclass with messages specific to requesting records
         message [0] = "Requesting more records with prefix ";
         message [1] = "Requesting records with prefix ";
@@ -288,7 +289,8 @@ public class RecordListHarvesting extends ListHarvesting
         IdPrefix idPrefix = new IdPrefix (id, prefixes.get(pIndex));
         if (targets.checkAndInsertSorted(idPrefix)){
             // inserted, not released to the client before
-            return new Metadata(id, doc, provider, false, false);
+            // kj: return new Metadata(id, doc, provider, false, false);
+            return metadataFactory.create(id, doc, provider, false, false);
         } else {
             // not inserted, the record has already been released to the client
             return null;

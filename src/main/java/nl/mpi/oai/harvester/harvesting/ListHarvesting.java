@@ -20,6 +20,7 @@ package nl.mpi.oai.harvester.harvesting;
 
 import ORG.oclc.oai.harvester2.verb.HarvesterVerb;
 import nl.mpi.oai.harvester.Provider;
+import nl.mpi.oai.harvester.metadata.MetadataFactory;
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
@@ -60,8 +61,8 @@ public abstract class ListHarvesting extends AbstractListHarvesting implements
      * @param provider the endpoint to address in the request
      * @param prefixes the prefixes returned by the endpoint 
      */
-    ListHarvesting(Provider provider, List<String> prefixes){
-        super(provider);
+    ListHarvesting(Provider provider, List<String> prefixes, MetadataFactory metadataFactory){
+        super(provider, metadataFactory);
         this.prefixes   = prefixes;
         response        = null;
         resumptionToken = null;

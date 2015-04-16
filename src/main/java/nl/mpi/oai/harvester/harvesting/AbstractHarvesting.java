@@ -20,6 +20,8 @@ package nl.mpi.oai.harvester.harvesting;
 
 import ORG.oclc.oai.harvester2.verb.HarvesterVerb;
 import nl.mpi.oai.harvester.Provider;
+import nl.mpi.oai.harvester.metadata.Metadata;
+import nl.mpi.oai.harvester.metadata.MetadataFactory;
 import org.w3c.dom.Document;
 
 import javax.annotation.Resource;
@@ -37,6 +39,11 @@ public abstract class AbstractHarvesting implements Harvesting {
      * <br> Information on where to send the request
      */
     final Provider provider;
+
+    /**
+     * kj: specify
+     */
+    final MetadataFactory metadataFactory;
 
     /**
      * <br> Pointer to current set
@@ -84,10 +91,11 @@ public abstract class AbstractHarvesting implements Harvesting {
      *
      * @param provider the provider
      */
-    AbstractHarvesting(Provider provider) {
+    AbstractHarvesting(Provider provider, MetadataFactory metadataFactory) {
 
-        this.provider = provider;
-        pIndex        = 0;
+        this.metadataFactory = metadataFactory;
+        this.provider        = provider;
+        pIndex               = 0;
 
         // check for protocol errors
         if (provider == null){

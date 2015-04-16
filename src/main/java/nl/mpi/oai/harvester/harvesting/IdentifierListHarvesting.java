@@ -29,6 +29,7 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 
 import nl.mpi.oai.harvester.Provider;
+import nl.mpi.oai.harvester.metadata.MetadataFactory;
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
@@ -63,8 +64,8 @@ public final class IdentifierListHarvesting extends ListHarvesting
      * @param prefixes the prefixes returned by the endpoint
      *
      */
-    public IdentifierListHarvesting(Provider provider, List<String> prefixes){
-        super(provider, prefixes);
+    public IdentifierListHarvesting(Provider provider, List<String> prefixes, MetadataFactory metadataFactory){
+        super(provider, prefixes, metadataFactory);
         // supply the superclass with messages specific to requesting identifiers
         message [0] = "Requesting more identifiers of records with prefix ";
         message [1] = "Requesting identifiers of records with prefix ";
@@ -234,7 +235,7 @@ public final class IdentifierListHarvesting extends ListHarvesting
         tIndex++;
         // get the record for the identifier and prefix
         RecordHarvesting p = new RecordHarvesting(provider, pair.prefix,
-                pair.identifier);
+                pair.identifier, metadataFactory);
 
         if (! p.request()) {
             // something went wrong

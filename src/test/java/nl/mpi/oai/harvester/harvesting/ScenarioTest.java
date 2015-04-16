@@ -23,11 +23,15 @@ import ORG.oclc.oai.harvester2.verb.ListMetadataFormats;
 import ORG.oclc.oai.harvester2.verb.ListRecords;
 import nl.mpi.oai.harvester.Provider;
 import nl.mpi.oai.harvester.action.ActionSequence;
+import nl.mpi.oai.harvester.metadata.Metadata;
+import nl.mpi.oai.harvester.metadata.MetadataFactory;
 import nl.mpi.oai.harvester.metadata.MetadataFormat;
+import nl.mpi.oai.harvester.metadata.MetadataInterface;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -44,7 +48,7 @@ import static org.mockito.Mockito.*;
  *
  * @author Kees Jan van de Looij (Max Planck Institute for Psycholinguistics)
  */
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.class) // kj: this is important
 public class ScenarioTest {
 
     /* When not testing, the ListMetadataFormats constructor will return the
@@ -75,6 +79,7 @@ public class ScenarioTest {
         ActionSequence actionSequence = mock(ActionSequence.class);
         // let the getInputFormat method return the metadata format defined
         when(actionSequence.getInputFormat()).thenReturn(format);
+        when(actionSequence.containsStripResponse()).thenReturn(true);
 
         // create test helper
         ListRecordsTestHelper helper = new ListRecordsTestHelper();
@@ -110,13 +115,19 @@ public class ScenarioTest {
                     formatHarvesting).getResponse();
 
             /* Now, safely invoke the scenario get the prefixes by invoking the
-               scenario.Added a method for testing the list records scenario
+               scenario.
              */
             List<String> prefixes = scenario.getPrefixes(formatHarvesting);
 
+            // kj: spy on the metadata factory
+            MetadataFactory factory = spy (new MetadataFactory());
+            // doReturn(helper).when(factory.getHook());
+            when(factory.getHook()).thenReturn(helper);
+
+
             // next, spy on record list harvesting
             RecordListHarvesting recordListHarvesting = spy (
-                    new RecordListHarvesting(endpoint, prefixes));
+                    new RecordListHarvesting(endpoint, prefixes, factory));
 
             // again, mock the response
             try {
