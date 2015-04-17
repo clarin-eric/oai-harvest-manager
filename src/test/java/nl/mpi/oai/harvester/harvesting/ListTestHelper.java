@@ -20,6 +20,7 @@ package nl.mpi.oai.harvester.harvesting;
 
 import nl.mpi.oai.harvester.Provider;
 import nl.mpi.oai.harvester.metadata.Metadata;
+import nl.mpi.oai.harvester.metadata.MetadataFormat;
 import nl.mpi.oai.harvester.metadata.MetadataInterface;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
@@ -27,7 +28,6 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -63,7 +63,7 @@ import static org.junit.Assert.fail;
  * resp0000.xml <br><br>
  *
  * document contains the XML part of the OAI response. 'FormatLists' identifies
- * the type of document. The helper supports these types of responses: <br><br>
+ * the of document. The helper supports these types of responses: <br><br>
  *
  * FormatLists, IdentifierLists, Records, RecordLists <br><br>
  *
@@ -94,7 +94,13 @@ import static org.junit.Assert.fail;
  *
  * @author Kees Jan van de Looij (Max Planck Institute for Psycholinguistics)
  */
-abstract class TestHelper implements MetadataInterface {
+abstract class ListTestHelper implements MetadataInterface {
+
+    /**
+     * kj: specify
+     * @return
+     */
+    abstract MetadataFormat getMetadataFormat();
 
     /**
      * <br> Get the URIs of the endpoints involved in the test
@@ -105,10 +111,8 @@ abstract class TestHelper implements MetadataInterface {
 
     /**
      * <br> Get the traces specific to a test
-     *
-     * @return the traces needed to run the test
      */
-    abstract ArrayList<Trace> getTraces();
+    abstract void getTraces();
 
     /**
      * <br> Get the name of the test <br><br>
@@ -139,7 +143,7 @@ abstract class TestHelper implements MetadataInterface {
      * protocol. It loads the responses from XML files in a resources folder
      * designated for a particular test.
      */
-    TestHelper(){
+    ListTestHelper(){
 
         // set up a factory for the document builders
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -155,7 +159,7 @@ abstract class TestHelper implements MetadataInterface {
         endpointURIs = getEndpointURIs(); eIndex = 0;
 
         // load the predefined traces
-        traces = getTraces();
+        getTraces();
 
         // get the name of the test
         testName = getTestName();
@@ -212,12 +216,13 @@ abstract class TestHelper implements MetadataInterface {
     // index pointing to the next document for the current endpoint
     private int dIndex;
 
+    // the next document itself
+    private Document nextDocument = null;
+
     // list of documents of the current type
     private ArrayList<Document> documentList;
 
-    /* The type of document. On of: 'FormatLists', 'IdentifierLists', 'Records',
-       or 'RecordLists'.
-     */
+    // the current type of document
     private String type;
 
     /**
@@ -231,7 +236,7 @@ abstract class TestHelper implements MetadataInterface {
     private String getFileName (String resourceName){
 
         // get the URL of the test file in the resources directory
-        URL url = TestHelper.class.getResource(resourceName);
+        URL url = ListTestHelper.class.getResource(resourceName);
 
         if (url == null) {
             // the resource indicated does not exist
@@ -268,6 +273,7 @@ abstract class TestHelper implements MetadataInterface {
      * directory.
      *
      * @param resourceName the file to get the document from
+     *
      * @return the document
      */
     Document getDocumentFromFile(String resourceName) {
@@ -301,7 +307,7 @@ abstract class TestHelper implements MetadataInterface {
      * <br> Get a list of response documents for the current endpoint, of the
      * type indicated
      *
-     * @param type string, one of: 'FormatLists', 'IdentifierLists', 'Records',
+     * @param type one of: 'FormatLists', 'IdentifierLists', 'Records',
      *             or 'RecordLists'
      */
     private void getDocumentList(String type) {
@@ -339,41 +345,68 @@ abstract class TestHelper implements MetadataInterface {
     }
 
     /**
-     * <br> Get a response document for the current endpoint, of the type
-     * indicated
+     * <br> Get a response document of the indicated type for the current
+     * endpoint
+     *
+     * @param type one of: 'FormatLists', 'IdentifierLists', 'Records',
+     *             or 'RecordLists'
      *
      * @return a response document or null if there are no more documents
      */
     Document getDocument(String type) {
 
-        if (this.type == null  || ! this.type.equals(type)){
-            // switch document type, create new list, reset index
+        System.out.println("Invoked getDocument with type: " + type);
+
+        // check for a change in document type
+        if (this.type == null || ! this.type.equals(type)){
+
+            // first document type or switch in document type, create a new list
+
             documentList = new ArrayList<>();
-            dIndex = -1;
-        }
-
-        // remember the type
-        this.type = type;
-
-        // check if we need a new list
-        if (dIndex == -1) {
             getDocumentList(type);
+            dIndex = -1;
+
+            // remember the type
+            this.type = type;
         }
 
-        // the document that will contain the 'response'
+        // document to return
         Document document;
 
-        // check if there is a document available
-        if (dIndex < documentList.size()) {
-            // point to the next document, and get it
-            dIndex ++; document = documentList.get(dIndex);
+        // check if we can return a document already read
+        if (nextDocument != null){
+            // return the read ahead document
+
+            document = nextDocument;
+            nextDocument = null;
+
         } else {
-            // reset the document index
-            dIndex = -1;
-            document = null;
+            // no record available, try to get one from the list
+
+            if (dIndex < documentList.size()) {
+                // point to the next document, and get it
+                dIndex ++; document = documentList.get(dIndex);
+            } else {
+                // no documents left in the list
+                document = null;
+            }
         }
 
         return document;
+    }
+
+    // the current document prefix
+    private String prefix = null;
+
+    /**
+     * kj: implement
+     *
+     * @param document
+     * @return
+     */
+    String getPrefixFromDocument (Document document){
+
+        return "";
     }
 
     /**
@@ -381,16 +414,29 @@ abstract class TestHelper implements MetadataInterface {
      * document type <br><br>
      *
      * @return the token, null if it would not make sense to file another
-     * request
+     *         request
      */
     String getResumptionToken() {
 
-        if (dIndex == documentList.size()) {
+        // check whether to supply a resumption token
+        if (dIndex + 1 == documentList.size()) {
             // do not resume
             return null;
         } else {
-            return "resume with " + type + "document with index " + dIndex +
-                   " for endpoint " + eIndex;
+
+            // look ahead at the next document in the list
+            nextDocument = getDocument (type);
+
+            //
+            String prefix = getPrefixFromDocument(nextDocument);
+
+            if (! prefix.equals(this.prefix)){
+                // prefix change in predefined documents, do not resume right now
+                return null;
+            } else {
+                return "resume with " + type + "document with index " + dIndex +
+                        " for endpoint " + eIndex;
+            }
         }
     }
 
@@ -399,7 +445,7 @@ abstract class TestHelper implements MetadataInterface {
      * want to create. A trace represents one row in the relation between the
      * endpoints, prefixes and record identifiers.
      */
-    class Trace extends Object{
+    class Trace {
 
         // create a trace
         public Trace (String endpointURI, String prefix, String identifier) {

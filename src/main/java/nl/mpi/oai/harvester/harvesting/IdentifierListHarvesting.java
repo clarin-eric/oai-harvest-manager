@@ -49,9 +49,12 @@ import org.xml.sax.SAXException;
  * only once. It uses the list provided by the superclass to remove duplicate
  * identifier and prefix pairs.
  *
+ *  Note: originally, this class was declared 'final'. With the addition of
+ * tests based on Mockito, this qualifier was removed.
+ *
  * @author Kees Jan van de Looij (MPI-PL)
  */
-public final class IdentifierListHarvesting extends ListHarvesting
+public class IdentifierListHarvesting extends ListHarvesting
         implements Harvesting {
     
     private static final Logger logger = Logger.getLogger(

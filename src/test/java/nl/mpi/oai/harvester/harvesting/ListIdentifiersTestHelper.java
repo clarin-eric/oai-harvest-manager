@@ -19,6 +19,8 @@
 
 package nl.mpi.oai.harvester.harvesting;
 
+import nl.mpi.oai.harvester.metadata.MetadataFormat;
+
 import java.util.ArrayList;
 
 /**
@@ -31,23 +33,29 @@ import java.util.ArrayList;
  *
  * @author Kees Jan van de Looij (Max Planck Institute for Psycholinguistics)
  */
-public class ListIdentifiersTestHelper extends TestHelper {
+public class ListIdentifiersTestHelper extends ListTestHelper {
 
     @Override
-    ArrayList<Trace> getTraces() {
+    MetadataFormat getMetadataFormat() {
 
-        ArrayList<Trace> traces= new ArrayList<>();
+        // kj: specify
+        MetadataFormat metadataFormat = new MetadataFormat("namespace",
+                "http://www.clarin.eu/cmd/");
 
-        traces.add(new Trace ("http://metalb.csc.fi/cgi-bin/que", "cmdi0571", "oai:kielipankki.fi:sh03de30"));
-        traces.add(new Trace ("http://metalb.csc.fi/cgi-bin/que", "cmdi0571", "oai:kielipankki.fi:sh7b8760"));
-        traces.add(new Trace ("http://metalb.csc.fi/cgi-bin/que", "cmdi0571", "oai:kielipankki.fi:sh034a70"));
-        traces.add(new Trace ("http://metalb.csc.fi/cgi-bin/que", "cmdi0571", "oai:kielipankki.fi:sh136cd0"));
-        traces.add(new Trace ("http://metalb.csc.fi/cgi-bin/que", "cmdi0571", "oai:kielipankki.fi:sh3123d0"));
-        traces.add(new Trace ("http://metalb.csc.fi/cgi-bin/que", "cmdi0571", "oai:kielipankki.fi:shaccf90"));
-        traces.add(new Trace ("http://metalb.csc.fi/cgi-bin/que", "cmdi0571", "oai:kielipankki.fi:shd0d800"));
-        traces.add(new Trace ("http://metalb.csc.fi/cgi-bin/que", "cmdi0571", "oai:kielipankki.fi:shff9200"));
+        return metadataFormat;
+    }
 
-        return traces;
+    @Override
+    void getTraces() {
+
+        addToTable("http://metalb.csc.fi/cgi-bin/que", "cmdi0571", "oai:kielipankki.fi:sh03de30");
+        addToTable("http://metalb.csc.fi/cgi-bin/que", "cmdi0571", "oai:kielipankki.fi:sh7b8760");
+        addToTable("http://metalb.csc.fi/cgi-bin/que", "cmdi0571", "oai:kielipankki.fi:sh034a70");
+        addToTable("http://metalb.csc.fi/cgi-bin/que", "cmdi0571", "oai:kielipankki.fi:sh136cd0");
+        addToTable("http://metalb.csc.fi/cgi-bin/que", "cmdi0571", "oai:kielipankki.fi:sh3123d0");
+        addToTable("http://metalb.csc.fi/cgi-bin/que", "cmdi0571", "oai:kielipankki.fi:shaccf90");
+        addToTable("http://metalb.csc.fi/cgi-bin/que", "cmdi0571", "oai:kielipankki.fi:shd0d800");
+        addToTable("http://metalb.csc.fi/cgi-bin/que", "cmdi0571", "oai:kielipankki.fi:shff9200");
     }
 
     @Override

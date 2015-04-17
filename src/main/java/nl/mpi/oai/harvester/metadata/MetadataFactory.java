@@ -40,7 +40,7 @@ public class MetadataFactory {
      * a test helper object would be suited: it can receive the generated
      * metadata and compare it to the predefined data.
      *
-     * @return
+     * @return an object implementing the metadata interface
      */
     public MetadataInterface connectInterface(){
         return null;
