@@ -76,6 +76,9 @@ import static org.junit.Assert.fail;
  * method to obtain the URIs. Like loading the URI's the constructor will also
  * invoke the <br><br>
  *
+ * method to obtain the metadata format used by the test. Next to this, it will
+ * invoke the
+ *
  * getTraces <br><br>
  *
  * method to load the table constituting the endpoint, prefix and record
@@ -92,12 +95,17 @@ import static org.junit.Assert.fail;
  *
  * object to follow the list identifiers scenario.
  *
+ * kj: implement the OAI verb interface
+ *
+ * Note: like implementing the metadata interface, the test also needs to
+ * implement the OAI verb interface.
+ *
  * @author Kees Jan van de Looij (Max Planck Institute for Psycholinguistics)
  */
 abstract class ListTestHelper implements MetadataInterface {
 
     /**
-     * kj: specify
+     * <br> Get the metadata format used in the test
      * @return
      */
     abstract MetadataFormat getMetadataFormat();
@@ -399,14 +407,19 @@ abstract class ListTestHelper implements MetadataInterface {
     private String prefix = null;
 
     /**
-     * kj: implement
+     * <br> Get the metadata prefixes referenced in a document <br><br>
+     *
+     * Note: because a document might might include multiple references,
+     * assume if only refers to one prefix.
      *
      * @param document
      * @return
      */
     String getPrefixFromDocument (Document document){
 
-        return "";
+        // kj: implement the method
+
+        return null;
     }
 
     /**

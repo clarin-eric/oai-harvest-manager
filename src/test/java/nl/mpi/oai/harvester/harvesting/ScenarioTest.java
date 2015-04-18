@@ -63,6 +63,12 @@ import static org.mockito.Mockito.*;
  *
  * kj: or the other way around
  *
+ * Note: decrease the reliance on Mockito. The helper allows for testing that
+ * deviates from the notion of fixture. Implement an OAI verb interface, and
+ * let the helper implement it. In this way it can more elegantly provide the
+ * test with data. Next to this, the harvesting package constructors need to
+ * accept an OAI verb factory.
+ *
  * @author Kees Jan van de Looij (Max Planck Institute for Psycholinguistics)
  */
 @RunWith(MockitoJUnitRunner.class) // initialise @Mock annotated mocks
