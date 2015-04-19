@@ -18,8 +18,7 @@
 
 package nl.mpi.oai.harvester.harvesting;
 
-import ORG.oclc.oai.harvester2.verb.HarvesterVerb;
-import ORG.oclc.oai.harvester2.verb.ListRecords;
+import ORG.oclc.oai.harvester2.verb.*;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -33,6 +32,10 @@ import java.io.IOException;
  * the origin of OAI response type objects can be influenced. Instead of getting
  * a real response from an OAI endpoint, a test helper can mock a response. In
  * this way a helper takes over the role of an OAI provider.
+ *
+ * kj: improve the annotations
+ *
+ * kj: client code no longer needs exception handling
  *
  * @author Kees Jan van de Looij (Max Planck Institute for Psycholinguistics)
  */
@@ -56,11 +59,42 @@ public class OAIFactory {
         return null;
     }
 
+   /**
+     * <br> Create a list of metadata prefixes <br><br>
+     *
+     * @param endpointURI the endpoint URI
+     * @return the OAI response
+     */
+    HarvesterVerb createListMetadataFormats (String endpointURI){
+
+        // the verb response
+        HarvesterVerb verb = null;
+
+        // check if the client connected an object the interface
+        if (oaiInterface == null){
+            // no object connected
+            try {
+                return new ListMetadataFormats(endpointURI);
+            } catch (IOException
+                    | ParserConfigurationException
+                    | SAXException
+                    | TransformerException e) {
+                e.printStackTrace();
+            }
+        } else {
+            // let the object connected return the OAI response
+
+            verb = oaiInterface.newOAIListRecords();
+        }
+
+        return verb;
+    }
+
     /**
      * <br> Create a list records object <br><br>
      *
-     * @param p1 endpoint URI
-     * @param p2 resumption token
+     * @param p1 the endpoint URI
+     * @param p2 the resumption token
      * @return the OAI response
      */
     HarvesterVerb createListRecords (String p1, String p2){
@@ -91,14 +125,151 @@ public class OAIFactory {
 
     }
 
-    // kj: implement the other verbs
-
-    /* Note: exception handling will probably change a bit. This needs to be
-       considered. For example, the RecordListHarvesting class could be lifted
-       from the burden of having to handle the exceptions by itself. The factory
-       could concentrate itself on exception handling.
+    /**
+     * <br> Create a list records object <br><br>
+     *
+     * @param p1 the endpoint URI
+     * @param p2 the resumption token
+     * @return the OAI response
      */
+    HarvesterVerb createListRecords (String p1, String p2, String p3, String p4,
+                                     String p5){
 
+        // the verb response
+        HarvesterVerb verb = null;
 
+        oaiInterface = connectInterface();
 
+        // check if the client connected an object the interface
+        if (oaiInterface == null){
+            // no object connected
+            try {
+                return new ListRecords (p1, p2, p3, p4, p5);
+            } catch (IOException
+                    | ParserConfigurationException
+                    | SAXException
+                    | TransformerException e) {
+                e.printStackTrace();
+            }
+        } else {
+            // let the object connected return the OAI response
+
+            verb = oaiInterface.newOAIListRecords();
+        }
+
+        return verb;
+
+    }
+
+    // return new GetRecord(provider.oaiUrl, identifier, prefix)
+
+    /**
+     * <br> Create a list identifiers object <br><br>
+     *
+     * @param p1 the endpoint URI
+     * @param p2 the record identifier
+     * @param p3 the metadata prefix
+     * @return the OAI response
+     */
+    HarvesterVerb createGetRecord (String p1, String p2, String p3){
+
+        // the verb response
+        HarvesterVerb verb = null;
+
+        oaiInterface = connectInterface();
+
+        // check if the client connected an object the interface
+        if (oaiInterface == null){
+            // no object connected
+            try {
+                return new GetRecord (p1, p2, p3);
+            } catch (IOException
+                    | ParserConfigurationException
+                    | SAXException
+                    | TransformerException e) {
+                e.printStackTrace();
+            }
+        } else {
+            // let the object connected return the OAI response
+
+            verb = oaiInterface.newOAIListRecords();
+        }
+
+        return verb;
+
+    }
+
+    /**
+     * <br> Create a list identifiers object <br><br>
+     *
+     * @param p1 endpoint URI
+     * @param p2 resumption token
+     * @return the OAI response
+     */
+    HarvesterVerb createListIdentifiers (String p1, String p2){
+
+        // the verb response
+        HarvesterVerb verb = null;
+
+        oaiInterface = connectInterface();
+
+        // check if the client connected an object the interface
+        if (oaiInterface == null){
+            // no object connected
+            try {
+                return new ListIdentifiers (p1, p2);
+            } catch (IOException
+                    | ParserConfigurationException
+                    | SAXException
+                    | TransformerException e) {
+                e.printStackTrace();
+            }
+        } else {
+            // let the object connected return the OAI response
+
+            verb = oaiInterface.newOAIListRecords();
+        }
+
+        return verb;
+
+    }
+
+    /**
+     * <br> Create a list identifiers object <br><br>
+     *
+     * @param p1 the endpoint URI
+     * @param p2 the start of the date window on the records
+     * @param p3 the end of the date window on the records
+     * @param p4 the set the records should be in
+     * @param p5 the metadata prefix the records should have
+     * @return the OAI response
+     */
+    HarvesterVerb createListIdentifiers (String p1, String p2, String p3,
+                                         String p4, String p5){
+
+        // the verb response
+        HarvesterVerb verb = null;
+
+        oaiInterface = connectInterface();
+
+        // check if the client connected an object the interface
+        if (oaiInterface == null){
+            // no object connected
+            try {
+                return new ListIdentifiers (p1, p2, p3, p4, p5);
+            } catch (IOException
+                    | ParserConfigurationException
+                    | SAXException
+                    | TransformerException e) {
+                e.printStackTrace();
+            }
+        } else {
+            // let the object connected return the OAI response
+
+            verb = oaiInterface.newOAIListRecords();
+        }
+
+        return verb;
+
+    }
 }
