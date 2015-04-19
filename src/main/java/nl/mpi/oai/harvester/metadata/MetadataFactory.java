@@ -75,6 +75,7 @@ public class MetadataFactory {
          */
         metadataInterface = connectInterface();
 
+        // check if the client connected an object the interface
         if (metadataInterface == null){
             // no object connected
             return metadata;
