@@ -19,6 +19,7 @@
 package nl.mpi.oai.harvester.harvesting;
 
 import ORG.oclc.oai.harvester2.verb.*;
+import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -27,15 +28,11 @@ import java.io.IOException;
 
 /**
  * <br> Factory for OAI protocol objects <br><br>
- *
+ * <p/>
  * By injecting the factory into harvesting package constructors, when testing,
  * the origin of OAI response type objects can be influenced. Instead of getting
  * a real response from an OAI endpoint, a test helper can mock a response. In
  * this way a helper takes over the role of an OAI provider.
- *
- * kj: improve the annotations
- *
- * kj: client code no longer needs exception handling
  *
  * @author Kees Jan van de Looij (Max Planck Institute for Psycholinguistics)
  */
@@ -44,9 +41,12 @@ public class OAIFactory {
     // an object implementing the OAI interface
     OAIInterface oaiInterface;
 
+    // for some verbs, remember the resumption token
+    private String resumptionToken = null;
+
     /**
      * <br> Connect an object that implements the OAI interface <br><br>
-     *
+     * <p/>
      * Normally, when not testing, nothing will be connected. Therefore, this
      * method returns null. By spying on the factory, when using Mockito, can
      * the test can return an object that implements the interface. Typically,
@@ -55,26 +55,29 @@ public class OAIFactory {
      *
      * @return an object implementing the OAI interface
      */
-    public OAIInterface connectInterface(){
+    public OAIInterface connectInterface() {
         return null;
     }
 
-   /**
+    /**
      * <br> Create a list of metadata prefixes <br><br>
      *
      * @param endpointURI the endpoint URI
      * @return the OAI response
      */
-    HarvesterVerb createListMetadataFormats (String endpointURI){
+    Document createListMetadataFormats(String endpointURI) {
 
         // the verb response
-        HarvesterVerb verb = null;
+        Document response = null;
+
+        oaiInterface = connectInterface();
 
         // check if the client connected an object the interface
-        if (oaiInterface == null){
+        if (oaiInterface == null) {
             // no object connected
             try {
-                return new ListMetadataFormats(endpointURI);
+                HarvesterVerb verb = new ListMetadataFormats(endpointURI);
+                response = verb.getDocument();
             } catch (IOException
                     | ParserConfigurationException
                     | SAXException
@@ -84,10 +87,10 @@ public class OAIFactory {
         } else {
             // let the object connected return the OAI response
 
-            verb = oaiInterface.newOAIListRecords();
+            response = oaiInterface.newListMetadata(endpointURI);
         }
 
-        return verb;
+        return response;
     }
 
     /**
@@ -97,92 +100,99 @@ public class OAIFactory {
      * @param p2 the resumption token
      * @return the OAI response
      */
-    HarvesterVerb createListRecords (String p1, String p2){
+    Document createListRecords(String p1, String p2) {
 
         // the verb response
-        HarvesterVerb verb = null;
+        Document response = null;
 
         oaiInterface = connectInterface();
 
         // check if the client connected an object the interface
-        if (oaiInterface == null){
+        if (oaiInterface == null) {
             // no object connected
             try {
-                return new ListRecords (p1, p2);
+                HarvesterVerb verb = new ListRecords(p1, p2);
+                ;
+                response = verb.getDocument();
+                resumptionToken = ((ListRecords) verb).getResumptionToken();
             } catch (IOException
                     | ParserConfigurationException
                     | SAXException
-                    | TransformerException e) {
+                    | TransformerException
+                    | NoSuchFieldException e) {
                 e.printStackTrace();
             }
         } else {
             // let the object connected return the OAI response
 
-            verb = oaiInterface.newOAIListRecords();
+            response = oaiInterface.newListRecords(p1, p2);
         }
 
-        return verb;
-
+        return response;
     }
 
     /**
      * <br> Create a list records object <br><br>
      *
      * @param p1 the endpoint URI
-     * @param p2 the resumption token
+     * @param p2 the start of the date window on the records
+     * @param p3 the end of the date window on the records
+     * @param p4 the set the records should be in
+     * @param p5 the metadata prefix the records should have
      * @return the OAI response
      */
-    HarvesterVerb createListRecords (String p1, String p2, String p3, String p4,
-                                     String p5){
+    Document createListRecords(String p1, String p2, String p3, String p4,
+                               String p5) {
 
         // the verb response
-        HarvesterVerb verb = null;
+        Document response = null;
 
         oaiInterface = connectInterface();
 
         // check if the client connected an object the interface
-        if (oaiInterface == null){
+        if (oaiInterface == null) {
             // no object connected
             try {
-                return new ListRecords (p1, p2, p3, p4, p5);
+                HarvesterVerb verb = new ListRecords(p1, p2, p3, p4, p5);
+                response = verb.getDocument();
+                resumptionToken = ((ListRecords) verb).getResumptionToken();
             } catch (IOException
                     | ParserConfigurationException
                     | SAXException
-                    | TransformerException e) {
+                    | TransformerException
+                    | NoSuchFieldException e) {
                 e.printStackTrace();
             }
         } else {
             // let the object connected return the OAI response
 
-            verb = oaiInterface.newOAIListRecords();
+            return oaiInterface.newListRecords(p1, p2, p3, p4, p5);
         }
 
-        return verb;
-
+        return response;
     }
 
-    // return new GetRecord(provider.oaiUrl, identifier, prefix)
-
     /**
-     * <br> Create a list identifiers object <br><br>
+     * <br> Create a get record object <br><br>
      *
      * @param p1 the endpoint URI
      * @param p2 the record identifier
      * @param p3 the metadata prefix
      * @return the OAI response
      */
-    HarvesterVerb createGetRecord (String p1, String p2, String p3){
+    Document createGetRecord(String p1, String p2, String p3) {
 
         // the verb response
-        HarvesterVerb verb = null;
+        Document response = null;
 
         oaiInterface = connectInterface();
 
         // check if the client connected an object the interface
-        if (oaiInterface == null){
+        if (oaiInterface == null) {
             // no object connected
             try {
-                return new GetRecord (p1, p2, p3);
+                HarvesterVerb verb = new GetRecord(p1, p2, p3);
+                response = verb.getDocument();
             } catch (IOException
                     | ParserConfigurationException
                     | SAXException
@@ -192,11 +202,10 @@ public class OAIFactory {
         } else {
             // let the object connected return the OAI response
 
-            verb = oaiInterface.newOAIListRecords();
+            response = oaiInterface.newGetRecord(p1, p2, p3);
         }
 
-        return verb;
-
+        return response;
     }
 
     /**
@@ -206,32 +215,34 @@ public class OAIFactory {
      * @param p2 resumption token
      * @return the OAI response
      */
-    HarvesterVerb createListIdentifiers (String p1, String p2){
+    Document createListIdentifiers(String p1, String p2) {
 
         // the verb response
-        HarvesterVerb verb = null;
+        Document response = null;
 
         oaiInterface = connectInterface();
 
         // check if the client connected an object the interface
-        if (oaiInterface == null){
+        if (oaiInterface == null) {
             // no object connected
             try {
-                return new ListIdentifiers (p1, p2);
+                HarvesterVerb verb = new ListIdentifiers(p1, p2);
+                response = verb.getDocument();
+                resumptionToken = ((ListIdentifiers) verb).getResumptionToken();
             } catch (IOException
                     | ParserConfigurationException
                     | SAXException
-                    | TransformerException e) {
+                    | TransformerException
+                    | NoSuchFieldException e) {
                 e.printStackTrace();
             }
         } else {
             // let the object connected return the OAI response
 
-            verb = oaiInterface.newOAIListRecords();
+            response = oaiInterface.newListIdentifiers(p1, p2);
         }
 
-        return verb;
-
+        return response;
     }
 
     /**
@@ -244,32 +255,44 @@ public class OAIFactory {
      * @param p5 the metadata prefix the records should have
      * @return the OAI response
      */
-    HarvesterVerb createListIdentifiers (String p1, String p2, String p3,
-                                         String p4, String p5){
+    Document createListIdentifiers(String p1, String p2, String p3,
+                                   String p4, String p5) {
 
         // the verb response
-        HarvesterVerb verb = null;
+        Document response = null;
 
         oaiInterface = connectInterface();
 
         // check if the client connected an object the interface
-        if (oaiInterface == null){
+        if (oaiInterface == null) {
             // no object connected
             try {
-                return new ListIdentifiers (p1, p2, p3, p4, p5);
+                HarvesterVerb verb = new ListIdentifiers(p1, p2, p3, p4, p5);
+                response = verb.getDocument();
+                resumptionToken = ((ListIdentifiers) verb).getResumptionToken();
             } catch (IOException
                     | ParserConfigurationException
                     | SAXException
-                    | TransformerException e) {
+                    | TransformerException
+                    | NoSuchFieldException e) {
                 e.printStackTrace();
             }
         } else {
             // let the object connected return the OAI response
 
-            verb = oaiInterface.newOAIListRecords();
+            response = oaiInterface.newListIdentifiers(p1, p2, p3, p4, p5);
         }
 
-        return verb;
+        return response;
+    }
+
+    /**
+     * <br> Get the resumption token
+     *
+     * @return the resumption token
+     */
+    public String getResumptionToken() {
+        return resumptionToken;
 
     }
 }

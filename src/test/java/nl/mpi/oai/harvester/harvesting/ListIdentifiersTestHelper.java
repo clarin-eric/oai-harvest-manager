@@ -21,8 +21,6 @@ package nl.mpi.oai.harvester.harvesting;
 
 import nl.mpi.oai.harvester.metadata.MetadataFormat;
 
-import java.util.ArrayList;
-
 /**
  * <br> Define the traces for a test targeting the list identifiers scenario <br><br>
  *
@@ -33,7 +31,7 @@ import java.util.ArrayList;
  *
  * @author Kees Jan van de Looij (Max Planck Institute for Psycholinguistics)
  */
-public class ListIdentifiersTestHelper extends ListTestHelper {
+public class ListIdentifiersTestHelper extends TestHelper {
 
     @Override
     MetadataFormat getMetadataFormat() {

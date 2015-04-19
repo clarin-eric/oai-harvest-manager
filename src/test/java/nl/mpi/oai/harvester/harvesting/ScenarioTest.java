@@ -136,7 +136,7 @@ public class ScenarioTest {
      *
      * @param helper helper for the test
      */
-     public void listHarvestingTest(ListTestHelper helper) throws
+     public void listHarvestingTest(TestHelper helper) throws
              ParserConfigurationException,
              TransformerException,
              SAXException,

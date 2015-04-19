@@ -26,6 +26,11 @@ import org.w3c.dom.Document;
  */
 public interface MetadataInterface {
 
+    /**
+     *
+     * @param metadata
+     * @return
+     */
     Metadata newMetadata(Metadata metadata);
 
 }

@@ -34,8 +34,6 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 
-import static org.junit.Assert.fail;
-
 /**
  * <br> Help mocking the OAI protocol by supplying the XML document part of OAI
  * responses <br><br>
@@ -65,7 +63,7 @@ import static org.junit.Assert.fail;
  * document contains the XML part of the OAI response. 'FormatLists' identifies
  * the of document. The helper supports these types of responses: <br><br>
  *
- * FormatLists, IdentifierLists, Records, RecordLists <br><br>
+ * FormatList, IdentifierList, Record, RecordList <br><br>
  *
  * A test can visit multiple endpoints. Like the documents, the helper
  * enumerates the endpoints. By extending the helper, the endpoint URIs should
@@ -95,18 +93,16 @@ import static org.junit.Assert.fail;
  *
  * object to follow the list identifiers scenario.
  *
- * kj: implement the OAI verb interface
- *
  * Note: like implementing the metadata interface, the test also needs to
  * implement the OAI verb interface.
  *
  * @author Kees Jan van de Looij (Max Planck Institute for Psycholinguistics)
  */
-abstract class ListTestHelper implements MetadataInterface {
+abstract class TestHelper implements OAIInterface, MetadataInterface {
 
     /**
      * <br> Get the metadata format used in the test
-     * @return
+     * @return the metadata format
      */
     abstract MetadataFormat getMetadataFormat();
 
@@ -151,7 +147,7 @@ abstract class ListTestHelper implements MetadataInterface {
      * protocol. It loads the responses from XML files in a resources folder
      * designated for a particular test.
      */
-    ListTestHelper(){
+    TestHelper(){
 
         // set up a factory for the document builders
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -186,6 +182,9 @@ abstract class ListTestHelper implements MetadataInterface {
         return getNextEndpoint();
     }
 
+    // index pointing to the next document for the current endpoint
+    private int dIndex;
+
     /**
      * <br> Return the next endpoint for testing <br><br>
      *
@@ -202,7 +201,7 @@ abstract class ListTestHelper implements MetadataInterface {
             // no endpoints left for testing
             return null;
         } else {
-            // later on, create a new document list
+            // reset the document index
             dIndex = -1;
 
             // try to create a new endpoint object
@@ -221,18 +220,6 @@ abstract class ListTestHelper implements MetadataInterface {
         }
     }
 
-    // index pointing to the next document for the current endpoint
-    private int dIndex;
-
-    // the next document itself
-    private Document nextDocument = null;
-
-    // list of documents of the current type
-    private ArrayList<Document> documentList;
-
-    // the current type of document
-    private String type;
-
     /**
      * <br> Get the path to the file <br><br>
      *
@@ -244,7 +231,7 @@ abstract class ListTestHelper implements MetadataInterface {
     private String getFileName (String resourceName){
 
         // get the URL of the test file in the resources directory
-        URL url = ListTestHelper.class.getResource(resourceName);
+        URL url = TestHelper.class.getResource(resourceName);
 
         if (url == null) {
             // the resource indicated does not exist
@@ -311,12 +298,18 @@ abstract class ListTestHelper implements MetadataInterface {
         }
     }
 
+    // list of documents of the current type
+    private ArrayList<Document> documentList;
+
+    // the current type of document
+    private String type;
+
     /**
      * <br> Get a list of response documents for the current endpoint, of the
      * type indicated
      *
-     * @param type one of: 'FormatLists', 'IdentifierLists', 'Records',
-     *             or 'RecordLists'
+     * @param type one of: 'FormatList', 'IdentifierList', 'Record',
+     *             or 'RecordList'
      */
     private void getDocumentList(String type) {
 
@@ -352,30 +345,32 @@ abstract class ListTestHelper implements MetadataInterface {
         }
     }
 
+    // remember the next document
+    private Document nextDocument = null;
+
     /**
      * <br> Get a response document of the indicated type for the current
      * endpoint
      *
-     * @param type one of: 'FormatLists', 'IdentifierLists', 'Records',
-     *             or 'RecordLists'
+     * @param type one of: 'FormatList', 'IdentifierList', 'Record',
+     *             or 'RecordList'
      *
      * @return a response document or null if there are no more documents
      */
     Document getDocument(String type) {
 
-        System.out.println("Invoked getDocument with type: " + type);
-
         // check for a change in document type
         if (this.type == null || ! this.type.equals(type)){
 
-            // first document type or switch in document type, create a new list
-
-            documentList = new ArrayList<>();
-            getDocumentList(type);
-            dIndex = -1;
-
             // remember the type
             this.type = type;
+
+            // first document type or switch in document type, create a new list
+            documentList = new ArrayList<>();
+
+            // create a new list of documents
+            getDocumentList(type);
+            dIndex = -1;
         }
 
         // document to return
@@ -406,14 +401,53 @@ abstract class ListTestHelper implements MetadataInterface {
     // the current document prefix
     private String prefix = null;
 
+    @Override
+    public Document newListMetadata(String endpointURI){
+
+        return getDocument("FormatList");
+    }
+
+    @Override
+    public Document newListRecords(String p1, String p2){
+
+        // FormatList, IdentifierList, Record, RecordList
+        return getDocument("RecordList");
+    }
+
+    @Override
+    public Document newListRecords(String p1, String p2, String p3,
+                                        String p4, String p5){
+
+        return getDocument("RecordList");
+    }
+
+    @Override
+    public Document newGetRecord(String p1, String p2, String p3){
+
+        return getDocument("Record");
+    }
+
+    @Override
+    public Document newListIdentifiers (String p1, String p2){
+
+        return getDocument("IdentifierList");
+    }
+
+    @Override
+    public Document newListIdentifiers (String p1, String p2, String p3,
+                                             String p4, String p5){
+
+        return getDocument("IdentifierList");
+    }
+
     /**
      * <br> Get the metadata prefixes referenced in a document <br><br>
      *
      * Note: because a document might might include multiple references,
      * assume if only refers to one prefix.
      *
-     * @param document
-     * @return
+     * @param document the document
+     * @return the metadata prefix
      */
     String getPrefixFromDocument (Document document){
 
@@ -422,6 +456,7 @@ abstract class ListTestHelper implements MetadataInterface {
         return null;
     }
 
+    @Override
     /**
      * <br> Get the resumption token for the current endpoint and
      * document type <br><br>
@@ -429,7 +464,7 @@ abstract class ListTestHelper implements MetadataInterface {
      * @return the token, null if it would not make sense to file another
      *         request
      */
-    String getResumptionToken() {
+    public String getResumptionToken() {
 
         // check whether to supply a resumption token
         if (dIndex + 1 == documentList.size()) {
@@ -440,15 +475,22 @@ abstract class ListTestHelper implements MetadataInterface {
             // look ahead at the next document in the list
             nextDocument = getDocument (type);
 
-            //
-            String prefix = getPrefixFromDocument(nextDocument);
-
-            if (! prefix.equals(this.prefix)){
-                // prefix change in predefined documents, do not resume right now
+            if (nextDocument == null){
+                // do not resume
                 return null;
             } else {
-                return "resume with " + type + "document with index " + dIndex +
-                        " for endpoint " + eIndex;
+                // check for a prefix change
+                String prefix = getPrefixFromDocument(nextDocument);
+
+                // whether or not to resume depends on the prefix
+                if (! prefix.equals(this.prefix)){
+                    // prefix change, do not resume right now
+                    return null;
+                } else {
+                    // mock a resumption token
+                    return "resume with " + type + "document with index " + dIndex +
+                            " for endpoint " + eIndex;
+                }
             }
         }
     }
@@ -495,6 +537,17 @@ abstract class ListTestHelper implements MetadataInterface {
         }
     }
 
+    @Override
+    /**
+     * kj: annotate
+     */
+    public Metadata newMetadata(Metadata metadata){
+
+        removeFromTable(metadata);
+
+        return metadata;
+    }
+
     /**
      * <br> Add metadata information to the table <br><br>
      *
@@ -505,7 +558,7 @@ abstract class ListTestHelper implements MetadataInterface {
      * @param identifier record identifier in the trace to add to the table
      */
     void addToTable(String endpointURI, String prefix,
-                            String identifier) {
+                    String identifier) {
 
         Trace trace = new Trace(endpointURI, prefix, identifier);
 
@@ -525,17 +578,25 @@ abstract class ListTestHelper implements MetadataInterface {
      */
     void removeFromTable(Metadata metadata) {
 
-        // determine the elements that make up a trace
-        String endpointURI = metadata.getOrigin().getOaiUrl();
-        String identifier = metadata.getId();
-        String prefix = metadata.getDoc().getPrefix();
+        if (traces.size() == 0){
+            // not possible to remove
+            success = false;
+        } else {
+            // determine the elements that make up a trace
+            String endpointURI = metadata.getOrigin().getOaiUrl();
+            String identifier = metadata.getId();
+            String prefix = metadata.getDoc().getPrefix();
 
-        // create the trace
-        Trace trace = new Trace(endpointURI, prefix, identifier);
+            // create the trace
+            Trace trace = new Trace(endpointURI, prefix, identifier);
 
-        // remove the trace from the table
-        traces.remove(trace);
+            // remove the trace from the table
+            success = traces.remove(trace);
+        }
     }
+
+    // indicate success
+    private boolean success = false;
 
     /**
      * <br> Determine if the test is successful
@@ -553,14 +614,6 @@ abstract class ListTestHelper implements MetadataInterface {
      */
     boolean success(){
 
-        return traces.size() == 0;
+        return success && traces.size() == 0;
     }
-
-    public Metadata newMetadata(Metadata metadata){
-
-        removeFromTable(metadata);
-
-        return metadata;
-    }
-
 }
