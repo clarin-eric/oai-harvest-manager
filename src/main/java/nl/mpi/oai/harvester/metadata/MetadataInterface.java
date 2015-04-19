@@ -22,15 +22,21 @@ import nl.mpi.oai.harvester.Provider;
 import org.w3c.dom.Document;
 
 /**
+ * By returning the metadata received, a test helper method implementing the
+ * interface can record the metadata created by some scenario.
+ *
  * @author Kees Jan van de Looij (Max Planck Institute for Psycholinguistics)
  */
 public interface MetadataInterface {
 
     /**
+     * <br> Reflect the metadata presented <br><br>
      *
-     * @param metadata
-     * @return
+     * Note: the method should return the metadata it receives. In the meantime
+     * it can inspect the data.
+     *
+     * @param metadata the metadata
+     * @return the metadata
      */
     Metadata newMetadata(Metadata metadata);
-
 }

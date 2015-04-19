@@ -22,12 +22,18 @@ import nl.mpi.oai.harvester.Provider;
 import nl.mpi.oai.harvester.metadata.Metadata;
 import nl.mpi.oai.harvester.metadata.MetadataFormat;
 import nl.mpi.oai.harvester.metadata.MetadataInterface;
+import nl.mpi.oai.harvester.metadata.NSContext;
 import org.w3c.dom.Document;
+import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -140,6 +146,9 @@ abstract class TestHelper implements OAIInterface, MetadataInterface {
     // name of the designated resources folder
     String testName;
 
+    // only keep one XPath object for querying
+    public final XPath xpath;
+
     /**
      * <br> Create a helper <br><br>
      *
@@ -158,6 +167,14 @@ abstract class TestHelper implements OAIInterface, MetadataInterface {
         } catch (ParserConfigurationException e) {
             e.printStackTrace();
         }
+
+        // set up XPath querying
+        XPathFactory xpf = XPathFactory.newInstance();
+        xpath = xpf.newXPath();
+        NSContext nsContext = new NSContext();
+        nsContext.add("oai", "http://www.openarchives.org/OAI/2.0/");
+        nsContext.add("os", "http://www.openarchives.org/OAI/2.0/static-repository");
+        xpath.setNamespaceContext(nsContext);
 
         // load the endpoint URIs
         endpointURIs = getEndpointURIs(); eIndex = 0;
@@ -444,16 +461,38 @@ abstract class TestHelper implements OAIInterface, MetadataInterface {
      * <br> Get the metadata prefixes referenced in a document <br><br>
      *
      * Note: because a document might might include multiple references,
-     * assume if only refers to one prefix.
+     * assume it refers to one prefix only.
      *
      * @param document the document
      * @return the metadata prefix
      */
-    String getPrefixFromDocument (Document document){
+    private String getPrefix (Document document){
 
-        // kj: implement the method
+        // node in the document
+        Node node = null;
 
-        return null;
+        // metadata prefix
+        String prefix;
+
+        // look for the prefix in the request node
+        try {
+            node = (Node) xpath.evaluate(
+                    "//*[parent::*[local-name()='request']]",
+                    document, XPathConstants.NODE);
+        } catch (XPathExpressionException e) {
+            e.printStackTrace();
+        }
+
+        if (node == null){
+            // no request node, no metadata prefix
+            prefix = null;
+        } else {
+            // found the request node, get the prefix attribute value
+            prefix = node.getAttributes().getNamedItem("metadataPrefix"
+            ).getNodeValue();
+        }
+
+        return prefix;
     }
 
     @Override
@@ -480,7 +519,7 @@ abstract class TestHelper implements OAIInterface, MetadataInterface {
                 return null;
             } else {
                 // check for a prefix change
-                String prefix = getPrefixFromDocument(nextDocument);
+                String prefix = getPrefix(nextDocument);
 
                 // whether or not to resume depends on the prefix
                 if (! prefix.equals(this.prefix)){
@@ -507,14 +546,14 @@ abstract class TestHelper implements OAIInterface, MetadataInterface {
 
             this.endpointURI = endpointURI;
             this.identifier = identifier;
-            // this.prefix = prefix;
+            this.prefix = prefix;
         }
 
         // the record's endpoint URI
         String endpointURI;
 
         // the record's metadata prefix
-        // String prefix;
+        String prefix;
 
         // the record's identifier
         String identifier;
@@ -529,6 +568,9 @@ abstract class TestHelper implements OAIInterface, MetadataInterface {
                 if (! trace.endpointURI.equals(this.endpointURI)){
                     return false;
                 }
+                if (! trace.prefix.equals(this.prefix)){
+                    return false;
+                }
                 if (! trace.identifier.equals(this.identifier)){
                     return false;
                 }
@@ -538,11 +580,11 @@ abstract class TestHelper implements OAIInterface, MetadataInterface {
     }
 
     @Override
-    /**
-     * kj: annotate
-     */
     public Metadata newMetadata(Metadata metadata){
 
+        /* Record the metadata by removing it from the table of metadata the
+           test should yield.
+         */
         removeFromTable(metadata);
 
         return metadata;
@@ -585,7 +627,7 @@ abstract class TestHelper implements OAIInterface, MetadataInterface {
             // determine the elements that make up a trace
             String endpointURI = metadata.getOrigin().getOaiUrl();
             String identifier = metadata.getId();
-            String prefix = metadata.getDoc().getPrefix();
+            String prefix = getPrefix(metadata.getDoc());
 
             // create the trace
             Trace trace = new Trace(endpointURI, prefix, identifier);

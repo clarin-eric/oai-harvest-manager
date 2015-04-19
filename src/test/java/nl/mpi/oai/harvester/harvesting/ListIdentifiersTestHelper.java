@@ -36,7 +36,7 @@ public class ListIdentifiersTestHelper extends TestHelper {
     @Override
     MetadataFormat getMetadataFormat() {
 
-        // kj: specify
+        // return the metadata format for the test
         MetadataFormat metadataFormat = new MetadataFormat("namespace",
                 "http://www.clarin.eu/cmd/");
 
@@ -46,6 +46,7 @@ public class ListIdentifiersTestHelper extends TestHelper {
     @Override
     void getTraces() {
 
+        // return the records the test should yield
         addToTable("http://metalb.csc.fi/cgi-bin/que", "cmdi0571", "oai:kielipankki.fi:sh03de30");
         addToTable("http://metalb.csc.fi/cgi-bin/que", "cmdi0571", "oai:kielipankki.fi:sh7b8760");
         addToTable("http://metalb.csc.fi/cgi-bin/que", "cmdi0571", "oai:kielipankki.fi:sh034a70");

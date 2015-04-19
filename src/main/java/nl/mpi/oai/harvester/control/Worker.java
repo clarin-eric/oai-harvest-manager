@@ -111,7 +111,7 @@ class Worker implements Runnable {
         for (final ActionSequence actionSequence : actionSequences) {
 
             // list of prefixes provided by the endpoint
-            List<String> prefixes = new ArrayList<>();
+            List<String> prefixes;
 
             Scenario scenario = new Scenario(provider, actionSequence);
 
