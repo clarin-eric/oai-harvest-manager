@@ -19,17 +19,10 @@
 
 package nl.mpi.oai.harvester.harvesting;
 
-import ORG.oclc.oai.harvester2.verb.HarvesterVerb;
-import ORG.oclc.oai.harvester2.verb.ListIdentifiers;
-import ORG.oclc.oai.harvester2.verb.ListMetadataFormats;
-import ORG.oclc.oai.harvester2.verb.ListRecords;
 import nl.mpi.oai.harvester.Provider;
 import nl.mpi.oai.harvester.action.ActionSequence;
 import nl.mpi.oai.harvester.metadata.MetadataFactory;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -38,59 +31,41 @@ import java.io.IOException;
 import java.util.List;
 
 import static org.junit.Assert.fail;
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
 /**
- * Test the harvesting scenario class <br><br>
+ * <br> Test the list records and list identifiers scenario <br><br>
  *
- * This tests class provides tests that provide the metadata records defined
- * in the extensions of the test helper class to the harvesting interface. It
- * does this by applying mocking and spying made available by Mockito. By
- * relying on the test helper class, it compares the records defined in the
- * extensions with the results the harvesting scenario yields. <br><br>
+ * A scenario for listing records or identifiers relies on an action sequence
+ * object. Since it only needs two methods, the test can mock the object. Next
+ * to this, a scenario needs an endpoint. The test calls on the test helper to
+ * supply endpoints.
  *
- * While the test, by spying, passes mocked OAI records to real methods in the
- * harvesting package, this package needs to provide the resulting metadata
- * records to the test helper. This is necessary because the test helper needs
- * to compare the predefined input to the generated output. To this end the
- * harvesting classes use a metadata factory instead of creating the metadata
- * themselves.<br><br>
+ * Normally, a scenario would interact with a real OAI endpoint. Instead, by
+ * letting the helper supply OAI responses, the scenario does not depend on a
+ * real endpoint. This allows the helper to check if scenario yields the
+ * expected results.
+ *
+ * To make things work, the test needs to arrange two things. First, it needs
+ * to define mocked OAI responses. Test helper extensions in the package provide
+ * these. By creating an object of one of these classes, the test implicitly
+ * defines the responses.
+ *
+ * Second, instead of real responses, the OAI verb factory needs to obtain
+ * mocked responses from the helper. To this end, the test will spy on the
+ * factory. Similarly, it spies on the metadata factory to inspect the
+ * harvesting results.
  *
  * Note: doReturn().when() differs from when().thenReturn() in that in the
  * when applying the second of the two the method indicated is effectively
  * invoked while in the case of the first expression it is not.
  *
- * kj: or the other way around
- *
- * Note: decrease the reliance on Mockito. The helper allows for testing that
- * deviates from the notion of fixture. Implement an OAI verb interface, and
- * let the helper implement it. In this way it can more elegantly provide the
- * test with data. Next to this, the harvesting package constructors need to
- * accept an OAI verb factory.
- *
  * @author Kees Jan van de Looij (Max Planck Institute for Psycholinguistics)
  */
-@RunWith(MockitoJUnitRunner.class) // initialise @Mock annotated mocks
 public class ScenarioTest {
 
-    /* When not testing, the ListMetadataFormats constructor will return the
-       formats supported by the endpoint. Since the test does not apply the OAI
-       protocol, and therefore does not connect to any endpoint, mock the
-       formats. kj: improve
-    */
-    ListMetadataFormats formats;
-
-    // similarly, when listing records mock the response
-    @Mock
-    ListRecords records;
-
-    // similarly, when listing records mock the response
-    @Mock
-    ListIdentifiers identifiers;
-
     /**
-     *
+     * <br> Test the list records scenario
      */
     @Test
     public void listRecordsTest(){
@@ -110,9 +85,9 @@ public class ScenarioTest {
     }
 
     /**
-     *
+     * <br> Test the list identifiers scenario
      */
-    // @Test
+    @Test
     public void listIdentifiersTest(){
 
         // create a helper
@@ -132,22 +107,36 @@ public class ScenarioTest {
     /**
      * <br> Follow a list scenario <br><br>
      *
-     * Note: the scenario followed depends on the helper specified.
+     * Note: the scenario followed, listing identifiers or listing records,
+     * depends on the helper specified.
      *
-     * @param helper helper for the test
+     * @param helper the test helper
+     * @throws ParserConfigurationException
+     * @throws TransformerException
+     * @throws SAXException
+     * @throws NoSuchFieldException
+     * @throws IOException
      */
-     public void listHarvestingTest(TestHelper helper) throws
+    public void listHarvestingTest(TestHelper helper) throws
              ParserConfigurationException,
              TransformerException,
              SAXException,
              NoSuchFieldException,
              IOException {
 
-        /* Since the test only needs the input format, and not a fully fledged
-           action sequence, mock the sequence.
-         */
+        // create a factory for OAI protocol objects
+        OAIFactory oaiFactory = new OAIFactory();
+        // let the helper provide the OAI responses
+        when(oaiFactory.connectInterface()).thenReturn(helper);
+
+        // create a factory for metadata
+        MetadataFactory factory = spy(new MetadataFactory());
+        // let the helper check the data
+        when(factory.connectInterface()).thenReturn(helper);
+
+        // mock an action sequence
         ActionSequence sequence = mock(ActionSequence.class);
-        // define what the mocked object will return
+        // define what the mocked object needs to return
         when(sequence.getInputFormat()).thenReturn(helper.getMetadataFormat());
         when(sequence.containsStripResponse()).thenReturn(true);
 
@@ -155,88 +144,33 @@ public class ScenarioTest {
         Provider endpoint = helper.getFirstEndpoint();
         for (; ; ) {
 
-            // create a scenario with the real endpoint and the mocked sequence
+            // create a scenario with the endpoint and the mocked sequence
             Scenario scenario = new Scenario(endpoint, sequence);
 
-            // spy on format harvesting
-            FormatHarvesting formatHarvesting = spy(new FormatHarvesting(
-                    endpoint, sequence));
+            // create a harvesting object
+            FormatHarvesting formatHarvesting = new FormatHarvesting(
+                    endpoint, sequence);
 
-             /* Whenever the request method would invoke the ListMetadataFormats
-                constructor, use a mock to divert the response to.
-              */
-            doReturn(formats).when(
-                    formatHarvesting).getMetadataFormats(any(String.class));
-
-            /* Instead of a response, let the helper return a predefined
-               document containing a metadata format list.
-             */
-            doReturn(helper.getDocument("FormatLists")).when(
-                    formatHarvesting).getResponse();
-
-            /* Now mocking and spying has been set up, follow the prefix list
-               harvesting scenario.
-             */
+            // follow the prefix list harvesting scenario
             List<String> prefixes = scenario.getPrefixes(formatHarvesting);
-
-            // check the metadata by spying on it
-            MetadataFactory factory = spy(new MetadataFactory());
-            // let the helper check the data
-            when(factory.connectInterface()).thenReturn(helper);
 
             if (helper instanceof ListRecordsTestHelper) {
 
-                // spy on record list harvesting
-                RecordListHarvesting recordListHarvesting = spy(
-                        new RecordListHarvesting(endpoint, prefixes, factory));
+                // create a harvesting object
+                RecordListHarvesting recordListHarvesting = new
+                        RecordListHarvesting(endpoint, prefixes, factory);
 
-                // like in the case of format harvesting, mock the response kj: improve
-                doReturn(records).when(recordListHarvesting).verb2(
-                        any(String.class), any(String.class));
-
-                /* Instead of a response, let the helper return a predefined
-                   document containing a list of record list.
-                 */
-                doReturn(helper.getDocument("RecordLists")).when(
-                        recordListHarvesting).getResponse();
-
-                /* Instead of a resumption token ...
-
-                 */
-                doReturn(helper.getResumptionToken()).when(
-                        recordListHarvesting).getToken(any(HarvesterVerb.class));
-
-                /* Now, mocking and spying has been set up, follow the record
-                   list harvesting scenario.
-                */
+                // follow the record list harvesting scenario
                 scenario.listRecords(recordListHarvesting);
 
             } else {
 
-                // spy on identifier list harvesting
-                IdentifierListHarvesting identifierListHarvesting = spy(
-                        new IdentifierListHarvesting(endpoint, prefixes, factory));
+                // create a harvesting object
+                IdentifierListHarvesting identifierListHarvesting = new
+                        IdentifierListHarvesting(endpoint, prefixes, factory);
 
-
-                doReturn(identifiers).when(identifierListHarvesting).verb2(
-                        any(String.class), any(String.class));
-
-                /* Instead of a response, let the helper return a predefined
-                   document containing an identifier list.
-                 */
-                doReturn(helper.getDocument("IdentifierLists")).when(
-                        identifierListHarvesting).getResponse();
-
-                 /* Instead of a resumption token ...
-
-                 */
-                doReturn(helper.getResumptionToken()).when(
-                        identifierListHarvesting).getToken(any(HarvesterVerb.class));
-
-                /* Now, mocking and spying has been set up, follow the record
-                   list harvesting scenario.
-                */
-                scenario.listIdentifiers(identifierListHarvesting);
+                // follow the record list harvesting scenario
+                scenario.listRecords(identifierListHarvesting);
             }
 
             // switch to the next endpoint
