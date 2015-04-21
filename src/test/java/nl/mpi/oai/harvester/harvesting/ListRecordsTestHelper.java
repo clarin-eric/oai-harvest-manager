@@ -55,6 +55,15 @@ public class ListRecordsTestHelper extends TestHelper {
         addToTable("http://metalb.csc.fi/cgi-bin/que", "cmdi0571", "oai:kielipankki.fi:shaccf90");
         addToTable("http://metalb.csc.fi/cgi-bin/que", "cmdi0571", "oai:kielipankki.fi:shd0d800");
         addToTable("http://metalb.csc.fi/cgi-bin/que", "cmdi0571", "oai:kielipankki.fi:shff9200");
+
+        addToTable("http://metalb.csc.fi/cgi-bin/que", "cmdi2312", "oai:kielipankki.fi:sh03de30");
+        addToTable("http://metalb.csc.fi/cgi-bin/que", "cmdi2312", "oai:kielipankki.fi:sh7b8760");
+        addToTable("http://metalb.csc.fi/cgi-bin/que", "cmdi2312", "oai:kielipankki.fi:sh034a70");
+        addToTable("http://metalb.csc.fi/cgi-bin/que", "cmdi2312", "oai:kielipankki.fi:sh136cd0");
+        addToTable("http://metalb.csc.fi/cgi-bin/que", "cmdi2312", "oai:kielipankki.fi:sh3123d0");
+        addToTable("http://metalb.csc.fi/cgi-bin/que", "cmdi2312", "oai:kielipankki.fi:shaccf90");
+        addToTable("http://metalb.csc.fi/cgi-bin/que", "cmdi2312", "oai:kielipankki.fi:shd0d800");
+        addToTable("http://metalb.csc.fi/cgi-bin/que", "cmdi2312", "oai:kielipankki.fi:shff9200");
     }
 
     @Override
