@@ -108,6 +108,7 @@ abstract class TestHelper implements OAIInterface, MetadataInterface {
 
     /**
      * <br> Get the metadata format used in the test
+     *
      * @return the metadata format
      */
     abstract MetadataFormat getMetadataFormat();
@@ -199,7 +200,7 @@ abstract class TestHelper implements OAIInterface, MetadataInterface {
         return getNextEndpoint();
     }
 
-    // index pointing to the next document for the current endpoint
+    // index pointing to the current document for the current endpoint
     private int dIndex;
 
     /**
@@ -214,12 +215,12 @@ abstract class TestHelper implements OAIInterface, MetadataInterface {
         // remember the endpoint
         Provider endpoint;
 
-        if (eIndex + 1  == endpointURIs.length){
+        if (eIndex + 1 == endpointURIs.length){
             // no endpoints left for testing
             return null;
         } else {
             // reset the document index
-            dIndex = -1;
+            dIndex = 0;
 
             // try to create a new endpoint object
             try {
@@ -322,16 +323,10 @@ abstract class TestHelper implements OAIInterface, MetadataInterface {
     private String type;
 
     /**
-     * <br> Get a list of response documents for the current endpoint, of the
-     * type indicated
-     *
-     * @param type one of: 'FormatLists', 'IdentifierLists', 'Records',
-     *             or 'RecordLists'
+     * <br> Get a list of response documents for the current endpoint and
+     * current type
      */
-    private void getDocumentList(String type) {
-
-        // remember the type
-        this.type = type;
+    private void getDocumentList() {
 
         // create a string representing the current endpoint
         String endpointIndex = String.format("%04d", eIndex);
@@ -357,13 +352,10 @@ abstract class TestHelper implements OAIInterface, MetadataInterface {
                 // add the document to the list
                 documentList.add(document);
                 // point to the next document
-                i ++;
+                i++;
             }
         }
     }
-
-    // remember the next document
-    private Document nextDocument = null;
 
     /**
      * <br> Get a response document of the indicated type for the current
@@ -379,44 +371,32 @@ abstract class TestHelper implements OAIInterface, MetadataInterface {
         // check for a change in document type
         if (this.type == null || ! this.type.equals(type)){
 
-            // remember the type
+            // switch type
             this.type = type;
 
             // first document type or switch in document type, create a new list
             documentList = new ArrayList<>();
 
             // create a new list of documents
-            getDocumentList(type);
-            dIndex = -1;
+            getDocumentList();
+
+            dIndex = 0;
         }
 
         // document to return
-        Document document;
+        Document nextDocument;
 
-        // check if we can return a document already read
-        if (nextDocument != null){
-            // return the read ahead document
-
-            document = nextDocument;
-            nextDocument = null;
-
+        if (dIndex < documentList.size()) {
+            // get the next document from the list
+            nextDocument = documentList.get(dIndex);
+            dIndex++;
         } else {
-            // no record available, try to get one from the list
-
-            if (dIndex + 1 < documentList.size()) {
-                // point to the next document, and get it
-                dIndex ++; document = documentList.get(dIndex);
-            } else {
-                // no documents left in the list
-                document = null;
-            }
+            // no documents left in the list
+            nextDocument = null;
         }
 
-        return document;
+        return nextDocument;
     }
-
-    // the current document prefix
-    private String prefix = null;
 
     @Override
     public Document newListMetadata(String endpointURI){
@@ -456,13 +436,13 @@ abstract class TestHelper implements OAIInterface, MetadataInterface {
         return getDocument("IdentifierLists");
     }
 
+    String prefix = null;
+
     /**
      * <br> Get the metadata prefixes referenced in a document <br><br>
      *
-     * Note: because a document might might include multiple references,
-     * assume it refers to one prefix only.
-     *
-     * kj: maybe only useful for envelopes
+     * Note: since the metadata itself might not contain a reference to the
+     * prefix, the document needs to be an OAI envelope.
      *
      * @param document the document
      * @return the metadata prefix
@@ -478,7 +458,7 @@ abstract class TestHelper implements OAIInterface, MetadataInterface {
         // look for the prefix in the request node
         try {
             node = (Node) xpath.evaluate(
-                    "//*[parent::*[local-name()='request']]",
+                    "//*[local-name()='request']",
                     document, XPathConstants.NODE);
         } catch (XPathExpressionException e) {
             e.printStackTrace();
@@ -506,32 +486,31 @@ abstract class TestHelper implements OAIInterface, MetadataInterface {
      */
     public String getResumptionToken() {
 
+        Document nextDocument;
+
         // check whether to supply a resumption token
-        if (dIndex + 1 == documentList.size()) {
+        if (dIndex == documentList.size()) {
             // do not resume
             return null;
         } else {
 
+            // kj: check for a prefix change
+
             // look ahead at the next document in the list
-            nextDocument = getDocument (type);
+            nextDocument = documentList.get(dIndex);
 
-            if (nextDocument == null){
-                // do not resume
+            String prefix = getPrefix(nextDocument);
+
+            if (this.prefix != null && prefix != this.prefix){
                 return null;
-            } else {
-                // check for a prefix change
-                String prefix = getPrefix(nextDocument);
-
-                // whether or not to resume depends on the prefix
-                if (! prefix.equals(this.prefix)){
-                    // prefix change, do not resume right now
-                    return null;
-                } else {
-                    // mock a resumption token
-                    return "resume with " + type + "document with index " + dIndex +
-                            " for endpoint " + eIndex;
-                }
             }
+
+            // remember the prefix
+            this.prefix = prefix;
+
+            // mock a resumption token
+            return "resume with " + type + "document with index " + dIndex +
+                        " for endpoint " + eIndex;
         }
     }
 
@@ -624,17 +603,17 @@ abstract class TestHelper implements OAIInterface, MetadataInterface {
      */
     void removeFromTable(Metadata metadata) {
 
-        //
+        // only try to invalidate if successful up til now
         if (success) {
-            // kj: annotate
+            // check the table
             if (traces.size() == 0){
                 // not possible to remove
                 success = false;
             } else {
                 // determine the elements that make up a trace
                 String endpointURI = metadata.getOrigin().getOaiUrl();
-                String identifier = metadata.getId();
                 String prefix = metadata.getPrefix();
+                String identifier = metadata.getId();
 
                 // create the trace
                 Trace trace = new Trace(endpointURI, prefix, identifier);

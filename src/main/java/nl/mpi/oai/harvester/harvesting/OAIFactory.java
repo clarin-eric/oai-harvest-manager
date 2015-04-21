@@ -39,7 +39,7 @@ import java.io.IOException;
 public class OAIFactory {
 
     // an object implementing the OAI interface
-    OAIInterface oaiInterface;
+    OAIInterface oaiInterface = null;
 
     // for some verbs, remember the resumption token
     private String resumptionToken = null;
@@ -56,7 +56,8 @@ public class OAIFactory {
      * @return an object implementing the OAI interface
      */
     public OAIInterface connectInterface() {
-        return null;
+
+        return oaiInterface;
     }
 
     /**
@@ -86,7 +87,6 @@ public class OAIFactory {
             }
         } else {
             // let the object connected return the OAI response
-
             response = oaiInterface.newListMetadata(endpointURI);
         }
 
@@ -125,6 +125,7 @@ public class OAIFactory {
             // let the object connected return the OAI response
 
             response = oaiInterface.newListRecords(p1, p2);
+            resumptionToken = oaiInterface.getResumptionToken();
         }
 
         return response;
@@ -165,7 +166,8 @@ public class OAIFactory {
         } else {
             // let the object connected return the OAI response
 
-            return oaiInterface.newListRecords(p1, p2, p3, p4, p5);
+            response = oaiInterface.newListRecords(p1, p2, p3, p4, p5);
+            resumptionToken = oaiInterface.getResumptionToken();
         }
 
         return response;
@@ -202,6 +204,7 @@ public class OAIFactory {
             // let the object connected return the OAI response
 
             response = oaiInterface.newGetRecord(p1, p2, p3);
+            resumptionToken = oaiInterface.getResumptionToken();
         }
 
         return response;
@@ -239,6 +242,7 @@ public class OAIFactory {
             // let the object connected return the OAI response
 
             response = oaiInterface.newListIdentifiers(p1, p2);
+            resumptionToken = oaiInterface.getResumptionToken();
         }
 
         return response;

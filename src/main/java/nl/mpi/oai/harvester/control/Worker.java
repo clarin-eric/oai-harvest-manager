@@ -105,10 +105,10 @@ class Worker implements Runnable {
 
         boolean done = false;
 
-        // kj: annotate
+        // factory for metadata records
         MetadataFactory metadataFactory = new MetadataFactory();
 
-        //
+        // factory for OAI verbs
         OAIFactory oaiFactory = new OAIFactory();
 
         logger.info("Processing provider " + provider);

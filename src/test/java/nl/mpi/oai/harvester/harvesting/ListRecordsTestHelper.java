@@ -56,6 +56,9 @@ public class ListRecordsTestHelper extends TestHelper {
         addToTable("http://metalb.csc.fi/cgi-bin/que", "cmdi0571", "oai:kielipankki.fi:shd0d800");
         addToTable("http://metalb.csc.fi/cgi-bin/que", "cmdi0571", "oai:kielipankki.fi:shff9200");
 
+        addToTable("http://metalb.csc.fi/cgi-bin/que", "cmdi0571", "oai:kielipankki.fi:sh8e2580");
+        addToTable("http://metalb.csc.fi/cgi-bin/que", "cmdi0571", "oai:kielipankki.fi:sh8d4340");
+
         addToTable("http://metalb.csc.fi/cgi-bin/que", "cmdi2312", "oai:kielipankki.fi:sh03de30");
         addToTable("http://metalb.csc.fi/cgi-bin/que", "cmdi2312", "oai:kielipankki.fi:sh7b8760");
         addToTable("http://metalb.csc.fi/cgi-bin/que", "cmdi2312", "oai:kielipankki.fi:sh034a70");

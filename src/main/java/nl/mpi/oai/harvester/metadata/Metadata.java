@@ -40,7 +40,7 @@ public class Metadata {
     /** A unique identifier, such as the OAI-PMH record identifier. */
     private final String id;
 
-    // kj: annotate
+    /** The metadata prefix associated with the record */
     private final String prefix;
 
     /** The OAI-PMH provider where this record originated. */
@@ -89,7 +89,7 @@ public class Metadata {
 	return id;
     }
 
-    /** kj: annotate */
+    /** get the metadata record's prefix */
     public String getPrefix() {
         return prefix;
     }
