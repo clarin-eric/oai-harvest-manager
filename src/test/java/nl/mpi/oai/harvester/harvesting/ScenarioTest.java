@@ -87,7 +87,7 @@ public class ScenarioTest {
     /**
      * <br> Test the list identifiers scenario
      */
-    @Test
+    //@Test
     public void listIdentifiersTest(){
 
         // create a helper

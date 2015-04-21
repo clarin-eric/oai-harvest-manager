@@ -280,6 +280,7 @@ public class OAIFactory {
             // let the object connected return the OAI response
 
             response = oaiInterface.newListIdentifiers(p1, p2, p3, p4, p5);
+            resumptionToken = oaiInterface.getResumptionToken();
         }
 
         return response;
@@ -291,6 +292,7 @@ public class OAIFactory {
      * @return the resumption token
      */
     public String getResumptionToken() {
+
         return resumptionToken;
 
     }

@@ -115,15 +115,9 @@ public class FormatHarvesting extends AbstractHarvesting implements
     @Override
     public Document getResponse() {
         // check for protocol error
-        if (response == null){
+        if (document == null){
             throw new HarvestingException();
         } else {
-            /* When testing, the response holds 'listMetadataFormats'. Mock
-               mock invocations of this method to supply FormatHarvesting with
-               data.
-             */
-            document = response.getDocument();
-
             return document;
         }
     }

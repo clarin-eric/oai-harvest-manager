@@ -71,19 +71,6 @@ public final class RecordHarvesting extends AbstractHarvesting {
     }
 
     /**
-     *
-     */
-    public GetRecord getResponse (String Url, String identifier, String prefix)
-            throws
-            ParserConfigurationException,
-            TransformerException,
-            SAXException,
-            IOException {
-
-        return new GetRecord(provider.oaiUrl, identifier, prefix);
-    }
-
-    /**
      * Request a record, retry if needed <br><br>
      * 
      * @return false if an error occurred, true otherwise
@@ -116,10 +103,10 @@ public final class RecordHarvesting extends AbstractHarvesting {
     public Document getResponse() {
 
         // check for protocol error
-        if (response == null){
+        if (document == null){
             throw new HarvestingException();
         } else {
-            return response.getDocument();
+            return document;
         }
     }
 

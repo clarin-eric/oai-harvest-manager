@@ -54,8 +54,6 @@ import org.xml.sax.SAXException;
  * Note: originally, this class was declared 'final'. With the addition of
  * tests based on Mockito, this qualifier was removed.
  *
- * kj: swapped response for document, rename document to response
- *
  * @author Kees Jan van de Looij (MPI-PL)
  * @author Lari Lampen (MPI-PL, xpath parsing)
  */
@@ -99,8 +97,10 @@ public class RecordListHarvesting extends ListHarvesting
             TransformerException,
             NoSuchFieldException {
 
+        document = oaiFactory.createListRecords(p1, p2);
+
         // implement by returning ListRecords with the two parameters supplied
-        return oaiFactory.createListRecords(p1, p2);
+        return document;
     }
 
     /**
@@ -125,8 +125,10 @@ public class RecordListHarvesting extends ListHarvesting
             TransformerException,
             NoSuchFieldException {
 
+        document = oaiFactory.createListRecords(p1, p2, p3, p4, p5);
+
         // implement by returning ListRecords with the five parameters supplied
-        return oaiFactory.createListRecords(p1, p2, p3, p4, p5);
+        return document;
     }
     
     /**
@@ -142,7 +144,7 @@ public class RecordListHarvesting extends ListHarvesting
     public String getToken (HarvesterVerb response){
 
         // check for protocol error
-        if (response == null){
+        if (document == null){
             throw new HarvestingException();
         }
 
@@ -285,7 +287,7 @@ public class RecordListHarvesting extends ListHarvesting
         }
     }
 
-    /**
+    /**response
      * <br> Check if the list is fully parsed <br><br>
      *
      * This method checks if, as a consequence of repeatedly invoking

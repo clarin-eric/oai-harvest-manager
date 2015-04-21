@@ -133,8 +133,8 @@ public class IdentifierListHarvesting extends ListHarvesting
     @Override
     public String getToken (HarvesterVerb response){
 
-        // check for protocol error
-        if (response == null){
+        // check for a protocol error
+        if (document == null){
             throw new HarvestingException();
         }
 
@@ -158,8 +158,8 @@ public class IdentifierListHarvesting extends ListHarvesting
     @Override
     public boolean processResponse(Document document) {
         
-        // check for protocol error
-        if (response == null){
+        // check for a protocol error
+        if (document == null){
             throw new HarvestingException();
         }
 

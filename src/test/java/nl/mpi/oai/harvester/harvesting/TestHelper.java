@@ -69,7 +69,7 @@ import java.util.ArrayList;
  * document contains the XML part of the OAI response. 'FormatLists' identifies
  * the of document. The helper supports these types of responses: <br><br>
  *
- * FormatList, IdentifierList, Record, RecordList <br><br>
+ * FormatLists, IdentifierLists, Records, RecordLists <br><br>
  *
  * A test can visit multiple endpoints. Like the documents, the helper
  * enumerates the endpoints. By extending the helper, the endpoint URIs should
@@ -325,8 +325,8 @@ abstract class TestHelper implements OAIInterface, MetadataInterface {
      * <br> Get a list of response documents for the current endpoint, of the
      * type indicated
      *
-     * @param type one of: 'FormatList', 'IdentifierList', 'Record',
-     *             or 'RecordList'
+     * @param type one of: 'FormatLists', 'IdentifierLists', 'Records',
+     *             or 'RecordLists'
      */
     private void getDocumentList(String type) {
 
@@ -369,8 +369,8 @@ abstract class TestHelper implements OAIInterface, MetadataInterface {
      * <br> Get a response document of the indicated type for the current
      * endpoint
      *
-     * @param type one of: 'FormatList', 'IdentifierList', 'Record',
-     *             or 'RecordList'
+     * @param type one of: 'FormatLists', 'IdentifierLists', 'Records',
+     *             or 'RecordLists'
      *
      * @return a response document or null if there are no more documents
      */
@@ -403,7 +403,7 @@ abstract class TestHelper implements OAIInterface, MetadataInterface {
         } else {
             // no record available, try to get one from the list
 
-            if (dIndex < documentList.size()) {
+            if (dIndex + 1 < documentList.size()) {
                 // point to the next document, and get it
                 dIndex ++; document = documentList.get(dIndex);
             } else {
@@ -421,40 +421,39 @@ abstract class TestHelper implements OAIInterface, MetadataInterface {
     @Override
     public Document newListMetadata(String endpointURI){
 
-        return getDocument("FormatList");
+        return getDocument("FormatLists");
     }
 
     @Override
     public Document newListRecords(String p1, String p2){
 
-        // FormatList, IdentifierList, Record, RecordList
-        return getDocument("RecordList");
+        return getDocument("RecordLists");
     }
 
     @Override
     public Document newListRecords(String p1, String p2, String p3,
                                         String p4, String p5){
 
-        return getDocument("RecordList");
+        return getDocument("RecordLists");
     }
 
     @Override
     public Document newGetRecord(String p1, String p2, String p3){
 
-        return getDocument("Record");
+        return getDocument("Records");
     }
 
     @Override
     public Document newListIdentifiers (String p1, String p2){
 
-        return getDocument("IdentifierList");
+        return getDocument("IdentifierLists");
     }
 
     @Override
     public Document newListIdentifiers (String p1, String p2, String p3,
                                              String p4, String p5){
 
-        return getDocument("IdentifierList");
+        return getDocument("IdentifierLists");
     }
 
     /**
@@ -547,8 +546,8 @@ abstract class TestHelper implements OAIInterface, MetadataInterface {
         public Trace (String endpointURI, String prefix, String identifier) {
 
             this.endpointURI = endpointURI;
-            this.identifier = identifier;
             this.prefix = prefix;
+            this.identifier = identifier;
         }
 
         // the record's endpoint URI
@@ -609,6 +608,9 @@ abstract class TestHelper implements OAIInterface, MetadataInterface {
         traces.add(trace);
     }
 
+    // indicate success
+    private boolean success = true;
+
     /**
      * <br> Remove metadata information from the table <br><br>
      *
@@ -622,25 +624,29 @@ abstract class TestHelper implements OAIInterface, MetadataInterface {
      */
     void removeFromTable(Metadata metadata) {
 
-        if (traces.size() == 0){
-            // not possible to remove
-            success = false;
-        } else {
-            // determine the elements that make up a trace
-            String endpointURI = metadata.getOrigin().getOaiUrl();
-            String identifier = metadata.getId();
-            String prefix = metadata.getPrefix();
+        //
+        if (success) {
+            // kj: annotate
+            if (traces.size() == 0){
+                // not possible to remove
+                success = false;
+            } else {
+                // determine the elements that make up a trace
+                String endpointURI = metadata.getOrigin().getOaiUrl();
+                String identifier = metadata.getId();
+                String prefix = metadata.getPrefix();
 
-            // create the trace
-            Trace trace = new Trace(endpointURI, prefix, identifier);
+                // create the trace
+                Trace trace = new Trace(endpointURI, prefix, identifier);
 
-            // remove the trace from the table
-            success = traces.remove(trace);
+                // remove the trace from the table
+                if (! traces.remove(trace)){
+                    // failed to remove the trace from the table, fail the test
+                    success = false;
+                }
+            }
         }
     }
-
-    // indicate success
-    private boolean success = false;
 
     /**
      * <br> Determine if the test is successful

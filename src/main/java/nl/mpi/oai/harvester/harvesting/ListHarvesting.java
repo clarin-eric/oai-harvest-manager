@@ -231,10 +231,10 @@ public abstract class ListHarvesting extends AbstractListHarvesting implements
     public Document getResponse() {
 
         // check for protocol error
-        if (response == null){
+        if (document == null){
             throw new HarvestingException();
         }
 
-        return response.getDocument();
+        return document;
     }
 }

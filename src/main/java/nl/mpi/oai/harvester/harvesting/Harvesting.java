@@ -48,6 +48,8 @@ import org.w3c.dom.Document;
  * <a href="http://www.openarchives.org/OAI/openarchivesprotocol.htm">
  *     its specification</a>.
  *
+ * kj: swapped response for document, rename document to response
+ *
  * @author Kees Jan van de Looij (MPI-PL)
  */
 public interface Harvesting {
