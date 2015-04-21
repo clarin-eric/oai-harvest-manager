@@ -125,14 +125,14 @@ public class ScenarioTest {
              IOException {
 
         // create a factory for OAI protocol objects
-        OAIFactory oaiFactory = new OAIFactory();
+        OAIFactory oaiFactory = spy(new OAIFactory());
         // let the helper provide the OAI responses
         when(oaiFactory.connectInterface()).thenReturn(helper);
 
         // create a factory for metadata
-        MetadataFactory factory = spy(new MetadataFactory());
+        MetadataFactory metadataFactory = spy(new MetadataFactory());
         // let the helper check the data
-        when(factory.connectInterface()).thenReturn(helper);
+        when(metadataFactory.connectInterface()).thenReturn(helper);
 
         // mock an action sequence
         ActionSequence sequence = mock(ActionSequence.class);
@@ -148,7 +148,7 @@ public class ScenarioTest {
             Scenario scenario = new Scenario(endpoint, sequence);
 
             // create a harvesting object
-            FormatHarvesting formatHarvesting = new FormatHarvesting(
+            FormatHarvesting formatHarvesting = new FormatHarvesting(oaiFactory,
                     endpoint, sequence);
 
             // follow the prefix list harvesting scenario
@@ -156,20 +156,22 @@ public class ScenarioTest {
 
             if (helper instanceof ListRecordsTestHelper) {
 
-                // create a harvesting object
+                // create a record list harvesting object
                 RecordListHarvesting recordListHarvesting = new
-                        RecordListHarvesting(endpoint, prefixes, factory);
+                        RecordListHarvesting(oaiFactory, endpoint, prefixes,
+                        metadataFactory);
 
                 // follow the record list harvesting scenario
                 scenario.listRecords(recordListHarvesting);
 
             } else {
 
-                // create a harvesting object
+                // create a identifier list harvesting object
                 IdentifierListHarvesting identifierListHarvesting = new
-                        IdentifierListHarvesting(endpoint, prefixes, factory);
+                        IdentifierListHarvesting(oaiFactory, endpoint, prefixes,
+                        metadataFactory);
 
-                // follow the record list harvesting scenario
+                // follow the identifier list harvesting scenario
                 scenario.listRecords(identifierListHarvesting);
             }
 

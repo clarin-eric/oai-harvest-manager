@@ -189,7 +189,8 @@ public class Scenario {
 
                             Metadata metadata = new Metadata(
                                     provider.getName() + "-" + id,
-                                    records, this.provider, true, true);
+                                    // kj: fix, no prefix specified
+                                    "", records, this.provider, true, true);
 
                             n++;
 

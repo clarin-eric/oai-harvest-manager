@@ -59,8 +59,11 @@ public final class RecordHarvesting extends AbstractHarvesting {
      * @param prefix     the prefix of the desired record
      * @param identifier the identifier of the record
      */
-    public RecordHarvesting(Provider provider, String prefix, String identifier, MetadataFactory metadataFactory){
-        super(provider, metadataFactory);
+    public RecordHarvesting(OAIFactory oaiFactory, Provider provider,
+                            String prefix, String identifier,
+                            MetadataFactory metadataFactory){
+
+        super(oaiFactory, provider, metadataFactory);
         this.response    = null;
         this.prefix      = prefix;
         this.identifier  = identifier;
@@ -153,7 +156,7 @@ public final class RecordHarvesting extends AbstractHarvesting {
         /* Get the OAI envelope from the response. Use it, together with the
            identifier and provider, to create and return a metadata element.
         */
-        return new Metadata(identifier, document, provider, true, false);
+        return new Metadata(identifier, prefix, document, provider, true, false);
     }
 
     /**

@@ -51,8 +51,10 @@ public final class StaticPrefixHarvesting extends FormatHarvesting
      * @param actions the actions
      *
      */
-    public StaticPrefixHarvesting(StaticProvider provider, ActionSequence actions) {
-        super(provider, actions);
+    public StaticPrefixHarvesting(OAIFactory oaiFactory,
+                                  StaticProvider provider, ActionSequence actions) {
+
+        super(oaiFactory, provider, actions);
 
         // invariant: the provider is a StaticProvider class object
     }

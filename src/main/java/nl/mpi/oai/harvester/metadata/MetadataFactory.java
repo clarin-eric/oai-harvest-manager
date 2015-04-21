@@ -57,14 +57,15 @@ public class MetadataFactory {
      * @param isList whether or not the record is part of a list of records
      * @return an object packaging the metadata
      */
-    public Metadata create (String id, Document doc, Provider endpoint,
+    public Metadata create (String id, String prefix, Document doc,
+                            Provider endpoint,
                             Boolean isInEnvelope, Boolean isList){
 
         // to remember the metadata once it has been created
         Metadata metadata;
 
         // create the metadata
-        metadata = new Metadata(id, doc, endpoint, isInEnvelope, isList);
+        metadata = new Metadata(id, prefix, doc, endpoint, isInEnvelope, isList);
 
         // an object implementing the metadata interface
         MetadataInterface metadataInterface;

@@ -105,7 +105,11 @@ class Worker implements Runnable {
 
         boolean done = false;
 
+        // kj: annotate
         MetadataFactory metadataFactory = new MetadataFactory();
+
+        //
+        OAIFactory oaiFactory = new OAIFactory();
 
         logger.info("Processing provider " + provider);
         for (final ActionSequence actionSequence : actionSequences) {
@@ -119,6 +123,7 @@ class Worker implements Runnable {
 
                 // set type of format harvesting to apply
                 Harvesting harvesting = new StaticPrefixHarvesting(
+                        oaiFactory,
                         (StaticProvider) provider,
                         actionSequence);
 
@@ -129,7 +134,7 @@ class Worker implements Runnable {
                     done = false;
                 } else {
                     // set type of record harvesting to apply
-                    harvesting = new StaticRecordListHarvesting(
+                    harvesting = new StaticRecordListHarvesting(oaiFactory,
                             (StaticProvider) provider, prefixes, metadataFactory);
 
                     // get the records
@@ -138,8 +143,8 @@ class Worker implements Runnable {
             } else {
 
                 // set type of format harvesting to apply
-                Harvesting harvesting = new FormatHarvesting(provider,
-                        actionSequence);
+                Harvesting harvesting = new FormatHarvesting(oaiFactory,
+                        provider, actionSequence);
 
                 // get the prefixes
                 prefixes = scenario.getPrefixes(harvesting);
@@ -152,13 +157,13 @@ class Worker implements Runnable {
 
                     // determine the type of record harvesting to apply
                     if (scenarioName.equals("ListIdentifiers")) {
-                        harvesting = new IdentifierListHarvesting(provider,
-                                prefixes, metadataFactory);
+                        harvesting = new IdentifierListHarvesting(oaiFactory,
+                                provider, prefixes, metadataFactory);
 
                         // get the records
                         done = scenario.listIdentifiers(harvesting);
                     } else {
-                        harvesting = new RecordListHarvesting(
+                        harvesting = new RecordListHarvesting(oaiFactory,
                                 provider, prefixes, metadataFactory);
 
                         // get the records

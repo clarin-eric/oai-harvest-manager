@@ -101,6 +101,9 @@ public class ListMetadataFormatsTest {
         // MetadataFormat format = new MetadataFormat("prefix", "oai_dc");
         MetadataFormat format = new MetadataFormat("namespace", "http://www.clarin.eu/cmd/");
 
+        // kj: annotate
+        OAIFactory oaiFactory = new OAIFactory();
+
         // Since the test only needs the input format, and not a fully fledged
         // action sequence, mock the sequence
         ActionSequence actionSequence = mock(ActionSequence.class);
@@ -112,7 +115,7 @@ public class ListMetadataFormatsTest {
 
         // spy on format harvesting
         FormatHarvesting formatHarvesting = spy (new FormatHarvesting(
-                provider, actionSequence));
+                oaiFactory, provider, actionSequence));
 
         /* Whenever the request method would invoke the ListMetadataFormats
            constructor, return the mocked response instead of the real one.

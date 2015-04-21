@@ -40,6 +40,9 @@ public class Metadata {
     /** A unique identifier, such as the OAI-PMH record identifier. */
     private final String id;
 
+    // kj: annotate
+    private final String prefix;
+
     /** The OAI-PMH provider where this record originated. */
     private final Provider origin;
 
@@ -61,9 +64,10 @@ public class Metadata {
      *                      false otherwise
      * @param isList true if metadata is a list of records, false otherwise
      */
-    public Metadata(String id, Document doc, Provider endpoint,
+    public Metadata(String id, String prefix, Document doc, Provider endpoint,
                     boolean isInEnvelope, boolean isList) {
         this.id           = id;
+        this.prefix       = prefix;
         this.doc          = doc;
         this.origin       = endpoint;
         this.isInEnvelope = isInEnvelope;
@@ -83,6 +87,11 @@ public class Metadata {
     /** Get this record's unique identifier. */
     public String getId() {
 	return id;
+    }
+
+    /** kj: annotate */
+    public String getPrefix() {
+        return prefix;
     }
 
     /** Get the XML tree representing this record. */

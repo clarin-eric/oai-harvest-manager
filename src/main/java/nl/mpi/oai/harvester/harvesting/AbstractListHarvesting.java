@@ -68,9 +68,10 @@ abstract public class AbstractListHarvesting extends AbstractHarvesting
      * 
      * @param provider the provider
      */
-    AbstractListHarvesting(Provider provider, MetadataFactory metadataFactory) {
+    AbstractListHarvesting(OAIFactory oaiFactory,
+                           Provider provider, MetadataFactory metadataFactory) {
 
-        super(provider, metadataFactory);
+        super(oaiFactory, provider, metadataFactory);
         nIndex          = 0;
         resumptionToken = null;
         tIndex          = 0;

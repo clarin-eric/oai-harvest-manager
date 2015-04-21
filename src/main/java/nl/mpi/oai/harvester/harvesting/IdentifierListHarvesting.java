@@ -67,8 +67,11 @@ public class IdentifierListHarvesting extends ListHarvesting
      * @param prefixes the prefixes returned by the endpoint
      *
      */
-    public IdentifierListHarvesting(Provider provider, List<String> prefixes, MetadataFactory metadataFactory){
-        super(provider, prefixes, metadataFactory);
+    public IdentifierListHarvesting(OAIFactory oaiFactory,
+                                    Provider provider, List<String> prefixes,
+                                    MetadataFactory metadataFactory){
+
+        super(oaiFactory, provider, prefixes, metadataFactory);
         // supply the superclass with messages specific to requesting identifiers
         message [0] = "Requesting more identifiers of records with prefix ";
         message [1] = "Requesting identifiers of records with prefix ";
@@ -237,8 +240,8 @@ public class IdentifierListHarvesting extends ListHarvesting
         IdPrefix pair = targets.get(tIndex);
         tIndex++;
         // get the record for the identifier and prefix
-        RecordHarvesting p = new RecordHarvesting(provider, pair.prefix,
-                pair.identifier, metadataFactory);
+        RecordHarvesting p = new RecordHarvesting(oaiFactory, provider,
+                pair.prefix, pair.identifier, metadataFactory);
 
         if (! p.request()) {
             // something went wrong

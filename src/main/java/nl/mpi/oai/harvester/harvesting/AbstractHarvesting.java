@@ -36,12 +36,17 @@ import java.util.List;
 public abstract class AbstractHarvesting implements Harvesting {
 
     /**
+     * <br> A factor for that creates OAI verb object
+     */
+    final OAIFactory oaiFactory;
+
+    /**
      * <br> Information on where to send the request
      */
     final Provider provider;
 
     /**
-     * <br> A factory for creating metadata records
+     * <br> A factory that creates metadata objects
      */
     final MetadataFactory metadataFactory;
 
@@ -89,10 +94,14 @@ public abstract class AbstractHarvesting implements Harvesting {
      * <br> Associate an OAI endpoint with the protocol defined by the
      * harvesting interface.
      *
+     * @param oaiFactory a factory for OAI verb objects
      * @param provider the provider
+     * @param metadataFactory a factory for metadata objects
      */
-    AbstractHarvesting(Provider provider, MetadataFactory metadataFactory) {
+    AbstractHarvesting(OAIFactory oaiFactory,
+                       Provider provider, MetadataFactory metadataFactory) {
 
+        this.oaiFactory      = oaiFactory;
         this.metadataFactory = metadataFactory;
         this.provider        = provider;
         pIndex               = 0;

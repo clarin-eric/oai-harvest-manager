@@ -61,8 +61,10 @@ public abstract class ListHarvesting extends AbstractListHarvesting implements
      * @param provider the endpoint to address in the request
      * @param prefixes the prefixes returned by the endpoint 
      */
-    ListHarvesting(Provider provider, List<String> prefixes, MetadataFactory metadataFactory){
-        super(provider, metadataFactory);
+    ListHarvesting(OAIFactory oaiFactory, Provider provider,
+                   List<String> prefixes, MetadataFactory metadataFactory){
+
+        super(oaiFactory, provider, metadataFactory);
         this.prefixes   = prefixes;
         response        = null;
         resumptionToken = null;

@@ -68,9 +68,10 @@ public class RecordListHarvesting extends ListHarvesting
      * @param provider the endpoint to address in the request
      * @param prefixes the prefixes returned by the endpoint 
      */
-    public RecordListHarvesting(Provider provider, List<String> prefixes, MetadataFactory metadataFactory) {
+    public RecordListHarvesting(OAIFactory oaiFactory, Provider provider,
+                                List<String> prefixes, MetadataFactory metadataFactory) {
 
-        super (provider, prefixes, metadataFactory);
+        super (oaiFactory, provider, prefixes, metadataFactory);
         // supply the superclass with messages specific to requesting records
         message [0] = "Requesting more records with prefix ";
         message [1] = "Requesting records with prefix ";
@@ -285,15 +286,16 @@ public class RecordListHarvesting extends ListHarvesting
         doc.appendChild(copy);
 
         String id = idNode.getTextContent();
+        String prefix = prefixes.get(pIndex);
         
         // check if the record has already been released by trying to add it to
-        IdPrefix idPrefix = new IdPrefix (id, prefixes.get(pIndex));
+        IdPrefix idPrefix = new IdPrefix (id, prefix);
         if (targets.checkAndInsertSorted(idPrefix)){
 
             /* Inserted the metadata in the targets table. Release the metadata
                to the client by submitting the details to the metadata factory.
              */
-            return metadataFactory.create(id, doc, provider, false, false);
+            return metadataFactory.create(id, prefix, doc, provider, false, false);
         } else {
             // not inserted, the record has already been released to the client
             return null;

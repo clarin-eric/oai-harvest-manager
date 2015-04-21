@@ -63,10 +63,12 @@ public final class StaticRecordListHarvesting extends AbstractListHarvesting
      * @param provider the provider
      * @param prefixes the prefixes obtained from the static content
      */
-    public StaticRecordListHarvesting(StaticProvider provider,
-                                      List<String> prefixes, MetadataFactory metadataFactory) {
+    public StaticRecordListHarvesting(OAIFactory oaiFactory,
+                                      StaticProvider provider,
+                                      List<String> prefixes,
+                                      MetadataFactory metadataFactory) {
 
-        super(provider, metadataFactory);
+        super(oaiFactory, provider, metadataFactory);
 
         // get the response stored in the StaticProvider class object
         response = provider.getResponse();
@@ -228,6 +230,7 @@ public final class StaticRecordListHarvesting extends AbstractListHarvesting
         document.appendChild(copy);
 
         // create and return the the metadata
-        return new Metadata(pair.identifier, document, provider, false, false);
+        return new Metadata(pair.identifier, pair.prefix, document, provider,
+                false, false);
     }
 }

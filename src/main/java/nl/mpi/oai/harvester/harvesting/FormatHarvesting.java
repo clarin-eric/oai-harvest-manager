@@ -77,8 +77,9 @@ public class FormatHarvesting extends AbstractHarvesting implements
      * @param provider the endpoint to address in the request
      * @param actions  specify the format requested
      */
-    public FormatHarvesting(Provider provider, ActionSequence actions) {
-        super (provider, null);
+    public FormatHarvesting(OAIFactory oaiFactory,
+                            Provider provider, ActionSequence actions) {
+        super (oaiFactory, provider, null);
         this.response = null;
         this.document = null;
         this.provider = provider;
@@ -115,7 +116,7 @@ public class FormatHarvesting extends AbstractHarvesting implements
         try {
             // try to get a response from the provider's endpoint
             response = getMetadataFormats(provider.oaiUrl);
-        } catch ( TransformerException 
+                    } catch ( TransformerException
                 | ParserConfigurationException 
                 | SAXException 
                 | IOException e) {

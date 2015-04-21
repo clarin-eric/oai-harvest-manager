@@ -463,6 +463,8 @@ abstract class TestHelper implements OAIInterface, MetadataInterface {
      * Note: because a document might might include multiple references,
      * assume it refers to one prefix only.
      *
+     * kj: maybe only useful for envelopes
+     *
      * @param document the document
      * @return the metadata prefix
      */
@@ -627,7 +629,7 @@ abstract class TestHelper implements OAIInterface, MetadataInterface {
             // determine the elements that make up a trace
             String endpointURI = metadata.getOrigin().getOaiUrl();
             String identifier = metadata.getId();
-            String prefix = getPrefix(metadata.getDoc());
+            String prefix = metadata.getPrefix();
 
             // create the trace
             Trace trace = new Trace(endpointURI, prefix, identifier);
