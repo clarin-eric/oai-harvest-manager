@@ -494,14 +494,14 @@ abstract class TestHelper implements OAIInterface, MetadataInterface {
             return null;
         } else {
 
-            // kj: check for a prefix change
-
-            // look ahead at the next document in the list
+            // check for a prefix change
             nextDocument = documentList.get(dIndex);
-
             String prefix = getPrefix(nextDocument);
 
-            if (this.prefix != null && prefix != this.prefix){
+            if (this.prefix != null && ! prefix.equals(this.prefix)){
+                /* Since the document's prefix differs from the current prefix,
+                   trigger a new request.
+                 */
                 return null;
             }
 
