@@ -83,7 +83,7 @@ public abstract class ListHarvesting extends AbstractListHarvesting implements
      *
      * @return the response
      */
-    abstract HarvesterVerb verb2(String s1, String s2)
+    abstract Document verb2(String s1, String s2)
             throws 
             IOException,
             ParserConfigurationException,
@@ -98,7 +98,7 @@ public abstract class ListHarvesting extends AbstractListHarvesting implements
      *
      * @return the response
      */
-    abstract HarvesterVerb verb5(String s1, String s2, String s3, String s4,
+    abstract Document verb5(String s1, String s2, String s3, String s4,
             String s5)
             throws 
             IOException,
@@ -165,18 +165,18 @@ public abstract class ListHarvesting extends AbstractListHarvesting implements
                     // use resumption token
                     logger.debug(message[0] + prefixes.get(pIndex));
 
-                    response = verb2(provider.oaiUrl, resumptionToken);
+                    document = verb2(provider.oaiUrl, resumptionToken);
                 } else {
                     logger.debug(message[1] + prefixes.get(pIndex));
 
                     if (provider.sets == null) {
                         // no sets specified, ask for records by prefix
-                        response = verb5(provider.oaiUrl, null, null,
+                        document = verb5(provider.oaiUrl, null, null,
                                 null,
                                 prefixes.get(pIndex));
                     } else {
                         // request targets for a new set and prefix combination
-                        response = verb5(provider.oaiUrl, null, null,
+                        document = verb5(provider.oaiUrl, null, null,
                                 provider.sets[sIndex],
                                 prefixes.get(pIndex));
                     }

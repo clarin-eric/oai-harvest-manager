@@ -54,6 +54,8 @@ import org.xml.sax.SAXException;
  * Note: originally, this class was declared 'final'. With the addition of
  * tests based on Mockito, this qualifier was removed.
  *
+ * kj: swapped response for document, rename document to response
+ *
  * @author Kees Jan van de Looij (MPI-PL)
  * @author Lari Lampen (MPI-PL, xpath parsing)
  */
@@ -88,14 +90,9 @@ public class RecordListHarvesting extends ListHarvesting
      * @param p1 metadata prefix
      * @param p2 resumption token
      * @return the response to the request
-     * @throws java.io.IOException 
-     * @throws org.xml.sax.SAXException
-     * @throws javax.xml.parsers.ParserConfigurationException
-     * @throws javax.xml.transform.TransformerException
-     * @throws java.lang.NoSuchFieldException
      */
     @Override
-    public HarvesterVerb verb2(String p1, String p2) throws 
+    public Document verb2(String p1, String p2) throws
             IOException,
             ParserConfigurationException,
             SAXException,
@@ -103,7 +100,7 @@ public class RecordListHarvesting extends ListHarvesting
             NoSuchFieldException {
 
         // implement by returning ListRecords with the two parameters supplied
-        return new ListRecords(p1, p2);
+        return oaiFactory.createListRecords(p1, p2);
     }
 
     /**
@@ -118,15 +115,9 @@ public class RecordListHarvesting extends ListHarvesting
      * @param p3 until date, for selective harvesting
      * @param p4 metadata prefix
      * @param p5 set
-     * @return the request
-     * @throws java.io.IOException 
-     * @throws org.xml.sax.SAXException
-     * @throws javax.xml.parsers.ParserConfigurationException
-     * @throws javax.xml.transform.TransformerException
-     * @throws java.lang.NoSuchFieldException
      */
     @Override
-    public HarvesterVerb verb5(String p1, String p2, String p3, String p4,
+    public Document verb5(String p1, String p2, String p3, String p4,
             String p5) throws
             IOException,
             ParserConfigurationException,
@@ -135,7 +126,7 @@ public class RecordListHarvesting extends ListHarvesting
             NoSuchFieldException {
 
         // implement by returning ListRecords with the five parameters supplied
-        return new ListRecords(p1, p2, p3, p4, p5);
+        return oaiFactory.createListRecords(p1, p2, p3, p4, p5);
     }
     
     /**
@@ -146,24 +137,16 @@ public class RecordListHarvesting extends ListHarvesting
      *
      * @param response the response
      * @return the token
-     * @throws TransformerException
-     * @throws NoSuchFieldException 
      */
     @Override
-    public String getToken (HarvesterVerb response) throws
-            TransformerException,
-            NoSuchFieldException{
+    public String getToken (HarvesterVerb response){
 
         // check for protocol error
         if (response == null){
             throw new HarvestingException();
         }
 
-        /* Since the verb2 and verb5 method return a ListRecords class object,
-           the object referred to here is indeed of that class.
-         */
-
-        return ((ListRecords) this.response).getResumptionToken();
+        return oaiFactory.getResumptionToken();
     }
 
     /**

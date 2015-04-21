@@ -89,21 +89,6 @@ public class FormatHarvesting extends AbstractHarvesting implements
     }
 
     /**
-     * <br> Get metadata formats from the endpoint <br><br>
-     *
-     * Instead of invoking the ListMetadataFormats constructor from the request
-     * method, create an opportunity for mockito to spy on.
-     */
-    public ListMetadataFormats getMetadataFormats(String url) throws
-            ParserConfigurationException,
-            TransformerException,
-            SAXException,
-            IOException {
-
-        return new ListMetadataFormats(url);
-    }
-
-    /**
      * <br> Request metadata formats
      * 
      * @return false if there was an error, true otherwise
@@ -113,24 +98,18 @@ public class FormatHarvesting extends AbstractHarvesting implements
         
         logger.debug("Requesting formats matching " + actions.getInputFormat());
 
-        try {
-            // try to get a response from the provider's endpoint
-            response = getMetadataFormats(provider.oaiUrl);
-                    } catch ( TransformerException
-                | ParserConfigurationException 
-                | SAXException 
-                | IOException e) {
-            /* Something went wrong with the request. This concludes the work
-               for this endpoint.
-            */
-            logger.error(e.getMessage(), e);
+        // get metadata formats from the endpoint
+        document = oaiFactory.createListMetadataFormats(provider.oaiUrl);
+
+        if (document == null){
+            // something went wrong, ending the work for the current endpoint
             logger.info ("Cannot obtain metadata formats from endpoint " +
                     provider.getOaiUrl());
             return false;
+        } else {
+            // response contains a list of prefixes
+            return true;
         }
-
-        // response contains a list of prefixes
-        return true;
     }
 
     @Override

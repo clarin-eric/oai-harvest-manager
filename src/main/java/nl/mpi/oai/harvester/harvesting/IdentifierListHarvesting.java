@@ -87,20 +87,15 @@ public class IdentifierListHarvesting extends ListHarvesting
      * @param p1 metadata prefix
      * @param p2 resumption token
      * @return the response to the request
-     * @throws java.io.IOException 
-     * @throws org.xml.sax.SAXException
-     * @throws javax.xml.parsers.ParserConfigurationException
-     * @throws javax.xml.transform.TransformerException
-     * @throws java.lang.NoSuchFieldException
      */
     @Override
-    public HarvesterVerb verb2(String p1, String p2) throws 
+    public Document verb2(String p1, String p2) throws
             IOException,
             ParserConfigurationException,
             SAXException,
             TransformerException,
             NoSuchFieldException {
-        return new ListIdentifiers(p1, p2);
+        return oaiFactory.createListIdentifiers(p1, p2);
     }
 
     /**
@@ -114,22 +109,16 @@ public class IdentifierListHarvesting extends ListHarvesting
      * @param p3 until date, for selective harvesting
      * @param p4 metadata prefix
      * @param p5 set
-     * @return the response to the request
-     * @throws java.io.IOException 
-     * @throws org.xml.sax.SAXException
-     * @throws javax.xml.parsers.ParserConfigurationException
-     * @throws javax.xml.transform.TransformerException
-     * @throws java.lang.NoSuchFieldException
      */
     @Override
-    public HarvesterVerb verb5(String p1, String p2, String p3, String p4,
+    public Document verb5(String p1, String p2, String p3, String p4,
             String p5) throws
             IOException,
             ParserConfigurationException,
             SAXException,
             TransformerException,
             NoSuchFieldException {
-        return new ListIdentifiers(p1, p2, p3, p4, p5);
+        return oaiFactory.createListIdentifiers(p1, p2, p3, p4, p5);
     }
     
     /**
@@ -137,26 +126,19 @@ public class IdentifierListHarvesting extends ListHarvesting
      *
      * This method implements a resumption token request by invoking the
      * getResumptionToken OCLC library method. <br><br>
-     * 
+     *
      * @param response the response to the request
      * @return the token
-     * @throws TransformerException
-     * @throws NoSuchFieldException
      */
     @Override
-    public String getToken (HarvesterVerb response) throws
-            TransformerException,
-            NoSuchFieldException{
+    public String getToken (HarvesterVerb response){
 
         // check for protocol error
         if (response == null){
             throw new HarvestingException();
         }
 
-        /* Since the verb2 and verb5 method return a ListIdentifiers class
-           object, the object referred to here is indeed of that class.
-         */
-        return ((ListIdentifiers) this.response).getResumptionToken();
+        return oaiFactory.getResumptionToken();
     }
 
     /**

@@ -93,21 +93,21 @@ public final class RecordHarvesting extends AbstractHarvesting {
                 
         int i = 0;
         for (;;) {
-            try {
-                response = getResponse(provider.oaiUrl, identifier, prefix);
-                return true;
-            } catch ( IOException 
-                    | ParserConfigurationException 
-                    | SAXException 
-                    | TransformerException e) {
+
+            // get metadata record from the endpoint
+            document = oaiFactory.createGetRecord(provider.oaiUrl,
+                    identifier, prefix);
+
+            if (document == null){
                 // something went wrong with the request
-                logger.error(e.getMessage(), e);
                 logger.info("Cannot get " + prefix + " record with id " + identifier
                         + " from endpoint " + provider.oaiUrl);
                 if (i == provider.maxRetryCount) {
                     // try another record
                     return false;
                 } else i++;
+            } else {
+                return true;
             }
         }
     }

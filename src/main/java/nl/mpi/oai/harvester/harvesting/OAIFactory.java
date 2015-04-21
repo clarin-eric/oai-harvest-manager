@@ -112,7 +112,6 @@ public class OAIFactory {
             // no object connected
             try {
                 HarvesterVerb verb = new ListRecords(p1, p2);
-                ;
                 response = verb.getDocument();
                 resumptionToken = ((ListRecords) verb).getResumptionToken();
             } catch (IOException
