@@ -43,7 +43,7 @@ import org.xml.sax.SAXException;
  * action. After processing the endpoint's response, the client can obtain the
  * formats one after the other by parsing.
  *
- * @author Kees Jan van de Looij (MPI-PL)
+ * @author Kees Jan van de Looij (Max Planck Institute for Psycholinguistics)
  */
 public class FormatHarvesting extends AbstractHarvesting implements
         Harvesting {
@@ -79,8 +79,9 @@ public class FormatHarvesting extends AbstractHarvesting implements
      */
     public FormatHarvesting(OAIFactory oaiFactory,
                             Provider provider, ActionSequence actions) {
+
         super (oaiFactory, provider, null);
-        this.response = null;
+
         this.document = null;
         this.provider = provider;
         this.actions  = actions;
@@ -114,7 +115,8 @@ public class FormatHarvesting extends AbstractHarvesting implements
 
     @Override
     public Document getResponse() {
-        // check for protocol error
+
+        // check for a protocol error
         if (document == null){
             throw new HarvestingException();
         } else {
@@ -124,6 +126,7 @@ public class FormatHarvesting extends AbstractHarvesting implements
 
     @Override
     public boolean requestMore() {
+
         // there can only be one request
         throw new HarvestingException();
     }
@@ -141,7 +144,7 @@ public class FormatHarvesting extends AbstractHarvesting implements
     @Override
     public boolean processResponse(Document document) {
 
-        // check for protocol errors
+        // check for a protocol error
         if (document == null){
             throw new UnsupportedOperationException("Protocol error");
         }
@@ -187,7 +190,6 @@ public class FormatHarvesting extends AbstractHarvesting implements
     public Object parseResponse() {
 
         // index points to the next prefix node in the list
-
         Node node = nodeList.item(index);
         index++;
         
@@ -213,8 +215,8 @@ public class FormatHarvesting extends AbstractHarvesting implements
         /* Remember the value of the type the action sequence indicates as the
            desired type
          */
-
         String providedValue;
+
         switch (actions.getInputFormat().getType()) {
             case "prefix":
                 providedValue = prefixValue;

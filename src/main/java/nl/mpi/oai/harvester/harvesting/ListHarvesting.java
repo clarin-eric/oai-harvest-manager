@@ -43,7 +43,7 @@ import java.util.List;
  * the method of processing it will be different for different types of verbs,
  * this class leaves the other methods in the protocol abstract. <br><br>
  *
- * @author keeloo
+ * @author Kees Jan van de Looij (Max Planck Institute for Psycholinguistics)
  */
 public abstract class ListHarvesting extends AbstractListHarvesting implements
         Harvesting {
@@ -66,7 +66,7 @@ public abstract class ListHarvesting extends AbstractListHarvesting implements
 
         super(oaiFactory, provider, metadataFactory);
         this.prefixes   = prefixes;
-        response        = null;
+        document        = null;
         resumptionToken = null;
         tIndex          = 0;
 
@@ -112,12 +112,11 @@ public abstract class ListHarvesting extends AbstractListHarvesting implements
      * object does not have a method for getting the token itself, the extending
      * classes need to make this method effective.
      * 
-     * @param response the response
      * @return a string containing the token
      * @throws TransformerException
      * @throws NoSuchFieldException
      */
-    abstract String getToken (HarvesterVerb response) throws TransformerException, 
+    abstract String getToken () throws TransformerException,
             NoSuchFieldException;
 
     /**
@@ -142,9 +141,6 @@ public abstract class ListHarvesting extends AbstractListHarvesting implements
                 throw new HarvestingException();
             }
         }
-
-        // start with a fresh node list for processing the list records request
-        response = null;
 
         // create a new node list for processing the list records request
         nIndex = 0;
@@ -183,7 +179,7 @@ public abstract class ListHarvesting extends AbstractListHarvesting implements
                 }
 
                 // check if more records would be available
-                resumptionToken = getToken(response);
+                resumptionToken = getToken();
 
             } catch (IOException
                     | ParserConfigurationException

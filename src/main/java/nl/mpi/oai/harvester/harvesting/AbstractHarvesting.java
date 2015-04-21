@@ -20,23 +20,21 @@ package nl.mpi.oai.harvester.harvesting;
 
 import ORG.oclc.oai.harvester2.verb.HarvesterVerb;
 import nl.mpi.oai.harvester.Provider;
-import nl.mpi.oai.harvester.metadata.Metadata;
 import nl.mpi.oai.harvester.metadata.MetadataFactory;
 import org.w3c.dom.Document;
 
-import javax.annotation.Resource;
 import java.util.List;
 
 /**
  * <br> Definition of elements common to various implementations of the
  * protocol defined by the harvesting interface <br><br>
  *
- * @author Kees Jan van de Looij (MPI-PL)
+ * @author Kees Jan van de Looij (Max Planck Institute for Psycholinguistics)
  */
 public abstract class AbstractHarvesting implements Harvesting {
 
     /**
-     * <br> A factor for that creates OAI verb object
+     * <br> A factory that creates OAI verb objects
      */
     final OAIFactory oaiFactory;
 
@@ -102,11 +100,11 @@ public abstract class AbstractHarvesting implements Harvesting {
                        Provider provider, MetadataFactory metadataFactory) {
 
         this.oaiFactory      = oaiFactory;
-        this.metadataFactory = metadataFactory;
         this.provider        = provider;
+        this.metadataFactory = metadataFactory;
         pIndex               = 0;
 
-        // check for protocol errors
+        // check for a protocol error
         if (provider == null){
             throw new HarvestingException();
         }

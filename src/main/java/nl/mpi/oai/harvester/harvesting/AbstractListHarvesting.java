@@ -38,7 +38,7 @@ import java.util.Objects;
  * the IdentifierListHarvesting class employs this class to first store
  * identifier and prefix pairs, remove duplicates, an fetch the records later.
  *
- * @author Kees Jan van de Looij (MPI-PL)
+ * @author Kees Jan van de Looij (Max Planck Institute for Psycholinguistics)
  */
 abstract public class AbstractListHarvesting extends AbstractHarvesting
         implements Harvesting{
@@ -72,6 +72,7 @@ abstract public class AbstractListHarvesting extends AbstractHarvesting
                            Provider provider, MetadataFactory metadataFactory) {
 
         super(oaiFactory, provider, metadataFactory);
+
         nIndex          = 0;
         resumptionToken = null;
         tIndex          = 0;

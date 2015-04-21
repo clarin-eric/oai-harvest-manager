@@ -52,7 +52,7 @@ import org.xml.sax.SAXException;
  *  Note: originally, this class was declared 'final'. With the addition of
  * tests based on Mockito, this qualifier was removed.
  *
- * @author Kees Jan van de Looij (MPI-PL)
+ * @author Kees Jan van de Looij (Max Planck Institute for Psycholinguistics)
  */
 public class IdentifierListHarvesting extends ListHarvesting
         implements Harvesting {
@@ -127,11 +127,10 @@ public class IdentifierListHarvesting extends ListHarvesting
      * This method implements a resumption token request by invoking the
      * getResumptionToken OCLC library method. <br><br>
      *
-     * @param response the response to the request
      * @return the token
      */
     @Override
-    public String getToken (HarvesterVerb response){
+    public String getToken (){
 
         // check for a protocol error
         if (document == null){

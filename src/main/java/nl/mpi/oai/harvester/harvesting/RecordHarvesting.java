@@ -37,7 +37,7 @@ import org.xml.sax.SAXException;
  * This class provides the GetRecord verb and the processing and parsing
  * specific to it.
  *
- * @author Kees Jan van de Looij (MPI-PL)
+ * @author Kees Jan van de Looij (Max Planck Institute for Psycholinguistics)
  */
 public final class RecordHarvesting extends AbstractHarvesting {
 
@@ -64,7 +64,8 @@ public final class RecordHarvesting extends AbstractHarvesting {
                             MetadataFactory metadataFactory){
 
         super(oaiFactory, provider, metadataFactory);
-        this.response    = null;
+
+        this.document    = null;
         this.prefix      = prefix;
         this.identifier  = identifier;
         this.parsed      = false;
