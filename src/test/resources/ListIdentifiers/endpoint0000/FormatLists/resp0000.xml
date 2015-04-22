@@ -3,10 +3,7 @@
    <responseDate>2015-04-11T20:28:07Z</responseDate>
    <request verb="ListMetadataFormats">http://metalb.csc.fi/cgi-bin/que</request>
    <ListMetadataFormats>
-<metadataFormat><metadataPrefix>cmdi0554</metadataPrefix><schema>http://catalog.clarin.eu/ds/ComponentRegistry/rest/registry/profiles/clarin.eu:cr1:p_1361876010554/xsd</schema><metadataNamespace>http://www.clarin.eu/cmd/</metadataNamespace></metadataFormat>
 <metadataFormat><metadataPrefix>cmdi0571</metadataPrefix><schema>http://catalog.clarin.eu/ds/ComponentRegistry/rest/registry/profiles/clarin.eu:cr1:p_1361876010571/xsd</schema><metadataNamespace>http://www.clarin.eu/cmd/</metadataNamespace></metadataFormat>
-<metadataFormat><metadataPrefix>cmdi2312</metadataPrefix><schema>http://catalog.clarin.eu/ds/ComponentRegistry/rest/registry/profiles/clarin.eu:cr1:p_1355150532312/xsd</schema><metadataNamespace>http://www.clarin.eu/cmd/</metadataNamespace></metadataFormat>
-<metadataFormat><metadataPrefix>cmdi9836</metadataPrefix><schema>http://catalog.clarin.eu/ds/ComponentRegistry/rest/registry/profiles/clarin.eu:cr1:p_1360931019836/xsd</schema><metadataNamespace>http://www.clarin.eu/cmd/</metadataNamespace></metadataFormat>
 <metadataFormat><metadataPrefix>info</metadataPrefix><schema>http://metashare.ilsp.gr/META-XMLSchema/v3.0/META-SHARE-Resource.xsd</schema><metadataNamespace>http://www.ilsp.gr/META-XMLSchema</metadataNamespace></metadataFormat>
 <metadataFormat><metadataPrefix>oai_dc</metadataPrefix><schema>http://www.openarchives.org/OAI/2.0/oai_dc.xsd</schema><metadataNamespace>http://www.openarchives.org/OAI/2.0/oai_dc/</metadataNamespace></metadataFormat>
 <metadataFormat><metadataPrefix>olac</metadataPrefix><schema>http://www.language-archives.org/OLAC/1.1/olac.xsd</schema><metadataNamespace>http://www.language-archives.org/OLAC/1.1/</metadataNamespace></metadataFormat>

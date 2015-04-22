@@ -67,7 +67,7 @@ public class ScenarioTest {
     /**
      * <br> Test the list records scenario
      */
-    @Test
+    //@Test
     public void listRecordsTest(){
 
         // create a helper
@@ -87,7 +87,7 @@ public class ScenarioTest {
     /**
      * <br> Test the list identifiers scenario
      */
-    //@Test
+    @Test
     public void listIdentifiersTest(){
 
         // create a helper
@@ -172,7 +172,7 @@ public class ScenarioTest {
                         metadataFactory);
 
                 // follow the identifier list harvesting scenario
-                scenario.listRecords(identifierListHarvesting);
+                scenario.listIdentifiers(identifierListHarvesting);
             }
 
             // switch to the next endpoint

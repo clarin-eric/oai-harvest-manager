@@ -144,7 +144,8 @@ public final class RecordHarvesting extends AbstractHarvesting {
         /* Get the OAI envelope from the response. Use it, together with the
            identifier and provider, to create and return a metadata element.
         */
-        return new Metadata(identifier, prefix, document, provider, true, false);
+        return metadataFactory.create(identifier, prefix, document, provider,
+                true, false);
     }
 
     /**
