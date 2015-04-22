@@ -67,7 +67,7 @@ public class ScenarioTest {
     /**
      * <br> Test the list records scenario
      */
-    //@Test
+    @Test
     public void listRecordsTest(){
 
         // create a helper
@@ -137,7 +137,7 @@ public class ScenarioTest {
         // mock an action sequence
         ActionSequence sequence = mock(ActionSequence.class);
         // define what the mocked object needs to return
-        when(sequence.getInputFormat()).thenReturn(helper.getMetadataFormat());
+        when(sequence.getInputFormat()).thenReturn(helper.getMetadataFormats());
         when(sequence.containsStripResponse()).thenReturn(true);
 
         // get the first provider from the helper

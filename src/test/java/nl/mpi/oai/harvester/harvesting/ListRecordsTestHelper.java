@@ -22,51 +22,16 @@ package nl.mpi.oai.harvester.harvesting;
 import nl.mpi.oai.harvester.metadata.MetadataFormat;
 
 /**
- * <br> Define the traces for a test targeting the list records scenario <br><br>
- *
- * A trace definition needs to be added for every record the scenario for
- * harvesting yields. By letting the addToTable method spy on the metadata
- * constructor invoked each time a scenario creates a record, in the end the
- * test should end up with an empty list of traces.
+ * <br> Fix a test for the list records scenario <br><br>
  *
  * @author Kees Jan van de Looij (Max Planck Institute for Psycholinguistics)
  */
 public class ListRecordsTestHelper extends TestHelper {
 
     @Override
-    MetadataFormat getMetadataFormat() {
+    String getTestName() {
 
-        // return the metadata format for the test
-        MetadataFormat metadataFormat = new MetadataFormat("namespace",
-                "http://www.clarin.eu/cmd/");
-
-        return metadataFormat;
-    }
-
-    @Override
-    void getTraces() {
-
-        // add the records the test should yield
-        addToTable("http://metalb.csc.fi/cgi-bin/que", "cmdi0571", "oai:kielipankki.fi:sh03de30");
-        addToTable("http://metalb.csc.fi/cgi-bin/que", "cmdi0571", "oai:kielipankki.fi:sh7b8760");
-        addToTable("http://metalb.csc.fi/cgi-bin/que", "cmdi0571", "oai:kielipankki.fi:sh034a70");
-        addToTable("http://metalb.csc.fi/cgi-bin/que", "cmdi0571", "oai:kielipankki.fi:sh136cd0");
-        addToTable("http://metalb.csc.fi/cgi-bin/que", "cmdi0571", "oai:kielipankki.fi:sh3123d0");
-        addToTable("http://metalb.csc.fi/cgi-bin/que", "cmdi0571", "oai:kielipankki.fi:shaccf90");
-        addToTable("http://metalb.csc.fi/cgi-bin/que", "cmdi0571", "oai:kielipankki.fi:shd0d800");
-        addToTable("http://metalb.csc.fi/cgi-bin/que", "cmdi0571", "oai:kielipankki.fi:shff9200");
-
-        addToTable("http://metalb.csc.fi/cgi-bin/que", "cmdi0571", "oai:kielipankki.fi:sh8e2580");
-        addToTable("http://metalb.csc.fi/cgi-bin/que", "cmdi0571", "oai:kielipankki.fi:sh8d4340");
-
-        addToTable("http://metalb.csc.fi/cgi-bin/que", "cmdi2312", "oai:kielipankki.fi:sh03de30");
-        addToTable("http://metalb.csc.fi/cgi-bin/que", "cmdi2312", "oai:kielipankki.fi:sh7b8760");
-        addToTable("http://metalb.csc.fi/cgi-bin/que", "cmdi2312", "oai:kielipankki.fi:sh034a70");
-        addToTable("http://metalb.csc.fi/cgi-bin/que", "cmdi2312", "oai:kielipankki.fi:sh136cd0");
-        addToTable("http://metalb.csc.fi/cgi-bin/que", "cmdi2312", "oai:kielipankki.fi:sh3123d0");
-        addToTable("http://metalb.csc.fi/cgi-bin/que", "cmdi2312", "oai:kielipankki.fi:shaccf90");
-        addToTable("http://metalb.csc.fi/cgi-bin/que", "cmdi2312", "oai:kielipankki.fi:shd0d800");
-        addToTable("http://metalb.csc.fi/cgi-bin/que", "cmdi2312", "oai:kielipankki.fi:shff9200");
+        return "ListRecords";
     }
 
     @Override
@@ -81,8 +46,38 @@ public class ListRecordsTestHelper extends TestHelper {
     }
 
     @Override
-    String getTestName() {
+    MetadataFormat getMetadataFormats() {
 
-        return "ListRecords";
+        // return the metadata format for the test
+        MetadataFormat metadataFormat = new MetadataFormat("namespace",
+                "http://www.clarin.eu/cmd/");
+
+        return metadataFormat;
+    }
+
+    @Override
+    void addTraces() {
+
+        // add the traces identifying the records the test should yield
+        addToList("http://metalb.csc.fi/cgi-bin/que", "cmdi0571", "oai:kielipankki.fi:sh03de30");
+        addToList("http://metalb.csc.fi/cgi-bin/que", "cmdi0571", "oai:kielipankki.fi:sh7b8760");
+        addToList("http://metalb.csc.fi/cgi-bin/que", "cmdi0571", "oai:kielipankki.fi:sh034a70");
+        addToList("http://metalb.csc.fi/cgi-bin/que", "cmdi0571", "oai:kielipankki.fi:sh136cd0");
+        addToList("http://metalb.csc.fi/cgi-bin/que", "cmdi0571", "oai:kielipankki.fi:sh3123d0");
+        addToList("http://metalb.csc.fi/cgi-bin/que", "cmdi0571", "oai:kielipankki.fi:shaccf90");
+        addToList("http://metalb.csc.fi/cgi-bin/que", "cmdi0571", "oai:kielipankki.fi:shd0d800");
+        addToList("http://metalb.csc.fi/cgi-bin/que", "cmdi0571", "oai:kielipankki.fi:shff9200");
+
+        addToList("http://metalb.csc.fi/cgi-bin/que", "cmdi0571", "oai:kielipankki.fi:sh8e2580");
+        addToList("http://metalb.csc.fi/cgi-bin/que", "cmdi0571", "oai:kielipankki.fi:sh8d4340");
+
+        addToList("http://metalb.csc.fi/cgi-bin/que", "cmdi2312", "oai:kielipankki.fi:sh03de30");
+        addToList("http://metalb.csc.fi/cgi-bin/que", "cmdi2312", "oai:kielipankki.fi:sh7b8760");
+        addToList("http://metalb.csc.fi/cgi-bin/que", "cmdi2312", "oai:kielipankki.fi:sh034a70");
+        addToList("http://metalb.csc.fi/cgi-bin/que", "cmdi2312", "oai:kielipankki.fi:sh136cd0");
+        addToList("http://metalb.csc.fi/cgi-bin/que", "cmdi2312", "oai:kielipankki.fi:sh3123d0");
+        addToList("http://metalb.csc.fi/cgi-bin/que", "cmdi2312", "oai:kielipankki.fi:shaccf90");
+        addToList("http://metalb.csc.fi/cgi-bin/que", "cmdi2312", "oai:kielipankki.fi:shd0d800");
+        addToList("http://metalb.csc.fi/cgi-bin/que", "cmdi2312", "oai:kielipankki.fi:shff9200");
     }
 }

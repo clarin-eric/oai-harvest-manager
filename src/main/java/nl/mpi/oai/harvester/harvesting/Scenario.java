@@ -189,7 +189,8 @@ public class Scenario {
 
                             Metadata metadata = new Metadata(
                                     provider.getName() + "-" + id,
-                                    null, records, this.provider, true, true);
+                                    OAIHelper.getPrefix(records),
+                                    records, this.provider, true, true);
 
                             n++;
 

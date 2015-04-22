@@ -141,7 +141,7 @@ public class ActionSequence {
 
 				if (firstAction) {
 
-					if (metadata.isInEnvelope()) {
+					if (metadata.isEnvelope()) {
 						// one record, or a list, save it
 						performAction = true;
 					}
@@ -161,7 +161,7 @@ public class ActionSequence {
 			} else {
 				if (action instanceof StripAction) {
 
-					if (metadata.isInEnvelope() && ! metadata.isList()) {
+					if (metadata.isEnvelope() && ! metadata.isList()) {
 						// single record in envelope, strip it
 						performAction = true;
 					}
@@ -169,7 +169,7 @@ public class ActionSequence {
 				} else {
 					// transform action
 
-					if (metadata.isInEnvelope() || metadata.isList()) {
+					if (metadata.isEnvelope() || metadata.isList()) {
 						// transformation not possible
 					} else {
 						performAction = true;

@@ -19,21 +19,13 @@
 package nl.mpi.oai.harvester.harvesting;
 
 import nl.mpi.oai.harvester.Provider;
-import nl.mpi.oai.harvester.metadata.Metadata;
-import nl.mpi.oai.harvester.metadata.MetadataFormat;
-import nl.mpi.oai.harvester.metadata.MetadataInterface;
-import nl.mpi.oai.harvester.metadata.NSContext;
+import nl.mpi.oai.harvester.metadata.*;
 import org.w3c.dom.Document;
-import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -45,110 +37,112 @@ import java.util.ArrayList;
  * responses <br><br>
  *
  * While the harvesting package tests themselves should create the metadata
- * format, and the action sequences, and set up mocking and spying, the helper
- * provides a fixed set of XML documents that can mock part of real OAI
+ * format, and the action sequences, and set up mocking and spying, a helper
+ * can provide a fixed set of XML documents that mock part of real OAI
  * responses. <br><br>
  *
- * A TestHelper object contains a table for keeping track of the relation
- * between endpoint, prefix and record identifier. By initialising the table
- * with rows that are true to the predefined response documents, removing each
- * row identifying a harvested record, should, in the end, leave the test with
- * an empty table. A test based on this helper is successful if and only if at
- * the end of it, the table is empty. <br><br>
+ * A helper represents the relation between endpoints, prefixes, and record
+ * identifiers as a list of traces. A trace identifies one metadata record. By
+ * adding traces in the beginning of the test, and by removing a trace each
+ * time a scenario would create a record, the test should end up with an empty
+ * list. A test based on this helper is successful if and only if at the end of
+ * it, the list is empty. <br><br>
  *
- * The class constructor creates the table of rows that match the predefined
- * documents in the test resources responses directory. A document is stored
- * in the following form: <br><br>
+ * By invoking the <br><br>
+ *
+ * addTraces <br><br>
+ *
+ * method, the the class constructor will create a list of traces match the
+ * predefined documents in the test resources responses directory. The test
+ * package contains documents named like: <br><br>
  *
  * /resources/testName/endpoint0000/FormatLists/resp0000.xml <br><br>
  *
- * In this example <br><br>
+ * In this case, the <br><br>
  *
  * resp0000.xml <br><br>
  *
- * document contains the XML part of the OAI response. 'FormatLists' identifies
- * the of document. The helper supports these types of responses: <br><br>
+ * document contains the XML document representing the response to the format
+ * list verb. The helper supports these types of responses: <br><br>
  *
  * FormatLists, IdentifierLists, Records, RecordLists <br><br>
  *
- * A test can visit multiple endpoints. Like the documents, the helper
- * enumerates the endpoints. By extending the helper, the endpoint URIs should
- * be defined. The helper's constructor will invoke the <br><br>
+ * Typically, in the case of identifier list, records, and record list, the
+ * helper will generate a resumption token if and only if it can find another
+ * file that contains a response pertaining to the same metadata prefix. If in
+ * enumeration of responses, the metadata prefix changes, it will not generate
+ * a resumption token. This allows the harvesting scenario to switch prefixes
+ * by issuing a new request. <br><br>
  *
- * getEndpointURIs <br><br>
+ * A test helper will invoke the <br><br>
  *
- * method to obtain the URIs. Like loading the URI's the constructor will also
- * invoke the <br><br>
+ * getTestName <br><br>
  *
- * method to obtain the metadata format used by the test. Next to this, it will
- * invoke the
- *
- * getTraces <br><br>
- *
- * method to load the table constituting the endpoint, prefix and record
- * identifier relation. Finally, by including a test name in the path to the
- * XML files, the helper supports multiple tests. By creating a helper for each
- * extension, a test can follow multiple scenarios. It could, for example, first
- * test record list harvesting by creating a <br><br>
- *
- * ListRecordsTestHelper <br><br>
- *
- * object, and after that, create a <br><br>
- *
- * ListIdentifiersTestHelper <br><br>
- *
- * object to follow the list identifiers scenario.
- *
- * Note: like implementing the metadata interface, the test also needs to
- * implement the OAI verb interface.
+ * method to determine which directory to load the endpoint URIs and a list of
+ * metadata formats from. To create a helper to a specific test, it suffices to
+ * implement the abstract methods in this class, and to populate the resources
+ * directory with suitable responses. Please note that the list records and list
+ * identifier test helper classes serve as examples of extensions.
  *
  * @author Kees Jan van de Looij (Max Planck Institute for Psycholinguistics)
  */
 abstract class TestHelper implements OAIInterface, MetadataInterface {
 
-    /**
-     * <br> Get the metadata format used in the test
-     *
-     * @return the metadata format
-     */
-    abstract MetadataFormat getMetadataFormat();
+    // name of the designated resources folder
+    String testName;
 
     /**
-     * <br> Get the URIs of the endpoints involved in the test
+     * <br> Indicate the name of the test <br><br>
+     *
+     * Note: the name of the test determines from which resources directory
+     * the helper will retrieve and build the mocked responses.
+     *
+     * @return top level directory associated with the test
+     */
+    abstract String getTestName();
+
+
+    // the endpoints involved in the test
+    String[] endpointURIs;
+
+    /**
+     * <br> Indicate the endpoint URIs involved in the
      *
      * @return the array of endpoint URIs
      */
     abstract String[] getEndpointURIs();
 
     /**
-     * <br> Get the traces specific to a test
+     * <br> Indicate the metadata format for the test
+     *
+     * @return the metadata format
      */
-    abstract void getTraces();
+    abstract MetadataFormat getMetadataFormats();
+
+    // the relation between endpoints, prefixes and record identifiers
+    ArrayList<Trace> traces = new ArrayList<>();
 
     /**
-     * <br> Get the name of the test <br><br>
+     * <br> Add traces <br><br>
      *
-     * @return top level directory associated with the test
+     * A list of traces represents a test fixture: each trace represents a
+     * metadata record that the test should yield. By letting the helper remove
+     * a trace as soon as a scenario creates the metadata, at the end of the
+     * test the list should be empty. <br><br>
+     *
+     * Note: the helper looks for the responses involved in the <br><br>
+     *
+     * /resources/testName <br><br>
+     *
+     * directories.
      */
-    abstract String getTestName();
+    abstract void addTraces();
 
     // factory for creating XML documents
     private DocumentBuilder db;
 
     // index pointing to the current endpoint
     private int eIndex;
-
-    // the endpoints involved in the test
-    String[] endpointURIs;
-
-    // the relation between endpoints, prefixes and record identifiers
-    ArrayList<Trace> traces = new ArrayList<>();
-
-    // name of the designated resources folder
-    String testName;
-
-    // only keep one XPath object for querying
-    public final XPath xpath;
 
     /**
      * <br> Create a helper <br><br>
@@ -169,22 +163,14 @@ abstract class TestHelper implements OAIInterface, MetadataInterface {
             e.printStackTrace();
         }
 
-        // set up XPath querying
-        XPathFactory xpf = XPathFactory.newInstance();
-        xpath = xpf.newXPath();
-        NSContext nsContext = new NSContext();
-        nsContext.add("oai", "http://www.openarchives.org/OAI/2.0/");
-        nsContext.add("os", "http://www.openarchives.org/OAI/2.0/static-repository");
-        xpath.setNamespaceContext(nsContext);
+        // get the name of the test
+        testName = getTestName();
 
         // load the endpoint URIs
         endpointURIs = getEndpointURIs(); eIndex = 0;
 
         // load the predefined traces
-        getTraces();
-
-        // get the name of the test
-        testName = getTestName();
+        addTraces();
     }
 
     /**
@@ -438,44 +424,6 @@ abstract class TestHelper implements OAIInterface, MetadataInterface {
 
     String prefix = null;
 
-    /**
-     * <br> Get the metadata prefixes referenced in a document <br><br>
-     *
-     * Note: since the metadata itself might not contain a reference to the
-     * prefix, the document needs to be an OAI envelope.
-     *
-     * @param document the document
-     * @return the metadata prefix
-     */
-    private String getPrefix (Document document){
-
-        // node in the document
-        Node node = null;
-
-        // metadata prefix
-        String prefix;
-
-        // look for the prefix in the request node
-        try {
-            node = (Node) xpath.evaluate(
-                    "//*[local-name()='request']",
-                    document, XPathConstants.NODE);
-        } catch (XPathExpressionException e) {
-            e.printStackTrace();
-        }
-
-        if (node == null){
-            // no request node, no metadata prefix
-            prefix = null;
-        } else {
-            // found the request node, get the prefix attribute value
-            prefix = node.getAttributes().getNamedItem("metadataPrefix"
-            ).getNodeValue();
-        }
-
-        return prefix;
-    }
-
     @Override
     /**
      * <br> Get the resumption token for the current endpoint and
@@ -496,7 +444,7 @@ abstract class TestHelper implements OAIInterface, MetadataInterface {
 
             // check for a prefix change
             nextDocument = documentList.get(dIndex);
-            String prefix = getPrefix(nextDocument);
+            String prefix = OAIHelper.getPrefix(nextDocument);
 
             if (this.prefix != null && ! prefix.equals(this.prefix)){
                 /* Since the document's prefix differs from the current prefix,
@@ -573,14 +521,14 @@ abstract class TestHelper implements OAIInterface, MetadataInterface {
     /**
      * <br> Add metadata information to the table <br><br>
      *
-     * Repeatedly invoke this method from the getTraces method in order to
+     * Repeatedly invoke this method from the addTraces method in order to
      * create the table with the predefined relation.
      *
      * @param prefix prefix in the trace to add to tbe table
      * @param identifier record identifier in the trace to add to the table
      */
-    void addToTable(String endpointURI, String prefix,
-                    String identifier) {
+    void addToList(String endpointURI, String prefix,
+                   String identifier) {
 
         Trace trace = new Trace(endpointURI, prefix, identifier);
 

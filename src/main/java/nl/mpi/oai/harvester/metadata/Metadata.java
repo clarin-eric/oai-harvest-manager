@@ -35,7 +35,8 @@ import org.w3c.dom.Document;
  * multiple metadata records.
  *
  * @author Lari Lampen (MPI-PL)
- */
+ * @author Kees Jan van de Looij (MPI-PL)
+ * */
 public class Metadata {
     /** A unique identifier, such as the OAI-PMH record identifier. */
     private final String id;
@@ -47,7 +48,7 @@ public class Metadata {
     private final Provider origin;
 
     // whether or not the metadata is packed in an OAI envelope
-    private boolean isInEnvelope;
+    private boolean isEnvelope;
     // whether or not the metadata takes the form of a list of records
     private final boolean isList;
 
@@ -60,17 +61,17 @@ public class Metadata {
      * @param id unique identifier
      * @param doc XML tree representing the metadata
      * @param endpoint endpoint information
-     * @param isInEnvelope, true if metadata is contained in OAI envelope,
+     * @param isEnvelope, true if metadata is contained in OAI envelope,
      *                      false otherwise
      * @param isList true if metadata is a list of records, false otherwise
      */
     public Metadata(String id, String prefix, Document doc, Provider endpoint,
-                    boolean isInEnvelope, boolean isList) {
+                    boolean isEnvelope, boolean isList) {
         this.id           = id;
         this.prefix       = prefix;
         this.doc          = doc;
         this.origin       = endpoint;
-        this.isInEnvelope = isInEnvelope;
+        this.isEnvelope = isEnvelope;
         this.isList       = isList;
     }
 
@@ -105,12 +106,12 @@ public class Metadata {
     }
 
     /**
-     * Check if the metadata is contained in an envelope
+     * Check if the document is an an envelope
      *
-     * @return true, iff the metadata is contained in an envelope
+     * @return true, iff the document is an envelope
      */
-    public boolean isInEnvelope (){
-        return isInEnvelope;
+    public boolean isEnvelope(){
+        return isEnvelope;
     }
 
     /**
@@ -128,6 +129,6 @@ public class Metadata {
      * @param isInEnvelope whether or not the metadata is packaged in an envelope
      */
     public void setIsInEnvelope(boolean isInEnvelope) {
-        this.isInEnvelope = isInEnvelope;
+        this.isEnvelope = isInEnvelope;
     }
 }

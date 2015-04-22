@@ -20,6 +20,12 @@ package nl.mpi.oai.harvester.metadata;
 
 import nl.mpi.oai.harvester.Provider;
 import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
 
 /**
  * <br> Factory for metadata objects <br><br>
@@ -52,20 +58,19 @@ public class MetadataFactory {
      * @param id the metadata record identifier
      * @param doc the document containing the metadata
      * @param endpoint the endpoint URI
-     * @param isInEnvelope whether or not the data is contained in an OAI
-     *                     envelope
-     * @param isList whether or not the record is part of a list of records
-     * @return an object packaging the metadata
+     * @param isEnvelope whether or not the data is an OAI envelope
+     * @param isList whether or not the document is a list of records
+     * @return a metadata object
      */
     public Metadata create (String id, String prefix, Document doc,
                             Provider endpoint,
-                            Boolean isInEnvelope, Boolean isList){
+                            Boolean isEnvelope, Boolean isList){
 
         // to remember the metadata once it has been created
         Metadata metadata;
 
         // create the metadata
-        metadata = new Metadata(id, prefix, doc, endpoint, isInEnvelope, isList);
+        metadata = new Metadata(id, prefix, doc, endpoint, isEnvelope, isList);
 
         // an object implementing the metadata interface
         MetadataInterface metadataInterface;
