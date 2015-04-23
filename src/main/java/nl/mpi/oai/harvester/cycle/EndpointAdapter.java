@@ -22,6 +22,7 @@ import nl.mpi.oai.harvester.generated.EndpointType;
 import nl.mpi.oai.harvester.generated.OverviewType;
 import nl.mpi.oai.harvester.generated.ScenarioType;
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
@@ -257,7 +258,7 @@ class EndpointAdapter implements Endpoint {
             /* Since there is no default value for this property, there is no
                need to set the date in the overview now. Return the epoch date.
              */
-            return new DateTime(0);
+            return new DateTime(0).toDateTime(DateTimeZone.UTC);
         } else {
             // convert XMLGregorianCalendar
             return new DateTime(XMLDate.toString());
@@ -274,7 +275,7 @@ class EndpointAdapter implements Endpoint {
             /* Since there is no default value for this property, there is no
                need to set the date in the overview now. Return the epoch date.
              */
-            return new DateTime(0);
+            return new DateTime(0).toDateTime(DateTimeZone.UTC);
         } else {
             // convert XMLGregorianCalendar to string
             return new DateTime(XMLDate.toString());

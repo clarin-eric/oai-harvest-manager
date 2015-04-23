@@ -20,6 +20,7 @@ package nl.mpi.oai.harvester.cycle;
 
 import nl.mpi.oai.harvester.generated.EndpointType;
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -107,7 +108,7 @@ public class XMLBasedCycle implements Cycle {
      * about endpoints the client would present the cycle with by passing an
      * identification to the next method. <br><br>
      *
-     * @return the next endpoint elligable for harvesting, null if all
+     * @return the next endpoint eligible for harvesting, null if all
      *         endpoints have been cycled over.
      */
     public synchronized Endpoint next() {
@@ -123,10 +124,10 @@ public class XMLBasedCycle implements Cycle {
             // get the endpoint's adapter
             Endpoint endpoint = xmlOverview.getEndpoint(endpointType);
 
-            // get today's date
+            // get today's date in UTC
             Date date = new Date ();
             // prepare it for ISO8601 representation
-            DateTime dateTime = new DateTime(date);
+            DateTime dateTime = new DateTime(date).toDateTime(DateTimeZone.UTC);
 
             // get the date the endpoint was attempted
             DateTime attemptedDate = endpoint.getAttemptedDate();
@@ -177,7 +178,8 @@ public class XMLBasedCycle implements Cycle {
 
                     if (attempted.equals(harvested)) {
                         // check if anything has happened
-                        if (attempted.equals(new DateTime(0))){
+                        if (attempted.equals(new DateTime(0).toDateTime(
+                                DateTimeZone.UTC))){
                             // apparently not, do harvest
                             return true;
                         } else {
@@ -251,17 +253,18 @@ public class XMLBasedCycle implements Cycle {
                     /* Since the cycle should not harvest the endpoint, it
                        does not need a date.
                      */
-                    return new DateTime(0);
+                    return new DateTime(0).toDateTime(DateTimeZone.UTC);
                 } else {
                     // consider a selective harvest
                     if (! endpoint.allowIncrementalHarvest()){
                         // again, the cycle does not need a date
-                        return new DateTime(0);
+                        return new DateTime(0).toDateTime(DateTimeZone.UTC);
                     } else {
                         /* The cycle should use the date of the most recent
                            successful attempt
                          */
-                        return new DateTime(endpoint.getHarvestedDate());
+                        return new DateTime(endpoint.getHarvestedDate()
+                                .toDateTime(DateTimeZone.UTC));
                     }
                 }
 
@@ -280,7 +283,7 @@ public class XMLBasedCycle implements Cycle {
                            the endpoint. Therefore, there is no need for it to
                            retry.
                          */
-                        return new DateTime(0);
+                        return new DateTime(0).toDateTime(DateTimeZone.UTC);
                     } else {
                         /* After the most recent success, the cycle attempted
                            to harvest the endpoint but did not succeed. It can
@@ -296,7 +299,7 @@ public class XMLBasedCycle implements Cycle {
                    it, the cycle can do without a date. Return the epoch date.
                  */
 
-                return new DateTime(0);
+                return new DateTime(0).toDateTime(DateTimeZone.UTC);
 
             default:
                 // all the members of the mode should be covered
