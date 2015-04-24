@@ -266,7 +266,7 @@ class EndpointAdapter implements Endpoint {
             return zeroUTC;
         } else {
             // convert XMLGregorianCalendar to DateTime
-            return new DateTime(XMLDate.toString());
+            return new DateTime(XMLDate.toString(), DateTimeZone.UTC);
         }
     }
 
@@ -284,7 +284,7 @@ class EndpointAdapter implements Endpoint {
             return zeroUTC;
         } else {
             // convert XMLGregorianCalendar to DateTime
-            return new DateTime(XMLDate.toString());
+            return new DateTime(XMLDate.toString(), DateTimeZone.UTC);
         }
     }
 
