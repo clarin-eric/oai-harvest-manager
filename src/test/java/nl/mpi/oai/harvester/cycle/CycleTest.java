@@ -19,6 +19,8 @@
 
 package nl.mpi.oai.harvester.cycle;
 
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -88,7 +90,7 @@ public class CycleTest {
         // the client should harvest this endpoint
         assertTrue(cycle.doHarvest(endpoint));
         //assertEquals("2014-07-19T00:00:00.000Z",
-        //        cycle.getRequestDate(endpoint).toString()); kj: repair
+        //        cycle.getRequestDate(endpoint).toString()); // kj: repair
     }
 
     @Test
@@ -97,6 +99,9 @@ public class CycleTest {
      * an XML file.
      */
     public void testRetryMode() {
+
+        final DateTime zeroUTC = new DateTime ("1970-01-01T00:00:00.000+00:00",
+                DateTimeZone.UTC);
 
         // create a CycleFactory
         CycleFactory factory = new CycleFactory();
@@ -137,16 +142,14 @@ public class CycleTest {
         /* Since it does not allow incremental harvesting, the client should
            harvest the endpoint from the beginning.
          */
-        assertEquals("1970-01-01T01:00:00.000+01:00",
-                cycle.getRequestDate(endpoint).toString());
+        assertEquals(zeroUTC, cycle.getRequestDate(endpoint));
 
         // fifth endpoint
         endpoint = cycle.next();
         /* When it would allow a retry, the client would need to harvest it
            from the beginning.
          */
-        assertEquals("1970-01-01T01:00:00.000+01:00",
-                cycle.getRequestDate(endpoint).toString());
+        assertEquals(zeroUTC, cycle.getRequestDate(endpoint));
         // however, the endpoint does not allow a retry
         assertFalse(endpoint.retry());
     }

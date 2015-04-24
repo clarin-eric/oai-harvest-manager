@@ -27,7 +27,9 @@ import org.joda.time.DateTimeZone;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
+import java.sql.Time;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -248,6 +250,10 @@ class EndpointAdapter implements Endpoint {
         }
     }
 
+    // zero epoch time in the UTC zone
+    final DateTime zeroUTC = new DateTime ("1970-01-01T00:00:00.000+00:00",
+            DateTimeZone.UTC);
+
     @Override
     public DateTime getAttemptedDate() {
 
@@ -256,11 +262,12 @@ class EndpointAdapter implements Endpoint {
 
         if (XMLDate == null){
             /* Since there is no default value for this property, there is no
-               need to set the date in the overview now. Return the epoch date.
+               need to set the date in the overview now. Return the zero epoch
+               date in the UTC zone.
              */
-            return new DateTime(0).toDateTime(DateTimeZone.UTC);
+            return zeroUTC;
         } else {
-            // convert XMLGregorianCalendar
+            // convert XMLGregorianCalendar to DateTime
             return new DateTime(XMLDate.toString());
         }
     }
@@ -273,11 +280,12 @@ class EndpointAdapter implements Endpoint {
 
         if (XMLDate == null){
             /* Since there is no default value for this property, there is no
-               need to set the date in the overview now. Return the epoch date.
+               need to set the date in the overview now. Return the zero epoch
+               date in the UTC zone.
              */
-            return new DateTime(0).toDateTime(DateTimeZone.UTC);
+            return zeroUTC;
         } else {
-            // convert XMLGregorianCalendar to string
+            // convert XMLGregorianCalendar to DateTime
             return new DateTime(XMLDate.toString());
         }
     }
@@ -291,11 +299,19 @@ class EndpointAdapter implements Endpoint {
         XMLGregorianCalendar xmlGregorianCalendar;
 
         try {
+            // get current time in the UTC zone
+            DateTime dateTime = new DateTime (DateTimeZone.UTC);
+
+            // Calendar c = Calendar.getInstance(); kj: remove old code
+            // c.getTime();
+
+            // represent the time as a calendar object
+            Calendar c = dateTime.toGregorianCalendar();
+
+            // create XML calendar
             xmlGregorianCalendar =
                     DatatypeFactory.newInstance().newXMLGregorianCalendar();
 
-            Calendar c = Calendar.getInstance();
-            c.getTime();
             xmlGregorianCalendar.setDay(c.get(Calendar.DAY_OF_MONTH));
             xmlGregorianCalendar.setMonth(c.get(Calendar.MONTH) + 1);
             xmlGregorianCalendar.setYear(c.get(Calendar.YEAR));

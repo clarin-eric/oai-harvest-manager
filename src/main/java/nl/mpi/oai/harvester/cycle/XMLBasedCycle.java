@@ -151,6 +151,10 @@ public class XMLBasedCycle implements Cycle {
         return null;
     }
 
+    // zero epoch time in the UTC zone
+    final DateTime zeroUTC = new DateTime ("1970-01-01T00:00:00.000+00:00",
+            DateTimeZone.UTC);
+
     @Override
     public boolean doHarvest(Endpoint endpoint) {
 
@@ -178,8 +182,7 @@ public class XMLBasedCycle implements Cycle {
 
                     if (attempted.equals(harvested)) {
                         // check if anything has happened
-                        if (attempted.equals(new DateTime(0).toDateTime(
-                                DateTimeZone.UTC))){
+                        if (attempted.equals(zeroUTC)){
                             // apparently not, do harvest
                             return true;
                         } else {
@@ -253,18 +256,18 @@ public class XMLBasedCycle implements Cycle {
                     /* Since the cycle should not harvest the endpoint, it
                        does not need a date.
                      */
-                    return new DateTime(0).toDateTime(DateTimeZone.UTC);
+                    return zeroUTC;
                 } else {
                     // consider a selective harvest
                     if (! endpoint.allowIncrementalHarvest()){
                         // again, the cycle does not need a date
-                        return new DateTime(0).toDateTime(DateTimeZone.UTC);
+                        return zeroUTC;
                     } else {
                         /* The cycle should use the date of the most recent
                            successful attempt
                          */
-                        return new DateTime(endpoint.getHarvestedDate()
-                                .toDateTime(DateTimeZone.UTC));
+                        return new DateTime(endpoint.getHarvestedDate(),
+                                DateTimeZone.UTC);
                     }
                 }
 
@@ -273,7 +276,7 @@ public class XMLBasedCycle implements Cycle {
 
                 if (! endpoint.retry()){
                     // the cycle should not retry, so it does not need a date
-                    return new DateTime(0);
+                    return zeroUTC;
                 } else {
                     attempted = endpoint.getAttemptedDate();
                     harvested = endpoint.getHarvestedDate();
@@ -283,13 +286,14 @@ public class XMLBasedCycle implements Cycle {
                            the endpoint. Therefore, there is no need for it to
                            retry.
                          */
-                        return new DateTime(0).toDateTime(DateTimeZone.UTC);
+                        return zeroUTC;
                     } else {
                         /* After the most recent success, the cycle attempted
                            to harvest the endpoint but did not succeed. It can
                            therefore retry.
                          */
-                        return new DateTime (endpoint.getHarvestedDate());
+                        return new DateTime(endpoint.getHarvestedDate(),
+                                DateTimeZone.UTC);
                     }
                 }
 
@@ -299,7 +303,7 @@ public class XMLBasedCycle implements Cycle {
                    it, the cycle can do without a date. Return the epoch date.
                  */
 
-                return new DateTime(0).toDateTime(DateTimeZone.UTC);
+                return zeroUTC;
 
             default:
                 // all the members of the mode should be covered
