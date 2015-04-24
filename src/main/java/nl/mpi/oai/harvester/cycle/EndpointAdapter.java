@@ -27,9 +27,7 @@ import org.joda.time.DateTimeZone;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
-import java.sql.Time;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -301,9 +299,6 @@ class EndpointAdapter implements Endpoint {
         try {
             // get current time in the UTC zone
             DateTime dateTime = new DateTime (DateTimeZone.UTC);
-
-            // Calendar c = Calendar.getInstance(); kj: remove old code
-            // c.getTime();
 
             // represent the time as a calendar object
             Calendar c = dateTime.toGregorianCalendar();

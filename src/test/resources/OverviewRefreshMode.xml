@@ -12,22 +12,22 @@
         <block>false</block>
         <retry>true</retry>
         <incremental>true</incremental>
-        <attempted>2014-07-24</attempted>
-        <harvested>2014-07-21</harvested>
+        <attempted>2014-07-24T00:00:00.000Z</attempted>
+        <harvested>2014-07-21T00:00:00.000Z</harvested>
     </endpoint>
     <endpoint>
         <URI>http://www.endpoint3.org</URI>
         <block>true</block>
         <retry>true</retry>
         <incremental>false</incremental>
-        <attempted>2014-12-17</attempted>
-        <harvested>2014-12-11</harvested>
+        <attempted>2014-12-17T00:00:00.000Z</attempted>
+        <harvested>2014-12-11T00:00:00.000Z</harvested>
     </endpoint>
     <endpoint>
         <URI>http://www.endpoint4.org</URI>
         <block>false</block>
         <retry>false</retry>
         <incremental>false</incremental>
-        <attempted>2014-07-19</attempted>
+        <attempted>2014-07-19T00:00:00.000Z</attempted>
     </endpoint>
 </overviewType>

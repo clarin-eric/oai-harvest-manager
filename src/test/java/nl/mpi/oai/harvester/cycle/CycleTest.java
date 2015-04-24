@@ -39,6 +39,10 @@ import static org.junit.Assert.*;
  */
 public class CycleTest {
 
+    // zero epoch time in the UTC zone
+    final DateTime zeroUTC = new DateTime ("1970-01-01T00:00:00.000+00:00",
+            DateTimeZone.UTC);
+
     @Test
     /**
      * Test reflecting and deciding based on an endpoint overview stored in
@@ -62,16 +66,14 @@ public class CycleTest {
            not attempted the endpoint before, so it should now try to harvest
            it from the beginning.
          */
-        assertEquals("1970-01-01T00:00:00.000Z",
-                cycle.getRequestDate(endpoint).toString());
+        assertEquals(zeroUTC, cycle.getRequestDate(endpoint));
 
         // second endpoint
         endpoint = cycle.next();
         /* While the endpoint allows retrying, it does not allow incremental
            harvesting, so the client should harvest it from the beginning.
          */
-        assertEquals("1970-01-01T00:00:00.000Z",
-                cycle.getRequestDate(endpoint).toDateTime().toString());
+        assertEquals(zeroUTC, cycle.getRequestDate(endpoint).toDateTime());
 
         // third endpoint
         endpoint = cycle.next();
@@ -82,15 +84,16 @@ public class CycleTest {
         endpoint = cycle.next();
         // the endpoint does not support incremental harvesting
         assertTrue(cycle.doHarvest(endpoint));
-        assertEquals("1970-01-01T00:00:00.000Z",
-                cycle.getRequestDate(endpoint).toString());
+        assertEquals(zeroUTC, cycle.getRequestDate(endpoint));
+
+        DateTime dateTime = new DateTime("2014-07-19T00:00:00.000Z",
+                DateTimeZone.UTC);
 
         // fifth endpoint
         endpoint = cycle.next();
         // the client should harvest this endpoint
         assertTrue(cycle.doHarvest(endpoint));
-        //assertEquals("2014-07-19T00:00:00.000Z",
-        //        cycle.getRequestDate(endpoint).toString()); // kj: repair
+        assertEquals(dateTime, cycle.getRequestDate(endpoint));
     }
 
     @Test
@@ -99,9 +102,6 @@ public class CycleTest {
      * an XML file.
      */
     public void testRetryMode() {
-
-        final DateTime zeroUTC = new DateTime ("1970-01-01T00:00:00.000+00:00",
-                DateTimeZone.UTC);
 
         // create a CycleFactory
         CycleFactory factory = new CycleFactory();
@@ -121,6 +121,9 @@ public class CycleTest {
         // with no date in the overview, this endpoint should be harvested
         assertTrue(cycle.doHarvest(endpoint));
 
+        DateTime dateTime = new DateTime("2014-07-21T00:00:00.000Z",
+                DateTimeZone.UTC);
+
         // second endpoint
         endpoint = cycle.next();
         // according to the overview, the endpoint needs another attempt
@@ -128,14 +131,14 @@ public class CycleTest {
         /* Assert the date to use in the request, note that endpoint does not
            allow for incremental harvesting.
          */
-        //assertEquals("2014-07-21T00:00:00.000+02:00",
-        //        cycle.getRequestDate(endpoint).toString());
+        assertEquals(dateTime, cycle.getRequestDate(endpoint));
+
+        dateTime = new DateTime("2014-12-11T00:00:00.000Z", DateTimeZone.UTC);
 
         // third endpoint
         endpoint = cycle.next();
         // this endpoint does allow incremental harvesting
-        //assertEquals("2014-12-11T00:00:00.000+01:00",
-        //        cycle.getRequestDate(endpoint).toString()); kj: repair
+        assertEquals(dateTime, cycle.getRequestDate(endpoint));
 
         // fourth endpoint
         endpoint = cycle.next();
@@ -176,8 +179,7 @@ public class CycleTest {
         // as it has not tried it before, the client should harvest the endpoint
         assertTrue(cycle.doHarvest(endpoint));
         // from the beginning
-        //assertEquals("1970-01-01T01:00:00.000+01:00",
-        //        cycle.getRequestDate(endpoint).toString());
+        assertEquals(zeroUTC, cycle.getRequestDate(endpoint));
 
         // second endpoint
         endpoint = cycle.next();
@@ -188,8 +190,7 @@ public class CycleTest {
            client should be led to disregarding this.
          */
         assertTrue(cycle.doHarvest(endpoint));
-        assertEquals("1970-01-01T00:00:00.000Z",
-                cycle.getRequestDate(endpoint).toString());
+        assertEquals(zeroUTC, cycle.getRequestDate(endpoint));
 
         // third endpoint
         endpoint = cycle.next();
@@ -202,7 +203,6 @@ public class CycleTest {
            the endpoint before.
          */
         assertTrue(cycle.doHarvest(endpoint));
-        assertEquals("1970-01-01T00:00:00.000Z",
-                cycle.getRequestDate(endpoint).toString());
+        assertEquals(zeroUTC, cycle.getRequestDate(endpoint));
     }
 }
