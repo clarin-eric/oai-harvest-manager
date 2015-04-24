@@ -27,6 +27,7 @@ import org.joda.time.DateTimeZone;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
+import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -307,9 +308,20 @@ class EndpointAdapter implements Endpoint {
             xmlGregorianCalendar =
                     DatatypeFactory.newInstance().newXMLGregorianCalendar();
 
+            // set the date related fields to the calendar values
             xmlGregorianCalendar.setDay(c.get(Calendar.DAY_OF_MONTH));
             xmlGregorianCalendar.setMonth(c.get(Calendar.MONTH) + 1);
             xmlGregorianCalendar.setYear(c.get(Calendar.YEAR));
+
+            xmlGregorianCalendar.setTimezone(0); // kj: determine time zone
+
+            // kj: determine precision here
+
+            // set the time related fields to zero
+            xmlGregorianCalendar.setHour(0);
+            xmlGregorianCalendar.setMinute(0);
+            xmlGregorianCalendar.setSecond(0);
+            xmlGregorianCalendar.setFractionalSecond(BigDecimal.valueOf(0.0));
 
             // set the property representing the date of the attempt
             endpointType.setAttempted(xmlGregorianCalendar);

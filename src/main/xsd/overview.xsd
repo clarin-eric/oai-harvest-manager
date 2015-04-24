@@ -20,8 +20,8 @@
             <xs:element minOccurs="0" name="refresh" type="xs:boolean"/>
             <xs:element minOccurs="0" name="incremental" type="xs:boolean"/>
             <xs:element maxOccurs="1" name="scenario" minOccurs="0" type="ScenarioType"> </xs:element>
-            <xs:element name="attempted" minOccurs="0" type="xs:date"/>
-            <xs:element name="harvested" minOccurs="0" type="xs:date"/>
+            <xs:element name="attempted" minOccurs="0" type="xs:dateTime"/>
+            <xs:element name="harvested" minOccurs="0" type="xs:dateTime"/>
             <xs:element minOccurs="0" name="count" type="xs:unsignedInt"> </xs:element>
             <xs:element minOccurs="0" name="increment" type="xs:unsignedInt"> </xs:element>
         </xs:sequence>
