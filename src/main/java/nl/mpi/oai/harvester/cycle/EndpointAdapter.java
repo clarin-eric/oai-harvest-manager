@@ -18,6 +18,7 @@
 
 package nl.mpi.oai.harvester.cycle;
 
+import com.sun.istack.internal.Nullable;
 import nl.mpi.oai.harvester.generated.EndpointType;
 import nl.mpi.oai.harvester.generated.OverviewType;
 import nl.mpi.oai.harvester.generated.ScenarioType;
@@ -87,7 +88,7 @@ class EndpointAdapter implements Endpoint {
      * @return            null if the cycle does not contain the endpoint,
      *                    the intended endpoint otherwise
      */
-    private EndpointType FindEndpoint(String endpointURI) {
+    @Nullable private EndpointType FindEndpoint(String endpointURI) {
 
         // assume the endpoint is not there
         endpointType = null;
@@ -313,9 +314,8 @@ class EndpointAdapter implements Endpoint {
             xmlGregorianCalendar.setMonth(c.get(Calendar.MONTH) + 1);
             xmlGregorianCalendar.setYear(c.get(Calendar.YEAR));
 
-            xmlGregorianCalendar.setTimezone(0); // kj: determine time zone
-
-            // kj: determine precision here
+            // set the calendar to UTC, this zone sets off 0 minutes from UTC
+            xmlGregorianCalendar.setTimezone(0);
 
             // set the time related fields to zero
             xmlGregorianCalendar.setHour(0);

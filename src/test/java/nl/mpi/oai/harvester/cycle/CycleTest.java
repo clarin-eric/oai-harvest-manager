@@ -33,8 +33,6 @@ import static org.junit.Assert.*;
  * attempts. The methods should also check if the Cycle class methods correctly
  * decide on if and when to harvest an endpoint.
  *
- * kj: check if DateTime is represented in UTC
- *
  * @author Kees Jan van de Looij (Max Planck Institute for Psycholinguistics)
  */
 public class CycleTest {
