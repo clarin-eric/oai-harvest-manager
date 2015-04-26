@@ -18,7 +18,6 @@
 
 package nl.mpi.oai.harvester.cycle;
 
-import com.sun.istack.internal.Nullable;
 import nl.mpi.oai.harvester.generated.EndpointType;
 import nl.mpi.oai.harvester.generated.OverviewType;
 import nl.mpi.oai.harvester.generated.ScenarioType;
@@ -29,7 +28,6 @@ import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.math.BigDecimal;
-import java.util.Calendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -88,7 +86,7 @@ class EndpointAdapter implements Endpoint {
      * @return            null if the cycle does not contain the endpoint,
      *                    the intended endpoint otherwise
      */
-    @Nullable private EndpointType FindEndpoint(String endpointURI) {
+    private EndpointType FindEndpoint(String endpointURI) {
 
         // assume the endpoint is not there
         endpointType = null;
@@ -302,26 +300,28 @@ class EndpointAdapter implements Endpoint {
             // get current time in the UTC zone
             DateTime dateTime = new DateTime (DateTimeZone.UTC);
 
-            // represent the time as a calendar object
-            Calendar c = dateTime.toGregorianCalendar();
-
             // create XML calendar
             xmlGregorianCalendar =
                     DatatypeFactory.newInstance().newXMLGregorianCalendar();
 
-            // set the date related fields to the calendar values
-            xmlGregorianCalendar.setDay(c.get(Calendar.DAY_OF_MONTH));
-            xmlGregorianCalendar.setMonth(c.get(Calendar.MONTH) + 1);
-            xmlGregorianCalendar.setYear(c.get(Calendar.YEAR));
+            // set the date related fields
+            xmlGregorianCalendar.setDay(dateTime.getDayOfMonth());
+            xmlGregorianCalendar.setMonth(dateTime.getMonthOfYear());
+            xmlGregorianCalendar.setYear(dateTime.getYear());
 
             // set the calendar to UTC, this zone sets off 0 minutes from UTC
             xmlGregorianCalendar.setTimezone(0);
 
-            // set the time related fields to zero
-            xmlGregorianCalendar.setHour(0);
-            xmlGregorianCalendar.setMinute(0);
-            xmlGregorianCalendar.setSecond(0);
-            xmlGregorianCalendar.setFractionalSecond(BigDecimal.valueOf(0.0));
+            // set the time related fields
+            xmlGregorianCalendar.setHour(dateTime.getHourOfDay());
+            xmlGregorianCalendar.setMinute(dateTime.getMinuteOfHour());
+            xmlGregorianCalendar.setSecond(dateTime.getSecondOfMinute());
+
+            // represent milliseconds as a fraction of a second
+            BigDecimal s = BigDecimal.valueOf(dateTime.getMillisOfSecond());
+            s = s.divide(BigDecimal.valueOf(1000));
+
+            xmlGregorianCalendar.setFractionalSecond(s);
 
             // set the property representing the date of the attempt
             endpointType.setAttempted(xmlGregorianCalendar);
