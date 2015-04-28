@@ -24,6 +24,7 @@ import java.util.concurrent.Semaphore;
 
 import nl.mpi.oai.harvester.StaticProvider;
 import nl.mpi.oai.harvester.action.ActionSequence;
+import nl.mpi.oai.harvester.cycle.CycleProperties;
 import nl.mpi.oai.harvester.harvesting.*;
 import nl.mpi.oai.harvester.Provider;
 import nl.mpi.oai.harvester.metadata.MetadataFactory;
@@ -56,7 +57,7 @@ class Worker implements Runnable {
        retrieve each record in the list individually. ListRecords: skip the
        list, retrieve multiple records per request.
      */
-    private final String scenarioName;
+    private CycleProperties.Scenario scenarioName;
 
     /**
      * Set the maximum number of concurrent worker threads.
@@ -72,12 +73,15 @@ class Worker implements Runnable {
      *
      * @param provider OAI-PMH provider that this thread will harvest
      * @param actionSequences list of actions to take on harvested metadata
-     * @param scenarioName the scenario to be applied
+     * @param scenarioName the scenario for harvesting
      *
+     * kj: ideally, give a worker the endpoint URI and a cycle object
+     *
+     * Note: this makes it easier to report back the result.
      */
     public Worker(Provider provider, List<ActionSequence> actionSequences,
-                  String scenarioName) {
-	this.provider  = provider;
+                  CycleProperties.Scenario scenarioName) {
+	this.provider = provider;
 	this.actionSequences = actionSequences;
     this.scenarioName = scenarioName;
     }
@@ -117,6 +121,7 @@ class Worker implements Runnable {
             // list of prefixes provided by the endpoint
             List<String> prefixes;
 
+            // kj: annotate
             Scenario scenario = new Scenario(provider, actionSequence);
 
             if (provider instanceof StaticProvider) {
@@ -154,9 +159,9 @@ class Worker implements Runnable {
                     // no match
                     done = false;
                 } else {
-
                     // determine the type of record harvesting to apply
-                    if (scenarioName.equals("ListIdentifiers")) {
+                    if (scenarioName == CycleProperties.Scenario.ListIdentifiers) {
+                        // kj: annotate, connect verb to scenario
                         harvesting = new IdentifierListHarvesting(oaiFactory,
                                 provider, prefixes, metadataFactory);
 
@@ -173,7 +178,7 @@ class Worker implements Runnable {
             }
 
             // break after an action sequence has completed successfully
-            if (done) break;
+            if (done) break; // kj: report back
 
         }
         logger.info("Processing finished for " + provider);

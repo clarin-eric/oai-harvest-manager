@@ -37,7 +37,7 @@ import static org.junit.Assert.fail;
  *
  * @author Kees Jan van de Looij (Max Planck Institute for Psycholinguistics)
  */
-class TestHelper {
+public class TestHelper {
 
     /**
      * <br> Get the resource as a File type object <br><br>

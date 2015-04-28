@@ -62,7 +62,7 @@ package nl.mpi.oai.harvester.cycle;
  *
  * @author Kees Jan van de Looij (Max Planck Institute for Psycholinguistics)
  */
-interface CycleProperties {
+public interface CycleProperties {
 
     /**
      * Mode of harvesting
@@ -107,8 +107,10 @@ interface CycleProperties {
      * Applying a particular scenario, the cycle can, for example, first harvest
      * the identifiers of metadata records and request the identified records,
      * or alternatively, harvest the records directly.
+     *
+     * kj: rename to ScenarioName
      */
-    enum Scenario {
+    public enum Scenario {
 
         /**
          * Query the metadata prefixes the endpoint supports. The cycle uses

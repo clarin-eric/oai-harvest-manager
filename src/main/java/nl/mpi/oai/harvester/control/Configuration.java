@@ -83,7 +83,7 @@ public class Configuration {
 	WORKDIR("workdir"), RETRYCOUNT("max-retry-count"),
 	RETRYDELAY("retry-delay"), MAXJOBS("max-jobs"),
 	POOLSIZE("resource-pool-size"), TIMEOUT("timeout"),
-        SCENARIO("scenario"),
+        OVERVIEWFILE("overview-file"),
         SAVERESPONSE("save-response");
 	private final String val;
 	private KnownOptions(final String s) { val = s; }
@@ -466,9 +466,9 @@ public class Configuration {
      * 
      * @return string indicating the scenario.
      */
-    public String getScenario(){
+    public String getOverviewFile(){
         
-        return settings.get(KnownOptions.SCENARIO.toString());
+        return settings.get(KnownOptions.OVERVIEWFILE.toString());
     }
     
     /**

@@ -18,11 +18,15 @@
 
 package nl.mpi.oai.harvester.control;
 
+import java.io.File;
 import java.io.IOException;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPathExpressionException;
 
 import nl.mpi.oai.harvester.Provider;
+import nl.mpi.oai.harvester.cycle.Cycle;
+import nl.mpi.oai.harvester.cycle.CycleFactory;
+import nl.mpi.oai.harvester.cycle.Endpoint;
 import org.apache.log4j.Logger;
 import org.xml.sax.SAXException;
 
@@ -45,10 +49,22 @@ public class Main {
 	// is responsible for honouring the configured limit of
 	// concurrent worker threads.
 	Worker.setConcurrentLimit(config.getMaxJobs());
+	// create a CycleFactory
+	CycleFactory factory = new CycleFactory();
+	// get a cycle based on the overview file
+	File OverviewFile = new File (config.getOverviewFile());
+	Cycle cycle = factory.createCycle(OverviewFile);
+
 	for (Provider provider : config.getProviders()) {
+
+		// register the endpoint with the cycle
+		Endpoint endpoint = cycle.next(provider.getOaiUrl(), "group");
+
 	    Worker worker = new Worker(provider,
-				config.getActionSequences(), config.getScenario());
+				config.getActionSequences(), endpoint.getScenario());
 	    worker.startWorker();
+
+		// kj: handle error and report back to the cycle
 	}
     }
 

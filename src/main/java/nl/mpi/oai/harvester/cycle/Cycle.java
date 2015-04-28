@@ -57,7 +57,7 @@ public interface Cycle {
      *
      * By invoking next on a Cycle type object, a client receives the URI
      * identified endpoint. The cycle will remove the endpoint from the list
-     * of endpoints in the overview that are elligable for harvesting.
+     * of endpoints in the overview that are eligible for harvesting.
      *
      * @param URI reference to the endpoint
      * @param group the group the endpoint belongs to
