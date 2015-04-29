@@ -57,14 +57,12 @@ public class Main {
 
 	for (Provider provider : config.getProviders()) {
 
-		// register the endpoint with the cycle
-		Endpoint endpoint = cycle.next(provider.getOaiUrl(), "group");
+		// create a new working, passing one and the same for each cycle
+	    Worker worker = new Worker(
+				provider, config.getActionSequences(), cycle);
 
-	    Worker worker = new Worker(provider,
-				config.getActionSequences(), endpoint.getScenario());
 	    worker.startWorker();
 
-		// kj: handle error and report back to the cycle
 	}
     }
 

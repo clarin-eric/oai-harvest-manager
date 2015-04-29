@@ -18,13 +18,14 @@
 
 package nl.mpi.oai.harvester.control;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Semaphore;
 
 import nl.mpi.oai.harvester.StaticProvider;
 import nl.mpi.oai.harvester.action.ActionSequence;
+import nl.mpi.oai.harvester.cycle.Cycle;
 import nl.mpi.oai.harvester.cycle.CycleProperties;
+import nl.mpi.oai.harvester.cycle.Endpoint;
 import nl.mpi.oai.harvester.harvesting.*;
 import nl.mpi.oai.harvester.Provider;
 import nl.mpi.oai.harvester.metadata.MetadataFactory;
@@ -57,7 +58,10 @@ class Worker implements Runnable {
        retrieve each record in the list individually. ListRecords: skip the
        list, retrieve multiple records per request.
      */
-    private CycleProperties.Scenario scenarioName;
+    private final CycleProperties.Scenario scenarioName;
+
+    // kj: annotate
+    Endpoint endpoint;
 
     /**
      * Set the maximum number of concurrent worker threads.
@@ -73,17 +77,21 @@ class Worker implements Runnable {
      *
      * @param provider OAI-PMH provider that this thread will harvest
      * @param actionSequences list of actions to take on harvested metadata
-     * @param scenarioName the scenario for harvesting
+     * @param cycle the harvesting cycle
      *
-     * kj: ideally, give a worker the endpoint URI and a cycle object
-     *
-     * Note: this makes it easier to report back the result.
+     * kj: ideally, give a worker the endpoint URI instead of the provider
      */
     public Worker(Provider provider, List<ActionSequence> actionSequences,
-                  CycleProperties.Scenario scenarioName) {
+                  Cycle cycle) {
+
 	this.provider = provider;
 	this.actionSequences = actionSequences;
-    this.scenarioName = scenarioName;
+
+    // register the endpoint with the cycle, kj: get the group
+    endpoint = cycle.next(provider.getOaiUrl(), "group");
+
+    // get the name of the scenario the worker needs to apply
+    this.scenarioName = endpoint.getScenario();
     }
 
     /**
@@ -178,9 +186,12 @@ class Worker implements Runnable {
             }
 
             // break after an action sequence has completed successfully
-            if (done) break; // kj: report back
-
+            if (done) break;
         }
+
+        // report back success or failure to the cycle
+        endpoint.doneHarvesting(done);
+
         logger.info("Processing finished for " + provider);
         semaphore.release();
     }
