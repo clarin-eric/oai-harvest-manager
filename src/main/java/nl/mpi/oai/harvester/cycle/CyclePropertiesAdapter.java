@@ -102,7 +102,7 @@ class CyclePropertiesAdapter implements CycleProperties {
         Scenario scenario;
 
         if (scenarioType == null) {
-            scenario = Scenario.ListRecords;
+            scenario = Scenario.ListIdentifiers;
             overviewType.setScenario(ScenarioType.LIST_IDENTIFIERS);
         } else {
 

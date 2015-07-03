@@ -69,6 +69,7 @@ public class XMLBasedCycle implements Cycle {
         xmlOverview = new XMLOverview(overviewFile);
 
         cycleProperties = xmlOverview.getCycleProperties();
+        cycleProperties.getScenario();
 
         // no longer consider endpoints cycled before
         endpointsCycled = new ArrayList<>();

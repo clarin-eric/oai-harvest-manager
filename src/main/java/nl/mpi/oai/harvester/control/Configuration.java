@@ -18,9 +18,11 @@
 
 package nl.mpi.oai.harvester.control;
 
+import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -443,36 +445,27 @@ public class Configuration {
         if (s == null) return getMaxJobs();
         return Integer.valueOf(s);
     }
-    /**
-	 * Scenario for harvesting <br><br>
-	 *
-	 * Values: ListIdentifiers, ListRecords
-	 *
-     * In the ListRecords scenario records are retrieved as responses to a
-	 * request build around the ListRecords verb. The ListIdentifiers scenario
-	 * first obtains a list of records, and after that retrieves each record in
-	 * the list individually.
-     *
-     * The advantage of the ListRecords is that a single response can contain
-     * multiple records. As long as the endpoint can provide records, it will 
-     * include a resumption token in the response, indicating that more records
-     * can be retrieved issuing another request including this token.
-     * 
-     * In the ListIdentifiers scenario, each record identified needs to be
-	 * retrieved in a an individual request. While the list of identifiers can
-	 * be compiled efficiently, this is clearly not efficient. Moreover, when
-	 * building the list the OAI header is included while it is also included in
-	 * the individual records. So using indirect harvesting more data needs to be
-     * transferred.
-     *  
-     * By default, the endpoint will be harvested by applying the ListIdentifiers
-	 * scenario.
-     * 
-     * @return string indicating the scenario.
+    /** 
+     * @return string indicating the location of the overview file
      */
-    public String getOverviewFile(){
-        
-        return settings.get(KnownOptions.OVERVIEWFILE.toString());
+    public String getOverviewFile() {
+        String s = settings.get(KnownOptions.OVERVIEWFILE.toString());
+        if (s == null) {
+            s = "overview.xml";
+            Path p = Paths.get(s);
+            if (!Files.exists(p)) {
+                try {
+                    String overview = "<overviewType/>";
+                    BufferedWriter writer = Files.newBufferedWriter(p);
+                    writer.write(overview,0,overview.length());
+                    writer.close();
+                } catch (IOException e) {
+                    s = null;
+                    logger.error("couldn't create the default overview.xml file: ",e);
+                }
+            }
+        }
+        return s;
     }
     
     /**

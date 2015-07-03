@@ -233,9 +233,13 @@ class EndpointAdapter implements Endpoint {
         ScenarioType scenarioType = endpointType.getScenario();
 
         if (scenarioType == null) {
-            // attribute not XML cycle element, add it to it
-            endpointType.setScenario(ScenarioType.LIST_RECORDS);
-            return CycleProperties.Scenario.ListRecords;
+            // look for a global scenario
+            scenarioType = this.xmlOverview.overviewType.getScenario();
+        }
+        if (scenarioType == null) {
+            // fall back to default
+            endpointType.setScenario(ScenarioType.LIST_IDENTIFIERS);
+            return CycleProperties.Scenario.ListIdentifiers;
         } else {
             switch (scenarioType) {
                 case LIST_PREFIXES:
