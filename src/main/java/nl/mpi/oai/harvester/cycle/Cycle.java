@@ -130,6 +130,9 @@ public interface Cycle {
      * Note: before issuing an OAI request, the cycle should first find out if
      * it should harvest the endpoint or not. After that, it can determine the
      * date it should use for building the request.
+     * 
+     * @param endPoint the endpoint
+     * @return date needed for the OAI request
      */
     public DateTime getRequestDate (Endpoint endPoint);
 

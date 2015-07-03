@@ -88,6 +88,7 @@ public class SaveAction implements Action {
      * 
      * @param metadata metadata record
      * @return path to new file in suitable location
+     * @throws IOException something went wrong when creating the new file
      */
     protected Path chooseLocation(Metadata metadata) throws IOException {
 	return dir.placeNewFile(Util.toFileFormat(metadata.getId()) + suffix);

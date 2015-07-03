@@ -54,6 +54,9 @@ public interface OAIInterface {
      *
      * @param p1 the endpoint URI
      * @param p2 the resumption token
+     * @param p3 parameter three
+     * @param p4 parameter four
+     * @param p5 parameter five
      * @return the OAI response
      */
     Document newListRecords(String p1, String p2, String p3, String p4,

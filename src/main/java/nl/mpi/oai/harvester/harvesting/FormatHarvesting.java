@@ -74,6 +74,7 @@ public class FormatHarvesting extends AbstractHarvesting implements
     /**
      * <br> Create object, associate provider data and desired prefix
      * 
+     * @param oaiFactory the OAI factory
      * @param provider the endpoint to address in the request
      * @param actions  specify the format requested
      */
@@ -99,8 +100,17 @@ public class FormatHarvesting extends AbstractHarvesting implements
         
         logger.debug("Requesting formats matching " + actions.getInputFormat());
 
-        // get metadata formats from the endpoint
-        document = oaiFactory.createListMetadataFormats(provider.oaiUrl);
+        try {
+            // get metadata formats from the endpoint
+            document = oaiFactory.createListMetadataFormats(provider.oaiUrl);
+        } catch (IOException
+                | ParserConfigurationException
+                | SAXException
+                | TransformerException
+                | NoSuchFieldException e) {
+            // report
+            logger.error(e.getMessage(), e);
+        }
 
         if (document == null){
             // something went wrong, ending the work for the current endpoint

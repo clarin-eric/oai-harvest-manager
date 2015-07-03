@@ -71,6 +71,9 @@ public class Provider {
     /** Maximum number of retries to use when a connection fails. */
 	public int maxRetryCount = 0;
 
+    /** Maximum number of retries to use when a connection fails. */
+    public int retryDelay = 0;
+    
 	/** Type of prefix harvesting that applies to the provider */
 	public Harvesting prefixHarvesting;
 
@@ -97,8 +100,11 @@ public class Provider {
      * not instantiate the builder.
      *
      * @param url OAI-PMH URL (endpoint) of the provider
+     * @param maxRetryCount maximum number of retries
+     * @param retryDelay how long to wait between tries
+     * @throws ParserConfigurationException configuration problem
      */
-    public Provider(String url, int maxRetryCount)
+    public Provider(String url, int maxRetryCount, int retryDelay)
             throws ParserConfigurationException {
 
 	// If the base URL is given with parameters (most often
@@ -109,6 +115,8 @@ public class Provider {
 	this.oaiUrl = url;
 
 	this.maxRetryCount = maxRetryCount;
+        
+        this.retryDelay = retryDelay;
 
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         // note: the dbf might throw the checked ParserConfigurationException
@@ -156,7 +164,10 @@ public class Provider {
 	this.sets = sets;
     }
 
-    /** Get name with all characters intact. */
+    /** 
+     * Get name with all characters intact. 
+     * @return name
+     */
     public String getName() {
 	return name;
     }
@@ -168,6 +179,7 @@ public class Provider {
     /**
      * Get the name declared by an OAI-PMH provider by making an
      * Identify request. Returns null if no name can be found.
+     * @return provider name
      */
 	public String getProviderName() {
 	try {
@@ -211,6 +223,7 @@ public class Provider {
      * will be returned.
      *
      * @param ap the sequence of actions
+     * @return success or failure
      */
     public boolean performActions(ActionSequence ap) {
 	List<String> prefixes = getPrefixes(ap.getInputFormat());
@@ -280,6 +293,12 @@ public class Provider {
      *
      * @param mdPrefix metadata prefix
      * @return list of identifiers, which may be empty
+     * @throws IOException IO problem
+     * @throws ParserConfigurationException configuration problem
+     * @throws SAXException XML problem
+     * @throws TransformerException XSL problem
+     * @throws XPathExpressionException XPath problem
+     * @throws NoSuchFieldException introspection problem
      */
 	public List<String> getIdentifiers(String mdPrefix) throws IOException,
 	    ParserConfigurationException, SAXException, TransformerException,
@@ -305,6 +324,12 @@ public class Provider {
      * @param mdPrefix Metadata prefix
      * @param set OAI-PMH set, or null for none
      * @param ids existing list to which identifiers will be added
+     * @throws IOException IO problem
+     * @throws ParserConfigurationException configuration problem
+     * @throws SAXException XML problem
+     * @throws TransformerException XSL problem
+     * @throws XPathExpressionException XPath problem
+     * @throws NoSuchFieldException introspection problem
      */
     public void addIdentifiers(String mdPrefix, String set, List<String> ids)
 	    throws IOException, ParserConfigurationException, SAXException,
@@ -327,6 +352,7 @@ public class Provider {
      *
      * @param doc DOM tree representing OAI-PMH response
      * @param ids a list, already created, that identifiers will be added to
+     * @throws XPathExpressionException XPath problem
      */
     public void addIdentifiers(Document doc, List<String> ids) throws
 	    XPathExpressionException {
@@ -344,6 +370,8 @@ public class Provider {
     /**
      * Get the list of Metadata prefixes corresponding to the specified format
      * that are supported by this provider.
+     * @param format format
+     * @return list of metadata prefixes
      */
     public List<String> getPrefixes(MetadataFormat format) {
 	logger.debug("Checking format " + format);
@@ -364,6 +392,7 @@ public class Provider {
      * @param doc DOM tree of OAI provider's response
      * @param format desired Metadata format
      * @return list of prefixes
+     * @throws XPathExpressionException XPath problem
      */
 	public List<String> parsePrefixes(Document doc, MetadataFormat format)
 	    throws XPathExpressionException {
@@ -405,6 +434,8 @@ public class Provider {
     /**
      * Check if name matches given string (whether in filesystem
      * format or not).
+     * @param name name to match
+     * @return match or not
      */
     public boolean matches(String name) {
 	return this.name.equals(Util.toFileFormat(name));

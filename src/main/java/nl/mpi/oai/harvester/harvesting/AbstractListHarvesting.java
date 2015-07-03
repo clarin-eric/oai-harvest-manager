@@ -245,11 +245,11 @@ abstract public class AbstractListHarvesting extends AbstractHarvesting
      *
      * Invariant. When harvesting does not involve sets: <br><br>
      *
-     * pIndex <= prefixes.size <br><br>
+     * pIndex &lt;= prefixes.size <br><br>
      *
      * otherwise: <br><br>
      *
-     * pIndex <= prefixes.size && sIndex <= provider.sets.length <br><br>
+     * pIndex &lt;= prefixes.size &amp;&amp; sIndex &lt;= provider.sets.length <br><br>
      *
      * @return true if the endpoint could still have metadata available
      *         associated with the set and prefix indicated by pIndex and
@@ -299,7 +299,7 @@ abstract public class AbstractListHarvesting extends AbstractHarvesting
      * <br> Determine if a client scenario has fully traversed the list of
      * target records
      *
-     * Invariant: pIndex <= prefixes.size
+     * Invariant: pIndex &lt;= prefixes.size
      *
      * @return true if there are more, false otherwise
      */

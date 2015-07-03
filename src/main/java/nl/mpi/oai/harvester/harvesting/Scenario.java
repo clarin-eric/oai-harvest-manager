@@ -52,6 +52,7 @@ public class Scenario {
      *
      * The list created is based on the format specified in the configuration.
      *
+     * @param harvesting harvester
      * @return false on parser or input output error
      */
     public List<String> getPrefixes(Harvesting harvesting){
@@ -98,6 +99,7 @@ public class Scenario {
      * Get metadata records indirectly, that is by first obtaining a list of
      * identifiers pointing to them <br><br>
      *
+     * @param harvesting harvester
      * @return false on parser or input output error
      */
     public boolean listIdentifiers(Harvesting harvesting) {
@@ -160,6 +162,7 @@ public class Scenario {
      * the response also. Since the sequence of actions will be applied to an
      * individual record, in the sequence both will be disabled.
      *
+     * @param harvesting harvester
      * @return false on parser or input output error
      */
     public boolean listRecords(Harvesting harvesting) {

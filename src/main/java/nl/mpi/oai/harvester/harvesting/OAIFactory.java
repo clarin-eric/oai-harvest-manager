@@ -25,10 +25,11 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import java.io.IOException;
+import java.net.ConnectException;
 
 /**
  * <br> Factory for OAI protocol objects <br><br>
- * <p/>
+ * <p>
  * By injecting the factory into harvesting package constructors, when testing,
  * the origin of OAI response type objects can be influenced. Instead of getting
  * a real response from an OAI endpoint, a test helper can mock a response. In
@@ -46,7 +47,7 @@ public class OAIFactory {
 
     /**
      * <br> Connect an object that implements the OAI interface <br><br>
-     * <p/>
+     * <p>
      * Normally, when not testing, nothing will be connected. Therefore, this
      * method returns null. By spying on the factory, when using Mockito, can
      * the test can return an object that implements the interface. Typically,
@@ -66,7 +67,12 @@ public class OAIFactory {
      * @param endpointURI the endpoint URI
      * @return the OAI response
      */
-    Document createListMetadataFormats(String endpointURI) {
+    Document createListMetadataFormats(String endpointURI) throws 
+            IOException,
+            ParserConfigurationException,
+            SAXException,
+            TransformerException,
+            NoSuchFieldException {
 
         // the verb response
         Document response = null;
@@ -84,6 +90,7 @@ public class OAIFactory {
                     | SAXException
                     | TransformerException e) {
                 e.printStackTrace();
+                throw(e);
             }
         } else {
             // let the object connected return the OAI response
@@ -100,7 +107,12 @@ public class OAIFactory {
      * @param p2 the resumption token
      * @return the OAI response
      */
-    Document createListRecords(String p1, String p2) {
+    Document createListRecords(String p1, String p2) throws 
+            IOException,
+            ParserConfigurationException,
+            SAXException,
+            TransformerException,
+            NoSuchFieldException {
 
         // the verb response
         Document response = null;
@@ -120,6 +132,7 @@ public class OAIFactory {
                     | TransformerException
                     | NoSuchFieldException e) {
                 e.printStackTrace();
+                throw(e);
             }
         } else {
             // let the object connected return the OAI response
@@ -142,7 +155,12 @@ public class OAIFactory {
      * @return the OAI response
      */
     Document createListRecords(String p1, String p2, String p3, String p4,
-                               String p5) {
+                               String p5) throws 
+            IOException,
+            ParserConfigurationException,
+            SAXException,
+            TransformerException,
+            NoSuchFieldException {
 
         // the verb response
         Document response = null;
@@ -162,6 +180,7 @@ public class OAIFactory {
                     | TransformerException
                     | NoSuchFieldException e) {
                 e.printStackTrace();
+                throw(e);
             }
         } else {
             // let the object connected return the OAI response
@@ -181,7 +200,12 @@ public class OAIFactory {
      * @param p3 the metadata prefix
      * @return the OAI response
      */
-    Document createGetRecord(String p1, String p2, String p3) {
+    Document createGetRecord(String p1, String p2, String p3) throws 
+            IOException,
+            ParserConfigurationException,
+            SAXException,
+            TransformerException,
+            NoSuchFieldException {
 
         // the verb response
         Document response = null;
@@ -199,6 +223,7 @@ public class OAIFactory {
                     | SAXException
                     | TransformerException e) {
                 e.printStackTrace();
+                throw(e);
             }
         } else {
             // let the object connected return the OAI response
@@ -217,7 +242,12 @@ public class OAIFactory {
      * @param p2 resumption token
      * @return the OAI response
      */
-    Document createListIdentifiers(String p1, String p2) {
+    Document createListIdentifiers(String p1, String p2) throws 
+            IOException,
+            ParserConfigurationException,
+            SAXException,
+            TransformerException,
+            NoSuchFieldException {
 
         // the verb response
         Document response = null;
@@ -237,6 +267,7 @@ public class OAIFactory {
                     | TransformerException
                     | NoSuchFieldException e) {
                 e.printStackTrace();
+                throw(e);
             }
         } else {
             // let the object connected return the OAI response
@@ -259,7 +290,12 @@ public class OAIFactory {
      * @return the OAI response
      */
     Document createListIdentifiers(String p1, String p2, String p3,
-                                   String p4, String p5) {
+                                   String p4, String p5) throws 
+            IOException,
+            ParserConfigurationException,
+            SAXException,
+            TransformerException,
+            NoSuchFieldException {
 
         // the verb response
         Document response = null;
@@ -279,6 +315,7 @@ public class OAIFactory {
                     | TransformerException
                     | NoSuchFieldException e) {
                 e.printStackTrace();
+                throw(e);
             }
         } else {
             // let the object connected return the OAI response

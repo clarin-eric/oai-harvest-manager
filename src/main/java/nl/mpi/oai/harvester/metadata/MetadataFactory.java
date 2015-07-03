@@ -56,6 +56,7 @@ public class MetadataFactory {
      * <br> Create a metadata record
      *
      * @param id the metadata record identifier
+     * @param prefix the metadata prefix
      * @param doc the document containing the metadata
      * @param endpoint the endpoint URI
      * @param isEnvelope whether or not the data is an OAI envelope

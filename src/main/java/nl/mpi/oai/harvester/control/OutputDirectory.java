@@ -51,6 +51,9 @@ public class OutputDirectory {
      * Create a new instance with the specified base directory path
      * and no limit on the number of files on the top level of the
      * directory.
+     * 
+     * @param base base path
+     * @throws IOException problem with the base path
      */
     public OutputDirectory(Path base) throws IOException {
 	this(base, 0);
@@ -60,6 +63,10 @@ public class OutputDirectory {
      * Create a new instance with the specified base directory path
      * and given limit (maximum number of files within a
      * subdirectory). If limit=0, no limit is enforced.
+     * 
+     * @param base base path
+     * @param limit maximum number of files within a subdirectory
+     * @throws IOException problem with the base path
      */
     public OutputDirectory(Path base, int limit) throws IOException {
 	this.base = base;
@@ -82,6 +89,8 @@ public class OutputDirectory {
      * constraint as this one.
      * 
      * @param name name of the new directory
+     * @throws IOException problem with the new directory
+     * @return output directory
      */
     public OutputDirectory makeSubdirectory(String name) throws IOException {
 	return new OutputDirectory(base.resolve(name), limit);
@@ -91,6 +100,10 @@ public class OutputDirectory {
      * Given filename (without path), return a full canonical path to
      * a suitable location for that file, chosen in such a way that
      * the constraints placed on this directory are not breached.
+     * 
+     * @param file name of the new file
+     * @return path to the new file
+     * @throws IOException problem with the new file
      */
     public synchronized Path placeNewFile(String file) throws IOException {
 	if (limit == 0) {

@@ -61,6 +61,9 @@ public class RegistryReader {
     /**
      * Get a list of all OAI-PMH endpoint URLs defined in the
      * specified registry.
+     * 
+     * @param registryUrl url of the registry endpoint
+     * @return list of all OAI-PMH endpoint URLs
      */
     public List<String> getEndpoints(URL registryUrl) {
 	// Basically this makes a simple REST call to get a list of
@@ -93,8 +96,9 @@ public class RegistryReader {
      * Extract links to all provider information pages from the summary
      * document returned by the centre registry
      * 
-     * @param doc centre registry cycle response
+     * @param doc center registry cycle response
      * @return list of URLs of provider-specific info pages
+     * @throws XPathExpressionException problem with the paths to query the center registry response
      */
     public List<String> getProviderInfoUrls(Document doc) throws XPathExpressionException {
 	if (doc == null) {
@@ -117,8 +121,9 @@ public class RegistryReader {
      * Extract the OAI-PMH endpoint of a single provider from its description
      * document.
      * 
-     * @param providerInfo xml information from the centre registry
+     * @param providerInfo xml information from the center registry
      * @return endpoint URL, or null if none available
+     * @throws XPathExpressionException problem with the paths to query the center registry response
      */
     public NodeList getEndpoints(Document providerInfo) throws XPathExpressionException {
 	if (providerInfo == null)

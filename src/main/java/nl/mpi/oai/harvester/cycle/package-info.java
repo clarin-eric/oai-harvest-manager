@@ -40,7 +40,7 @@
  * For interpretation of the definition in the overview file, please refer to
  * the Endpoint and CycleProperties interfaces.<br><br>
  *
- * <p><IMG SRC="doc-files/package overview - cycle.svg">
+ * <p><IMG SRC="doc-files/package_overview_-_cycle.svg" ALT="package overview - cycle">
  *
  * @author Kees Jan van de Looij (Max Planck Institute for Psycholinguistics)
  */

@@ -65,18 +65,20 @@ public class StaticProvider extends Provider {
      * Create new static provider with the specified URL.
      * 
      * @param oaiUrl endpoint
+     * @throws ParserConfigurationException configuration problem
      */
     public StaticProvider(String oaiUrl) throws ParserConfigurationException {
-	super(oaiUrl, 1);
+	super(oaiUrl, 1, 0);
     }
 
     /**
      * Create a new static provider based on the provided contents.
      * 
      * @param doc DOM tree representing the provider's content
+     * @throws ParserConfigurationException configuration problem
      */
     public StaticProvider(Document doc) throws ParserConfigurationException {
-	super(null, 1);
+	super(null, 1, 0);
 	providerContent = doc;
     }
 

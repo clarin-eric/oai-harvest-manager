@@ -48,7 +48,13 @@ public class TransformAction implements Action {
     /** Prepared XSL transformation object. */
     private Transformer transformer;
 
-    /** Create a new transform action using the specified XSLT. */
+    /** 
+     * Create a new transform action using the specified XSLT. 
+     * 
+     * @param xsltFile the XSL stylesheet
+     * @throws FileNotFoundException stylesheet couldn't be found
+     * @throws TransformerConfigurationException there is a problem with the stylesheet
+     */
     public TransformAction(String xsltFile) throws FileNotFoundException,
 	    TransformerConfigurationException {
 	this.xsltFile = xsltFile;

@@ -28,37 +28,38 @@ import org.joda.time.DateTime;
  * intervention. Setting the block attribute to true, for example, will prevent
  * the cycle from harvesting an endpoint that causes trouble. <br><br>
  *
- * <table>
- * <td>
- * URI         <br>
- * group       <br>
- * block       <br>
- * retry       <br>
- * refresh     <br>
- * incremental <br>
- * scenario    <br>
- * </td>
- * <td>
- * cycle needs to supply it  <br>
- * cycle needs to supply it  <br>
- * defaults to false         <br>
- * defaults to false         <br>
- * defaults to false         <br>
- * defaults to false         <br>
- * defaults to 'ListRecords' <br>
- * </td>
+ * <table summary="">
+ * <tr>
+ * <td>URI</td><td>cycle needs to supply it</td>
+ * </tr>
+ * <tr>
+ * <td>group</td><td>cycle needs to supply it</td>
+ * </tr>
+ * <tr>
+ * <td>block</td><td>defaults to false</td>
+ * </tr>
+ * <tr>
+ * <td>retry</td><td>defaults to false</td>
+ * </tr>
+ * <tr>
+ * <td>refresh</td><td>defaults to false</td>
+ * </tr>
+ * <tr>
+ * <td>incremental</td><td>defaults to false</td>
+ * </tr>
+ * <tr>
+ * <td>scenario</td><td>defaults to 'ListRecords'</td>
+ * </tr> 
  * </table><br>
  *
  * By using the methods defined here, the harvest cycle can track the state of
  * the endpoints.
  *
- * <table>
- * <td>
- * attempted <br>
- * harvested <br>
- * count     <br>
- * increment <br><br>
- * </td>
+ * <table summary="">
+ * <tr><td>attempted</td></tr>
+ * <tr><td>harvested</td></tr>
+ * <tr><td>count</td></tr>
+ * <tr><td>increment</td></tr>
  * </table>
  *
  * By tracking, the cycle can obtain recent additions to an endpoint, without

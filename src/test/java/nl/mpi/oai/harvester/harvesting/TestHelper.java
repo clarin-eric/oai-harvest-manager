@@ -214,7 +214,7 @@ abstract class TestHelper implements OAIInterface, MetadataInterface {
                 /* Since the test does not use the protocol, it will not
                    need to retry. Use zero for the maximum number of retries.
                  */
-                endpoint = new Provider(endpointURIs[eIndex], 0);
+                endpoint = new Provider(endpointURIs[eIndex], 0, 0);
             } catch (ParserConfigurationException e) {
                 endpoint = null;
                 e.printStackTrace();

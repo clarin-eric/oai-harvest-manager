@@ -58,8 +58,10 @@ public abstract class ListHarvesting extends AbstractListHarvesting implements
     /**
      * Associate endpoint data and desired prefix
      * 
+     * @param oaiFactory the OAI factory
      * @param provider the endpoint to address in the request
      * @param prefixes the prefixes returned by the endpoint 
+     * @param metadataFactory the metadata factory
      */
     ListHarvesting(OAIFactory oaiFactory, Provider provider,
                    List<String> prefixes, MetadataFactory metadataFactory){
@@ -81,7 +83,14 @@ public abstract class ListHarvesting extends AbstractListHarvesting implements
      * effective for example by creating a ListRecords or ListIdentifiers
      * class object.
      *
+     * @param s1 string one
+     * @param s2 string two
      * @return the response
+     * @throws IOException IO problem
+     * @throws ParserConfigurationException configuration problem
+     * @throws SAXException XML problem
+     * @throws TransformerException XSL problem
+     * @throws NoSuchFieldException introspection problem
      */
     abstract Document verb2(String s1, String s2)
             throws 
@@ -96,7 +105,17 @@ public abstract class ListHarvesting extends AbstractListHarvesting implements
      * effective for example by creating a ListRecords or ListIdentifiers
      * class method.
      *
+     * @param s1 string one
+     * @param s2 string two
+     * @param s3 string three
+     * @param s4 string four
+     * @param s5 string five
      * @return the response
+     * @throws IOException IO problem
+     * @throws ParserConfigurationException configuration problem
+     * @throws SAXException XML problem
+     * @throws TransformerException XSL problem
+     * @throws NoSuchFieldException introspection problem
      */
     abstract Document verb5(String s1, String s2, String s3, String s4,
             String s5)
@@ -113,8 +132,8 @@ public abstract class ListHarvesting extends AbstractListHarvesting implements
      * classes need to make this method effective.
      * 
      * @return a string containing the token
-     * @throws TransformerException
-     * @throws NoSuchFieldException
+     * @throws TransformerException XSL problem
+     * @throws NoSuchFieldException introspection problem
      */
     abstract String getToken () throws TransformerException,
             NoSuchFieldException;
@@ -214,6 +233,14 @@ public abstract class ListHarvesting extends AbstractListHarvesting implements
                     return false;
                 }
                 // retry the request once more
+                // TODO: use retry-delay
+                if (provider.retryDelay > 0) {
+                    try {
+                    Thread.sleep(provider.retryDelay);
+                    } catch(InterruptedException e) {
+                        logger.error(e.getMessage(), e);
+                    }
+                }                
             }
         }
     }

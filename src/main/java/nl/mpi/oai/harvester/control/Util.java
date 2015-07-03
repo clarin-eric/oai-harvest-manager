@@ -62,6 +62,7 @@ public class Util {
      * directories above if required).
      *
      * @param dirname Name of the directory to be checked/created
+     * @throws IOException problem with the directory
      */
     public static void ensureDirExists(String dirname) throws IOException {
 	ensureDirExists(Paths.get(dirname));
@@ -71,6 +72,9 @@ public class Util {
      * Convert name string to format suitable for use in the file system and
      * in URLs. In practice, convert into a string that matches the regular
      * expression "^\w*$".
+     * 
+     * @param name original name
+     * @return cleaned up name
      */
     public static String toFileFormat(String name) {
 	if (name == null)
@@ -80,7 +84,15 @@ public class Util {
 		.replaceAll("\\p{M}", "").replaceAll("\\W+", "_");
     }
 
-    /** Return text content of a node, or null if it has none. */
+    /** 
+     * Return text content of a node, or null if it has none. 
+     * 
+     * @param xpath XPath engine
+     * @param xp xpath to the node
+     * @param n context node
+     * @return text content of the node
+     * @throws javax.xml.xpath.XPathExpressionException something is wrong with the xpath
+     */
     public static String getNodeText(XPath xpath, String xp, Node n)
 	    throws javax.xml.xpath.XPathExpressionException {
 	Node p = (Node) xpath.evaluate(xp, n, XPathConstants.NODE);

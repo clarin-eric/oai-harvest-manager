@@ -65,8 +65,10 @@ public class RecordListHarvesting extends ListHarvesting
     /**
      * Associate endpoint data and desired prefix
      * 
+     * @param oaiFactory the OAI factory
      * @param provider the endpoint to address in the request
      * @param prefixes the prefixes returned by the endpoint 
+     * @param metadataFactory the metadata factory
      */
     public RecordListHarvesting(OAIFactory oaiFactory, Provider provider,
                                 List<String> prefixes, MetadataFactory metadataFactory) {
@@ -88,6 +90,11 @@ public class RecordListHarvesting extends ListHarvesting
      * @param p1 metadata prefix
      * @param p2 resumption token
      * @return the response to the request
+     * @throws IOException IO problem
+     * @throws ParserConfigurationException configuration problem
+     * @throws SAXException XML problem
+     * @throws TransformerException XSL problem
+     * @throws NoSuchFieldException introspection problem
      */
     @Override
     public Document verb2(String p1, String p2) throws
@@ -115,6 +122,12 @@ public class RecordListHarvesting extends ListHarvesting
      * @param p3 until date, for selective harvesting
      * @param p4 metadata prefix
      * @param p5 set
+     * @return the response to the request
+     * @throws IOException IO problem
+     * @throws ParserConfigurationException configuration problem
+     * @throws SAXException XML problem
+     * @throws TransformerException XSL problem
+     * @throws NoSuchFieldException introspection problem
      */
     @Override
     public Document verb5(String p1, String p2, String p3, String p4,

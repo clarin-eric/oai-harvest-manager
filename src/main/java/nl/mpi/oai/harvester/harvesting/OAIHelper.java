@@ -55,8 +55,11 @@ public class OAIHelper {
             prefix = null;
         } else {
             // found the request node, get the prefix attribute value
-            prefix = node.getAttributes().getNamedItem("metadataPrefix"
-            ).getNodeValue();
+	    if (node.getAttributes().getNamedItem("metadataPrefix") == null){
+                prefix = null; // no metadata prefix
+            } else {
+                prefix = node.getAttributes().getNamedItem("metadataPrefix").getNodeValue();
+            }
         }
 
         return prefix;

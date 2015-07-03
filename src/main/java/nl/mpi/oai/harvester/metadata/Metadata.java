@@ -59,6 +59,7 @@ public class Metadata {
      * Create a metadata record.
      * 
      * @param id unique identifier
+     * @param prefix metadata prefix
      * @param doc XML tree representing the metadata
      * @param endpoint endpoint information
      * @param isEnvelope, true if metadata is contained in OAI envelope,
@@ -85,22 +86,34 @@ public class Metadata {
 	this.doc = doc;
     }
 
-    /** Get this record's unique identifier. */
+    /** 
+     * Get this record's unique identifier.
+     * @return the identifier
+     */
     public String getId() {
 	return id;
     }
 
-    /** get the metadata record's prefix */
+    /** 
+     * get the metadata record's prefix
+     * @return the metadata prefix
+     */
     public String getPrefix() {
         return prefix;
     }
 
-    /** Get the XML tree representing this record. */
+    /** 
+     * Get the XML tree representing this record. 
+     * @return the XML tree
+     */
     public Document getDoc() {
 	return doc;
     }
 
-    /** Get the provider from which this record was harvested. */
+    /** 
+     * Get the provider from which this record was harvested. 
+     * @return the provider
+     */
     public Provider getOrigin() {
         return origin;
     }

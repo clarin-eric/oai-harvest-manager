@@ -36,7 +36,7 @@
  * (Component Metadata Initiative). The client to the package can use the
  * prefixes to further process the records harvested.<br><br>
  *
- * <p><IMG SRC="doc-files/package overview - harvesting.svg">
+ * <p><IMG SRC="doc-files/package_overview_-_harvesting.svg" ALT="package overview - harvesting">
  *
  * <br>After having obtained a list of prefixes the client can follow a
  * scenario in which it first obtains a list of identifiers to metadata records

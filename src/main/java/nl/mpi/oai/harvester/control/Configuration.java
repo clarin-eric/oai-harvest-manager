@@ -108,6 +108,10 @@ public class Configuration {
      * overridden.
      * 
      * @param filename configuration file
+     * @throws ParserConfigurationException problem with the configuration
+     * @throws SAXException problem with the XML of the configuration
+     * @throws XPathExpressionException problem with the paths accessing the configuration
+     * @throws IOException problem accessing the configuration
      */
     public void readConfig(String filename) throws ParserConfigurationException,
 	    SAXException, XPathExpressionException, IOException {
@@ -334,7 +338,7 @@ public class Configuration {
                             logger.debug("Excluding endpoint" + provUrl);
                         } else {
                             logger.debug("Including endpoint" + provUrl);
-                            Provider provider = new Provider(provUrl, getMaxRetryCount ());
+                            Provider provider = new Provider(provUrl, getMaxRetryCount (), getRetryDelay());
                             providers.add(provider);
                         }
                     }
@@ -361,7 +365,7 @@ public class Configuration {
 		if (pName != null)
 		    provider.setName(pName);
 	    } else {
-		provider = new Provider(pUrl, getMaxRetryCount());
+		provider = new Provider(pUrl, getMaxRetryCount(), getRetryDelay());
 		if (pName != null)
 		    provider.setName(pName);
 
@@ -472,8 +476,7 @@ public class Configuration {
     }
     
     /**
-     * 
-     * @return 
+     * @return if the response should be saved 
      */
     public boolean saveResponse (){
      

@@ -28,6 +28,8 @@ import java.util.LinkedList;
  * Alternative: A more comprehensive resource pool implementation is
  * available in the Apache Commons framework. That one has more
  * configuration options but lacks support for Java generics.
+ * 
+ * @param <T> type of resources to pool
  *
  * @author Lari Lampen (MPI-PL)
  */
@@ -68,6 +70,8 @@ public class ResourcePool<T> {
     /**
      * Returns the number of resources available in the pool at the moment it
      * is called.
+     * 
+     * @return number of resources available
      */
     public int getNumAvailable() {
 	return resources.size();

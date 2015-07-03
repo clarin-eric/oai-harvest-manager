@@ -47,6 +47,7 @@ public final class StaticPrefixHarvesting extends FormatHarvesting
     /**
      * Associate provider data and actions
      *
+     * @param oaiFactory the OAI factory
      * @param provider the endpoint to address in the request
      * @param actions the actions
      *

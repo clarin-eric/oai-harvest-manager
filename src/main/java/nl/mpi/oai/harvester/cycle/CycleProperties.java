@@ -33,17 +33,19 @@ package nl.mpi.oai.harvester.cycle;
  * specified in a incremental or selective harvesting request, and the intended
  * harvest scenario.
  *
- * <table>
- * <td>
- * mode     <br>
- * date     <br>
- * scenario <br><br>
- * </td>
- * <td>
- * defaults to 'normal' <br>
- * defaults to '1970-01-01' <br>
- * defaults to 'ListRecords' <br><br>
- * </td>
+ * <table summary="">
+ * <tr>
+ * <td>mode</td>
+ * <td>defaults to 'normal'</td>
+ * </tr>
+ * <tr>
+ * <td>date</td>
+ * <td>defaults to '1970-01-01'</td>
+ * </tr>
+ * <tr>
+ * <td>scenario</td>
+ * <td>defaults to 'ListRecords'</td>
+ * </tr>
  * </table>
  *
  * These are the elements conveyed through the CycleProperties interface. The

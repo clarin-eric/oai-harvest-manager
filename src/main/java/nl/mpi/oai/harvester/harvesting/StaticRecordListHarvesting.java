@@ -60,8 +60,10 @@ public final class StaticRecordListHarvesting extends AbstractListHarvesting
     /**
      * <br> Associate provider data and desired prefixes
      *
+     * @param oaiFactory the OAI factory
      * @param provider the provider
      * @param prefixes the prefixes obtained from the static content
+     * @param metadataFactory the metadata factory
      */
     public StaticRecordListHarvesting(OAIFactory oaiFactory,
                                       StaticProvider provider,

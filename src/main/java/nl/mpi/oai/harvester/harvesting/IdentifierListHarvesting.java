@@ -63,9 +63,10 @@ public class IdentifierListHarvesting extends ListHarvesting
     /**
      * Associate endpoint and prefixes with the protocol
      * 
+     * @param oaiFactory the OAI factory
      * @param provider the endpoint to address in the request
      * @param prefixes the prefixes returned by the endpoint
-     *
+     * @param metadataFactory the metadata factory
      */
     public IdentifierListHarvesting(OAIFactory oaiFactory,
                                     Provider provider, List<String> prefixes,

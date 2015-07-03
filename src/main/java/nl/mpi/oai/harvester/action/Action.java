@@ -40,6 +40,8 @@ public interface Action {
     /**
      * Create a copy of this action. (This is used in preference to the
      * Cloneable interface due to its well-published design issues.)
+     * 
+     * @return Action
      */
     Action clone();
 }

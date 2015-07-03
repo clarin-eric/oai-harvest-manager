@@ -21,6 +21,7 @@ package nl.mpi.oai.harvester.harvesting;
 
 import ORG.oclc.oai.harvester2.verb.GetRecord;
 import java.io.IOException;
+import java.util.logging.Level;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
@@ -55,9 +56,11 @@ public final class RecordHarvesting extends AbstractHarvesting {
     /**
      * Associate provider, desired prefix and identifier with the request <br><br>
      * 
+     * @param oaiFactory the OAI factory
      * @param provider   information on where to send the request
      * @param prefix     the prefix of the desired record
      * @param identifier the identifier of the record
+     * @param metadataFactory the metadata factory
      */
     public RecordHarvesting(OAIFactory oaiFactory, Provider provider,
                             String prefix, String identifier,
@@ -82,9 +85,18 @@ public final class RecordHarvesting extends AbstractHarvesting {
         int i = 0;
         for (;;) {
 
-            // get metadata record from the endpoint
-            document = oaiFactory.createGetRecord(provider.oaiUrl,
-                    identifier, prefix);
+            try {
+                // get metadata record from the endpoint
+                document = oaiFactory.createGetRecord(provider.oaiUrl,
+                        identifier, prefix);
+            } catch (IOException
+                    | ParserConfigurationException
+                    | SAXException
+                    | TransformerException
+                    | NoSuchFieldException e) {
+                // report
+                logger.error(e.getMessage(), e);
+            }
 
             if (document == null){
                 // something went wrong with the request
@@ -93,7 +105,16 @@ public final class RecordHarvesting extends AbstractHarvesting {
                 if (i == provider.maxRetryCount) {
                     // try another record
                     return false;
-                } else i++;
+                } else {
+                    i++;
+                    if (provider.retryDelay > 0) {
+                        try {
+                            Thread.sleep(provider.retryDelay);
+                        } catch (InterruptedException e) {
+                            logger.error(e.getMessage(), e);
+                        }
+                    }
+                }
             } else {
                 return true;
             }
