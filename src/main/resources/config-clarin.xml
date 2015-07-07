@@ -81,10 +81,6 @@
            the exclusion only applies to the registry element, not to the 
            provider elements 
       -->
-<!--
-      <exclude url="http://www.meertens.knaw.nl/oai/oai_server.php"/>
-      <exclude url="http://oaipmh.huygens.knaw.nl/oai"/>
--->
     </import>
     <!-- Virtual Collection Registry -->
      <provider url="http://clarin.ids-mannheim.de/vcr/oai?verb=Identify"/> 
