@@ -30,8 +30,6 @@
     in question must have been harvested previously. If any of these conditions
     is not fulfilled, this setting has no effect.-->
     <incremental>true</incremental>
-
-    <overview-file>overview.xml</overview-file>
   </settings>
 
 
