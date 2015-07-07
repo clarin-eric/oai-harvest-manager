@@ -1,5 +1,6 @@
 package nl.mpi.oai.harvester.harvesting;
 
+import ORG.oclc.oai.harvester2.verb.HarvesterVerb;
 import ORG.oclc.oai.harvester2.verb.Identify;
 import nl.mpi.oai.harvester.StaticProvider;
 import nl.mpi.oai.harvester.action.ActionSequence;
@@ -13,6 +14,7 @@ import javax.xml.transform.TransformerException;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import java.io.IOException;
+import org.w3c.dom.Document;
 
 /**
  * <br> Get prefixes <br><br>
@@ -97,6 +99,13 @@ public final class StaticPrefixHarvesting extends FormatHarvesting
 
             return true;
         }
+    }
+    
+    @Override
+    public Document getResponse() {
+        StaticProvider p = (StaticProvider) provider;
+        HarvesterVerb response = p.getResponse();
+        return response.getDocument();
     }
 
     /**
