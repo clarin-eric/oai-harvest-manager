@@ -53,21 +53,21 @@ public class ActionSequence {
     /* The actions, in order. */
     private final List<ResourcePool<Action>> actions;
 
-	/* Remember if the sequence contains actions that are intended to save or
-	strip the envelope */
-	private final boolean save;
-	private final boolean strip;
+    /* Remember if the sequence contains actions that are intended to save or
+    strip the envelope */
+    private final boolean save;
+    private final boolean strip;
 
     /**
      * Create a new action sequence.
      * 
      * @param inputFormat acceptable format for harvesting the source
      * @param theActions sequence of actions to take, in order
-	 * @param resourcePoolSize the number of resources in the pool
-	 * @param save iff true, the sequence is intended to save the envelope
-	 * @param strip iff true, the sequence is intended to strip the envelope
-	 *
-	 */
+     * @param resourcePoolSize the number of resources in the pool
+     * @param save iff true, the sequence is intended to save the envelope
+     * @param strip iff true, the sequence is intended to strip the envelope
+     *
+     */
     public ActionSequence(MetadataFormat inputFormat, Action[] theActions,
 	    int resourcePoolSize, boolean save, boolean strip) {
 	this.inputFormat = inputFormat;
@@ -108,20 +108,20 @@ public class ActionSequence {
     }
 
     /**
-	 * Perform the actions specified in the configuration<br><br>
-	 *
-	 * Note. Not every action might be applicable to metadata at the various
-	 * stages of a scenario. For example, when listing records without using
-	 * identifiers, an OAI envelope will contain multiple records. While it
-	 * makes sense to save the envelope, it does not make sense to try to strip
-	 * individual metadata records. This means that performing an action on
-	 * metadata depends on <br><br>
-	 *
-	 * - an envelope being there or not, and <br><br>
-	 * - single or multiple records being present. <br><br>
-	 *
+     * Perform the actions specified in the configuration<br><br>
+     *
+     * Note. Not every action might be applicable to metadata at the various
+     * stages of a scenario. For example, when listing records without using
+     * identifiers, an OAI envelope will contain multiple records. While it
+     * makes sense to save the envelope, it does not make sense to try to strip
+     * individual metadata records. This means that performing an action on
+     * metadata depends on <br><br>
+     *
+     * - an envelope being there or not, and <br><br>
+     * - single or multiple records being present. <br><br>
+     *
      * Note. This method does not return a value. The results of the actions
-	 * should be accessed using other actions within the sequence.
+     * should be accessed using other actions within the sequence.
      *
      * @param metadata a single metadata record or a list of metadata records
      */
@@ -130,85 +130,101 @@ public class ActionSequence {
 	// keep track of whether or not the action is the first in the sequence
 	boolean firstAction = true;
 
-		for (ResourcePool<Action> actPool : actions) {
-			// claim an action in the pool
-			Action action = actPool.get();
+        for (ResourcePool<Action> actPool : actions) {
+                // claim an action in the pool
+                Action action = actPool.get();
 
-			// assume the action cannot be performed, investigate the opposite
-			boolean performAction = false;
+                // assume the action cannot be performed, investigate the opposite
+                boolean performAction = false;
+                
+                // reason why the action cannot be performed
+                String reason = "an unspecified reason";
 
-			if (action instanceof SaveAction) {
+                if (action instanceof SaveOAIAction) {
+                        performAction = true;
+                } else if (action instanceof SaveAction) {
 
-				if (firstAction) {
+                        if (firstAction) {
 
-					if (metadata.isEnvelope()) {
-						// one record, or a list, save it
-						performAction = true;
-					}
+                                if (metadata.isEnvelope()) {
+                                        // one record, or a list, save it
+                                        performAction = true;
+                                } else
+                                    reason = "the input has no envelope";
 
-					firstAction = false;
+                        } else {
+                                // no envelope
+                                if (metadata.isList()) {
+                                        // do not save a list that is not in an envelope
+                                        reason = "the input is a list";
+                                } else {
+                                        // unpacked metadata, save it
+                                        performAction = true;
+                                }
+                        }
 
-				} else {
-					// no envelope
-					if (metadata.isList()) {
-						// do not save a list that is not in an envelope
-					} else {
-						// unpacked metadata, save it
-						performAction = true;
-					}
-				}
+                } else {
+                        if (action instanceof StripAction) {
 
-			} else {
-				if (action instanceof StripAction) {
+                                if (metadata.isEnvelope() && ! metadata.isList()) {
+                                        // single record in envelope, strip it
+                                        performAction = true;
+                                } else
+                                    reason = "the input is a list or not an envelope";
 
-					if (metadata.isEnvelope() && ! metadata.isList()) {
-						// single record in envelope, strip it
-						performAction = true;
-					}
+                        } else {
+                                // transform action
 
-				} else {
-					// transform action
+//                                if (metadata.isEnvelope() || metadata.isList()) {
+//                                        // transformation not possible
+//                                        reason = "the input is a list or an envelope";
+                                //if (metadata.isList()) {
+                                //        // transformation not possible
+                                //        reason = "the input is a list";
+                                //} else {
+                                        performAction = true;
+                                //}
+                        }
+                }
 
-					if (metadata.isEnvelope() || metadata.isList()) {
-						// transformation not possible
-					} else {
-						performAction = true;
-					}
-				}
-			}
+                if (performAction) {
+                        boolean done = action.perform(metadata);
 
-			if (performAction) {
-				boolean done = action.perform(metadata);
+                        actPool.release(action);
+                        if (!done) {
+                                logger.error("Action " + action + " failed, terminating" +
+                                                " sequence");
+                                return;
+                        } else
+                                logger.debug("Action " + action + " was performed");
+                            
+                } else
+                        logger.warn("Action " + action + " isn't performed, because "+reason+"!");
 
-				actPool.release(action);
-				if (!done) {
-					logger.error("Action " + action + " failed, terminating" +
-							" sequence");
-					return;
-				}
-			}
+                actPool.release(action);
+                
+                if (firstAction)
+                    firstAction = false;
+        }
+    }
 
-			actPool.release(action);
-		}
-	}
+    /**
+     * Check if the response should be saved
+     *
+     * @return true iff the sequence contains an action intended to save the response
+     */
+    public boolean containsSaveResponse() {
+            return save;
+    }
 
-	/**
-	 * Check if the response should be saved
-	 *
-	 * @return true iff the sequence contains an action intended to save the response
-	 */
-	public boolean containsSaveResponse() {
-		return save;
-	}
-
-	/**
-	 * Check if the response should be stripped
-	 *
-	 * @return true iff the sequence contains an action intended to strip the response
-	 */
-	public boolean containsStripResponse(){
-		return strip;
-	}
+    /**
+     * Check if the response should be stripped
+     *
+     * @return true iff the sequence contains an action intended to strip the response
+     */
+    public boolean containsStripResponse(){
+            return strip;
+    }
 
     @Override
     public String toString() {

@@ -133,7 +133,7 @@ class Worker implements Runnable {
             Scenario scenario = new Scenario(provider, actionSequence);
 
             if (provider instanceof StaticProvider) {
-
+                
                 // set type of format harvesting to apply
                 Harvesting harvesting = new StaticPrefixHarvesting(
                         oaiFactory,
@@ -151,7 +151,10 @@ class Worker implements Runnable {
                             (StaticProvider) provider, prefixes, metadataFactory);
 
                     // get the records
-                    done = scenario.listRecords(harvesting);
+                    if (scenarioName == CycleProperties.Scenario.ListIdentifiers) {
+                        done = scenario.listIdentifiers(harvesting);
+                    } else
+                        done = scenario.listRecords(harvesting);
                 }
             } else {
 

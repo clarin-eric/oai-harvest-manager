@@ -193,7 +193,7 @@ public class Scenario {
                             Metadata metadata = new Metadata(
                                     provider.getName() + "-" + id,
                                     OAIHelper.getPrefix(records),
-                                    records, this.provider, true, true);
+                                    records, this.provider, records, true, true);
 
                             n++;
 
@@ -205,7 +205,7 @@ public class Scenario {
 
                             /* Stripping in the list record scenario means:
                                processing each record in the response. Skip
-                               to the next request is no strip action is
+                               to the next request if no strip action is
                                demanded.
                              */
                             for (; ; ) {

@@ -229,6 +229,16 @@ public class Configuration {
 			} catch (ParserConfigurationException ex) {
 			    logger.error(ex);
 			}
+		    } else if ("oai".equals(actionType)) {
+			String outDirId = Util.getNodeText(xpath, "./@dir", s);
+			String suffix = Util.getNodeText(xpath, "./@suffix", s);
+			if (outputs.containsKey(outDirId)) {
+			    OutputDirectory outDir = outputs.get(outDirId);
+                            act = new SaveOAIAction(outDir, suffix);
+			} else {
+			    logger.error("Invalid output directory " + outDirId
+				    + " specified for oai action");
+			}
 		    } else if ("save".equals(actionType)) {
 			String outDirId = Util.getNodeText(xpath, "./@dir", s);
 			String suffix = Util.getNodeText(xpath, "./@suffix", s);

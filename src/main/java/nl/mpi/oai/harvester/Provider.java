@@ -276,7 +276,7 @@ public class Provider {
 	    try {
 		GetRecord gr = new GetRecord(oaiUrl, id, mdPrefix);
 		Document doc = gr.getDocument();
-		return new Metadata(id, mdPrefix, doc, this, true, false);
+		return new Metadata(id, mdPrefix, doc, this, doc, true, false);
 	    } catch (IOException | SAXException | ParserConfigurationException
 		    | TransformerException e) {
 		logger.error(e);

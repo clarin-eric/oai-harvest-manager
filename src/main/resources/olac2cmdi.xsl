@@ -27,15 +27,21 @@
       -->
     <xsl:param name="provider_name"/>
     
-
-    <xsl:template match="/">
+    <!--
+	Identifier of the record.
+      -->
+    <xsl:param name="record_identifier"/>
+    
+    <xsl:template match="text()"/>
+    
+    <xsl:template match="//defns:record[defns:header/defns:identifier=$record_identifier]">
         <CMD CMDVersion="1.1"
             xsi:schemaLocation="http://www.clarin.eu/cmd/ http://catalog.clarin.eu/ds/ComponentRegistry/rest/registry/profiles/clarin.eu:cr1:p_1288172614026/xsd">
             <Header>
                 <MdCreator>olac2cmdi.xsl</MdCreator>
                 <MdCreationDate>
                     <xsl:variable name="date">
-                        <xsl:value-of select="/defns:OAI-PMH/defns:GetRecord[1]/defns:record[1]/defns:header[1]/defns:datestamp[1]"/>
+                        <xsl:value-of select="./defns:header[1]/defns:datestamp[1]"/>
                     </xsl:variable>
                     <xsl:choose>
                         <xsl:when test="contains($date,'T')">
@@ -47,7 +53,7 @@
                     </xsl:choose>
                 </MdCreationDate>
                 <MdSelfLink>
-                    <xsl:value-of select="/defns:OAI-PMH/defns:GetRecord[1]/defns:record[1]/defns:header[1]/defns:identifier[1]"/>
+                    <xsl:value-of select="./defns:header[1]/defns:identifier[1]"/>
                 </MdSelfLink>
                 <MdProfile>clarin.eu:cr1:p_1288172614026</MdProfile>
                 <MdCollectionDisplayName>
@@ -56,101 +62,102 @@
             </Header>
             <Resources>
                 <ResourceProxyList>
-                    <xsl:apply-templates select="//dc:identifier" mode="preprocess"/>
+                    <xsl:apply-templates select="./defns:metadata//dc:identifier" mode="preprocess"/>
                 </ResourceProxyList>
                 <JournalFileProxyList/>
                 <ResourceRelationList/>
             </Resources>
             <Components>
+                <xsl:variable name="record" select="./defns:metadata"/>
                 <OLAC-DcmiTerms>
 
-                    <xsl:apply-templates select="//dcterms:abstract"/>
-                    <xsl:apply-templates select="//dcterms:accessRights"/>
-                    <xsl:apply-templates select="//dcterms:accrualMethod"/>
-                    <xsl:apply-templates select="//dcterms:accrualPeriodicity"/>
-                    <xsl:apply-templates select="//dcterms:accrualPolicy"/>
-                    <xsl:apply-templates select="//dcterms:alternative"/>
-                    <xsl:apply-templates select="//dcterms:audience"/>
-                    <xsl:apply-templates select="//dcterms:available"/>
-                    <xsl:apply-templates select="//dcterms:bibliographicCitation"/>
-                    <xsl:apply-templates select="//dcterms:conformsTo"/>
+                    <xsl:apply-templates select="$record//dcterms:abstract" mode="cmd"/>
+                    <xsl:apply-templates select="$record//dcterms:accessRights" mode="cmd"/>
+                    <xsl:apply-templates select="$record//dcterms:accrualMethod" mode="cmd"/>
+                    <xsl:apply-templates select="$record//dcterms:accrualPeriodicity" mode="cmd"/>
+                    <xsl:apply-templates select="$record//dcterms:accrualPolicy" mode="cmd"/>
+                    <xsl:apply-templates select="$record//dcterms:alternative" mode="cmd"/>
+                    <xsl:apply-templates select="$record//dcterms:audience" mode="cmd"/>
+                    <xsl:apply-templates select="$record//dcterms:available" mode="cmd"/>
+                    <xsl:apply-templates select="$record//dcterms:bibliographicCitation" mode="cmd"/>
+                    <xsl:apply-templates select="$record//dcterms:conformsTo" mode="cmd"/>
 
-                    <xsl:apply-templates select="//dc:contributor"/>
-                    <xsl:apply-templates select="//dc:coverage"/>
+                    <xsl:apply-templates select="$record//dc:contributor" mode="cmd"/>
+                    <xsl:apply-templates select="$record//dc:coverage" mode="cmd"/>
 
-                    <xsl:apply-templates select="//dcterms:created"/>
+                    <xsl:apply-templates select="$record//dcterms:created" mode="cmd"/>
 
-                    <xsl:apply-templates select="//dc:creator"/>
-                    <xsl:apply-templates select="//dc:date"/>
+                    <xsl:apply-templates select="$record//dc:creator" mode="cmd"/>
+                    <xsl:apply-templates select="$record//dc:date" mode="cmd"/>
 
-                    <xsl:apply-templates select="//dcterms:dateAccepted"/>
-                    <xsl:apply-templates select="//dcterms:dateCopyrighted"/>
-                    <xsl:apply-templates select="//dcterms:dateSubmitted"/>
+                    <xsl:apply-templates select="$record//dcterms:dateAccepted" mode="cmd"/>
+                    <xsl:apply-templates select="$record//dcterms:dateCopyrighted" mode="cmd"/>
+                    <xsl:apply-templates select="$record//dcterms:dateSubmitted" mode="cmd"/>
 
-                    <xsl:apply-templates select="//dc:description"/>
+                    <xsl:apply-templates select="$record//dc:description" mode="cmd"/>
 
-                    <xsl:apply-templates select="//dcterms:educationLevel"/>
-                    <xsl:apply-templates select="//dcterms:extent"/>
+                    <xsl:apply-templates select="$record//dcterms:educationLevel" mode="cmd"/>
+                    <xsl:apply-templates select="$record//dcterms:extent" mode="cmd"/>
 
-                    <xsl:apply-templates select="//dc:format"/>
+                    <xsl:apply-templates select="$record//dc:format" mode="cmd"/>
 
-                    <xsl:apply-templates select="//dcterms:hasFormat"/>
-                    <xsl:apply-templates select="//dcterms:hasPart"/>
-                    <xsl:apply-templates select="//dcterms:hasVersion"/>
+                    <xsl:apply-templates select="$record//dcterms:hasFormat" mode="cmd"/>
+                    <xsl:apply-templates select="$record//dcterms:hasPart" mode="cmd"/>
+                    <xsl:apply-templates select="$record//dcterms:hasVersion" mode="cmd"/>
 
-                    <xsl:apply-templates select="//dc:identifier"/>
+                    <xsl:apply-templates select="$record//dc:identifier" mode="cmd"/>
 
-                    <xsl:apply-templates select="//dc:instructionalMethod"/>
+                    <xsl:apply-templates select="$record//dc:instructionalMethod" mode="cmd"/>
 
-                    <xsl:apply-templates select="//dcterms:isFormatOf"/>
-                    <xsl:apply-templates select="//dcterms:isPartOf"/>
-                    <xsl:apply-templates select="//dcterms:isReferencedBy"/>
-                    <xsl:apply-templates select="//dcterms:isReplacedBy"/>
-                    <xsl:apply-templates select="//dcterms:isRequiredBy"/>
-                    <xsl:apply-templates select="//dcterms:issued"/>
-                    <xsl:apply-templates select="//dcterms:isVersionOf"/>
+                    <xsl:apply-templates select="$record//dcterms:isFormatOf" mode="cmd"/>
+                    <xsl:apply-templates select="$record//dcterms:isPartOf" mode="cmd"/>
+                    <xsl:apply-templates select="$record//dcterms:isReferencedBy" mode="cmd"/>
+                    <xsl:apply-templates select="$record//dcterms:isReplacedBy" mode="cmd"/>
+                    <xsl:apply-templates select="$record//dcterms:isRequiredBy" mode="cmd"/>
+                    <xsl:apply-templates select="$record//dcterms:issued" mode="cmd"/>
+                    <xsl:apply-templates select="$record//dcterms:isVersionOf" mode="cmd"/>
 
-                    <xsl:apply-templates select="//dc:language"/>
+                    <xsl:apply-templates select="$record//dc:language" mode="cmd"/>
 
-                    <xsl:apply-templates select="//dcterms:license"/>
-                    <xsl:apply-templates select="//dcterms:mediator"/>
-                    <xsl:apply-templates select="//dcterms:medium"/>
-                    <xsl:apply-templates select="//dcterms:modified"/>
-                    <xsl:apply-templates select="//dcterms:provenance"/>
+                    <xsl:apply-templates select="$record//dcterms:license" mode="cmd"/>
+                    <xsl:apply-templates select="$record//dcterms:mediator" mode="cmd"/>
+                    <xsl:apply-templates select="$record//dcterms:medium" mode="cmd"/>
+                    <xsl:apply-templates select="$record//dcterms:modified" mode="cmd"/>
+                    <xsl:apply-templates select="$record//dcterms:provenance" mode="cmd"/>
 
-                    <xsl:apply-templates select="//dc:publisher"/>
+                    <xsl:apply-templates select="$record//dc:publisher" mode="cmd"/>
 
-                    <xsl:apply-templates select="//dcterms:references"/>
+                    <xsl:apply-templates select="$record//dcterms:references" mode="cmd"/>
 
-                    <xsl:apply-templates select="//dc:relation"/>
+                    <xsl:apply-templates select="$record//dc:relation" mode="cmd"/>
 
-                    <xsl:apply-templates select="//dcterms:replaces"/>
-                    <xsl:apply-templates select="//dcterms:requires"/>
+                    <xsl:apply-templates select="$record//dcterms:replaces" mode="cmd"/>
+                    <xsl:apply-templates select="$record//dcterms:requires" mode="cmd"/>
 
-                    <xsl:apply-templates select="//dc:rights"/>
+                    <xsl:apply-templates select="$record//dc:rights" mode="cmd"/>
 
-                    <xsl:apply-templates select="//dcterms:rightsHolder"/>
+                    <xsl:apply-templates select="$record//dcterms:rightsHolder" mode="cmd"/>
 
-                    <xsl:apply-templates select="//dc:source"/>
+                    <xsl:apply-templates select="$record//dc:source" mode="cmd"/>
 
-                    <xsl:apply-templates select="//dcterms:spatial"/>
+                    <xsl:apply-templates select="$record//dcterms:spatial" mode="cmd"/>
 
-                    <xsl:apply-templates select="//dc:subject"/>
+                    <xsl:apply-templates select="$record//dc:subject" mode="cmd"/>
 
-                    <xsl:apply-templates select="//dcterms:tableOfContents"/>
-                    <xsl:apply-templates select="//dcterms:temporal"/>
+                    <xsl:apply-templates select="$record//dcterms:tableOfContents" mode="cmd"/>
+                    <xsl:apply-templates select="$record//dcterms:temporal" mode="cmd"/>
 
-                    <xsl:apply-templates select="//dc:title"/>
-                    <xsl:apply-templates select="//dc:type"/>
+                    <xsl:apply-templates select="$record//dc:title" mode="cmd"/>
+                    <xsl:apply-templates select="$record//dc:type" mode="cmd"/>
 
-                    <xsl:apply-templates select="//dcterms:valid"/>
+                    <xsl:apply-templates select="$record//dcterms:valid" mode="cmd"/>
 
                 </OLAC-DcmiTerms>
             </Components>
         </CMD>
     </xsl:template>
 
-    <xsl:template match="dc:contributor">
+    <xsl:template match="dc:contributor" mode="cmd">
         <contributor>
             <xsl:if test="@xsi:type='olac:role'">
                 <xsl:if test="@*:code">
@@ -164,22 +171,22 @@
         </contributor>
     </xsl:template>
 
-    <xsl:template match="dc:description">
+    <xsl:template match="dc:description" mode="cmd">
         <description>
-            <xsl:apply-templates select="./@xml:lang"/>
-            <xsl:apply-templates select="@xsi:type"/>
+            <xsl:apply-templates select="./@xml:lang" mode="#current"/>
+            <xsl:apply-templates select="@xsi:type" mode="#current"/>
             <xsl:value-of select="."/>
         </description>
     </xsl:template>
 
-    <xsl:template match="dc:language[@xsi:type='olac:language']" priority="3">
+    <xsl:template match="dc:language[@xsi:type='olac:language']" priority="3" mode="cmd">
         <language>
             <xsl:if test="@*:code">
                 <xsl:attribute name="olac-language">
                     <!-- can be enabled when there is a 1-to-1 mapping in sil_to_iso6393.xml           -->
                     <xsl:choose>
                         <xsl:when test="contains(@*:code, 'x-sil-')">
-                            <xsl:apply-templates select="$lang-top">
+                            <xsl:apply-templates select="$lang-top" mode="#current">
                                 <xsl:with-param name="curr-label" select="."/>
                             </xsl:apply-templates>
                         </xsl:when>
@@ -193,7 +200,7 @@
         </language>
     </xsl:template>
 
-    <xsl:template match="languages">
+    <xsl:template match="languages" mode="cmd">
         <xsl:param name="curr-label"/>
         <xsl:variable name="silcode">
             <xsl:value-of select="lower-case(replace($curr-label/@*:code, 'x-sil-', ''))"/>
@@ -203,26 +210,24 @@
 
 
     <xsl:template match="dc:identifier" mode="preprocess">
-  
     	<xsl:if test="contains(., 'http://') or contains(., 'https://') or contains(., 'urn:nbn') or contains(., 'hdl:')">
         <ResourceProxy>
             <xsl:attribute name="id"><xsl:value-of select="generate-id()"/></xsl:attribute>
             <ResourceType>Resource</ResourceType>
             <ResourceRef><xsl:value-of select="."/></ResourceRef>
         </ResourceProxy>
-        </xsl:if>
-     
+        </xsl:if>     
     </xsl:template>
 
 
-    <xsl:template match="dc:subject[@xsi:type='olac:language']" priority="3">
+    <xsl:template match="dc:subject[@xsi:type='olac:language']" priority="3" mode="cmd">
         <subject>
             <!-- can be enabled when there is a 1-to-1 mapping in sil_to_iso6393.xml           -->
             <xsl:if test="@*:code">
                 <xsl:attribute name="olac-language">
                     <xsl:choose>
                         <xsl:when test="contains(@*:code, 'x-sil-')">
-                            <xsl:apply-templates select="$lang-top">
+                            <xsl:apply-templates select="$lang-top" mode="#current">
                                 <xsl:with-param name="curr-label" select="."/>
                             </xsl:apply-templates>
                         </xsl:when>
@@ -236,7 +241,7 @@
         </subject>
     </xsl:template>
 
-    <xsl:template match="//dc:subject[@xsi:type='olac:linguistic-field']" priority="3">
+    <xsl:template match="//dc:subject[@xsi:type='olac:linguistic-field']" priority="3" mode="cmd">
         <subject>
             <xsl:if test="@*:code">
                 <xsl:attribute name="olac-linguistic-field">
@@ -247,7 +252,7 @@
         </subject>
     </xsl:template>
 
-    <xsl:template match="//dc:subject[@xsi:type='olac:discourse-type']" priority="3">
+    <xsl:template match="//dc:subject[@xsi:type='olac:discourse-type']" priority="3" mode="cmd">
         <subject>
             <xsl:attribute name="olac-discourse-type">
                 <xsl:value-of select="@*:code"/>
@@ -257,25 +262,25 @@
     </xsl:template>
 
 
-    <xsl:template match="//dc:subject" priority="1">
+    <xsl:template match="//dc:subject" priority="1" mode="cmd">
         <subject>
-            <xsl:apply-templates select="./@xml:lang"/>
-            <xsl:apply-templates select="@xsi:type"/>
+            <xsl:apply-templates select="./@xml:lang" mode="#current"/>
+            <xsl:apply-templates select="@xsi:type" mode="#current"/>
             <xsl:value-of select="."/>
         </subject>
     </xsl:template>
 
 
-    <xsl:template match="//dc:title">
+    <xsl:template match="//dc:title" mode="cmd">
         <title>
-            <xsl:apply-templates select="./@xml:lang"/>
-            <xsl:apply-templates select="@xsi:type"/>
+            <xsl:apply-templates select="./@xml:lang" mode="#current"/>
+            <xsl:apply-templates select="@xsi:type" mode="#current"/>
             <xsl:value-of select="."/>
         </title>
     </xsl:template>
 
 
-    <xsl:template match="//dc:type[@xsi:type='olac:discourse-type']" priority="2">
+    <xsl:template match="//dc:type[@xsi:type='olac:discourse-type']" priority="2" mode="cmd">
         <type>
             <xsl:if test="@*:code">
                 <xsl:attribute name="olac-discourse-type">
@@ -287,7 +292,7 @@
     </xsl:template>
 
 
-    <xsl:template match="//dc:type[@xsi:type='olac:linguistic-type']" priority="2">
+    <xsl:template match="//dc:type[@xsi:type='olac:linguistic-type']" priority="2" mode="cmd">
         <type>
             <xsl:if test="@*:code">
                 <xsl:attribute name="olac-linguistic-type">
@@ -299,20 +304,20 @@
     </xsl:template>
 
 
-    <xsl:template match="//dc:type" priority="1">
+    <xsl:template match="//dc:type" priority="1" mode="cmd">
         <type>
-            <xsl:apply-templates select="@xsi:type"/>
+            <xsl:apply-templates select="@xsi:type" mode="#current"/>
             <xsl:value-of select="."/>
         </type>
     </xsl:template>
 
-    <xsl:template match="@xml:lang">
+    <xsl:template match="@xml:lang" mode="cmd">
         <xsl:attribute name="xml:lang">
             <xsl:value-of select="."/>
         </xsl:attribute>
     </xsl:template>
 
-    <xsl:template match="@xsi:type">
+    <xsl:template match="@xsi:type" mode="cmd">
         <xsl:variable name="attval">
             <xsl:value-of select="."/>
         </xsl:variable>
@@ -327,38 +332,25 @@
     </xsl:template>
 
     <!--  general DC  template -->
-    <xsl:template match="dc:*">
+    <xsl:template match="dc:*" mode="cmd">
         <xsl:variable name="tagname">
             <xsl:value-of select="local-name()"/>
         </xsl:variable>
         <xsl:element name="{$tagname}">
-            <xsl:apply-templates select="@xsi:type"/>
+            <xsl:apply-templates select="@xsi:type" mode="#current"/>
             <xsl:value-of select="."/>
         </xsl:element>
     </xsl:template>
 
     <!--  general DC terms template -->
-    <xsl:template match="dcterms:*">
+    <xsl:template match="dcterms:*" mode="cmd">
         <xsl:variable name="tagname">
             <xsl:value-of select="local-name()"/>
         </xsl:variable>
-
         <xsl:element name="{$tagname}">
-            <xsl:apply-templates select="@xsi:type"/>
+            <xsl:apply-templates select="@xsi:type" mode="#current"/>
             <xsl:value-of select="."/>
         </xsl:element>
     </xsl:template>
-
-
-
-    <xsl:template name="main">
-        <xsl:for-each
-            select="collection('file:////home/dietuyt/olac?select=*.xml;recurse=yes;on-error=ignore')">
-            <xsl:result-document href="{document-uri(.)}.cmdi">
-                <xsl:apply-templates select="."/>
-            </xsl:result-document>
-        </xsl:for-each>
-    </xsl:template>
-
 
 </xsl:stylesheet>

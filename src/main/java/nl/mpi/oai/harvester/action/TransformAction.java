@@ -69,8 +69,10 @@ public class TransformAction implements Action {
 	    DOMSource source = new DOMSource(record.getDoc());
 	    DOMResult output = new DOMResult();
 	    transformer.setParameter("provider_name",record.getOrigin().getName());
+            transformer.setParameter("record_identifier",record.getId());
 	    transformer.transform(source, output);
 	    record.setDoc((Document) output.getNode());
+            record.setIsList(false);
 	    return true;
 	} catch (TransformerException ex) {
 	    logger.error(ex);

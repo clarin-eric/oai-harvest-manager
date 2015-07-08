@@ -33,6 +33,7 @@ import nl.mpi.oai.harvester.metadata.Metadata;
 import nl.mpi.oai.harvester.control.OutputDirectory;
 import nl.mpi.oai.harvester.control.Util;
 import org.apache.log4j.Logger;
+import org.w3c.dom.Document;
 
 /**
  * This class represents the action of saving a record onto the file system.
@@ -55,6 +56,10 @@ public class SaveAction implements Action {
 	this.dir = dir;
 	this.suffix = (suffix == null) ? "" : suffix;
     }
+    
+    public Document getDocument(Metadata metadata) {
+        return metadata.getDoc();
+    }
 
     @Override
     public boolean perform(Metadata metadata) {
@@ -65,7 +70,7 @@ public class SaveAction implements Action {
             Transformer transformer = transformerFactory.newTransformer();
             transformer.setOutputProperty(OutputKeys.INDENT, "yes");
 
-            DOMSource source = new DOMSource(metadata.getDoc());
+            DOMSource source = new DOMSource(getDocument(metadata));
 
             os = Files.newOutputStream(chooseLocation(metadata));
             StreamResult result = new StreamResult(os);
