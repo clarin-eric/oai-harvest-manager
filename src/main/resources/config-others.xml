@@ -83,18 +83,16 @@
     <provider url="http://www.elra.info/elrac/elra_catalogue.xml" static="true"
 	      name="European Language Resources Association"/>
     <provider url="http://archive.ethnologue.com/oai2.asp"/>
-
     <provider url="http://www.language-archives.org/hosted/AcademiaSinica.xml" static="true"
 	      name="Academia Sinica Formosan Language Archive"/>
-
-    <provider url="http://victoria.linguistlist.org/php4/ore/XMLnamespacefiles/Krebs/Krebs.xml" static="true"
-	      name="Boiste"/>
+    <!--<provider url="http://victoria.linguistlist.org/php4/ore/XMLnamespacefiles/Krebs/Krebs.xml" static="true"
+	      name="Boiste"/>-->
     <provider url="http://www.spectrum.uni-bielefeld.de/langdoc/olac.xml" static="true"
 	      name="U Bielefeld Language Archive"/>
     <provider url="http://linguistlist.org/olac/metadata-catalog.cfm"
 	      name="The LINGUIST List Language Resources"/>
-    <provider url="http://victoria.linguistlist.org/php4/ore/XMLnamespacefiles/mbcarrom/mbcarrom.xml" static="true"
-	      name="Magoria Books' Carib and Romani Archive"/>
+    <!--<provider url="http://victoria.linguistlist.org/php4/ore/XMLnamespacefiles/mbcarrom/mbcarrom.xml" static="true"
+	      name="Magoria Books' Carib and Romani Archive"/>-->
     <provider url="http://catalog.paradisec.org.au/oai/item"
 	      name="Pacific And Regional Archive for Digital Sources in Endangered Cultures (PARADISEC)"/>
     <provider url="http://www.language-archives.org/hosted/rosettaproject.org.xml" static="true"/>
@@ -111,18 +109,18 @@
 	      name="WALS Online"/>
     <provider url="http://wals.info/refdb_oai"
 	      name="WALS RefDB"/>
-    <provider url="http://www.morphology.surrey.ac.uk/smg-metadata.xml" static="true"
-	      name="Surrey Morphology Group Databases"/>
-    <provider url="http://www.language-archives.org/hosted/SinicaCorpus.xml" static="true"
-	      name="Academia Sinica Collections"/>
+    <!--<provider url="http://www.morphology.surrey.ac.uk/smg-metadata.xml" static="true"
+	      name="Surrey Morphology Group Databases"/>-->
+    <!--<provider url="http://www.language-archives.org/hosted/SinicaCorpus.xml" static="true"
+	      name="Academia Sinica Collections"/>-->
     <provider url="http://scholarspace.manoa.hawaii.edu/Kaipuleohone.xml" static="true"
 	      name="ScholarSpace at University of Hawaii at Manoa"/>
-    <provider url="http://www.language-archives.org/hosted/EarlyMandarin.xml" static="true"
-	      name="Academia Sinica Tagged Corpus of Early Mandarin Chinese"/>
+    <!--<provider url="http://www.language-archives.org/hosted/EarlyMandarin.xml" static="true"
+	      name="Academia Sinica Tagged Corpus of Early Mandarin Chinese"/>-->
     <provider url="http://www.language-archives.org/hosted/thdl-olac.xml" static="true"
 	      name="The Tibetan and Himalayan Library"/>
-    <provider url="http://nlp.pwr.wroc.pl/clarin/oai/oai2.php"
-	      name="University of Wroclaw"/>
+    <!--<provider url="http://nlp.pwr.wroc.pl/clarin/oai/oai2.php"
+	      name="University of Wroclaw"/>-->
     <provider url="http://iula02v.upf.edu/oai/oai.pl"
 	      name="UPF Harvesting Day Repository"/>
     <provider url="http://ws02.iula.upf.edu/corpus_data/oai-iula/oai.pl"
@@ -131,22 +129,22 @@
 	      name="Universidade de Vigo"/>
     <provider url="http://ixa2.si.ehu.es/harvesting/oai/oai.pl"
 	      name="Euskal Herriko Unibertsitatea"/>
-    <provider url="http://www.talp.cat/oai/oai.pl"
-	      name="Universitat Politècnica de Catalunya"/>
+   <!-- <provider url="http://www.talp.cat/oai/oai.pl"
+	      name="Universitat Politècnica de Catalunya"/>-->
     <provider url="http://std.metu.edu.tr/cgi-bin/oai/oai.pl"
 	      name="Middle East Technical University"/>
     <provider url="http://161.116.36.206/~publicacions/oai/oai.pl"
 	      name="Universitat de Barcelona"/>
-    <provider url="http://nl2.ijs.si/oai/oai.pl"
-	      name="Jožef Stefan Institute"/>
-    <provider url="http://xixona.dlsi.ua.es/cgi-bin/oai/oai.pl"
-	      name="Universitat d'Alacant"/>
+    <!--<provider url="http://nl2.ijs.si/oai/oai.pl"
+	      name="Jožef Stefan Institute"/>-->
+    <!--<provider url="http://xixona.dlsi.ua.es/cgi-bin/oai/oai.pl"
+	      name="Universitat d'Alacant"/>-->
     <provider url="http://korpling.german.hu-berlin.de/oai/"
 	      name="Humboldt University of Berlin"/>
     <provider url="http://oai.ir-facility.org/oai.pl"
 	      name="Information Retrieval Facility"/>
-    <provider url="http://nactem.ac.uk/software/Farm/oai/oai.pl"
-	      name="National Centre for Text Mining NaCTeM"/>
+    <!--<provider url="http://nactem.ac.uk/software/Farm/oai/oai.pl"
+	      name="National Centre for Text Mining NaCTeM"/>-->
     <provider url="http://services.gate.ac.uk/oai"
 	      name="University of Sheffield"/>
     <provider url="http://sag.art.uniroma2.it/oai/oai.pl"
