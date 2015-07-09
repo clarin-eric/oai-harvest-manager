@@ -121,8 +121,8 @@
 	      name="The Tibetan and Himalayan Library"/>
     <!--<provider url="http://nlp.pwr.wroc.pl/clarin/oai/oai2.php"
 	      name="University of Wroclaw"/>-->
-    <provider url="http://iula02v.upf.edu/oai/oai.pl"
-	      name="UPF Harvesting Day Repository"/>
+    <!--<provider url="http://iula02v.upf.edu/oai/oai.pl"
+	      name="UPF Harvesting Day Repository"/>-->
     <provider url="http://ws02.iula.upf.edu/corpus_data/oai-iula/oai.pl"
 	      name="IULA-UPF Centre de Competència CLARIN"/>
     <provider url="http://sli.uvigo.es/granxa/oai.pl/"
