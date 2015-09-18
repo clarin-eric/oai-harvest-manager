@@ -46,12 +46,14 @@
   <!-- ### actions to take on metadata formats (in order of preference) ### -->
   <actions>
     <format match="prefix" value="olac">
-      <action type="oai" dir="orig" suffix=".xml"/>
+      <action type="save" dir="orig" suffix=".xml"/>
+      <action type="split"/>
       <action type="transform" file="resources/olac2cmdi.xsl"/>
       <action type="save" dir="cmdi" suffix=".xml"/>
     </format>
       <format match="prefix" value="oai_dc">
-      <action type="oai" dir="orig" suffix=".xml"/>
+      <action type="save" dir="orig" suffix=".xml"/>
+      <action type="split"/>
       <action type="transform" file="resources/olac2cmdi.xsl"/>
       <action type="save" dir="cmdi" suffix=".xml"/>
     </format>
@@ -69,7 +71,7 @@
       <set>xyz</set>
     </provider>
       -->
-
+    
     <provider url="http://www.language-archives.org/hosted/acl.xml" static="true"
 	      name="A Digital Archive of Research Papers in Computational Linguistics"/>
     <provider url="http://www.language-archives.org/hosted/ailla.xml" static="true"
@@ -82,7 +84,7 @@
 	      name="Comparative Corpus of Spoken Portuguese"/>-->
     <provider url="http://www.elra.info/elrac/elra_catalogue.xml" static="true"
 	      name="European Language Resources Association"/>
-    <provider url="http://archive.ethnologue.com/oai2.asp"/>
+    <provider url="http://archive.ethnologue.com/oai2.asp" scenario="ListIdentifiers"/>
     <provider url="http://www.language-archives.org/hosted/AcademiaSinica.xml" static="true"
 	      name="Academia Sinica Formosan Language Archive"/>
     <!--<provider url="http://victoria.linguistlist.org/php4/ore/XMLnamespacefiles/Krebs/Krebs.xml" static="true"
@@ -159,7 +161,7 @@
 	      name="Multimodal Learning and teaching Corpora Exchange"/>
     <provider url="http://www.fihrist.org.uk/oaipmh"
 	      name="Fihrist"/>
-    <provider url="http://oai.hab.de/" name="Wolfenbuettel Digital Library"/>
+    <provider url="http://oai.hab.de/" name="Wolfenbuettel Digital Library" scenario="ListIdentifiers"/>
     <provider url="http://www.e-codices.unifr.ch/oai/oai.php?verb=Identify"/>
     <provider url="http://gei-digital.gei.de/viewer/oai?verb=Identify" name="GEI historic German textbooks"/>
   </providers>

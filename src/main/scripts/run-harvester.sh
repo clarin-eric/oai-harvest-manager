@@ -1,5 +1,8 @@
 #!/bin/bash
 
+JAVA="java"
+READLINK="readlink"
+
 function ensureSlash(){
   length=${1}-1
 
@@ -14,7 +17,7 @@ export LANG=en_US.UTF-8
 
 # Do not assume the script is invoked from the directory it is located in; get
 # the directory the script is located in
-thisDir="$(dirname "$(readlink -f "$0")")"
+thisDir="$(dirname "$(${READLINK} -f "$0")")"
 JAR=$thisDir/oai-harvest-manager-${versionNumber}.jar
 
 # Determine the logging mode
@@ -24,9 +27,9 @@ if [ "z${HLOGDIR}" == "z" ]; then
   # properties file supplied in the package
 
   if [ "z${LOGSUFFIX}" != "z" ]; then
-    nice java -Dlog4j.configuration=resources/log4j.properties -Dlogsuffix=-${LOGSUFFIX} -jar ${JAR} $*
+    nice ${JAVA} -Dlog4j.configuration=file://${PWD}/resources/log4j.properties -Dlogsuffix=-${LOGSUFFIX} -jar ${JAR} $*
   else
-    nice java -Dlog4j.configuration=resources/log4j.properties -jar ${JAR} $*
+    nice ${JAVA} -Dlog4j.configuration=file://${PWD}/resources/log4j.properties -jar ${JAR} $*
   fi
 else
   # the HLOGDIR environment variable has been defined; make sure HLOGDIR ends
@@ -39,8 +42,8 @@ else
   # on the LOGSUFFIX to the framework.
 
   if [ "z${LOGSUFFIX}" != "z" ]; then
-    nice java -Dlogdir=$HLOGDIR -Dlogsuffix=-${LOGSUFFIX} -jar ${JAR} $*
+    nice ${JAVA} -Dlogdir=$HLOGDIR -Dlogsuffix=-${LOGSUFFIX} -jar ${JAR} $*
   else
-    nice java -Dlogdir=$HLOGDIR -jar ${JAR} $*
+    nice ${JAVA} -Dlogdir=$HLOGDIR -jar ${JAR} $*
   fi
 fi

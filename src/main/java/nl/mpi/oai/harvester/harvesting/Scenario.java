@@ -102,7 +102,7 @@ public class Scenario {
      * @param harvesting harvester
      * @return false on parser or input output error
      */
-    public boolean listIdentifiers(Harvesting harvesting) {
+    public boolean listIdentifiers(AbstractHarvesting harvesting) {
 
         Document identifiers;
 
@@ -134,10 +134,7 @@ public class Scenario {
         /* Iterate over the list of pairs, for each pair, get the record it
            identifies.
          */
-        for (;;) {
-            if (harvesting.fullyParsed()) {
-                break;
-            }
+        while(!harvesting.fullyParsed()) {
             Metadata record = (Metadata)
                     harvesting.parseResponse();
 
@@ -165,13 +162,13 @@ public class Scenario {
      * @param harvesting harvester
      * @return false on parser or input output error
      */
-    public boolean listRecords(Harvesting harvesting) {
+    public boolean listRecords(AbstractHarvesting harvesting) {
 
         Document records;
 
         Integer n = 0;
 
-        for (;;) {
+        do {
             if (!harvesting.request()) {
                 return false;
             } else {
@@ -182,61 +179,25 @@ public class Scenario {
                     if (!harvesting.processResponse(records)) {
                         return false;
                     } else {
-                        if (actionSequence.containsSaveResponse()) {
+                        String id;
+                        id = String.format("%07d", n);
+                        
+                        Metadata metadata = harvesting.getMetadataFactory().create(
+                                provider.getName() + "-" + id,
+                                OAIHelper.getPrefix(records),
+                                records, this.provider, true, true);
 
-                            /* Saving the response in the list records scenario
-                               means: to save a list of records in one file.
-                             */
-                            String id;
-                            id = String.format("%07d", n);
+                        n++;
 
-                            Metadata metadata = new Metadata(
-                                    provider.getName() + "-" + id,
-                                    OAIHelper.getPrefix(records),
-                                    records, this.provider, records, true, true);
-
-                            n++;
-
-                            // apply the action sequence to the records
-                            actionSequence.runActions(metadata);
-                        }
-
-                        if (actionSequence.containsStripResponse()) {
-
-                            /* Stripping in the list record scenario means:
-                               processing each record in the response. Skip
-                               to the next request if no strip action is
-                               demanded.
-                             */
-                            for (; ; ) {
-                                if (harvesting.fullyParsed()) {
-                                    break;
-                                }
-                                Metadata metadata = (Metadata)
-                                        harvesting.parseResponse();
-
-                                if (metadata == null) {
-                                    /* Something went wrong or the record has
-                                       already been released, either way: skip
-                                       it.
-                                     */
-                                } else {
-                                    // apply the action sequence to the record
-                                    actionSequence.runActions(metadata);
-                                }
-                            }
-                        }
-
-                        /* Check if in principle another response would be
-                           available.
-                         */
-                        if (!harvesting.requestMore()) {
-                            break;
-                        }
+                        // apply the action sequence to the records
+                        actionSequence.runActions(metadata);
                     }
                 }
             }
-        }
+            /* Check if in principle another response would be
+               available.
+             */
+        } while (harvesting.requestMore());
 
         return  true;
     }

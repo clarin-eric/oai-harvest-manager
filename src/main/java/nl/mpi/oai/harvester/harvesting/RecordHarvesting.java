@@ -95,6 +95,7 @@ public final class RecordHarvesting extends AbstractHarvesting {
                     | TransformerException
                     | NoSuchFieldException e) {
                 // report
+                logger.error("RecordHarvesting["+this+"]["+provider+"] request try["+(i+1)+"/"+provider.maxRetryCount+"] failed!");
                 logger.error(e.getMessage(), e);
             }
 

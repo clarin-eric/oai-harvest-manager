@@ -138,12 +138,10 @@ public class ScenarioTest {
         ActionSequence sequence = mock(ActionSequence.class);
         // define what the mocked object needs to return
         when(sequence.getInputFormat()).thenReturn(helper.getMetadataFormats());
-        when(sequence.containsStripResponse()).thenReturn(true);
 
         // get the first provider from the helper
         Provider endpoint = helper.getFirstEndpoint();
         for (; ; ) {
-
             // create a scenario with the endpoint and the mocked sequence
             Scenario scenario = new Scenario(endpoint, sequence);
 

@@ -86,7 +86,7 @@ public class Configuration {
 	RETRYDELAY("retry-delay"), MAXJOBS("max-jobs"),
 	POOLSIZE("resource-pool-size"), TIMEOUT("timeout"),
         OVERVIEWFILE("overview-file"),
-        SAVERESPONSE("save-response");
+        SAVERESPONSE("save-response"), SCENARIO("scenario");
 	private final String val;
 	private KnownOptions(final String s) { val = s; }
 	public String toString() { return val; }
@@ -229,15 +229,11 @@ public class Configuration {
 			} catch (ParserConfigurationException ex) {
 			    logger.error(ex);
 			}
-		    } else if ("oai".equals(actionType)) {
-			String outDirId = Util.getNodeText(xpath, "./@dir", s);
-			String suffix = Util.getNodeText(xpath, "./@suffix", s);
-			if (outputs.containsKey(outDirId)) {
-			    OutputDirectory outDir = outputs.get(outDirId);
-                            act = new SaveOAIAction(outDir, suffix);
-			} else {
-			    logger.error("Invalid output directory " + outDirId
-				    + " specified for oai action");
+                    } else if ("split".equals(actionType)) {
+			try {
+			    act = new SplitAction();
+			} catch (ParserConfigurationException ex) {
+			    logger.error(ex);
 			}
 		    } else if ("save".equals(actionType)) {
 			String outDirId = Util.getNodeText(xpath, "./@dir", s);
@@ -265,22 +261,14 @@ public class Configuration {
 			    logger.error(ex);
 			}
 		    }
-		    if (act != null)
+                    if (act != null)
 			ac.add(act);
-		}
-
-		boolean saveResponse = false, stripResponse = false;
-		if (ac.get(0) instanceof SaveAction){
-			// per definition, the action sequence is intended to save the envelope
-			saveResponse = true;
-		}
-		if (ac.get(0) instanceof StripAction || ac.get(1) instanceof StripAction){
-			// per definition, the action sequence is intended to strip the envelope
-			stripResponse = true;
+                    else
+                        logger.error("Unknown action["+actionType+"]");
 		}
 
 		ActionSequence ap = new ActionSequence(format, ac.toArray(new Action[ac.size()]),
-			getResourcePoolSize(), saveResponse, stripResponse);
+			getResourcePoolSize());
 		actionSequences.add(ap);
 	    } else {
 		logger.warn("A format has no actions defined; skipping it");
@@ -365,6 +353,8 @@ public class Configuration {
 	    String pName = Util.getNodeText(xpath, "./@name", cur);
 	    String pUrl = Util.getNodeText(xpath, "./@url", cur);
 	    String pStatic = Util.getNodeText(xpath, "./@static", cur);
+	    String pScenario = Util.getNodeText(xpath, "./@scenario", cur);
+            System.err.println("!MENZO: provider["+cur+"] url["+pUrl+"] static["+pStatic+"] scenario["+pScenario+"]");
 
 	    if (pUrl == null) {
 		logger.error("Skipping provider " + pName + ": URL is missing");
@@ -376,12 +366,19 @@ public class Configuration {
 		provider = new StaticProvider(pUrl);
 		if (pName != null)
 		    provider.setName(pName);
+                System.err.println("!MENZO: Configuration["+this+"] provider["+provider+"] scenario ["+pScenario+"]");
+		if (pScenario != null)
+		    provider.setScenario(pScenario);
 	    } else {
 		provider = new Provider(pUrl, getMaxRetryCount(), getRetryDelay());
 		if (pName != null)
 		    provider.setName(pName);
 
-		// Note: static providers do not support sets, so this only
+                System.err.println("!MENZO: Configuration["+this+"] provider["+provider+"] scenario ["+pScenario+"]");
+		if (pScenario != null)
+		    provider.setScenario(pScenario);
+
+                // Note: static providers do not support sets, so this only
 		// needs to be done here.
 		NodeList sets = (NodeList) xpath.evaluate("./set", cur,
 			XPathConstants.NODESET);
@@ -459,23 +456,25 @@ public class Configuration {
      * @return string indicating the location of the overview file
      */
     public String getOverviewFile() {
-        String s = settings.get(KnownOptions.OVERVIEWFILE.toString());
-        if (s == null) {
-            s = "overview.xml";
-            Path p = Paths.get(s);
-            if (!Files.exists(p)) {
-                try {
-                    String overview = "<overviewType/>";
-                    BufferedWriter writer = Files.newBufferedWriter(p);
-                    writer.write(overview,0,overview.length());
-                    writer.close();
-                } catch (IOException e) {
-                    s = null;
-                    logger.error("couldn't create the default overview.xml file: ",e);
-                }
+        String s = settings.get(KnownOptions.SCENARIO.toString());
+        String o = settings.get(KnownOptions.OVERVIEWFILE.toString());
+        if (s == null)
+            s = "ListIdentifiers";
+        if (o == null)
+            o = "overview.xml";
+        Path p = Paths.get(o);
+        if (!Files.exists(p)) {
+            try {
+                String overview = "<overviewType><scenario>"+s+"</scenario></overviewType>";
+                BufferedWriter writer = Files.newBufferedWriter(p);
+                writer.write(overview,0,overview.length());
+                writer.close();
+            } catch (IOException e) {
+                o = null;
+                logger.error("couldn't create an initial/default "+o+" file: ",e);
             }
         }
-        return s;
+        return o;
     }
     
     /**

@@ -126,8 +126,8 @@ class EndpointAdapter implements Endpoint {
      * @param xmlOverview  overview marshalling object
      *
      */
-     EndpointAdapter(String endpointURI, String group, XMLOverview
-             xmlOverview) {
+     EndpointAdapter(String endpointURI, String group, String scenario,
+             XMLOverview xmlOverview) {
 
         // remember the cycle, remember the factory
         this.xmlOverview = xmlOverview;
@@ -141,6 +141,15 @@ class EndpointAdapter implements Endpoint {
 
             // and add it to the cycle
             xmlOverview.overviewType.getEndpoint().add(endpointType);
+        }
+        
+        if (scenario!=null) {
+            if (scenario.equals("ListPrefixes"))
+                endpointType.setScenario(ScenarioType.LIST_PREFIXES);
+            else if (scenario.equals("ListIdentifiers"))
+                endpointType.setScenario(ScenarioType.LIST_IDENTIFIERS);
+            else if (scenario.equals("ListRecords"))
+                endpointType.setScenario(ScenarioType.LIST_RECORDS);
         }
     }
 

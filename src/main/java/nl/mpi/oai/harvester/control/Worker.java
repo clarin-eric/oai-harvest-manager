@@ -88,7 +88,7 @@ class Worker implements Runnable {
 	this.actionSequences = actionSequences;
 
     // register the endpoint with the cycle, kj: get the group
-    endpoint = cycle.next(provider.getOaiUrl(), "group");
+    endpoint = cycle.next(provider.getOaiUrl(), "group", provider.getScenario());
 
     // get the name of the scenario the worker needs to apply
     this.scenarioName = endpoint.getScenario();
@@ -135,7 +135,7 @@ class Worker implements Runnable {
             if (provider instanceof StaticProvider) {
                 
                 // set type of format harvesting to apply
-                Harvesting harvesting = new StaticPrefixHarvesting(
+                AbstractHarvesting harvesting = new StaticPrefixHarvesting(
                         oaiFactory,
                         (StaticProvider) provider,
                         actionSequence);
@@ -159,7 +159,7 @@ class Worker implements Runnable {
             } else {
 
                 // set type of format harvesting to apply
-                Harvesting harvesting = new FormatHarvesting(oaiFactory,
+                AbstractHarvesting harvesting = new FormatHarvesting(oaiFactory,
                         provider, actionSequence);
 
                 // get the prefixes

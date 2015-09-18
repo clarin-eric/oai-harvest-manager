@@ -20,6 +20,7 @@ package nl.mpi.oai.harvester.action;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.util.List;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
@@ -64,23 +65,24 @@ public class TransformAction implements Action {
     }
 
     @Override
-    public boolean perform(Metadata record) {
-	try {
-	    DOMSource source = new DOMSource(record.getDoc());
-	    DOMResult output = new DOMResult();
-	    transformer.setParameter("provider_name",record.getOrigin().getName());
-            transformer.setParameter("record_identifier",record.getId());
-	    transformer.transform(source, output);
-	    record.setDoc((Document) output.getNode());
-            record.setIsList(false);
-	    return true;
-	} catch (TransformerException ex) {
-	    logger.error(ex);
-	    return false;
-	}
+    public boolean perform(List<Metadata> records) {
+        for (Metadata record:records) {
+            try {
+                DOMSource source = new DOMSource(record.getDoc());
+                DOMResult output = new DOMResult();
+                transformer.setParameter("provider_name",record.getOrigin().getName());
+                transformer.setParameter("record_identifier",record.getId());
+                transformer.transform(source, output);
+                record.setDoc((Document) output.getNode());
+            } catch (TransformerException ex) {
+                logger.error(ex);
+                return false;
+            }
+        }
+        return true;
     }
 
-	@Override
+    @Override
     public String toString() {
 	return "transform using " + xsltFile;
     }

@@ -61,6 +61,8 @@ public class Provider {
 
     /** Name of the provider. */
 	public String name;
+        
+    public String scenario;
 
     /** Address through which the OAI repository is accessed. */
     public final String oaiUrl;
@@ -169,6 +171,8 @@ public class Provider {
      * @return name
      */
     public String getName() {
+        if (name==null)
+            fetchName();
 	return name;
     }
 
@@ -211,6 +215,16 @@ public class Provider {
 	    logger.error(e.getMessage(), e);
 	}
 	return null;
+    }
+    
+    public void setScenario(String scenario) {
+        this.scenario = scenario;
+        System.err.println("!MENZO: provider["+this+"] set scenario["+this.scenario+"]");
+    }
+    
+    public String getScenario() {
+        System.err.println("!MENZO: provider["+this+"] get scenario["+this.scenario+"]");
+        return this.scenario;
     }
 
     /**
@@ -276,11 +290,20 @@ public class Provider {
 	    try {
 		GetRecord gr = new GetRecord(oaiUrl, id, mdPrefix);
 		Document doc = gr.getDocument();
-		return new Metadata(id, mdPrefix, doc, this, doc, true, false);
+		return new Metadata(id, mdPrefix, doc, this, true, false);
 	    } catch (IOException | SAXException | ParserConfigurationException
 		    | TransformerException e) {
+                logger.error("Provider["+this+"] getRecord["+oaiUrl+"]["+id+"]["+mdPrefix+"] try["+(i+1)+"/"+maxRetryCount+"] failed!");
 		logger.error(e);
 	    }
+            // retry the request once more
+            if (retryDelay > 0) {
+                try {
+                    Thread.sleep(retryDelay);
+                } catch(InterruptedException e) {
+                    logger.error(e.getMessage(), e);
+                }
+            }                
 	}
 	return null;
     }

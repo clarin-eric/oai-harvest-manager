@@ -59,25 +59,8 @@ public class ListRecordsTestHelper extends TestHelper {
     void addTraces() {
 
         // add the traces identifying the records the test should yield
-        addToList("http://metalb.csc.fi/cgi-bin/que", "cmdi0571", "oai:kielipankki.fi:sh03de30");
-        addToList("http://metalb.csc.fi/cgi-bin/que", "cmdi0571", "oai:kielipankki.fi:sh7b8760");
-        addToList("http://metalb.csc.fi/cgi-bin/que", "cmdi0571", "oai:kielipankki.fi:sh034a70");
-        addToList("http://metalb.csc.fi/cgi-bin/que", "cmdi0571", "oai:kielipankki.fi:sh136cd0");
-        addToList("http://metalb.csc.fi/cgi-bin/que", "cmdi0571", "oai:kielipankki.fi:sh3123d0");
-        addToList("http://metalb.csc.fi/cgi-bin/que", "cmdi0571", "oai:kielipankki.fi:shaccf90");
-        addToList("http://metalb.csc.fi/cgi-bin/que", "cmdi0571", "oai:kielipankki.fi:shd0d800");
-        addToList("http://metalb.csc.fi/cgi-bin/que", "cmdi0571", "oai:kielipankki.fi:shff9200");
-
-        addToList("http://metalb.csc.fi/cgi-bin/que", "cmdi0571", "oai:kielipankki.fi:sh8e2580");
-        addToList("http://metalb.csc.fi/cgi-bin/que", "cmdi0571", "oai:kielipankki.fi:sh8d4340");
-
-        addToList("http://metalb.csc.fi/cgi-bin/que", "cmdi2312", "oai:kielipankki.fi:sh03de30");
-        addToList("http://metalb.csc.fi/cgi-bin/que", "cmdi2312", "oai:kielipankki.fi:sh7b8760");
-        addToList("http://metalb.csc.fi/cgi-bin/que", "cmdi2312", "oai:kielipankki.fi:sh034a70");
-        addToList("http://metalb.csc.fi/cgi-bin/que", "cmdi2312", "oai:kielipankki.fi:sh136cd0");
-        addToList("http://metalb.csc.fi/cgi-bin/que", "cmdi2312", "oai:kielipankki.fi:sh3123d0");
-        addToList("http://metalb.csc.fi/cgi-bin/que", "cmdi2312", "oai:kielipankki.fi:shaccf90");
-        addToList("http://metalb.csc.fi/cgi-bin/que", "cmdi2312", "oai:kielipankki.fi:shd0d800");
-        addToList("http://metalb.csc.fi/cgi-bin/que", "cmdi2312", "oai:kielipankki.fi:shff9200");
+        addToList("http://metalb.csc.fi/cgi-bin/que", "cmdi0571", "Language Bank of Finland-0000000");
+        addToList("http://metalb.csc.fi/cgi-bin/que", "cmdi0571", "Language Bank of Finland-0000001");
+        addToList("http://metalb.csc.fi/cgi-bin/que", "cmdi2312", "Language Bank of Finland-0000002");
     }
 }

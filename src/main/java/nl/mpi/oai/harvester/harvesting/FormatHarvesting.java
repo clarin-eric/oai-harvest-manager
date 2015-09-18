@@ -100,26 +100,41 @@ public class FormatHarvesting extends AbstractHarvesting implements
         
         logger.debug("Requesting formats matching " + actions.getInputFormat());
 
-        try {
-            // get metadata formats from the endpoint
-            document = oaiFactory.createListMetadataFormats(provider.oaiUrl);
-        } catch (IOException
-                | ParserConfigurationException
-                | SAXException
-                | TransformerException
-                | NoSuchFieldException e) {
-            // report
-            logger.error(e.getMessage(), e);
-        }
+        int i = 0;
+        for (;;) {
+            try {
+                // get metadata formats from the endpoint
+                document = oaiFactory.createListMetadataFormats(provider.oaiUrl);
+            } catch (IOException
+                    | ParserConfigurationException
+                    | SAXException
+                    | TransformerException
+                    | NoSuchFieldException e) {
+                // report
+                logger.error("FormatHarvesting["+this+"]["+provider+"] request try["+(i+1)+"/"+provider.maxRetryCount+"] failed!");
+                logger.error(e.getMessage(), e);
+            }
 
-        if (document == null){
-            // something went wrong, ending the work for the current endpoint
-            logger.info ("Cannot obtain metadata formats from endpoint " +
-                    provider.getOaiUrl());
-            return false;
-        } else {
-            // response contains a list of prefixes
-            return true;
+            if (document == null){
+                i++;
+                if (i == provider.maxRetryCount) {
+                    // something went wrong, ending the work for the current endpoint
+                    logger.info ("Cannot obtain metadata formats from endpoint " +
+                            provider.getOaiUrl());
+                    return false;
+                } else {
+                    if (provider.retryDelay > 0) {
+                        try {
+                            Thread.sleep(provider.retryDelay);
+                        } catch (InterruptedException e) {
+                            logger.error(e.getMessage(), e);
+                        }
+                    }
+                }
+            } else {
+                // response contains a list of prefixes
+                return true;
+            }
         }
     }
 
@@ -136,7 +151,6 @@ public class FormatHarvesting extends AbstractHarvesting implements
 
     @Override
     public boolean requestMore() {
-
         // there can only be one request
         throw new HarvestingException();
     }
@@ -270,7 +284,6 @@ public class FormatHarvesting extends AbstractHarvesting implements
      */
     @Override
     public boolean fullyParsed() {
-
         return index == nodeList.getLength();
     }
 }

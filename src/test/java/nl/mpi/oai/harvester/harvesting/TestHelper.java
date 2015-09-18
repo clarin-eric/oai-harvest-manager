@@ -353,7 +353,6 @@ abstract class TestHelper implements OAIInterface, MetadataInterface {
      * @return a response document or null if there are no more documents
      */
     Document getDocument(String type) {
-
         // check for a change in document type
         if (this.type == null || ! this.type.equals(type)){
 
@@ -562,7 +561,6 @@ abstract class TestHelper implements OAIInterface, MetadataInterface {
                 String endpointURI = metadata.getOrigin().getOaiUrl();
                 String prefix = metadata.getPrefix();
                 String identifier = metadata.getId();
-
                 // create the trace
                 Trace trace = new Trace(endpointURI, prefix, identifier);
 
@@ -590,7 +588,6 @@ abstract class TestHelper implements OAIInterface, MetadataInterface {
      * @return true if and only if the test is successful
      */
     boolean success(){
-
         return success && traces.size() == 0;
     }
 }

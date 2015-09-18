@@ -80,10 +80,10 @@ public class XMLBasedCycle implements Cycle {
      * Note: the method needs synchronisation because endpoints might be
      * harvested in parallel.
      */
-    public synchronized Endpoint next(String URI, String group) {
+    public synchronized Endpoint next(String URI, String group, String scenario) {
 
         // get the endpoint from the overview
-        return xmlOverview.getEndpoint(URI, group);
+        return xmlOverview.getEndpoint(URI, group, scenario);
     }
 
     @Override

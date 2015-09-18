@@ -109,4 +109,8 @@ public abstract class AbstractHarvesting implements Harvesting {
             throw new HarvestingException();
         }
     }
+    
+    public MetadataFactory getMetadataFactory() {
+        return this.metadataFactory;
+    }
 }

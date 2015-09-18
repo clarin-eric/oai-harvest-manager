@@ -210,6 +210,7 @@ public abstract class ListHarvesting extends AbstractListHarvesting implements
                 done = false;
 
                 // report
+                logger.error("ListHarvesting["+this+"]["+provider+"] request try["+(i+1)+"/"+provider.maxRetryCount+"] failed!");
                 logger.error(e.getMessage(), e);
                 if (provider.sets == null) {
                     logger.info(message[2] + prefixes.get(pIndex)
@@ -228,12 +229,11 @@ public abstract class ListHarvesting extends AbstractListHarvesting implements
                 return true;
             } else {
                 i++;
-                if (i > provider.maxRetryCount) {
+                if (i == provider.maxRetryCount) {
                     // do not retry any more, try another prefix instead
                     return false;
                 }
                 // retry the request once more
-                // TODO: use retry-delay
                 if (provider.retryDelay > 0) {
                     try {
                     Thread.sleep(provider.retryDelay);

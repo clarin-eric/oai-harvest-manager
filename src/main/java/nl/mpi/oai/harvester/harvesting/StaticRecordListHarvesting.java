@@ -233,6 +233,6 @@ public final class StaticRecordListHarvesting extends AbstractListHarvesting
 
         // create and return the the metadata
         return new Metadata(pair.identifier, pair.prefix, document, provider,
-                response.getDocument(), false, false);
+                false, false);
     }
 }

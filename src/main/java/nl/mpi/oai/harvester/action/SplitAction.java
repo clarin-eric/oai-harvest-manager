@@ -35,18 +35,18 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
- * This action corresponds to stripping off the OAI-PMH envelope surrounding
- * a harvested metadata record.
+ * This action corresponds to splitting the OAI-PMH envelope with multiple records
+ * into multiple ones with each one harvested metadata record.
  * 
- * @author Lari Lampen (MPI-PL)
+ * @author Menzo Windhouwer (CLARIN-ERIC)
  */
-public class StripAction implements Action {
-    private static final Logger logger = Logger.getLogger(StripAction.class);
+public class SplitAction implements Action {
+    private static final Logger logger = Logger.getLogger(SplitAction.class);
 
     private final XPath xpath;
     private final DocumentBuilder db;
 
-    public StripAction() throws ParserConfigurationException {
+    public SplitAction() throws ParserConfigurationException {
 	XPathFactory xpf = XPathFactory.newInstance();
 	xpath = xpf.newXPath();	
 	DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -65,9 +65,7 @@ public class StripAction implements Action {
 
             NodeList content = null;
             try {
-                content = (NodeList) xpath.evaluate("//*[local-name()=" +
-                                "'metadata' and parent::*[local-name()=" +
-                                "'record']]/*",
+                content = (NodeList) xpath.evaluate("//*[local-name()='record']",
                         record.getDoc(), XPathConstants.NODESET);
             } catch (XPathExpressionException ex) {
                 logger.error(ex);
@@ -85,7 +83,7 @@ public class StripAction implements Action {
                 String id = "";
                 try {
                     id = (String) xpath.evaluate(
-                        "parent::*[local-name()='metadata']/preceding-sibling::*[local-name()='header']/*[local-name()='identifier']",
+                        "./*[local-name()='header']/*[local-name()='identifier']",
                         content.item(i),XPathConstants.STRING);
                 } catch (XPathExpressionException ex) {
                     logger.error(ex);
@@ -103,17 +101,17 @@ public class StripAction implements Action {
 
     @Override
     public String toString() {
-	return "strip";
+	return "split";
     }
 
-    // All strip actions are equal.
+    // All split actions are equal.
     @Override
     public int hashCode() {
 	return 1;
     }
     @Override
     public boolean equals(Object o) {
-	if (o instanceof StripAction) {
+	if (o instanceof SplitAction) {
 	    return true;
 	}
 	return false;
@@ -122,9 +120,9 @@ public class StripAction implements Action {
     @Override
     public Action clone() {
 	try {
-	    // All strip actions are the same. This is effectively a "deep"
+	    // All split actions are the same. This is effectively a "deep"
 	    // copy since it has its own XPath object.
-	    return new StripAction();
+	    return new SplitAction();
 	} catch (ParserConfigurationException ex) {
 	    logger.error(ex);
 	}

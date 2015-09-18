@@ -47,9 +47,6 @@ public class Metadata {
     /** The OAI-PMH provider where this record originated. */
     private final Provider origin;
 
-    /** The OAI-PMH response where this record originated. */
-    private final Document response;
-
     // whether or not the metadata is packed in an OAI envelope
     private boolean isEnvelope;
     // whether or not the metadata takes the form of a list of records
@@ -70,12 +67,11 @@ public class Metadata {
      * @param isList true if metadata is a list of records, false otherwise
      */
     public Metadata(String id, String prefix, Document doc, Provider endpoint,
-                    Document response, boolean isEnvelope, boolean isList) {
+                    boolean isEnvelope, boolean isList) {
         this.id           = id;
         this.prefix       = prefix;
         this.doc          = doc;
         this.origin       = endpoint;
-        this.response     = response;
         this.isEnvelope   = isEnvelope;
         this.isList       = isList;
     }
@@ -120,14 +116,6 @@ public class Metadata {
      */
     public Provider getOrigin() {
         return origin;
-    }
-
-    /** 
-     * Get the OAI response which contained this record. 
-     * @return the response
-     */
-    public Document getResponse() {
-        return response;
     }
 
     /**

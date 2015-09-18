@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
@@ -62,30 +63,31 @@ public class SaveAction implements Action {
     }
 
     @Override
-    public boolean perform(Metadata metadata) {
-
-        OutputStream os = null;
-        try {
-            TransformerFactory transformerFactory = TransformerFactory.newInstance();
-            Transformer transformer = transformerFactory.newTransformer();
-            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-
-            DOMSource source = new DOMSource(getDocument(metadata));
-
-            os = Files.newOutputStream(chooseLocation(metadata));
-            StreamResult result = new StreamResult(os);
-
-            transformer.transform(source, result);
-            return true;
-        } catch (TransformerException | IOException ex) {
-            logger.error(ex);
-            return false;
-        } finally {
+    public boolean perform(List<Metadata> metadata) {
+        for (Metadata record:metadata) {
+            OutputStream os = null;
             try {
-                if (os != null) os.close();
-            } catch (IOException e) {
+                TransformerFactory transformerFactory = TransformerFactory.newInstance();
+                Transformer transformer = transformerFactory.newTransformer();
+                transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+
+                DOMSource source = new DOMSource(record.getDoc());
+
+                os = Files.newOutputStream(chooseLocation(record));
+                StreamResult result = new StreamResult(os);
+
+                transformer.transform(source, result);
+            } catch (TransformerException | IOException ex) {
+                logger.error(ex);
+                return false;
+            } finally {
+                try {
+                    if (os != null) os.close();
+                } catch (IOException e) {
+                }
             }
         }
+        return true;
     }
 
     /**

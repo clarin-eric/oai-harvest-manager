@@ -71,8 +71,8 @@ public class MetadataFactory {
         Metadata metadata;
 
         // create the metadata
-        metadata = new Metadata(id, prefix, doc, endpoint, doc, isEnvelope, isList);
-
+        metadata = new Metadata(id, prefix, doc, endpoint, isEnvelope, isList);
+        
         // an object implementing the metadata interface
         MetadataInterface metadataInterface;
 
