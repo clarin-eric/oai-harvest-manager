@@ -354,7 +354,6 @@ public class Configuration {
 	    String pUrl = Util.getNodeText(xpath, "./@url", cur);
 	    String pStatic = Util.getNodeText(xpath, "./@static", cur);
 	    String pScenario = Util.getNodeText(xpath, "./@scenario", cur);
-            System.err.println("!MENZO: provider["+cur+"] url["+pUrl+"] static["+pStatic+"] scenario["+pScenario+"]");
 
 	    if (pUrl == null) {
 		logger.error("Skipping provider " + pName + ": URL is missing");
@@ -366,7 +365,6 @@ public class Configuration {
 		provider = new StaticProvider(pUrl);
 		if (pName != null)
 		    provider.setName(pName);
-                System.err.println("!MENZO: Configuration["+this+"] provider["+provider+"] scenario ["+pScenario+"]");
 		if (pScenario != null)
 		    provider.setScenario(pScenario);
 	    } else {
@@ -374,7 +372,6 @@ public class Configuration {
 		if (pName != null)
 		    provider.setName(pName);
 
-                System.err.println("!MENZO: Configuration["+this+"] provider["+provider+"] scenario ["+pScenario+"]");
 		if (pScenario != null)
 		    provider.setScenario(pScenario);
 

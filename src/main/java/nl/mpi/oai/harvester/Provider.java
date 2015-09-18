@@ -219,11 +219,9 @@ public class Provider {
     
     public void setScenario(String scenario) {
         this.scenario = scenario;
-        System.err.println("!MENZO: provider["+this+"] set scenario["+this.scenario+"]");
     }
     
     public String getScenario() {
-        System.err.println("!MENZO: provider["+this+"] get scenario["+this.scenario+"]");
         return this.scenario;
     }
 
