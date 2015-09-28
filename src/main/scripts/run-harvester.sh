@@ -21,29 +21,20 @@ thisDir="$(dirname "$(${READLINK} -f "$0")")"
 JAR=$thisDir/oai-harvest-manager-${versionNumber}.jar
 
 # Determine the logging mode
-if [ "z${HLOGDIR}" == "z" ]; then
+if [ "z${LOGDIR}" != "z" ]; then
+  LOGDIR=$(ensureSlash $LOGDIR)
 
-  # the HLOGDIR environment variable has not been defined, use the log4j
-  # properties file supplied in the package
-
-  if [ "z${LOGSUFFIX}" != "z" ]; then
-    nice ${JAVA} -Dlog4j.configuration=file://${PWD}/resources/log4j.properties -Dlogsuffix=-${LOGSUFFIX} -jar ${JAR} $*
-  else
-    nice ${JAVA} -Dlog4j.configuration=file://${PWD}/resources/log4j.properties -jar ${JAR} $*
-  fi
-else
-  # the HLOGDIR environment variable has been defined; make sure HLOGDIR ends
-  # with /
-
-  HLOGDIR=$(ensureSlash $HLOGDIR)
-
-  # Pass HLOGDIR to java as the logdir property, the log4j framework will pick
-  # it up as such; please refer to the log4j.properties. If defined, also pass
-  # on the LOGSUFFIX to the framework.
-
-  if [ "z${LOGSUFFIX}" != "z" ]; then
-    nice ${JAVA} -Dlogdir=$HLOGDIR -Dlogsuffix=-${LOGSUFFIX} -jar ${JAR} $*
-  else
-    nice ${JAVA} -Dlogdir=$HLOGDIR -jar ${JAR} $*
-  fi
+  PROPS="${PROPS} -Dlogdir=${LOGDIR}"
 fi
+
+if [ "z${LOGPROPS}" != "z" ]; then
+  PROPS="${PROPS} -Dlog4j.configuration=file://${LOGPROPS}"
+else
+  PROPS="${PROPS} -Dlog4j.configuration=file://${PWD}/resources/log4j.properties"
+fi
+
+if [ "z${LOGSUFFIX}" != "z" ]; then
+  PROPS="${PROPS} -Dlogsuffix=-${LOGSUFFIX}"
+fi
+
+nice ${JAVA} ${PROPS} -jar ${JAR} $*
