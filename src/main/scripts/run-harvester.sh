@@ -27,7 +27,7 @@ if [ "z${LOGDIR}" != "z" ]; then
   PROPS="${PROPS} -Dlogdir=${LOGDIR}"
 fi
 
-if [ "z${LOGPROPS}" != "z" ] && [ -f ${LOGPROS} ]; then
+if [ "z${LOGPROPS}" != "z" ] && [ -f ${LOGPROPS} ]; then
   PROPS="${PROPS} -Dlog4j.configuration=file://${LOGPROPS}"
 else
   PROPS="${PROPS} -Dlog4j.configuration=file://${PWD}/resources/log4j.properties"
