@@ -34,6 +34,13 @@
     
     <xsl:template match="text()"/>
     
+    <xsl:template match="/">
+        <xsl:if test="empty(//defns:record[defns:header/defns:identifier=$record_identifier])">
+            <xsl:message>WRN: no record with identifier[<xsl:value-of select="$record_identifier"/>] found!</xsl:message>
+        </xsl:if>
+        <xsl:apply-templates/>
+    </xsl:template>
+    
     <xsl:template match="//defns:record[defns:header/defns:identifier=$record_identifier]">
         <CMD CMDVersion="1.1"
             xsi:schemaLocation="http://www.clarin.eu/cmd/ http://catalog.clarin.eu/ds/ComponentRegistry/rest/registry/profiles/clarin.eu:cr1:p_1288172614026/xsd">

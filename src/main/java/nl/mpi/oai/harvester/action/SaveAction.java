@@ -23,12 +23,15 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.logging.Level;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
 
 import nl.mpi.oai.harvester.metadata.Metadata;
 import nl.mpi.oai.harvester.control.OutputDirectory;
@@ -73,11 +76,14 @@ public class SaveAction implements Action {
 
                 DOMSource source = new DOMSource(record.getDoc());
 
-                os = Files.newOutputStream(chooseLocation(record));
+                Path path = chooseLocation(record);
+                os = Files.newOutputStream(path);
                 StreamResult result = new StreamResult(os);
 
                 transformer.transform(source, result);
-            } catch (TransformerException | IOException ex) {
+                
+                logger.debug("saved XML doc["+path+"] with ["+XPathFactory.newInstance().newXPath().evaluate("count(//*)", record.getDoc())+"] nodes");
+            } catch (TransformerException | IOException | XPathExpressionException ex) {
                 logger.error(ex);
                 return false;
             } finally {
