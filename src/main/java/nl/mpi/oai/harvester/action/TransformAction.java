@@ -23,6 +23,7 @@ import java.io.FileNotFoundException;
 import java.util.List;
 import javax.xml.transform.ErrorListener;
 import javax.xml.transform.Source;
+import javax.xml.transform.Templates;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
@@ -52,7 +53,7 @@ public class TransformAction implements Action {
     private String xsltFile;
 
     /** Prepared XSL transformation object. */
-    private Transformer transformer;
+    private Templates templates;
 
     /** 
      * Create a new transform action using the specified XSLT. 
@@ -71,13 +72,14 @@ public class TransformAction implements Action {
         }
         transformerFactory.setErrorListener(new TransformActionErrorListener());
 	Source xslSource = new StreamSource(new FileInputStream(xsltFile));
-	transformer = transformerFactory.newTransformer(xslSource);
+	templates = transformerFactory.newTemplates(xslSource);
     }
 
     @Override
     public boolean perform(List<Metadata> records) {
         for (Metadata record:records) {
             try {
+                Transformer transformer = templates.newTransformer();
                 DOMSource source = new DOMSource(record.getDoc());
                 DOMResult output = new DOMResult();
                 transformer.setParameter("provider_name",record.getOrigin().getName());
