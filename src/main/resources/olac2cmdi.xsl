@@ -1,12 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet xmlns="http://www.clarin.eu/cmd/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0"
-    xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/"
-    xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/"
-    xmlns:defns="http://www.openarchives.org/OAI/2.0/"
-    xmlns:olac="http://www.language-archives.org/OLAC/1.0/"
-    xmlns:olac11="http://www.language-archives.org/OLAC/1.1/"
-    xsi:schemaLocation="    http://purl.org/dc/elements/1.1/    http://www.language-archives.org/OLAC/1.0/dc.xsd    http://purl.org/dc/terms/    http://www.language-archives.org/OLAC/1.0/dcterms.xsd    http://www.language-archives.org/OLAC/1.0/    http://www.language-archives.org/OLAC/1.0/olac.xsd    http://www.language-archives.org/OLAC/1.0/ http://www.language-archives.org/OLAC/1.0/third-party/software.xsd ">
+<xsl:stylesheet xmlns="http://www.clarin.eu/cmd/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/" xmlns:defns="http://www.openarchives.org/OAI/2.0/" xmlns:olac="http://www.language-archives.org/OLAC/1.0/" xmlns:olac11="http://www.language-archives.org/OLAC/1.1/" xsi:schemaLocation="    http://purl.org/dc/elements/1.1/    http://www.language-archives.org/OLAC/1.0/dc.xsd    http://purl.org/dc/terms/    http://www.language-archives.org/OLAC/1.0/dcterms.xsd    http://www.language-archives.org/OLAC/1.0/    http://www.language-archives.org/OLAC/1.0/olac.xsd    http://www.language-archives.org/OLAC/1.0/ http://www.language-archives.org/OLAC/1.0/third-party/software.xsd ">
 
     <!-- run on Ubuntu with: saxonb-xslt -ext:on -it main ~/svn/clarin/metadata/trunk/toolkit/xslt/olac2cmdi.xsl  -->
 
@@ -19,31 +12,31 @@
 	file.
       -->
     <xsl:param name="iso_xml_path" select="'resources/'"/>
-    <xsl:variable name="lang-top" select="document(concat($iso_xml_path,'sil_to_iso6393.xml'))/languages"/>
+    <xsl:variable name="lang-top" select="document(concat($iso_xml_path, 'sil_to_iso6393.xml'))/languages"/>
 
     <!--
 	Name of the provider the record was harvested from (or empty
 	if name is not known).
       -->
     <xsl:param name="provider_name"/>
-    
+
     <!--
 	Identifier of the record.
       -->
     <xsl:param name="record_identifier"/>
-    
+
     <xsl:template match="text()"/>
-    
+
     <xsl:template match="/">
-        <xsl:if test="empty(//defns:record[defns:header/defns:identifier=$record_identifier])">
-            <xsl:message>WRN: no record with identifier[<xsl:value-of select="$record_identifier"/>] found!</xsl:message>
-        </xsl:if>
+            <xsl:if test="empty(//defns:record[defns:header/defns:identifier = $record_identifier])">
+                <xsl:message>WRN: no record with identifier[<xsl:value-of select="$record_identifier"/>] found!</xsl:message>
+            </xsl:if>
         <xsl:apply-templates/>
     </xsl:template>
-    
-    <xsl:template match="//defns:record[defns:header/defns:identifier=$record_identifier]">
-        <CMD CMDVersion="1.1"
-            xsi:schemaLocation="http://www.clarin.eu/cmd/ http://catalog.clarin.eu/ds/ComponentRegistry/rest/registry/profiles/clarin.eu:cr1:p_1288172614026/xsd">
+
+    <xsl:template match="//defns:record[defns:header/defns:identifier = $record_identifier]">
+        <xsl:message>DBG: record[<xsl:value-of select="count(preceding::defns:record) + 1"/>/<xsl:value-of select="count(../defns:record)"/>] with identifier[<xsl:value-of select="$record_identifier"/>] found!</xsl:message>
+        <CMD CMDVersion="1.1" xsi:schemaLocation="http://www.clarin.eu/cmd/ http://catalog.clarin.eu/ds/ComponentRegistry/rest/registry/profiles/clarin.eu:cr1:p_1288172614026/xsd">
             <Header>
                 <MdCreator>olac2cmdi.xsl</MdCreator>
                 <MdCreationDate>
@@ -51,8 +44,8 @@
                         <xsl:value-of select="./defns:header[1]/defns:datestamp[1]"/>
                     </xsl:variable>
                     <xsl:choose>
-                        <xsl:when test="contains($date,'T')">
-                            <xsl:value-of select="substring-before($date,'T')"/>
+                        <xsl:when test="contains($date, 'T')">
+                            <xsl:value-of select="substring-before($date, 'T')"/>
                         </xsl:when>
                         <xsl:otherwise>
                             <xsl:value-of select="$date"/>
@@ -166,7 +159,7 @@
 
     <xsl:template match="dc:contributor" mode="cmd">
         <contributor>
-            <xsl:if test="@xsi:type='olac:role'">
+            <xsl:if test="@xsi:type = 'olac:role'">
                 <xsl:if test="@*:code">
                     <xsl:attribute name="olac-role">
                         <!-- note: namespace wildcard necessary to match with both OLAC 1.0 and 1.1 -->
@@ -186,7 +179,7 @@
         </description>
     </xsl:template>
 
-    <xsl:template match="dc:language[@xsi:type='olac:language']" priority="3" mode="cmd">
+    <xsl:template match="dc:language[@xsi:type = 'olac:language']" priority="3" mode="cmd">
         <language>
             <xsl:if test="@*:code">
                 <xsl:attribute name="olac-language">
@@ -217,17 +210,21 @@
 
 
     <xsl:template match="dc:identifier" mode="preprocess">
-    	<xsl:if test="contains(., 'http://') or contains(., 'https://') or contains(., 'urn:nbn') or contains(., 'hdl:')">
-        <ResourceProxy>
-            <xsl:attribute name="id"><xsl:value-of select="generate-id()"/></xsl:attribute>
-            <ResourceType>Resource</ResourceType>
-            <ResourceRef><xsl:value-of select="."/></ResourceRef>
-        </ResourceProxy>
-        </xsl:if>     
+        <xsl:if test="contains(., 'http://') or contains(., 'https://') or contains(., 'urn:nbn') or contains(., 'hdl:')">
+            <ResourceProxy>
+                <xsl:attribute name="id">
+                    <xsl:value-of select="generate-id()"/>
+                </xsl:attribute>
+                <ResourceType>Resource</ResourceType>
+                <ResourceRef>
+                    <xsl:value-of select="."/>
+                </ResourceRef>
+            </ResourceProxy>
+        </xsl:if>
     </xsl:template>
 
 
-    <xsl:template match="dc:subject[@xsi:type='olac:language']" priority="3" mode="cmd">
+    <xsl:template match="dc:subject[@xsi:type = 'olac:language']" priority="3" mode="cmd">
         <subject>
             <!-- can be enabled when there is a 1-to-1 mapping in sil_to_iso6393.xml           -->
             <xsl:if test="@*:code">
@@ -248,7 +245,7 @@
         </subject>
     </xsl:template>
 
-    <xsl:template match="//dc:subject[@xsi:type='olac:linguistic-field']" priority="3" mode="cmd">
+    <xsl:template match="//dc:subject[@xsi:type = 'olac:linguistic-field']" priority="3" mode="cmd">
         <subject>
             <xsl:if test="@*:code">
                 <xsl:attribute name="olac-linguistic-field">
@@ -259,7 +256,7 @@
         </subject>
     </xsl:template>
 
-    <xsl:template match="//dc:subject[@xsi:type='olac:discourse-type']" priority="3" mode="cmd">
+    <xsl:template match="//dc:subject[@xsi:type = 'olac:discourse-type']" priority="3" mode="cmd">
         <subject>
             <xsl:attribute name="olac-discourse-type">
                 <xsl:value-of select="@*:code"/>
@@ -287,7 +284,7 @@
     </xsl:template>
 
 
-    <xsl:template match="//dc:type[@xsi:type='olac:discourse-type']" priority="2" mode="cmd">
+    <xsl:template match="//dc:type[@xsi:type = 'olac:discourse-type']" priority="2" mode="cmd">
         <type>
             <xsl:if test="@*:code">
                 <xsl:attribute name="olac-discourse-type">
@@ -299,7 +296,7 @@
     </xsl:template>
 
 
-    <xsl:template match="//dc:type[@xsi:type='olac:linguistic-type']" priority="2" mode="cmd">
+    <xsl:template match="//dc:type[@xsi:type = 'olac:linguistic-type']" priority="2" mode="cmd">
         <type>
             <xsl:if test="@*:code">
                 <xsl:attribute name="olac-linguistic-type">
@@ -330,7 +327,7 @@
         </xsl:variable>
         <xsl:if test="contains($attval, 'dcterms:')">
             <xsl:variable name="attclean">
-                <xsl:value-of select="replace($attval, 'dcterms:','')"/>
+                <xsl:value-of select="replace($attval, 'dcterms:', '')"/>
             </xsl:variable>
             <xsl:attribute name="dcterms-type">
                 <xsl:value-of select="$attclean"/>

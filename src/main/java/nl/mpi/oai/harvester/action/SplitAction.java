@@ -85,13 +85,14 @@ public class SplitAction implements Action {
                     id = (String) xpath.evaluate(
                         "./*[local-name()='header']/*[local-name()='identifier']",
                         content.item(i),XPathConstants.STRING);
+                    logger.debug("split off XML doc["+i+"]["+id+"] with ["+xpath.evaluate("count(//*)", doc)+"] nodes");
+                    newRecords.add(new Metadata(
+                                id, record.getPrefix(),
+                                doc, record.getOrigin(), false, false)
+                    );
                 } catch (XPathExpressionException ex) {
                     logger.error(ex);
                 }
-                newRecords.add(new Metadata(
-                            id, record.getPrefix(),
-                            doc, record.getOrigin(), false, false)
-                );
             }
         }
         records.clear();

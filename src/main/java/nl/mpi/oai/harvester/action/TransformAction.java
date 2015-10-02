@@ -21,6 +21,7 @@ package nl.mpi.oai.harvester.action;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.List;
+import javax.xml.transform.ErrorListener;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
@@ -29,6 +30,10 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamSource;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
+import net.sf.saxon.Configuration;
+import net.sf.saxon.TransformerFactoryImpl;
 
 import nl.mpi.oai.harvester.metadata.Metadata;
 import org.apache.log4j.Logger;
@@ -56,10 +61,15 @@ public class TransformAction implements Action {
      * @throws FileNotFoundException stylesheet couldn't be found
      * @throws TransformerConfigurationException there is a problem with the stylesheet
      */
-    public TransformAction(String xsltFile) throws FileNotFoundException,
-	    TransformerConfigurationException {
+    public TransformAction(String xsltFile) throws FileNotFoundException, TransformerConfigurationException {
 	this.xsltFile = xsltFile;
 	TransformerFactory transformerFactory = TransformerFactory.newInstance();
+        if(transformerFactory instanceof TransformerFactoryImpl) {
+            logger.debug("Telling Saxon to send messages as warnings to logger");
+            final Configuration tfConfig = ((TransformerFactoryImpl)transformerFactory).getConfiguration();
+            tfConfig.setMessageEmitterClass("net.sf.saxon.serialize.MessageWarner");
+        }
+        transformerFactory.setErrorListener(new TransformActionErrorListener());
 	Source xslSource = new StreamSource(new FileInputStream(xsltFile));
 	transformer = transformerFactory.newTransformer(xslSource);
     }
@@ -74,7 +84,8 @@ public class TransformAction implements Action {
                 transformer.setParameter("record_identifier",record.getId());
                 transformer.transform(source, output);
                 record.setDoc((Document) output.getNode());
-            } catch (TransformerException ex) {
+                logger.debug("transformed to XML doc with ["+XPathFactory.newInstance().newXPath().evaluate("count(//*)", record.getDoc())+"] nodes");
+            } catch (TransformerException | XPathExpressionException ex) {
                 logger.error(ex);
                 return false;
             }
@@ -110,5 +121,30 @@ public class TransformAction implements Action {
 	    logger.error(ex);
 	}
 	return null;
+    }
+    
+    class TransformActionErrorListener implements ErrorListener {
+
+        public TransformActionErrorListener() {
+            logger.debug("Redirecting XSLT warnings and errors to this logger");
+        }
+
+        @Override
+        public void warning(TransformerException te) throws TransformerException {
+            logger.warn("Transformer warning: "+te.getMessageAndLocation());
+            //logger.debug("Transformation warning stacktrace", te);
+        }
+
+        @Override
+        public void error(TransformerException te) throws TransformerException {
+            // errors will be caught by the service, so swallow here except in debug
+            logger.debug("Transformer error", te);
+        }
+
+        @Override
+        public void fatalError(TransformerException te) throws TransformerException {
+            // errors will be caught by the service, so swallow here except in debug
+            logger.debug("Transformer fatal error", te);
+        }
     }
 }
