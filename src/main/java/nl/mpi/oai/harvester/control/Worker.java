@@ -87,11 +87,11 @@ class Worker implements Runnable {
 	this.provider = provider;
 	this.actionSequences = actionSequences;
 
-    // register the endpoint with the cycle, kj: get the group
-    endpoint = cycle.next(provider.getOaiUrl(), "group", provider.getScenario());
+        // register the endpoint with the cycle, kj: get the group
+        endpoint = cycle.next(provider.getOaiUrl(), "group", provider.getScenario());
 
-    // get the name of the scenario the worker needs to apply
-    this.scenarioName = endpoint.getScenario();
+        // get the name of the scenario the worker needs to apply
+        this.scenarioName = endpoint.getScenario();
     }
 
     /**
@@ -123,7 +123,7 @@ class Worker implements Runnable {
         // factory for OAI verbs
         OAIFactory oaiFactory = new OAIFactory();
 
-        logger.info("Processing provider " + provider);
+        logger.info("Processing provider " + provider + " using " + scenarioName + " scenario and timeout " + provider.getTimeout() + " and retry ("+provider.getMaxRetryCount()+","+provider.getRetryDelay()+")");
         for (final ActionSequence actionSequence : actionSequences) {
 
             // list of prefixes provided by the endpoint

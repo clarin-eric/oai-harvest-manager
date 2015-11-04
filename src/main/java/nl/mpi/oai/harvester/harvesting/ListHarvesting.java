@@ -92,7 +92,7 @@ public abstract class ListHarvesting extends AbstractListHarvesting implements
      * @throws TransformerException XSL problem
      * @throws NoSuchFieldException introspection problem
      */
-    abstract Document verb2(String s1, String s2)
+    abstract Document verb2(String s1, String s2, int timeout)
             throws 
             IOException,
             ParserConfigurationException,
@@ -118,7 +118,7 @@ public abstract class ListHarvesting extends AbstractListHarvesting implements
      * @throws NoSuchFieldException introspection problem
      */
     abstract Document verb5(String s1, String s2, String s3, String s4,
-            String s5)
+            String s5, int timeout)
             throws 
             IOException,
             ParserConfigurationException,
@@ -180,7 +180,7 @@ public abstract class ListHarvesting extends AbstractListHarvesting implements
                     // use resumption token
                     logger.debug(message[0] + prefixes.get(pIndex));
 
-                    document = verb2(provider.oaiUrl, resumptionToken);
+                    document = verb2(provider.oaiUrl, resumptionToken, provider.getTimeout());
                 } else {
                     logger.debug(message[1] + prefixes.get(pIndex));
 
@@ -188,12 +188,14 @@ public abstract class ListHarvesting extends AbstractListHarvesting implements
                         // no sets specified, ask for records by prefix
                         document = verb5(provider.oaiUrl, null, null,
                                 null,
-                                prefixes.get(pIndex));
+                                prefixes.get(pIndex),
+                                provider.getTimeout());
                     } else {
                         // request targets for a new set and prefix combination
                         document = verb5(provider.oaiUrl, null, null,
                                 provider.sets[sIndex],
-                                prefixes.get(pIndex));
+                                prefixes.get(pIndex),
+                                provider.getTimeout());
                     }
                 }
 

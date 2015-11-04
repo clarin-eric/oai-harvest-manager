@@ -354,27 +354,31 @@ public class Configuration {
 	    String pUrl = Util.getNodeText(xpath, "./@url", cur);
 	    String pStatic = Util.getNodeText(xpath, "./@static", cur);
 	    String pScenario = Util.getNodeText(xpath, "./@scenario", cur);
-
+            String pTimeout = Util.getNodeText(xpath, "./@timeout", cur);
+            String pMaxRetryCount = Util.getNodeText(xpath, "./@max-retry-count", cur);
+            String pRetryDelay = Util.getNodeText(xpath, "./@retry-delay", cur);
+            
+            int timeout = (pTimeout != null)?Integer.valueOf(pTimeout):getTimeout();
+            int maxRetryCount = (pMaxRetryCount != null)?Integer.valueOf(pMaxRetryCount):getMaxRetryCount();
+            int retryDelay = (pRetryDelay != null)?Integer.valueOf(pRetryDelay):getRetryDelay();
+            
 	    if (pUrl == null) {
 		logger.error("Skipping provider " + pName + ": URL is missing");
 		continue;
 	    }
 
-	    Provider provider;
-	    if (Boolean.valueOf(pStatic)) {
-		provider = new StaticProvider(pUrl);
-		if (pName != null)
-		    provider.setName(pName);
-		if (pScenario != null)
-		    provider.setScenario(pScenario);
-	    } else {
-		provider = new Provider(pUrl, getMaxRetryCount(), getRetryDelay());
-		if (pName != null)
-		    provider.setName(pName);
+            logger.info("Provider[" + pUrl + "] scenario["+pScenario+"] timeout["+timeout+"] retry["+maxRetryCount+","+retryDelay+"]");
+	    Provider provider = (Boolean.valueOf(pStatic))?new StaticProvider(pUrl, maxRetryCount, retryDelay):new Provider(pUrl, maxRetryCount, retryDelay);
 
-		if (pScenario != null)
-		    provider.setScenario(pScenario);
+            if (pName != null)
+                provider.setName(pName);
 
+            if (pScenario != null)
+                provider.setScenario(pScenario);
+
+            provider.setTimeout(timeout);
+
+	    if (!Boolean.valueOf(pStatic)) {
                 // Note: static providers do not support sets, so this only
 		// needs to be done here.
 		NodeList sets = (NodeList) xpath.evaluate("./set", cur,
@@ -492,6 +496,14 @@ public class Configuration {
         String s = settings.get(KnownOptions.TIMEOUT.toString());
 	int timeout = (s==null) ? 0 : Integer.valueOf(s);
 	setTimeout(timeout);
+    }
+
+    /**
+     * Get configured connection timeout (if there is one).
+     */
+    public int getTimeout() {
+        String s = settings.get(KnownOptions.TIMEOUT.toString());
+	return (s==null) ? 0 : Integer.valueOf(s);
     }
 
     /**

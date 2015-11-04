@@ -67,7 +67,7 @@ public class OAIFactory {
      * @param endpointURI the endpoint URI
      * @return the OAI response
      */
-    Document createListMetadataFormats(String endpointURI) throws 
+    Document createListMetadataFormats(String endpointURI, int timeout) throws 
             IOException,
             ParserConfigurationException,
             SAXException,
@@ -83,7 +83,7 @@ public class OAIFactory {
         if (oaiInterface == null) {
             // no object connected
             try {
-                HarvesterVerb verb = new ListMetadataFormats(endpointURI);
+                HarvesterVerb verb = new ListMetadataFormats(endpointURI, timeout);
                 response = verb.getDocument();
             } catch (IOException
                     | ParserConfigurationException
@@ -107,7 +107,7 @@ public class OAIFactory {
      * @param p2 the resumption token
      * @return the OAI response
      */
-    Document createListRecords(String p1, String p2) throws 
+    Document createListRecords(String p1, String p2, int timeout) throws 
             IOException,
             ParserConfigurationException,
             SAXException,
@@ -123,7 +123,7 @@ public class OAIFactory {
         if (oaiInterface == null) {
             // no object connected
             try {
-                HarvesterVerb verb = new ListRecords(p1, p2);
+                HarvesterVerb verb = new ListRecords(p1, p2, timeout);
                 response = verb.getDocument();
                 resumptionToken = ((ListRecords) verb).getResumptionToken();
             } catch (IOException
@@ -155,7 +155,7 @@ public class OAIFactory {
      * @return the OAI response
      */
     Document createListRecords(String p1, String p2, String p3, String p4,
-                               String p5) throws 
+                               String p5, int timeout) throws 
             IOException,
             ParserConfigurationException,
             SAXException,
@@ -171,7 +171,7 @@ public class OAIFactory {
         if (oaiInterface == null) {
             // no object connected
             try {
-                HarvesterVerb verb = new ListRecords(p1, p2, p3, p4, p5);
+                HarvesterVerb verb = new ListRecords(p1, p2, p3, p4, p5, timeout);
                 response = verb.getDocument();
                 resumptionToken = ((ListRecords) verb).getResumptionToken();
             } catch (IOException
@@ -242,7 +242,7 @@ public class OAIFactory {
      * @param p2 resumption token
      * @return the OAI response
      */
-    Document createListIdentifiers(String p1, String p2) throws 
+    Document createListIdentifiers(String p1, String p2, int timeout) throws 
             IOException,
             ParserConfigurationException,
             SAXException,
@@ -258,7 +258,7 @@ public class OAIFactory {
         if (oaiInterface == null) {
             // no object connected
             try {
-                HarvesterVerb verb = new ListIdentifiers(p1, p2);
+                HarvesterVerb verb = new ListIdentifiers(p1, p2, timeout);
                 response = verb.getDocument();
                 resumptionToken = ((ListIdentifiers) verb).getResumptionToken();
             } catch (IOException
@@ -290,7 +290,7 @@ public class OAIFactory {
      * @return the OAI response
      */
     Document createListIdentifiers(String p1, String p2, String p3,
-                                   String p4, String p5) throws 
+                                   String p4, String p5, int timeout) throws 
             IOException,
             ParserConfigurationException,
             SAXException,
@@ -306,7 +306,7 @@ public class OAIFactory {
         if (oaiInterface == null) {
             // no object connected
             try {
-                HarvesterVerb verb = new ListIdentifiers(p1, p2, p3, p4, p5);
+                HarvesterVerb verb = new ListIdentifiers(p1, p2, p3, p4, p5, timeout);
                 response = verb.getDocument();
                 resumptionToken = ((ListIdentifiers) verb).getResumptionToken();
             } catch (IOException

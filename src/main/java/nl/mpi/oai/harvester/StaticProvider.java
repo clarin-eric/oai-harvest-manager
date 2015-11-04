@@ -67,8 +67,8 @@ public class StaticProvider extends Provider {
      * @param oaiUrl endpoint
      * @throws ParserConfigurationException configuration problem
      */
-    public StaticProvider(String oaiUrl) throws ParserConfigurationException {
-	super(oaiUrl, 1, 0);
+    public StaticProvider(String oaiUrl,int maxRetryCount, int retryDelay) throws ParserConfigurationException {
+	super(oaiUrl, maxRetryCount, retryDelay);
     }
 
     /**
@@ -179,7 +179,7 @@ public class StaticProvider extends Provider {
     private void fetchContent() {
 	if (providerContent == null && oaiUrl != null) {
 	    try {
-		Identify ident = new Identify(oaiUrl);
+		Identify ident = new Identify(oaiUrl,timeout);
 		providerContent = ident.getDocument();
 	    } catch (IOException | ParserConfigurationException | SAXException
 		    | TransformerException e) {

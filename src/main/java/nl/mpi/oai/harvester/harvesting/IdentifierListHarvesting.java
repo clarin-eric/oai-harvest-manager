@@ -90,13 +90,13 @@ public class IdentifierListHarvesting extends ListHarvesting
      * @return the response to the request
      */
     @Override
-    public Document verb2(String p1, String p2) throws
+    public Document verb2(String p1, String p2, int timeout) throws
             IOException,
             ParserConfigurationException,
             SAXException,
             TransformerException,
             NoSuchFieldException {
-        return oaiFactory.createListIdentifiers(p1, p2);
+        return oaiFactory.createListIdentifiers(p1, p2, timeout);
     }
 
     /**
@@ -113,13 +113,13 @@ public class IdentifierListHarvesting extends ListHarvesting
      */
     @Override
     public Document verb5(String p1, String p2, String p3, String p4,
-            String p5) throws
+            String p5, int timeout) throws
             IOException,
             ParserConfigurationException,
             SAXException,
             TransformerException,
             NoSuchFieldException {
-        return oaiFactory.createListIdentifiers(p1, p2, p3, p4, p5);
+        return oaiFactory.createListIdentifiers(p1, p2, p3, p4, p5, timeout);
     }
     
     /**

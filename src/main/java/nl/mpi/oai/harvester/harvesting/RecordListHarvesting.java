@@ -97,14 +97,14 @@ public class RecordListHarvesting extends ListHarvesting
      * @throws NoSuchFieldException introspection problem
      */
     @Override
-    public Document verb2(String p1, String p2) throws
+    public Document verb2(String p1, String p2, int timeout) throws
             IOException,
             ParserConfigurationException,
             SAXException,
             TransformerException,
             NoSuchFieldException {
 
-        document = oaiFactory.createListRecords(p1, p2);
+        document = oaiFactory.createListRecords(p1, p2, timeout);
 
         // implement by returning ListRecords with the two parameters supplied
         return document;
@@ -131,14 +131,14 @@ public class RecordListHarvesting extends ListHarvesting
      */
     @Override
     public Document verb5(String p1, String p2, String p3, String p4,
-            String p5) throws
+            String p5, int timeout) throws
             IOException,
             ParserConfigurationException,
             SAXException,
             TransformerException,
             NoSuchFieldException {
 
-        document = oaiFactory.createListRecords(p1, p2, p3, p4, p5);
+        document = oaiFactory.createListRecords(p1, p2, p3, p4, p5, timeout);
 
         // implement by returning ListRecords with the five parameters supplied
         return document;

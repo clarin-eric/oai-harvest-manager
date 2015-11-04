@@ -60,27 +60,31 @@ public class Provider {
     private static final Logger logger = Logger.getLogger(Provider.class);
 
     /** Name of the provider. */
-	public String name;
-        
+    public String name;
+    
+    /** Scenario used for this provider. */
     public String scenario;
 
     /** Address through which the OAI repository is accessed. */
     public final String oaiUrl;
 
     /** List of OAI sets to harvest (optional). */
-	public String[] sets = null;
+    public String[] sets = null;
 
     /** Maximum number of retries to use when a connection fails. */
-	public int maxRetryCount = 0;
+    public int maxRetryCount = 0;
 
     /** Maximum number of retries to use when a connection fails. */
     public int retryDelay = 0;
     
-	/** Type of prefix harvesting that applies to the provider */
-	public Harvesting prefixHarvesting;
+    /** Maximum timeout for a connection */
+    public int timeout = 0;
+    
+    /** Type of prefix harvesting that applies to the provider */
+    public Harvesting prefixHarvesting;
 
-	/** Type of list harvesting that applies to the provider */
-	public Harvesting listHarvesting;
+    /** Type of list harvesting that applies to the provider */
+    public Harvesting listHarvesting;
 
     /**
      * We make so many XPath queries we could just as well keep one XPath
@@ -187,7 +191,7 @@ public class Provider {
      */
 	public String getProviderName() {
 	try {
-	    Identify ident = new Identify(oaiUrl);
+	    Identify ident = new Identify(oaiUrl,timeout);
 	    return parseProviderName(ident.getDocument());
 	} catch (IOException | ParserConfigurationException | SAXException
 		| TransformerException e) {
@@ -223,6 +227,22 @@ public class Provider {
     
     public String getScenario() {
         return this.scenario;
+    }
+
+    public void setTimeout(int timeout) {
+        this.timeout = timeout;
+    }
+    
+    public int getTimeout() {
+        return this.timeout;
+    }
+
+    public int getMaxRetryCount() {
+        return this.maxRetryCount;
+    }
+
+    public int getRetryDelay() {
+        return this.retryDelay;
     }
 
     /**
@@ -286,7 +306,7 @@ public class Provider {
 	public Metadata getRecord(String id, String mdPrefix) {
 	for (int i=0; i<maxRetryCount; i++) {
 	    try {
-		GetRecord gr = new GetRecord(oaiUrl, id, mdPrefix);
+		GetRecord gr = new GetRecord(oaiUrl, id, mdPrefix, timeout);
 		Document doc = gr.getDocument();
 		return new Metadata(id, mdPrefix, doc, this, true, false);
 	    } catch (IOException | SAXException | ParserConfigurationException
@@ -356,14 +376,14 @@ public class Provider {
 	    throws IOException, ParserConfigurationException, SAXException,
 	    TransformerException, XPathExpressionException,
 	    NoSuchFieldException {
-	ListIdentifiers li = new ListIdentifiers(oaiUrl, null, null, set, mdPrefix);
-	for (;;) {
-	    addIdentifiers(li.getDocument(), ids);
-	    String resumption = li.getResumptionToken();
-	    if (resumption == null || resumption.isEmpty()) {
-		break;
+            ListIdentifiers li = new ListIdentifiers(oaiUrl, null, null, set, mdPrefix, timeout);
+            for (;;) {
+                addIdentifiers(li.getDocument(), ids);
+                String resumption = li.getResumptionToken();
+                if (resumption == null || resumption.isEmpty()) {
+                    break;
 	    }
-	    li = new ListIdentifiers(oaiUrl, resumption);
+	    li = new ListIdentifiers(oaiUrl, resumption, timeout);
 	}
     }
 
@@ -397,7 +417,7 @@ public class Provider {
     public List<String> getPrefixes(MetadataFormat format) {
 	logger.debug("Checking format " + format);
 	try {
-	    ListMetadataFormats lmf = new ListMetadataFormats(oaiUrl);
+	    ListMetadataFormats lmf = new ListMetadataFormats(oaiUrl, timeout);
 	    return parsePrefixes(lmf.getDocument(), format);
 	} catch (TransformerException | XPathExpressionException
 		| ParserConfigurationException | SAXException | IOException e) {

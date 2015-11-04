@@ -104,7 +104,7 @@ public class FormatHarvesting extends AbstractHarvesting implements
         for (;;) {
             try {
                 // get metadata formats from the endpoint
-                document = oaiFactory.createListMetadataFormats(provider.oaiUrl);
+                document = oaiFactory.createListMetadataFormats(provider.oaiUrl, provider.getTimeout());
             } catch (IOException
                     | ParserConfigurationException
                     | SAXException

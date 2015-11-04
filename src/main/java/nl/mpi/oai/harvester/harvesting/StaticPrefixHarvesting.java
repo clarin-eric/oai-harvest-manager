@@ -84,7 +84,7 @@ public final class StaticPrefixHarvesting extends FormatHarvesting
         } else {
             // content not yet there, try to fetch it
             try {
-                response = new Identify(provider.getOaiUrl());
+                response = new Identify(provider.getOaiUrl(), provider.getTimeout());
             } catch (IOException
                     | ParserConfigurationException
                     | SAXException
