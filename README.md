@@ -8,10 +8,9 @@ workflow (involving OAI harvesting and subsequent operations like
 transformations or mappings of metadata between schemata) in a few
 minutes using a configuration file only.
 
-This application does not itself contain an implementation of the
-OAI-PMH protocol; it uses the [OCLC harvester2
-library](https://code.google.com/p/oaiharvester2/) for OAI-PMH
-requests.
+This application contains slightly modified version of the 
+[OCLC harvester2 library](https://code.google.com/p/oaiharvester2/),
+which implements the OAI-PMH requests.
 
 
 # Basic Glossary
@@ -113,7 +112,7 @@ used, the harvest manager will contact the provider with a
 ```ListMetadataFormats``` query and choose *all* metadata prefixes
 that correspond to the specified namespace or schema.
 
-The **actions** are manipulations of the metadata record, each of
+The **actions** are manipulations of one or more metadata records, each of
 which operates on the result of the previous action. A number of
 action types are available:
 
@@ -124,6 +123,11 @@ action types are available:
   being ```suffix=".xml"`). If the attribute *group-by-provider* is
   specified, a separate subdirectory will be created for each
   endpoint.
+
+- The *split* action split a OAI-PMH envelope that contains multiple records
+  into individual record. It retains the part of the OAI-PMH envelope that
+  is specific for the record, such as the date it was fetched
+  and its OAI-PMH identifier,  and the actual metadata record itself.
 
 - The *strip* action removes the OAI-PMH envelope and retains only the
   actual metadata record. Note that the envelope contains information
@@ -202,7 +206,9 @@ response datestamps.
 
 # Logging
 
-The harvester will create the directory 'log' in which log files will reside. Alternatively, you can specify a directory for these by defining the HLOGDIR bash environment variable.
+The harvester will create the directory 'log' in which log files will reside.
+Alternatively, you can specify a directory for these by defining the LOGDIR
+environment variable.
 
 # Implementation Notes
 
