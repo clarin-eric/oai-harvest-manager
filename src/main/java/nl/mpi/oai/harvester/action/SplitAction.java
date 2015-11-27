@@ -82,14 +82,20 @@ public class SplitAction implements Action {
                 doc.appendChild(copy);
                 String id = "";
                 try {
+                    String status = (String) xpath.evaluate(
+                        "./*[local-name()='header']/@status",
+                        content.item(i),XPathConstants.STRING);
                     id = (String) xpath.evaluate(
                         "./*[local-name()='header']/*[local-name()='identifier']",
                         content.item(i),XPathConstants.STRING);
-                    logger.debug("split off XML doc["+i+"]["+id+"] with ["+xpath.evaluate("count(//*)", doc)+"] nodes");
-                    newRecords.add(new Metadata(
-                                id, record.getPrefix(),
-                                doc, record.getOrigin(), false, false)
-                    );
+                    if (!status.equals("deleted")) {
+                        logger.debug("split off XML doc["+i+"]["+id+"] with ["+xpath.evaluate("count(//*)", doc)+"] nodes");
+                        newRecords.add(new Metadata(
+                                    id, record.getPrefix(),
+                                    doc, record.getOrigin(), false, false)
+                        );
+                    } else
+                        logger.warn("record["+id+"] is marked as deleted");
                 } catch (XPathExpressionException ex) {
                     logger.error(ex);
                 }

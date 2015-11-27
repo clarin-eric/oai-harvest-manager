@@ -62,7 +62,7 @@ public class StripAction implements Action {
             // Get the child nodes of the "metadata" tag;
             // that's the content of the response without the
             // OAI-PMH envelope.
-
+            
             NodeList content = null;
             try {
                 content = (NodeList) xpath.evaluate("//*[local-name()=" +
@@ -72,10 +72,10 @@ public class StripAction implements Action {
             } catch (XPathExpressionException ex) {
                 logger.error(ex);
             }
-
+            
             if ((content == null) || (content.getLength()==0)) {
-                logger.warn("No content was found in this envelope["+record.getId()+"]");
-                return false;
+                logger.warn("No content was found in this envelope["+record.getId()+"], it might contain only deleted records");
+                continue;
             }
 
             for (int i=0;i<content.getLength();i++) {
