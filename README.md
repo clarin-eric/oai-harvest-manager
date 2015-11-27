@@ -9,7 +9,8 @@ transformations or mappings of metadata between schemata) in a few
 minutes using a configuration file only.
 
 This application contains slightly modified version of the 
-[OCLC harvester2 library](https://code.google.com/p/oaiharvester2/),
+[OCLC harvester2 library](https://github.com/OCLC-Research/oaiharvester2)
+([license](http://www.apache.org/licenses/LICENSE-2.0.html)),
 which implements the OAI-PMH requests.
 
 
