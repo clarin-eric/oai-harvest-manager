@@ -14,7 +14,8 @@
          will also include them in them in the jar. -->
 	    <include>config*.xml</include>
 	    <include>oai2.xsl</include>
-      	<include>olac2cmdi.xsl</include>
+        <include>addOAISetName.xsl</include>
+        <include>olac2cmdi.xsl</include>
         <include>sil_to_iso6393.xml</include>
 
         <!-- Do include the log4j properties file in the resources directory

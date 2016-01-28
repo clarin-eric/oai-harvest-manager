@@ -35,7 +35,9 @@
     </xsl:template>
 
     <xsl:template match="//defns:record[defns:header/defns:identifier = $record_identifier]">
+        <!--
         <xsl:message>DBG: record[<xsl:value-of select="count(preceding::defns:record) + 1"/>/<xsl:value-of select="count(../defns:record)"/>] with identifier[<xsl:value-of select="$record_identifier"/>] found!</xsl:message>
+        -->
         <CMD CMDVersion="1.1" xsi:schemaLocation="http://www.clarin.eu/cmd/ http://catalog.clarin.eu/ds/ComponentRegistry/rest/registry/profiles/clarin.eu:cr1:p_1288172614026/xsd">
             <Header>
                 <MdCreator>olac2cmdi.xsl</MdCreator>
@@ -56,9 +58,29 @@
                     <xsl:value-of select="./defns:header[1]/defns:identifier[1]"/>
                 </MdSelfLink>
                 <MdProfile>clarin.eu:cr1:p_1288172614026</MdProfile>
-                <MdCollectionDisplayName>
-                    <xsl:value-of select="$provider_name"/>
-                </MdCollectionDisplayName>
+                    <xsl:choose>
+                        <xsl:when test="normalize-space(./defns:header[1]/defns:setSpec[1]/@setName)!=''">
+                            <xsl:choose>
+                                <xsl:when test="normalize-space($provider_name)!=''">
+                                    <MdCollectionDisplayName>
+                                        <xsl:value-of select="$provider_name"/>
+                                        <xsl:text>: </xsl:text>
+                                        <xsl:value-of select="./defns:header[1]/defns:setSpec[1]/@setName"/>
+                                    </MdCollectionDisplayName>
+                                </xsl:when>
+                                <xsl:otherwise>
+                                    <MdCollectionDisplayName>
+                                        <xsl:value-of select="./defns:header[1]/defns:setSpec[1]/@setName"/>
+                                    </MdCollectionDisplayName>
+                                </xsl:otherwise>
+                            </xsl:choose>
+                        </xsl:when>
+                        <xsl:when test="normalize-space($provider_name)!=''">
+                            <MdCollectionDisplayName>
+                                <xsl:value-of select="$provider_name"/>
+                            </MdCollectionDisplayName>
+                        </xsl:when>
+                    </xsl:choose>
             </Header>
             <Resources>
                 <ResourceProxyList>
