@@ -254,10 +254,17 @@ public class Configuration {
 				    + " specified for save action");
 			}
 		    } else if ("transform".equals(actionType)) {
-			String xslFile = Util.getNodeText(xpath, "./@file", s);
 			try {
-			    act = new TransformAction(xslFile);
-			} catch (FileNotFoundException | TransformerConfigurationException ex) {
+                            String xslFile = Util.getNodeText(xpath, "./@file", s);
+                            Path cache = null;
+                            String cacheDir = Util.getNodeText(xpath, "./@cache", s);
+                            if (cacheDir != null) {
+                                Path workDir = Paths.get(getWorkingDirectory());
+                                cache = workDir.resolve(cacheDir);
+                                Util.ensureDirExists(cache);
+                            }
+			    act = new TransformAction(xslFile,cache);
+			} catch (IOException | TransformerConfigurationException ex) {
 			    logger.error(ex);
 			}
 		    }

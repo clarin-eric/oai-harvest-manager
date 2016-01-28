@@ -50,6 +50,7 @@
   <actions>
     <format match="prefix" value="olac">
       <action type="save" dir="oai" suffix=".xml"/>
+      <action type="transform" file="resources/addOAISetName.xsl" cache="cache"/>
       <action type="split"/>
       <action type="save" dir="rec" suffix=".xml"/>
       <action type="transform" file="resources/olac2cmdi.xsl"/>
@@ -57,6 +58,7 @@
     </format>
     <format match="prefix" value="oai_dc">
       <action type="save" dir="oai" suffix=".xml"/>
+      <action type="transform" file="resources/addOAISetName.xsl" cache="cache"/>
       <action type="split"/>
       <action type="save" dir="rec" suffix=".xml"/>
       <action type="transform" file="resources/olac2cmdi.xsl"/>

@@ -20,16 +20,24 @@ package nl.mpi.oai.harvester.action;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
+import java.util.logging.Level;
 import javax.xml.transform.ErrorListener;
+import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 import javax.xml.transform.Templates;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.URIResolver;
 import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
@@ -52,6 +60,12 @@ public class TransformAction implements Action {
     /** The file containing the XSL transformation. */
     private String xsltFile;
 
+    /** The directory containing cached resources. */
+    private Path cacheDir;
+    
+    /** Transformer factory */
+    TransformerFactory factory;
+
     /** Prepared XSL transformation object. */
     private Templates templates;
 
@@ -59,20 +73,27 @@ public class TransformAction implements Action {
      * Create a new transform action using the specified XSLT. 
      * 
      * @param xsltFile the XSL stylesheet
+     * @param cacheDir the directory to cache results of resource requests
      * @throws FileNotFoundException stylesheet couldn't be found
      * @throws TransformerConfigurationException there is a problem with the stylesheet
      */
-    public TransformAction(String xsltFile) throws FileNotFoundException, TransformerConfigurationException {
+    public TransformAction(String xsltFile,Path cacheDir) throws FileNotFoundException, TransformerConfigurationException {
 	this.xsltFile = xsltFile;
-	TransformerFactory transformerFactory = TransformerFactory.newInstance();
-        if(transformerFactory instanceof TransformerFactoryImpl) {
+        this.cacheDir = cacheDir;
+	factory = TransformerFactory.newInstance();
+        if(factory instanceof TransformerFactoryImpl) {
+            TransformerFactoryImpl transformerFactoryImpl = ((TransformerFactoryImpl)factory);
             logger.debug("Telling Saxon to send messages as warnings to logger");
-            final Configuration tfConfig = ((TransformerFactoryImpl)transformerFactory).getConfiguration();
+            final Configuration tfConfig = transformerFactoryImpl.getConfiguration();
             tfConfig.setMessageEmitterClass("net.sf.saxon.serialize.MessageWarner");
+            if (cacheDir != null) {
+                logger.debug("Setting the URLResolve to cache in "+cacheDir);
+                transformerFactoryImpl.setURIResolver(new TransformActionURLResolver(transformerFactoryImpl.getURIResolver()));
+            }
         }
-        transformerFactory.setErrorListener(new TransformActionErrorListener());
+        factory.setErrorListener(new TransformActionErrorListener());
 	Source xslSource = new StreamSource(new FileInputStream(xsltFile));
-	templates = transformerFactory.newTemplates(xslSource);
+	templates = factory.newTemplates(xslSource);
     }
 
     @Override
@@ -118,7 +139,7 @@ public class TransformAction implements Action {
     public Action clone() {
 	try {
 	    // This is a deep copy. The new object has its own Transform object.
-	    return new TransformAction(xsltFile);
+	    return new TransformAction(xsltFile,cacheDir);
 	} catch (FileNotFoundException | TransformerConfigurationException ex) {
 	    logger.error(ex);
 	}
@@ -147,6 +168,41 @@ public class TransformAction implements Action {
         public void fatalError(TransformerException te) throws TransformerException {
             // errors will be caught by the service, so swallow here except in debug
             logger.debug("Transformer fatal error", te);
+        }
+    }
+    
+    class TransformActionURLResolver implements URIResolver {
+        
+        private URIResolver resolver;
+        
+        public TransformActionURLResolver(URIResolver resolver) {
+            this.resolver = resolver;
+        }
+        
+        public Source resolve(String href, String base) throws TransformerException {
+            logger.debug("Transformer resolver: resolve("+href+","+base+")");
+            String uri = href;
+            if (base != null && !base.equals("")) {
+                try {
+                    uri = (new URL(new URL(base),href)).toString();
+                } catch (MalformedURLException ex) {
+                    logger.error("Transformer resolver: couldn't resolve("+href+","+base+") continuing with just "+href,ex);
+                }
+            }
+            String cacheFile = uri.replaceAll("[^a-zA-Z0-9]", "_");
+            logger.debug("Transformer resolver: check cache for "+cacheFile);
+            Source res = null;
+            if (Files.exists(cacheDir.resolve(cacheFile))) {
+                res = new StreamSource(cacheDir.resolve(cacheFile).toFile());
+                logger.debug("Transformer resolver: loaded "+cacheFile+" from cache");
+            } else {
+                res = resolver.resolve(href, base);
+                Result result = new StreamResult(cacheDir.resolve(cacheFile).toFile());
+                Transformer xformer = factory.newTransformer();
+                xformer.transform(res, result);
+                logger.debug("Transformer resolver: stored "+cacheFile+" in cache");
+            }
+            return res;
         }
     }
 }

@@ -46,7 +46,7 @@
     </format>
     <format match="prefix" value="olac">
       <action type="save" dir="oai" suffix=".xml"/>
-      <action type="transform" file="resources/addOAISetName.xsl"/>
+      <action type="transform" file="resources/addOAISetName.xsl" cache="cache"/>
       <action type="split"/>
       <action type="save" dir="rec" suffix=".xml"/>
       <action type="transform" file="resources/olac2cmdi.xsl"/>
@@ -54,7 +54,7 @@
     </format>
     <format match="prefix" value="oai_dc">
       <action type="save" dir="oai" suffix=".xml"/>
-      <action type="transform" file="resources/addOAISetName.xsl"/>
+      <action type="transform" file="resources/addOAISetName.xsl" cache="cache"/>
       <action type="split"/>
       <action type="save" dir="rec" suffix=".xml"/>
       <action type="transform" file="resources/olac2cmdi.xsl"/>
@@ -64,11 +64,11 @@
   
   <!-- ### list of providers ### -->
   <providers>
-    <provider url="http://archief.meertens.knaw.nl/oaiprovider/"/>
+    <!--<provider url="http://archief.meertens.knaw.nl/oaiprovider/"/>
     <provider url="http://www.elra.info/elrac/elra_catalogue.xml" static="true"
 	      name="European Language Resources Association"/>
     <provider url="http://catalog.paradisec.org.au/oai/item"
-	      name="Pacific And Regional Archive for Digital Sources in Endangered Cultures (PARADISEC)"/>
+	      name="Pacific And Regional Archive for Digital Sources in Endangered Cultures (PARADISEC)"/>-->
     <provider url="https://b2share.eudat.eu/oai2d/" name="B2SHARE">
       <set>Linguistics</set>
     </provider>
