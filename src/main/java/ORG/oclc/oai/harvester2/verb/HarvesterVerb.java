@@ -202,9 +202,9 @@ public abstract class HarvesterVerb {
     public void harvest(String requestURL, int timeout) throws IOException,
     ParserConfigurationException, SAXException, TransformerException {
         this.requestURL = requestURL;
-        logger.debug("requestURL=" + requestURL);
+        logger.debug("requestURL=" + this.requestURL);
         InputStream in = null;
-        URL url = new URL(requestURL);
+        URL url = new URL(this.requestURL);
         HttpURLConnection con = null;
         int responseCode = 0;
         do {
@@ -226,7 +226,12 @@ public abstract class HarvesterVerb {
                 responseCode = HttpURLConnection.HTTP_UNAVAILABLE;
             }
             
-            if (responseCode == HttpURLConnection.HTTP_UNAVAILABLE) {
+            if (responseCode == HttpURLConnection.HTTP_MOVED_PERM || responseCode == HttpURLConnection.HTTP_MOVED_TEMP || responseCode == HttpURLConnection.HTTP_SEE_OTHER) {
+                this.requestURL = con.getHeaderField("Location");
+                logger.debug("redirect to requestURL=" + this.requestURL);
+                url = new URL(this.requestURL);
+                responseCode = HttpURLConnection.HTTP_UNAVAILABLE;
+            } else if (responseCode == HttpURLConnection.HTTP_UNAVAILABLE) {
                 long retrySeconds = con.getHeaderFieldInt("Retry-After", -1);
                 if (retrySeconds == -1) {
                     long now = (new Date()).getTime();
@@ -236,8 +241,7 @@ public abstract class HarvesterVerb {
                 if (retrySeconds == 0) { // Apparently, it's a bad URL
                     throw new FileNotFoundException("Bad URL?");
                 }
-                System.err.println("Server response: Retry-After="
-                        + retrySeconds);
+                logger.debug("Retry-After=" + retrySeconds);
                 if (retrySeconds > 0) {
                     try {
                         Thread.sleep(retrySeconds * 1000);
