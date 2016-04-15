@@ -18,12 +18,13 @@
 
 package nl.mpi.oai.harvester.action;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.List;
-import java.util.logging.Level;
+import nl.mpi.oai.harvester.control.OutputDirectory;
+import nl.mpi.oai.harvester.control.Util;
+import nl.mpi.oai.harvester.metadata.Metadata;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.w3c.dom.Document;
+
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
@@ -32,12 +33,11 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
-
-import nl.mpi.oai.harvester.metadata.Metadata;
-import nl.mpi.oai.harvester.control.OutputDirectory;
-import nl.mpi.oai.harvester.control.Util;
-import org.apache.log4j.Logger;
-import org.w3c.dom.Document;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.List;
 
 /**
  * This class represents the action of saving a record onto the file system.
@@ -45,7 +45,7 @@ import org.w3c.dom.Document;
  * @author Lari Lampen (MPI-PL)
  */
 public class SaveAction implements Action {
-    private static final Logger logger = Logger.getLogger(SaveAction.class);
+    private static final Logger logger = LogManager.getLogger(SaveAction.class);
 
     protected OutputDirectory dir;
     protected String suffix;

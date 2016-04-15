@@ -21,7 +21,8 @@ package nl.mpi.oai.harvester.harvesting;
 import nl.mpi.oai.harvester.StaticProvider;
 import nl.mpi.oai.harvester.metadata.Metadata;
 import nl.mpi.oai.harvester.metadata.MetadataFactory;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -54,7 +55,7 @@ import java.util.List;
 public final class StaticRecordListHarvesting extends AbstractListHarvesting
         implements Harvesting{
 
-    private static final Logger logger = Logger.getLogger(
+    private static final Logger logger = LogManager.getLogger(
             StaticRecordListHarvesting.class);
 
     /**

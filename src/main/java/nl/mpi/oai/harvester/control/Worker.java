@@ -18,18 +18,20 @@
 
 package nl.mpi.oai.harvester.control;
 
-import java.util.List;
-import java.util.concurrent.Semaphore;
-
+import nl.mpi.oai.harvester.Provider;
 import nl.mpi.oai.harvester.StaticProvider;
 import nl.mpi.oai.harvester.action.ActionSequence;
 import nl.mpi.oai.harvester.cycle.Cycle;
 import nl.mpi.oai.harvester.cycle.CycleProperties;
 import nl.mpi.oai.harvester.cycle.Endpoint;
 import nl.mpi.oai.harvester.harvesting.*;
-import nl.mpi.oai.harvester.Provider;
 import nl.mpi.oai.harvester.metadata.MetadataFactory;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.ThreadContext;
+
+import java.util.List;
+import java.util.concurrent.Semaphore;
 
 /**
  * This class represents a single processing thread in the harvesting actions
@@ -42,7 +44,7 @@ import org.apache.log4j.Logger;
  */
 class Worker implements Runnable {
     
-    private static final Logger logger = Logger.getLogger(Worker.class);
+    private static final Logger logger = LogManager.getLogger(Worker.class);
     
     /** A standard semaphore is used to track the number of running threads. */
     private static Semaphore semaphore;
@@ -85,6 +87,7 @@ class Worker implements Runnable {
                   Cycle cycle) {
 
 	this.provider = provider;
+
 	this.actionSequences = actionSequences;
 
         // register the endpoint with the cycle, kj: get the group
@@ -115,6 +118,9 @@ class Worker implements Runnable {
     public void run() {
         provider.init();
 
+        // setting specific log filename
+        ThreadContext.put("logFileName", provider.getName());
+
         boolean done = false;
 
         // factory for metadata records
@@ -124,6 +130,7 @@ class Worker implements Runnable {
         OAIFactory oaiFactory = new OAIFactory();
 
         logger.info("Processing provider " + provider + " using " + scenarioName + " scenario and timeout " + provider.getTimeout() + " and retry ("+provider.getMaxRetryCount()+","+provider.getRetryDelay()+")");
+
         for (final ActionSequence actionSequence : actionSequences) {
 
             // list of prefixes provided by the endpoint
@@ -196,6 +203,12 @@ class Worker implements Runnable {
         endpoint.doneHarvesting(done);
 
         logger.info("Processing finished for " + provider);
+
+        ThreadContext.clearAll();
+
         semaphore.release();
     }
+
 }
+
+

@@ -18,8 +18,13 @@
 
 package nl.mpi.oai.harvester.action;
 
-import java.util.ArrayList;
-import java.util.List;
+import nl.mpi.oai.harvester.metadata.Metadata;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -27,12 +32,8 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
-
-import nl.mpi.oai.harvester.metadata.Metadata;
-import org.apache.log4j.Logger;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This action corresponds to stripping off the OAI-PMH envelope surrounding
@@ -41,7 +42,7 @@ import org.w3c.dom.NodeList;
  * @author Lari Lampen (MPI-PL)
  */
 public class StripAction implements Action {
-    private static final Logger logger = Logger.getLogger(StripAction.class);
+    private static final Logger logger = LogManager.getLogger(StripAction.class);
 
     private final XPath xpath;
     private final DocumentBuilder db;

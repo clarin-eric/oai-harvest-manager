@@ -18,16 +18,12 @@
 
 package nl.mpi.oai.harvester.metadata;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.HashMap;
-import javax.xml.namespace.NamespaceContext;
 import javax.xml.XMLConstants;
+import javax.xml.namespace.NamespaceContext;
+import java.util.*;
 
 /**
  * An implementation of an XML namespace context.
@@ -35,7 +31,7 @@ import javax.xml.XMLConstants;
  * @author Lari Lampen (MPI-PL)
  */
 public class NSContext implements NamespaceContext {
-    private static final Logger logger = Logger.getLogger(NSContext.class);
+    private static final Logger logger = LogManager.getLogger(NSContext.class);
 
     /**
      * URIs indexed by prefix.

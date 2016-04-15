@@ -20,24 +20,25 @@ package nl.mpi.oai.harvester;
 
 import ORG.oclc.oai.harvester2.verb.HarvesterVerb;
 import ORG.oclc.oai.harvester2.verb.Identify;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import nl.mpi.oai.harvester.metadata.Metadata;
+import nl.mpi.oai.harvester.metadata.MetadataFormat;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
-
-import nl.mpi.oai.harvester.metadata.Metadata;
-import nl.mpi.oai.harvester.metadata.MetadataFormat;
-import org.apache.log4j.Logger;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * This class represents a static OAI-PMH provider as defined by the <a
@@ -50,7 +51,7 @@ import org.xml.sax.SAXException;
  * @author Lari Lampen (MPI-PL)
  */
 public class StaticProvider extends Provider {
-    private static final Logger logger = Logger.getLogger(StaticProvider.class);
+    private static final Logger logger = LogManager.getLogger(StaticProvider.class);
 
     /**
      * The entire content of a static provider can be fitted into a single DOM

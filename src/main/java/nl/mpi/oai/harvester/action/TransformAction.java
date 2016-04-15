@@ -18,6 +18,20 @@
 
 package nl.mpi.oai.harvester.action;
 
+import net.sf.saxon.Configuration;
+import net.sf.saxon.TransformerFactoryImpl;
+import nl.mpi.oai.harvester.metadata.Metadata;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.w3c.dom.Document;
+
+import javax.xml.transform.*;
+import javax.xml.transform.dom.DOMResult;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.net.MalformedURLException;
@@ -25,28 +39,6 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.logging.Level;
-import javax.xml.transform.ErrorListener;
-import javax.xml.transform.Result;
-import javax.xml.transform.Source;
-import javax.xml.transform.Templates;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.URIResolver;
-import javax.xml.transform.dom.DOMResult;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
-import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
-import net.sf.saxon.Configuration;
-import net.sf.saxon.TransformerFactoryImpl;
-
-import nl.mpi.oai.harvester.metadata.Metadata;
-import org.apache.log4j.Logger;
-import org.w3c.dom.Document;
 
 /**
  * This class represents the application of an XSL transformation to the
@@ -55,7 +47,7 @@ import org.w3c.dom.Document;
  * @author Lari Lampen (MPI-PL)
  */
 public class TransformAction implements Action {
-    private static final Logger logger = Logger.getLogger(TransformAction.class);
+    private static final Logger logger = LogManager.getLogger(TransformAction.class);
 
     /** The file containing the XSL transformation. */
     private String xsltFile;

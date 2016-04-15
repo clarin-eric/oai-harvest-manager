@@ -25,9 +25,6 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-
-import static org.apache.log4j.helpers.Loader.getResource;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 /**

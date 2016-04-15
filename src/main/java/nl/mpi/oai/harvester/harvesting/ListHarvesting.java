@@ -18,10 +18,10 @@
 
 package nl.mpi.oai.harvester.harvesting;
 
-import ORG.oclc.oai.harvester2.verb.HarvesterVerb;
 import nl.mpi.oai.harvester.Provider;
 import nl.mpi.oai.harvester.metadata.MetadataFactory;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
@@ -48,7 +48,7 @@ import java.util.List;
 public abstract class ListHarvesting extends AbstractListHarvesting implements
         Harvesting {
 
-    private static final Logger logger = Logger.getLogger(ListHarvesting.class);
+    private static final Logger logger = LogManager.getLogger(ListHarvesting.class);
 
     /**
      * Messages specific to extending classes

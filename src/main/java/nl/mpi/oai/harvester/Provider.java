@@ -19,37 +19,32 @@
 package nl.mpi.oai.harvester;
 
 import ORG.oclc.oai.harvester2.verb.GetRecord;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathFactory;
-
 import ORG.oclc.oai.harvester2.verb.Identify;
 import ORG.oclc.oai.harvester2.verb.ListIdentifiers;
 import ORG.oclc.oai.harvester2.verb.ListMetadataFormats;
-import nl.mpi.oai.harvester.control.Util;
 import nl.mpi.oai.harvester.action.ActionSequence;
+import nl.mpi.oai.harvester.control.Util;
 import nl.mpi.oai.harvester.harvesting.Harvesting;
 import nl.mpi.oai.harvester.metadata.Metadata;
 import nl.mpi.oai.harvester.metadata.MetadataFormat;
 import nl.mpi.oai.harvester.metadata.NSContext;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
-
-import org.apache.log4j.Logger;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.xml.sax.SAXException;
+import javax.xml.xpath.XPathFactory;
+import java.io.IOException;
+import java.util.*;
 
 /**
  * This class represents a single OAI-PMH provider.
@@ -57,7 +52,7 @@ import org.xml.sax.SAXException;
  * @author Lari Lampen (MPI-PL)
  */
 public class Provider {
-    private static final Logger logger = Logger.getLogger(Provider.class);
+    private static final Logger logger = LogManager.getLogger(Provider.class);
 
     /** Name of the provider. */
     public String name;
@@ -134,6 +129,7 @@ public class Provider {
 	nsContext.add("oai", "http://www.openarchives.org/OAI/2.0/");
 	nsContext.add("os", "http://www.openarchives.org/OAI/2.0/static-repository");
 	xpath.setNamespaceContext(nsContext);
+
     }
 
     /**

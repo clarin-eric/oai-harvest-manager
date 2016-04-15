@@ -18,11 +18,12 @@
 
 package nl.mpi.oai.harvester.control;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-
-import org.apache.log4j.Logger;
 
 /**
  * A directory used to save files, which may enforce rules on the file
@@ -33,7 +34,7 @@ import org.apache.log4j.Logger;
  * @author Lari Lampen (MPI-PL)
  */
 public class OutputDirectory {
-    private static final Logger logger = Logger.getLogger(OutputDirectory.class);
+    private static final Logger logger = LogManager.getLogger(OutputDirectory.class);
 
     /** The maximum number of files in a directory, or 0 for no limit. */
     private final int limit;

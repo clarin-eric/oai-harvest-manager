@@ -21,7 +21,8 @@ package nl.mpi.oai.harvester.harvesting;
 import nl.mpi.oai.harvester.Provider;
 import nl.mpi.oai.harvester.action.ActionSequence;
 import nl.mpi.oai.harvester.metadata.Metadata;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.w3c.dom.Document;
 
 import java.util.ArrayList;
@@ -34,7 +35,7 @@ import java.util.List;
  */
 public class Scenario {
 
-    private static final Logger logger = Logger.getLogger(Scenario.class);
+    private static final Logger logger = LogManager.getLogger(Scenario.class);
 
     //
     Provider provider;

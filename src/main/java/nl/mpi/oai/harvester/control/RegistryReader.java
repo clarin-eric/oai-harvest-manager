@@ -18,26 +18,27 @@
 
 package nl.mpi.oai.harvester.control;
 
-import java.io.IOException;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathFactory;
-
 import nl.mpi.oai.harvester.metadata.NSContext;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
-import java.net.URL;
+import org.xml.sax.SAXException;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
+import java.io.IOException;
 import java.net.HttpURLConnection;
-import java.util.List;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.xpath.XPathExpressionException;
-import org.apache.log4j.Logger;
-import org.w3c.dom.DOMException;
-import org.xml.sax.SAXException;
+import java.util.List;
 
 /**
  * This class reads information from the REST service of the CLARIN Centre
@@ -46,7 +47,7 @@ import org.xml.sax.SAXException;
  * @author Lari Lampen (MPI-PL)
  */
 public class RegistryReader {
-    private static final Logger logger = Logger.getLogger(RegistryReader.class);
+    private static final Logger logger = LogManager.getLogger(RegistryReader.class);
     private final XPath xpath;
 
     /** Create a new registry reader object. */

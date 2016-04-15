@@ -19,21 +19,21 @@
 
 package nl.mpi.oai.harvester.harvesting;
 
-import ORG.oclc.oai.harvester2.verb.ListMetadataFormats;
-import java.io.IOException;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerException;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpressionException;
-
-import nl.mpi.oai.harvester.action.ActionSequence;
 import nl.mpi.oai.harvester.Provider;
+import nl.mpi.oai.harvester.action.ActionSequence;
 import nl.mpi.oai.harvester.control.Util;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
+
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpressionException;
+import java.io.IOException;
 
 /**
  * <br> Format harvesting <br><br>
@@ -48,8 +48,7 @@ import org.xml.sax.SAXException;
 public class FormatHarvesting extends AbstractHarvesting implements
         Harvesting {
     
-    private static final Logger logger = Logger.getLogger(
-            FormatHarvesting.class);
+    private static final Logger logger = LogManager.getLogger(FormatHarvesting.class);
 
     /**
      * <br> What the endpoint responded with
@@ -88,6 +87,7 @@ public class FormatHarvesting extends AbstractHarvesting implements
         this.actions  = actions;
         // get ready for parsing
         this.index    = 0;
+
     }
 
     /**

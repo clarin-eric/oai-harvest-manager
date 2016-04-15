@@ -18,12 +18,13 @@
 
 package ORG.oclc.oai.harvester2.verb;
 
-import java.io.IOException;
-import java.net.URLEncoder;
+import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
-import org.xml.sax.SAXException;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URLEncoder;
 
 /**
  * This class represents an ListRecords response on either the server or

@@ -18,8 +18,9 @@
 
 package nl.mpi.oai.harvester.action;
 
-import java.util.List;
 import nl.mpi.oai.harvester.metadata.Metadata;
+
+import java.util.List;
 
 /**
  * This class represents an action to be performed on a metadata record; for
@@ -45,4 +46,6 @@ public interface Action {
      * @return Action
      */
     Action clone();
+
+
 }

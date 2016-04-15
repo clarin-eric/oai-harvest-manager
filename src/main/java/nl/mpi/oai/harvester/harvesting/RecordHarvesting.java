@@ -19,18 +19,16 @@
 
 package nl.mpi.oai.harvester.harvesting;
 
-import ORG.oclc.oai.harvester2.verb.GetRecord;
-import java.io.IOException;
-import java.util.logging.Level;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerException;
-
-import nl.mpi.oai.harvester.metadata.Metadata;
 import nl.mpi.oai.harvester.Provider;
 import nl.mpi.oai.harvester.metadata.MetadataFactory;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
+
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
+import java.io.IOException;
 
 /**
  * <br> Record harvesting <br><br>
@@ -42,7 +40,7 @@ import org.xml.sax.SAXException;
  */
 public final class RecordHarvesting extends AbstractHarvesting {
 
-    private static final Logger logger = Logger.getLogger(RecordHarvesting.class);
+    private static final Logger logger = LogManager.getLogger(RecordHarvesting.class);
 
     // prefix of requested metadata records
     private final String prefix;
@@ -72,6 +70,7 @@ public final class RecordHarvesting extends AbstractHarvesting {
         this.prefix      = prefix;
         this.identifier  = identifier;
         this.parsed      = false;
+
     }
 
     /**

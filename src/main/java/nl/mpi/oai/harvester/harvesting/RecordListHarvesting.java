@@ -19,23 +19,21 @@
 
 package nl.mpi.oai.harvester.harvesting;
 
-import ORG.oclc.oai.harvester2.verb.HarvesterVerb;
-import ORG.oclc.oai.harvester2.verb.ListRecords;
-import java.io.IOException;
-import java.util.List;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerException;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpressionException;
-
-import nl.mpi.oai.harvester.metadata.Metadata;
 import nl.mpi.oai.harvester.Provider;
 import nl.mpi.oai.harvester.metadata.MetadataFactory;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
+
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpressionException;
+import java.io.IOException;
+import java.util.List;
 
 /**
  * <br> List based record harvesting <br><br>
@@ -60,7 +58,7 @@ import org.xml.sax.SAXException;
 public class RecordListHarvesting extends ListHarvesting
         implements Harvesting {
     
-    private static final Logger logger = Logger.getLogger(RecordListHarvesting.class);
+    private static final Logger logger = LogManager.getLogger(RecordListHarvesting.class);
 
     /**
      * Associate endpoint data and desired prefix
@@ -78,7 +76,8 @@ public class RecordListHarvesting extends ListHarvesting
         message [0] = "Requesting more records with prefix ";
         message [1] = "Requesting records with prefix ";
         message [2] = "Cannot get ";
-    }
+
+     }
    
     /**
      * <br> Create a request based on the two parameter ListRecords verb <br><br>

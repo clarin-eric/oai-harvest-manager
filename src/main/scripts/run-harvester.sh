@@ -23,18 +23,11 @@ JAR=$thisDir/oai-harvest-manager-${versionNumber}.jar
 # Determine the logging mode
 if [ "z${LOGDIR}" != "z" ]; then
   LOGDIR=$(ensureSlash $LOGDIR)
-
-  PROPS="${PROPS} -Dlogdir=${LOGDIR}"
-fi
-
-if [ "z${LOGPROPS}" != "z" ] && [ -f ${LOGPROPS} ]; then
-  PROPS="${PROPS} -Dlog4j.configuration=file://${LOGPROPS}"
 else
-  PROPS="${PROPS} -Dlog4j.configuration=file://${PWD}/resources/log4j.properties"
+  LOGDIR=$thisDir
 fi
 
-if [ "z${LOGSUFFIX}" != "z" ]; then
-  PROPS="${PROPS} -Dlogsuffix=-${LOGSUFFIX}"
-fi
+PROPS="${PROPS} -Dlogdir=${LOGDIR}"
+
 
 nice ${JAVA} ${PROPS} -jar ${JAR} $*

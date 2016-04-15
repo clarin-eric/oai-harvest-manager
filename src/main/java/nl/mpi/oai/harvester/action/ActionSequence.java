@@ -18,12 +18,13 @@
 
 package nl.mpi.oai.harvester.action;
 
-import java.util.*;
-
+import nl.mpi.oai.harvester.control.ResourcePool;
 import nl.mpi.oai.harvester.metadata.Metadata;
 import nl.mpi.oai.harvester.metadata.MetadataFormat;
-import nl.mpi.oai.harvester.control.ResourcePool;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.util.*;
 
 /**
  * This class represents a sequence (or pipeline) of actions on metadata,
@@ -33,7 +34,7 @@ import org.apache.log4j.Logger;
  * @author Lari Lampen (MPI-PL), Kees Jan van de Looij (MPI-PL)
  */
 public class ActionSequence {
-    private static final Logger logger = Logger.getLogger(ActionSequence.class);
+    private static final Logger logger = LogManager.getLogger(ActionSequence.class);
 
     /**
      * All action sequences share this set of resource pools and reuse its

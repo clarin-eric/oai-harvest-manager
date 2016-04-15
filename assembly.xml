@@ -21,7 +21,7 @@
         <!-- Do include the log4j properties file in the resources directory
          while excluding it from the jar. Please refer to the configuration of
          the jar plugin in the POM -->
-        <include>log4j.properties</include>
+        <include>log4j2.xml</include>
       </includes>
     </fileSet>
     <fileSet>

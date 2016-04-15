@@ -18,17 +18,18 @@
 
 package nl.mpi.oai.harvester.control;
 
-import java.io.File;
-import java.io.IOException;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.xpath.XPathExpressionException;
-
 import nl.mpi.oai.harvester.Provider;
 import nl.mpi.oai.harvester.cycle.Cycle;
 import nl.mpi.oai.harvester.cycle.CycleFactory;
-import nl.mpi.oai.harvester.cycle.Endpoint;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.xml.sax.SAXException;
+
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.xpath.XPathExpressionException;
+import java.io.File;
+import java.io.IOException;
+
 
 /**
  * Executable class, main entry point of OAI Harvester.
@@ -37,7 +38,7 @@ import org.xml.sax.SAXException;
  */
 public class Main {
     private static final String sep = System.getProperty("file.separator");
-    private static final Logger logger = Logger.getLogger(Main.class);
+    private static final Logger logger = LogManager.getLogger(Main.class);
 
     /** Object containing entries from configuration file. */
     private static Configuration config;

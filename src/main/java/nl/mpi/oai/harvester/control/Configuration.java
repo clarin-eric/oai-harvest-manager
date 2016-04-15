@@ -18,8 +18,26 @@
 
 package nl.mpi.oai.harvester.control;
 
+import nl.mpi.oai.harvester.Provider;
+import nl.mpi.oai.harvester.StaticProvider;
+import nl.mpi.oai.harvester.action.*;
+import nl.mpi.oai.harvester.metadata.MetadataFormat;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
 import java.io.BufferedWriter;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
@@ -29,24 +47,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerConfigurationException;
-
-import nl.mpi.oai.harvester.StaticProvider;
-import nl.mpi.oai.harvester.action.*;
-import nl.mpi.oai.harvester.metadata.MetadataFormat;
-import nl.mpi.oai.harvester.Provider;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
-import org.apache.log4j.Logger;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
 
 /**
@@ -56,7 +56,7 @@ import org.xml.sax.SAXException;
  * @author Lari Lampen (MPI-PL)
  */
 public class Configuration {
-    private static final Logger logger = Logger.getLogger(Configuration.class);
+    private static final Logger logger = LogManager.getLogger(Configuration.class);
     private final XPath xpath;
 
     /**
@@ -399,7 +399,6 @@ public class Configuration {
 		    provider.setSets(setSpec.toArray(new String[setSpec.size()]));
 		}
 	    }
-
 	    providers.add(provider);
 	}
     }
@@ -438,6 +437,7 @@ public class Configuration {
 	    return "workspace";
         return s;
     }
+
     public int getMaxRetryCount() {
         String s = settings.get(KnownOptions.RETRYCOUNT.toString());
         if (s == null) return 1;

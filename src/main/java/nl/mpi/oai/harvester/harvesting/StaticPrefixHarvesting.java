@@ -4,8 +4,9 @@ import ORG.oclc.oai.harvester2.verb.HarvesterVerb;
 import ORG.oclc.oai.harvester2.verb.Identify;
 import nl.mpi.oai.harvester.StaticProvider;
 import nl.mpi.oai.harvester.action.ActionSequence;
-
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
@@ -14,7 +15,6 @@ import javax.xml.transform.TransformerException;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import java.io.IOException;
-import org.w3c.dom.Document;
 
 /**
  * <br> Get prefixes <br><br>
@@ -43,7 +43,7 @@ import org.w3c.dom.Document;
 public final class StaticPrefixHarvesting extends FormatHarvesting
         implements Harvesting {
 
-    private static final Logger logger = Logger.getLogger(
+    private static final Logger logger = LogManager.getLogger(
             StaticPrefixHarvesting.class);
 
     /**

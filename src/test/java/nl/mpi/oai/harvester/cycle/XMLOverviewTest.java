@@ -32,7 +32,6 @@ import java.io.IOException;
 import java.lang.*;
 import java.util.Iterator;
 
-import static org.apache.log4j.helpers.Loader.getResource;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
