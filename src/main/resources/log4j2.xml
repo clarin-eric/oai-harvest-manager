@@ -44,7 +44,7 @@
         </Routing>
 
     </Appenders>
-git g
+
     <Loggers>
 
         <Logger name="nl.mpi.oai.harvester" level="INFO" additivity="false">
