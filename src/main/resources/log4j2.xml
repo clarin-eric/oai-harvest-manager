@@ -44,14 +44,18 @@
         </Routing>
 
     </Appenders>
-
+git g
     <Loggers>
 
         <Logger name="nl.mpi.oai.harvester" level="INFO" additivity="false">
             <AppenderRef ref="RoutingAppender"/>
         </Logger>
+        
+        <Logger name="ORG.oclc.oai.harvester2.verb" level="INFO" additivity="false">
+            <AppenderRef ref="RoutingAppender"/>
+        </Logger>
 
-        <Root level="INFO">
+        <Root level="DEBUG">
             <AppenderRef ref="fileWriter"/>
         </Root>
     </Loggers>
