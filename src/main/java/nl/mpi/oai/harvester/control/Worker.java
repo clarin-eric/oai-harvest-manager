@@ -119,7 +119,7 @@ class Worker implements Runnable {
         provider.init();
 
         // setting specific log filename
-        ThreadContext.put("logFileName", provider.getName().replaceAll("/",""));
+        ThreadContext.put("logFileName", Util.toFileFormat(provider.getName()).replaceAll("/",""));
 
         boolean done = false;
 

@@ -84,7 +84,11 @@ public class TransformAction implements Action {
             }
         }
         factory.setErrorListener(new TransformActionErrorListener());
-	Source xslSource = new StreamSource(new FileInputStream(xsltFile));
+        Source xslSource = null;
+        if (xsltFile.startsWith("http:") || xsltFile.startsWith("https:"))
+            xslSource = new StreamSource(xsltFile);
+        else
+            xslSource = new StreamSource(new FileInputStream(xsltFile),xsltFile);
 	templates = factory.newTemplates(xslSource);
     }
 
