@@ -175,9 +175,8 @@ public class RegistryReader {
             connection.setRequestMethod("GET");
             connection.setRequestProperty("Content-Type", "application/xml");
             
-            System.out.println("Redirect to URL : " + newUrl);
-            
-            System.out.println(System.getProperty("java.runtime.version"));
+            logger.debug("Redirect to URL : " + newUrl);            
+            logger.debug(System.getProperty("java.runtime.version"));
             
             connection.connect();
             

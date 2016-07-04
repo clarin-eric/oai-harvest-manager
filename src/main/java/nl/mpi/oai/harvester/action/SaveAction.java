@@ -18,6 +18,7 @@
 
 package nl.mpi.oai.harvester.action;
 
+import java.io.FileInputStream;
 import nl.mpi.oai.harvester.control.OutputDirectory;
 import nl.mpi.oai.harvester.control.Util;
 import nl.mpi.oai.harvester.metadata.Metadata;
@@ -37,7 +38,15 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import javax.xml.stream.XMLEventReader;
+import javax.xml.stream.XMLEventWriter;
+import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.XMLStreamException;
+import nl.mpi.oai.harvester.utils.MarkableFileInputStream;
+import org.codehaus.stax2.XMLInputFactory2;
 
 /**
  * This class represents the action of saving a record onto the file system.
@@ -49,6 +58,7 @@ public class SaveAction implements Action {
 
     protected OutputDirectory dir;
     protected String suffix;
+    protected boolean offload;
 
     /**
      * Create a new save action.
@@ -56,9 +66,10 @@ public class SaveAction implements Action {
      * @param dir output directory to save to
      * @param suffix suffix to be added to identifier to generate filename
      */
-    public SaveAction(OutputDirectory dir, String suffix) {
+    public SaveAction(OutputDirectory dir, String suffix, boolean offload) {
 	this.dir = dir;
 	this.suffix = (suffix == null) ? "" : suffix;
+        this.offload = offload;
     }
     
     public Document getDocument(Metadata metadata) {
@@ -66,30 +77,55 @@ public class SaveAction implements Action {
     }
 
     @Override
-    public boolean perform(List<Metadata> metadata) {
-        for (Metadata record:metadata) {
+    public boolean perform(List<Metadata> records) {
+        for (Metadata record:records) {
             OutputStream os = null;
+            XMLEventReader reader = null;
+            XMLEventWriter writer = null;
             try {
-                TransformerFactory transformerFactory = TransformerFactory.newInstance();
-                Transformer transformer = transformerFactory.newTransformer();
-                transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-
-                DOMSource source = new DOMSource(record.getDoc());
-
                 Path path = chooseLocation(record);
                 os = Files.newOutputStream(path);
-                StreamResult result = new StreamResult(os);
+                if (record.hasDoc()) {
+                    TransformerFactory transformerFactory = TransformerFactory.newInstance();
+                    Transformer transformer = transformerFactory.newTransformer();
+                    transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+                    
+                    DOMSource source = new DOMSource(record.getDoc());
+                    StreamResult result = new StreamResult(os);
 
-                transformer.transform(source, result);
-                
-                logger.debug("saved XML doc["+path+"] with ["+XPathFactory.newInstance().newXPath().evaluate("count(//*)", record.getDoc())+"] nodes");
-            } catch (TransformerException | IOException | XPathExpressionException ex) {
+                    transformer.transform(source, result);
+
+                    logger.debug("saved XML doc["+path+"] with ["+XPathFactory.newInstance().newXPath().evaluate("count(//*)", record.getDoc())+"] nodes");
+                } else {
+                    XMLInputFactory2 xmlInputFactory = (XMLInputFactory2) XMLInputFactory2.newInstance();
+                    xmlInputFactory.configureForConvenience();
+                    XMLOutputFactory xmlOutputFactory = XMLOutputFactory.newInstance();
+                    xmlOutputFactory.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, true);
+
+                    reader = xmlInputFactory.createXMLEventReader(record.getStream());
+                    writer = xmlOutputFactory.createXMLEventWriter(os);
+
+                    writer.add(reader);
+                    writer.close();
+                    if (offload) {
+                        record.setStream(new MarkableFileInputStream(new FileInputStream(path.toFile())));
+                        logger.debug("offloaded XML stream["+path+"]");
+                    }
+
+                    logger.debug("saved XML stream["+path+"]");
+                }
+            } catch (TransformerException | IOException | XPathExpressionException | XMLStreamException ex) {
                 logger.error(ex);
                 return false;
             } finally {
                 try {
-                    if (os != null) os.close();
-                } catch (IOException e) {
+                    if (os != null)
+                        os.close();
+                    if (reader != null)
+                        reader.close();
+                    if (writer != null)
+                        writer.close();
+                } catch (IOException | XMLStreamException e) {
                 }
             }
         }
@@ -135,6 +171,6 @@ public class SaveAction implements Action {
     public Action clone() {
 	// This is a shallow copy, resulting in multiple references to a single
 	// OutputDirectory, which is as intended.
-	return new SaveAction(dir, suffix);
+	return new SaveAction(dir, suffix, offload);
     }
 }

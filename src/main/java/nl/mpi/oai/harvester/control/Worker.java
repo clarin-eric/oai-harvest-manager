@@ -116,97 +116,125 @@ class Worker implements Runnable {
 
     @Override
     public void run() {
-        provider.init();
+        Throwable t = null;
+        try {
+            logger.debug("Welcome to OAI Harvest Manager worker!");
+            provider.init();
 
-        // setting specific log filename
-        ThreadContext.put("logFileName", Util.toFileFormat(provider.getName()).replaceAll("/",""));
+            // setting specific log filename
+            ThreadContext.put("logFileName", Util.toFileFormat(provider.getName()).replaceAll("/",""));
 
-        boolean done = false;
+            boolean done = false;
 
-        // factory for metadata records
-        MetadataFactory metadataFactory = new MetadataFactory();
+            // factory for metadata records
+            MetadataFactory metadataFactory = new MetadataFactory();
 
-        // factory for OAI verbs
-        OAIFactory oaiFactory = new OAIFactory();
+            // factory for OAI verbs
+            OAIFactory oaiFactory = new OAIFactory();
 
-        logger.info("Processing provider " + provider + " using " + scenarioName + " scenario and timeout " + provider.getTimeout() + " and retry ("+provider.getMaxRetryCount()+","+provider.getRetryDelay()+")");
+            logger.info("Processing provider " + provider + " using " + scenarioName + " scenario and timeout " + provider.getTimeout() + " and retry ("+provider.getMaxRetryCount()+","+provider.getRetryDelay()+")");
 
-        for (final ActionSequence actionSequence : actionSequences) {
+            for (final ActionSequence actionSequence : actionSequences) {
 
-            // list of prefixes provided by the endpoint
-            List<String> prefixes;
+                // list of prefixes provided by the endpoint
+                List<String> prefixes;
 
-            // kj: annotate
-            Scenario scenario = new Scenario(provider, actionSequence);
+                // kj: annotate
+                Scenario scenario = new Scenario(provider, actionSequence);
 
-            if (provider instanceof StaticProvider) {
-                
-                // set type of format harvesting to apply
-                AbstractHarvesting harvesting = new StaticPrefixHarvesting(
-                        oaiFactory,
-                        (StaticProvider) provider,
-                        actionSequence);
+                if (provider instanceof StaticProvider) {
+                    logger.debug("static harvest["+provider+"]");
 
-                // get the prefixes
-                prefixes = scenario.getPrefixes(harvesting);
+                    // set type of format harvesting to apply
+                    AbstractHarvesting harvesting = new StaticPrefixHarvesting(
+                            oaiFactory,
+                            (StaticProvider) provider,
+                            actionSequence);
+                    logger.debug("harvesting["+harvesting+"]");
 
-                if (prefixes.size() == 0) {
-                    done = false;
-                } else {
-                    // set type of record harvesting to apply
-                    harvesting = new StaticRecordListHarvesting(oaiFactory,
-                            (StaticProvider) provider, prefixes, metadataFactory);
+                    // get the prefixes
+                    prefixes = scenario.getPrefixes(harvesting);
+                    logger.debug("prefixes["+prefixes+"]");
 
-                    // get the records
-                    if (scenarioName == CycleProperties.Scenario.ListIdentifiers) {
-                        done = scenario.listIdentifiers(harvesting);
-                    } else
-                        done = scenario.listRecords(harvesting);
-                }
-            } else {
-
-                // set type of format harvesting to apply
-                AbstractHarvesting harvesting = new FormatHarvesting(oaiFactory,
-                        provider, actionSequence);
-
-                // get the prefixes
-                prefixes = scenario.getPrefixes(harvesting);
-
-                done = (prefixes.size()!= 0);
-                if (prefixes.size() == 0) {
-                    // no match
-                    done = false;
-                } else {
-                    // determine the type of record harvesting to apply
-                    if (scenarioName == CycleProperties.Scenario.ListIdentifiers) {
-                        // kj: annotate, connect verb to scenario
-                        harvesting = new IdentifierListHarvesting(oaiFactory,
-                                provider, prefixes, metadataFactory);
-
-                        // get the records
-                        done = scenario.listIdentifiers(harvesting);
+                    if (prefixes.isEmpty()) {
+                        logger.debug("no prefixes["+prefixes+"] -> done");
+                        done = false;
                     } else {
-                        harvesting = new RecordListHarvesting(oaiFactory,
-                                provider, prefixes, metadataFactory);
+                        // set type of record harvesting to apply
+                        harvesting = new StaticRecordListHarvesting(oaiFactory,
+                                (StaticProvider) provider, prefixes, metadataFactory);
 
                         // get the records
-                        done = scenario.listRecords(harvesting);
+                        if (scenarioName == CycleProperties.Scenario.ListIdentifiers) {
+                            done = scenario.listIdentifiers(harvesting);
+                            logger.debug("list identifiers -> done["+done+"]");
+                        } else {
+                            done = scenario.listRecords(harvesting);
+                            logger.debug("list records -> done["+done+"]");
+                        }
+                    }
+                } else {
+                    logger.debug("dynamic harvest["+provider+"]");
+
+                    // set type of format harvesting to apply
+                    AbstractHarvesting harvesting = new FormatHarvesting(oaiFactory,
+                            provider, actionSequence);
+
+                    // get the prefixes
+                    prefixes = scenario.getPrefixes(harvesting);
+                    logger.debug("prefixes["+prefixes+"]");
+
+                    if (prefixes.isEmpty()) {
+                        // no match
+                        logger.debug("no prefixes["+prefixes+"] -> done");
+                        done = false;
+                    } else {
+                        // determine the type of record harvesting to apply
+                        if (scenarioName == CycleProperties.Scenario.ListIdentifiers) {
+                            // kj: annotate, connect verb to scenario
+                            harvesting = new IdentifierListHarvesting(oaiFactory,
+                                    provider, prefixes, metadataFactory);
+
+                            // get the records
+                            done = scenario.listIdentifiers(harvesting);
+                            logger.debug("list identifiers -> done["+done+"]");
+                        } else {
+                            harvesting = new RecordListHarvesting(oaiFactory,
+                                    provider, prefixes, metadataFactory);
+
+                            // get the records
+                            done = scenario.listRecords(harvesting);
+                            logger.debug("list records -> done["+done+"]");
+                        }
                     }
                 }
+
+                // break after an action sequence has completed successfully
+                if (done) break;
             }
 
-            // break after an action sequence has completed successfully
-            if (done) break;
+            // report back success or failure to the cycle
+            endpoint.doneHarvesting(done);
+
+            logger.info("Processing finished for " + provider);
+        } catch (Throwable e) {
+            logger.error("Processing failed for " + provider+": "+e.getMessage(),e);
+            t = e;
+            throw e;
+        } finally {
+                
+            ThreadContext.clearAll();
+            
+            // tell the main log how it went
+            if (t != null)
+                logger.error("Processing failed for " + provider+": "+t.getMessage(),t);
+            else
+                logger.info("Processing finished for " + provider);
+
+            semaphore.release();
+
+            logger.debug("Goodbye from OAI Harvest Manager worker!");
         }
-
-        // report back success or failure to the cycle
-        endpoint.doneHarvesting(done);
-
-        logger.info("Processing finished for " + provider);
-
-        ThreadContext.clearAll();
-
-        semaphore.release();
     }
 
 }

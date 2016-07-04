@@ -45,6 +45,7 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 import java.io.IOException;
 import java.util.*;
+import javax.xml.stream.XMLStreamException;
 
 /**
  * This class represents a single OAI-PMH provider.
@@ -74,6 +75,9 @@ public class Provider {
     
     /** Maximum timeout for a connection */
     public int timeout = 0;
+    
+    /** Do I need some time on my own? */
+    public boolean exclusive = false;
     
     /** Type of prefix harvesting that applies to the provider */
     public Harvesting prefixHarvesting;
@@ -185,7 +189,7 @@ public class Provider {
      * Identify request. Returns null if no name can be found.
      * @return provider name
      */
-	public String getProviderName() {
+    public String getProviderName() {
 	try {
 	    Identify ident = new Identify(oaiUrl,timeout);
 	    return parseProviderName(ident.getDocument());
@@ -233,12 +237,28 @@ public class Provider {
         return this.timeout;
     }
 
+    public void setMaxRetryCount(int maxRetryCount) {
+        this.maxRetryCount = maxRetryCount;
+    }
+    
     public int getMaxRetryCount() {
         return this.maxRetryCount;
     }
 
+    public void setRetryDelay(int retryDelay) {
+        this.retryDelay = retryDelay;
+    }
+    
     public int getRetryDelay() {
         return this.retryDelay;
+    }
+
+    public void setExclusive(boolean exclusive) {
+        this.exclusive = exclusive;
+    }
+    
+    public boolean isExclusive() {
+        return this.exclusive;
     }
 
     /**
@@ -253,7 +273,7 @@ public class Provider {
      * @param ap the sequence of actions
      * @return success or failure
      */
-    public boolean performActions(ActionSequence ap) {
+    public boolean performActions(ActionSequence ap) throws XMLStreamException {
 	List<String> prefixes = getPrefixes(ap.getInputFormat());
 	if (prefixes.isEmpty()) {
 	    logger.info("No matching prefixes for format "
@@ -303,8 +323,7 @@ public class Provider {
 	for (int i=0; i<maxRetryCount; i++) {
 	    try {
 		GetRecord gr = new GetRecord(oaiUrl, id, mdPrefix, timeout);
-		Document doc = gr.getDocument();
-		return new Metadata(id, mdPrefix, doc, this, true, false);
+                return new Metadata(id, mdPrefix, gr.getDocumentSource(), this, true, false);
 	    } catch (IOException | SAXException | ParserConfigurationException
 		    | TransformerException e) {
                 logger.error("Provider["+this+"] getRecord["+oaiUrl+"]["+id+"]["+mdPrefix+"] try["+(i+1)+"/"+maxRetryCount+"] failed!");
@@ -339,7 +358,7 @@ public class Provider {
      */
 	public List<String> getIdentifiers(String mdPrefix) throws IOException,
 	    ParserConfigurationException, SAXException, TransformerException,
-	    XPathExpressionException, NoSuchFieldException {
+	    XPathExpressionException, NoSuchFieldException, XMLStreamException {
 	List<String> ids = new ArrayList<>();
 
 	if (sets == null) {
@@ -371,7 +390,7 @@ public class Provider {
     public void addIdentifiers(String mdPrefix, String set, List<String> ids)
 	    throws IOException, ParserConfigurationException, SAXException,
 	    TransformerException, XPathExpressionException,
-	    NoSuchFieldException {
+	    NoSuchFieldException, XMLStreamException {
             ListIdentifiers li = new ListIdentifiers(oaiUrl, null, null, set, mdPrefix, timeout);
             for (;;) {
                 addIdentifiers(li.getDocument(), ids);

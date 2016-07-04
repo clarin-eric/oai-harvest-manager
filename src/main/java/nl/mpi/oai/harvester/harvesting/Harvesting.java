@@ -18,6 +18,7 @@
 
 package nl.mpi.oai.harvester.harvesting;
 
+import nl.mpi.oai.harvester.utils.DocumentSource;
 import org.w3c.dom.Document;
 
 /**
@@ -70,7 +71,7 @@ public interface Harvesting {
      *
      * @return null if an error occurred, otherwise the response to the request
      */
-    public Document getResponse ();
+    public DocumentSource getResponse ();
     
     /**
      * <br> Find out if it would be sensible to make another request <br><br>
@@ -102,7 +103,7 @@ public interface Harvesting {
      * @param document response
      * @return  false if there was an error, true otherwise
      */
-    public boolean processResponse (Document document);
+    public boolean processResponse (DocumentSource document);
     
     /**
      * <br> Return the next metadata element <br><br>

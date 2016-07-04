@@ -238,6 +238,8 @@ public class Configuration {
 		    } else if ("save".equals(actionType)) {
 			String outDirId = Util.getNodeText(xpath, "./@dir", s);
 			String suffix = Util.getNodeText(xpath, "./@suffix", s);
+                        // if null defaults to false, only "true" leads to true
+                        boolean offload = Boolean.parseBoolean(Util.getNodeText(xpath, "./@offload", s));
 			if (outputs.containsKey(outDirId)) {
 			    OutputDirectory outDir = outputs.get(outDirId);
 			    String group = Util.getNodeText(xpath,
@@ -245,9 +247,9 @@ public class Configuration {
 			    // If the group-by-provider attribute is
 			    // not defined, it defaults to true.
 			    if (group != null && !Boolean.valueOf(group)) {
-				act = new SaveAction(outDir, suffix);
+				act = new SaveAction(outDir, suffix, offload);
 			    } else {
-				act = new SaveGroupedAction(outDir, suffix);
+				act = new SaveGroupedAction(outDir, suffix, offload);
 			    }
 			} else {
 			    logger.error("Invalid output directory " + outDirId
@@ -263,7 +265,16 @@ public class Configuration {
                                 cache = workDir.resolve(cacheDir);
                                 Util.ensureDirExists(cache);
                             }
-			    act = new TransformAction(xslFile,cache);
+                            int jobs = 0;
+                            String jobsStr = Util.getNodeText(xpath, "./@max-jobs", s);
+                            if (jobsStr!=null) {
+                                try {
+                                    jobs = Integer.parseInt(jobsStr);
+                                } catch(NumberFormatException e) {
+                                    logger.error("@max-jobs["+jobsStr+"] doesn't contain a valid number",e);
+                                }
+                            }
+			    act = new TransformAction(xslFile,cache,jobs);
 			} catch (IOException | TransformerConfigurationException ex) {
 			    logger.error(ex);
 			}
@@ -333,6 +344,23 @@ public class Configuration {
                         }
                     }
 
+                    // list of endpoints to be extra configured
+                    HashMap<String,Node> configMap = new HashMap<>();
+
+                    // create the list
+                    NodeList configList = (NodeList) xpath.evaluate("./config", importNode,
+                            XPathConstants.NODESET);
+                    for (int i = 0; i < configList.getLength(); i++) {
+                        Node configNode = configList.item(i);
+
+                        // find exlude node
+                        String eUrl = Util.getNodeText(xpath, "./@url", configNode);
+                        if (eUrl == null) {
+                            logger.warn("No URL in config specification");
+                        } else {
+                            configMap.put(eUrl,configNode);
+                        }
+                    }
                     // get the list of endpoints from the centre registry
                     RegistryReader rr = new RegistryReader();
                     List<String> provUrls = rr.getEndpoints(new java.net.URL(rUrl));
@@ -346,6 +374,26 @@ public class Configuration {
                         } else {
                             logger.debug("Including endpoint" + provUrl);
                             Provider provider = new Provider(provUrl, getMaxRetryCount (), getRetryDelay());
+                            if (configMap.containsKey(provUrl)) {
+                                Node configNode = configMap.get(provUrl);
+                                String pScenario = Util.getNodeText(xpath, "./@scenario", configNode);
+                                String pTimeout = Util.getNodeText(xpath, "./@timeout", configNode);
+                                String pMaxRetryCount = Util.getNodeText(xpath, "./@max-retry-count", configNode);
+                                String pRetryDelay = Util.getNodeText(xpath, "./@retry-delay", configNode);
+                                String pExclusive = Util.getNodeText(xpath, "./@exclusive", configNode);
+
+                                int timeout = (pTimeout != null)?Integer.valueOf(pTimeout):getTimeout();
+                                int maxRetryCount = (pMaxRetryCount != null)?Integer.valueOf(pMaxRetryCount):getMaxRetryCount();
+                                int retryDelay = (pRetryDelay != null)?Integer.valueOf(pRetryDelay):getRetryDelay();
+                                boolean exclusive = Boolean.parseBoolean(pExclusive);
+
+                                if (pScenario != null)
+                                    provider.setScenario(pScenario);
+                                provider.setTimeout(timeout);
+                                provider.setMaxRetryCount(maxRetryCount);
+                                provider.setRetryDelay(retryDelay);
+                                provider.setExclusive(exclusive);
+                            }
                             providers.add(provider);
                         }
                     }
@@ -364,10 +412,12 @@ public class Configuration {
             String pTimeout = Util.getNodeText(xpath, "./@timeout", cur);
             String pMaxRetryCount = Util.getNodeText(xpath, "./@max-retry-count", cur);
             String pRetryDelay = Util.getNodeText(xpath, "./@retry-delay", cur);
+            String pExclusive = Util.getNodeText(xpath, "./@exclusive", cur);
             
             int timeout = (pTimeout != null)?Integer.valueOf(pTimeout):getTimeout();
             int maxRetryCount = (pMaxRetryCount != null)?Integer.valueOf(pMaxRetryCount):getMaxRetryCount();
             int retryDelay = (pRetryDelay != null)?Integer.valueOf(pRetryDelay):getRetryDelay();
+            boolean exclusive = Boolean.parseBoolean(pExclusive);
             
 	    if (pUrl == null) {
 		logger.error("Skipping provider " + pName + ": URL is missing");
@@ -384,6 +434,8 @@ public class Configuration {
                 provider.setScenario(pScenario);
 
             provider.setTimeout(timeout);
+            
+            provider.setExclusive(exclusive);
 
 	    if (!Boolean.valueOf(pStatic)) {
                 // Note: static providers do not support sets, so this only

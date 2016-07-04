@@ -34,6 +34,8 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import java.io.IOException;
 import java.util.List;
+import javax.xml.stream.XMLStreamException;
+import nl.mpi.oai.harvester.utils.DocumentSource;
 
 /**
  * <br> List based record harvesting <br><br>
@@ -96,12 +98,13 @@ public class RecordListHarvesting extends ListHarvesting
      * @throws NoSuchFieldException introspection problem
      */
     @Override
-    public Document verb2(String p1, String p2, int timeout) throws
+    public DocumentSource verb2(String p1, String p2, int timeout) throws
             IOException,
             ParserConfigurationException,
             SAXException,
             TransformerException,
-            NoSuchFieldException {
+            NoSuchFieldException,
+            XMLStreamException {
 
         document = oaiFactory.createListRecords(p1, p2, timeout);
 
@@ -129,13 +132,14 @@ public class RecordListHarvesting extends ListHarvesting
      * @throws NoSuchFieldException introspection problem
      */
     @Override
-    public Document verb5(String p1, String p2, String p3, String p4,
+    public DocumentSource verb5(String p1, String p2, String p3, String p4,
             String p5, int timeout) throws
             IOException,
             ParserConfigurationException,
             SAXException,
             TransformerException,
-            NoSuchFieldException {
+            NoSuchFieldException,
+            XMLStreamException {
 
         document = oaiFactory.createListRecords(p1, p2, p3, p4, p5, timeout);
 
@@ -178,7 +182,7 @@ public class RecordListHarvesting extends ListHarvesting
      * @return true if the list was successfully created, false otherwise
      */
     @Override
-    public boolean processResponse(Document document){
+    public boolean processResponse(DocumentSource document){
 
         // check for protocol error
         if (document == null){
@@ -192,7 +196,8 @@ public class RecordListHarvesting extends ListHarvesting
              */
             nodeList = (NodeList)provider.xpath.evaluate(
                     "//*[parent::*[local-name()='ListRecords']]",
-                    document, XPathConstants.NODESET);
+                    document.getDocument(), XPathConstants.NODESET);
+            logger.debug("found ["+nodeList.getLength()+"] records in the ListRecords response");
         } catch (XPathExpressionException e) {
             // something went wrong when creating the list, try another prefix
             logger.error(e.getMessage(), e);
@@ -229,6 +234,7 @@ public class RecordListHarvesting extends ListHarvesting
         /* The list of nodes is in place, and the index points to an element
            in the list. Turn the next node into a document.
          */
+        logger.debug("process ["+nIndex+"/"+nodeList.getLength()+"] record from the ListRecords response");
         Node node = nodeList.item(nIndex).cloneNode(true);
         nIndex++;
         Document doc = provider.db.newDocument();
@@ -291,7 +297,7 @@ public class RecordListHarvesting extends ListHarvesting
             /* Inserted the metadata in the targets table. Release the metadata
                to the client by submitting the details to the metadata factory.
              */
-            return metadataFactory.create(id, prefix, doc, provider, false, false);
+            return metadataFactory.create(id, prefix, new DocumentSource(id,doc), provider, false, false);
         } else {
             // not inserted, the record has already been released to the client
             return null;

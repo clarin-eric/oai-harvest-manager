@@ -33,6 +33,8 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import java.io.IOException;
 import java.util.List;
+import javax.xml.stream.XMLStreamException;
+import nl.mpi.oai.harvester.utils.DocumentSource;
 
 /**
  * <br> List based identifier harvesting <br><br>
@@ -89,12 +91,13 @@ public class IdentifierListHarvesting extends ListHarvesting
      * @return the response to the request
      */
     @Override
-    public Document verb2(String p1, String p2, int timeout) throws
+    public DocumentSource verb2(String p1, String p2, int timeout) throws
             IOException,
             ParserConfigurationException,
             SAXException,
             TransformerException,
-            NoSuchFieldException {
+            NoSuchFieldException,
+            XMLStreamException {
         return oaiFactory.createListIdentifiers(p1, p2, timeout);
     }
 
@@ -111,13 +114,14 @@ public class IdentifierListHarvesting extends ListHarvesting
      * @param p5 set
      */
     @Override
-    public Document verb5(String p1, String p2, String p3, String p4,
+    public DocumentSource verb5(String p1, String p2, String p3, String p4,
             String p5, int timeout) throws
             IOException,
             ParserConfigurationException,
             SAXException,
             TransformerException,
-            NoSuchFieldException {
+            NoSuchFieldException,
+            XMLStreamException {
         return oaiFactory.createListIdentifiers(p1, p2, p3, p4, p5, timeout);
     }
     
@@ -155,7 +159,7 @@ public class IdentifierListHarvesting extends ListHarvesting
      * @return true if the response was processed successfully, false otherwise
      */
     @Override
-    public boolean processResponse(Document document) {
+    public boolean processResponse(DocumentSource document) {
         
         // check for a protocol error
         if (document == null){
@@ -173,7 +177,7 @@ public class IdentifierListHarvesting extends ListHarvesting
                     "//*[starts-with(local-name(),'identifier') "
                             + "and parent::*[local-name()='header' "
                             + "and not(@status='deleted')]]/text()",
-                    document, XPathConstants.NODESET);
+                    document.getDocument(), XPathConstants.NODESET);
         } catch (XPathExpressionException e) {
             // something went wrong when creating the list, try another prefix
             logger.error(e.getMessage(), e);
@@ -228,8 +232,7 @@ public class IdentifierListHarvesting extends ListHarvesting
             // something went wrong
             return null;
         } else {
-            Document document;
-            document = p.getResponse();
+            DocumentSource document = p.getResponse();
             if (document == null) {
                 return null;
             } else {

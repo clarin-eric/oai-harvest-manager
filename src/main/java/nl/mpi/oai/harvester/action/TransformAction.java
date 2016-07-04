@@ -18,6 +18,8 @@
 
 package nl.mpi.oai.harvester.action;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import net.sf.saxon.Configuration;
 import net.sf.saxon.TransformerFactoryImpl;
 import nl.mpi.oai.harvester.metadata.Metadata;
@@ -39,6 +41,8 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.concurrent.Semaphore;
+import javax.xml.transform.sax.SAXSource;
 
 /**
  * This class represents the application of an XSL transformation to the
@@ -60,18 +64,36 @@ public class TransformAction implements Action {
 
     /** Prepared XSL transformation object. */
     private Templates templates;
+    
+    /** A standard semaphore is used to track the number of running transforms. */
+    private Semaphore semaphore;
 
     /** 
      * Create a new transform action using the specified XSLT. 
      * 
      * @param xsltFile the XSL stylesheet
      * @param cacheDir the directory to cache results of resource requests
+     * @param maxJobs the maximum number of concurrent transforms
      * @throws FileNotFoundException stylesheet couldn't be found
      * @throws TransformerConfigurationException there is a problem with the stylesheet
      */
-    public TransformAction(String xsltFile,Path cacheDir) throws FileNotFoundException, TransformerConfigurationException {
+    public TransformAction(String xsltFile,Path cacheDir,int maxJobs) throws FileNotFoundException, TransformerConfigurationException {
+        this(xsltFile,cacheDir,(maxJobs>0?new Semaphore(maxJobs):null));
+    }
+    
+    /** 
+     * Create a new transform action using the specified XSLT. 
+     * 
+     * @param xsltFile the XSL stylesheet
+     * @param cacheDir the directory to cache results of resource requests
+     * @param semaphore a semaphore to control the concurrent number of transforms
+     * @throws FileNotFoundException stylesheet couldn't be found
+     * @throws TransformerConfigurationException there is a problem with the stylesheet
+     */
+    public TransformAction(String xsltFile,Path cacheDir,Semaphore semaphore) throws FileNotFoundException, TransformerConfigurationException {
 	this.xsltFile = xsltFile;
         this.cacheDir = cacheDir;
+        this.semaphore = semaphore;
 	factory = TransformerFactory.newInstance();
         if(factory instanceof TransformerFactoryImpl) {
             TransformerFactoryImpl transformerFactoryImpl = ((TransformerFactoryImpl)factory);
@@ -96,17 +118,45 @@ public class TransformAction implements Action {
     public boolean perform(List<Metadata> records) {
         for (Metadata record:records) {
             try {
+                if (semaphore!=null) {
+                    for (;;) {
+                        try {
+                            logger.debug("request transform action");
+                            semaphore.acquire();
+                            logger.debug("acquired transform action");
+                            break;
+                        } catch (InterruptedException e) { }
+                    }
+                }
                 Transformer transformer = templates.newTransformer();
-                DOMSource source = new DOMSource(record.getDoc());
-                DOMResult output = new DOMResult();
+                Source source = null;
+                Result output = null;
+                if (record.hasStream()) {
+                    source = new SAXSource(record.getSource());
+                    output = new StreamResult(new ByteArrayOutputStream());
+                } else {
+                    source = new DOMSource(record.getDoc());
+                    output = new DOMResult();
+                }
                 transformer.setParameter("provider_name",record.getOrigin().getName());
                 transformer.setParameter("record_identifier",record.getId());
                 transformer.transform(source, output);
-                record.setDoc((Document) output.getNode());
-                logger.debug("transformed to XML doc with ["+XPathFactory.newInstance().newXPath().evaluate("count(//*)", record.getDoc())+"] nodes");
+                if (record.hasStream()) {                 
+                    byte[] bytes = ((ByteArrayOutputStream)((StreamResult)output).getOutputStream()).toByteArray();
+                    record.setStream(new ByteArrayInputStream(bytes));
+                    logger.debug("transformed to XML stream with ["+bytes.length+"] bytes");
+                } else {
+                    record.setDoc((Document) ((DOMResult)output).getNode());
+                    logger.debug("transformed to XML doc with ["+XPathFactory.newInstance().newXPath().evaluate("count(//*)", record.getDoc())+"] nodes");
+                }
             } catch (TransformerException | XPathExpressionException ex) {
                 logger.error(ex);
                 return false;
+            } finally {
+                if (semaphore!=null) {
+                    semaphore.release();
+                    logger.debug("released transform action");
+                }
             }
         }
         return true;
@@ -135,7 +185,7 @@ public class TransformAction implements Action {
     public Action clone() {
 	try {
 	    // This is a deep copy. The new object has its own Transform object.
-	    return new TransformAction(xsltFile,cacheDir);
+	    return new TransformAction(xsltFile,cacheDir,semaphore);
 	} catch (FileNotFoundException | TransformerConfigurationException ex) {
 	    logger.error(ex);
 	}

@@ -18,6 +18,7 @@
 
 package nl.mpi.oai.harvester.harvesting;
 
+import nl.mpi.oai.harvester.utils.DocumentSource;
 import org.w3c.dom.Document;
 
 /**
@@ -38,7 +39,7 @@ public interface OAIInterface {
      * @param endpointURI the endpoint URI
      * @return the OAI response
      */
-    Document newListMetadata(String endpointURI);
+    DocumentSource newListMetadata(String endpointURI);
 
     /**
      * <br> Create a list records object <br><br>
@@ -47,7 +48,7 @@ public interface OAIInterface {
      * @param p2 the resumption token
      * @return the OAI response
      */
-    Document newListRecords(String p1, String p2);
+    DocumentSource newListRecords(String p1, String p2);
 
     /**
      * <br> Create a list records object <br><br>
@@ -59,7 +60,7 @@ public interface OAIInterface {
      * @param p5 parameter five
      * @return the OAI response
      */
-    Document newListRecords(String p1, String p2, String p3, String p4,
+    DocumentSource newListRecords(String p1, String p2, String p3, String p4,
                             String p5);
 
     /**
@@ -70,7 +71,7 @@ public interface OAIInterface {
      * @param p3 the metadata prefix
      * @return the OAI response
      */
-    Document newGetRecord(String p1, String p2, String p3);
+    DocumentSource newGetRecord(String p1, String p2, String p3);
 
     /**
      * <br> Create a list identifiers object <br><br>
@@ -79,7 +80,7 @@ public interface OAIInterface {
      * @param p2 resumption token
      * @return the OAI response
      */
-    Document newListIdentifiers (String p1, String p2);
+    DocumentSource newListIdentifiers (String p1, String p2);
 
     /**
      * <br> Create a list identifiers object <br><br>
@@ -91,7 +92,7 @@ public interface OAIInterface {
      * @param p5 the metadata prefix the records should have
      * @return the OAI response
      */
-    Document newListIdentifiers (String p1, String p2, String p3, String p4,
+    DocumentSource newListIdentifiers (String p1, String p2, String p3, String p4,
                                  String p5);
 
     /**

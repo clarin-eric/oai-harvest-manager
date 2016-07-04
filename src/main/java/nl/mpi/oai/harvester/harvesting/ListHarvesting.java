@@ -22,13 +22,14 @@ import nl.mpi.oai.harvester.Provider;
 import nl.mpi.oai.harvester.metadata.MetadataFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import java.io.IOException;
 import java.util.List;
+import javax.xml.stream.XMLStreamException;
+import nl.mpi.oai.harvester.utils.DocumentSource;
 
 /**
  * <br> A request method in a list based harvesting protocol <br><br>
@@ -92,13 +93,14 @@ public abstract class ListHarvesting extends AbstractListHarvesting implements
      * @throws TransformerException XSL problem
      * @throws NoSuchFieldException introspection problem
      */
-    abstract Document verb2(String s1, String s2, int timeout)
+    abstract DocumentSource verb2(String s1, String s2, int timeout)
             throws 
             IOException,
             ParserConfigurationException,
             SAXException,
             TransformerException,
-            NoSuchFieldException;
+            NoSuchFieldException,
+            XMLStreamException;
 
     /**
      * Verb with five string parameters. A subclass needs to make this verb 
@@ -117,14 +119,15 @@ public abstract class ListHarvesting extends AbstractListHarvesting implements
      * @throws TransformerException XSL problem
      * @throws NoSuchFieldException introspection problem
      */
-    abstract Document verb5(String s1, String s2, String s3, String s4,
+    abstract DocumentSource verb5(String s1, String s2, String s3, String s4,
             String s5, int timeout)
             throws 
             IOException,
             ParserConfigurationException,
             SAXException,
             TransformerException,
-            NoSuchFieldException;
+            NoSuchFieldException,
+            XMLStreamException;
 
     /**
      * Get the token indicating more data is available. Since a HarvesterVerb 
@@ -206,7 +209,8 @@ public abstract class ListHarvesting extends AbstractListHarvesting implements
                     | ParserConfigurationException
                     | SAXException
                     | TransformerException
-                    | NoSuchFieldException e) {
+                    | NoSuchFieldException
+                    | XMLStreamException e) {
 
                 // invalidate the assumption that everything went fine
                 done = false;
@@ -214,24 +218,33 @@ public abstract class ListHarvesting extends AbstractListHarvesting implements
                 // report
                 logger.error("ListHarvesting["+this+"]["+provider+"] request try["+(i+1)+"/"+provider.maxRetryCount+"] failed!");
                 logger.error(e.getMessage(), e);
-                if (provider.sets == null) {
-                    logger.info(message[2] + prefixes.get(pIndex)
-                            + " records from endpoint " + provider.oaiUrl);
-
-                } else {
-                    logger.info(message[2] + prefixes.get(pIndex)
-                            + " records in set " + provider.sets[sIndex]
-                            + " from endpoint " + provider.oaiUrl);
-                }
             }
             // tried the request
 
             if (done) {
+                if (provider.sets == null) {
+                    logger.info("retrieved " + prefixes.get(pIndex)
+                            + " records from endpoint " + provider.oaiUrl + (i>0?" after " + (i+1) +" tries":""));
+
+                } else {
+                    logger.info("retrieved " + prefixes.get(pIndex)
+                            + " records in set " + provider.sets[sIndex]
+                            + " from endpoint " + provider.oaiUrl + (i>0?" after " + (i+1) +" tries":""));
+                }
                 // the request completed successfully
                 return true;
             } else {
                 i++;
                 if (i == provider.maxRetryCount) {
+                    if (provider.sets == null) {
+                        logger.error(message[2] + prefixes.get(pIndex)
+                                + " records from endpoint " + provider.oaiUrl + " after " + i +" tries!");
+
+                    } else {
+                        logger.error(message[2] + prefixes.get(pIndex)
+                                + " records in set " + provider.sets[sIndex]
+                                + " from endpoint " + provider.oaiUrl + " after " + i +" tries!");
+                    }
                     // do not retry any more, try another prefix instead
                     return false;
                 }
@@ -253,7 +266,7 @@ public abstract class ListHarvesting extends AbstractListHarvesting implements
      * @return the response
      */
     @Override
-    public Document getResponse() {
+    public DocumentSource getResponse() {
 
         // check for protocol error
         if (document == null){

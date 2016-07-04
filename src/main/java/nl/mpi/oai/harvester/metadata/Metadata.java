@@ -18,8 +18,18 @@
 
 package nl.mpi.oai.harvester.metadata;
 
+import java.io.IOException;
+import java.io.InputStream;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import nl.mpi.oai.harvester.Provider;
+import nl.mpi.oai.harvester.utils.DocumentSource;
 import org.w3c.dom.Document;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 /**
  * Metadata container <br><br>
@@ -38,6 +48,8 @@ import org.w3c.dom.Document;
  * @author Kees Jan van de Looij (MPI-PL)
  * */
 public class Metadata {
+    private static final Logger logger = LogManager.getLogger(Metadata.class);
+    
     /** A unique identifier, such as the OAI-PMH record identifier. */
     private final String id;
 
@@ -53,7 +65,28 @@ public class Metadata {
     private boolean isList;
 
     /** The XML content of this record. */
-    private Document doc;
+    private DocumentSource docSrc;
+
+    /**
+     * Create a metadata record.
+     * 
+     * @param id unique identifier
+     * @param prefix metadata prefix
+     * @param docSrc XML stream/tree representing the metadata
+     * @param endpoint endpoint information
+     * @param isEnvelope, true if metadata is contained in OAI envelope,
+     *                      false otherwise
+     * @param isList true if metadata is a list of records, false otherwise
+     */
+    public Metadata(String id, String prefix, DocumentSource docSrc, Provider endpoint,
+                    boolean isEnvelope, boolean isList) {
+        this.id           = id;
+        this.prefix       = prefix;
+        this.docSrc       = docSrc;
+        this.origin       = endpoint;
+        this.isEnvelope   = isEnvelope;
+        this.isList       = isList;
+    }
 
     /**
      * Create a metadata record.
@@ -70,7 +103,28 @@ public class Metadata {
                     boolean isEnvelope, boolean isList) {
         this.id           = id;
         this.prefix       = prefix;
-        this.doc          = doc;
+        this.docSrc       = new DocumentSource(id,doc);
+        this.origin       = endpoint;
+        this.isEnvelope   = isEnvelope;
+        this.isList       = isList;
+    }
+
+    /**
+     * Create a metadata record.
+     * 
+     * @param id unique identifier
+     * @param prefix metadata prefix
+     * @param doc XML stream representing the metadata
+     * @param endpoint endpoint information
+     * @param isEnvelope, true if metadata is contained in OAI envelope,
+     *                      false otherwise
+     * @param isList true if metadata is a list of records, false otherwise
+     */
+    public Metadata(String id, String prefix, InputStream doc, Provider endpoint,
+                    boolean isEnvelope, boolean isList) {
+        this.id           = id;
+        this.prefix       = prefix;
+        this.docSrc       = new DocumentSource(id,doc);
         this.origin       = endpoint;
         this.isEnvelope   = isEnvelope;
         this.isList       = isList;
@@ -83,7 +137,17 @@ public class Metadata {
      * @param doc modified content of this record
      */
     public void setDoc(Document doc) {
-	this.doc = doc;
+        docSrc.setDocument(doc);
+    }
+
+    /**
+     * Modify the XML stream representation of this record in a way that does
+     * not change its identity.
+     * 
+     * @param src modified content of this record
+     */
+    public void setStream(InputStream str) {
+        docSrc.setStream(str);
     }
 
     /** 
@@ -103,11 +167,51 @@ public class Metadata {
     }
 
     /** 
+     * Is there a XML tree representing this record?
+     * @return the answer to this question
+     */
+    public boolean hasDoc() {
+	return docSrc.hasDocument();
+    }
+
+    /** 
      * Get the XML tree representing this record. 
      * @return the XML tree
      */
     public Document getDoc() {
-	return doc;
+	return docSrc.getDocument();
+    }
+
+    /** 
+     * Is there a XML stream representing this record?
+     * @return the answer to this question
+     */
+    public boolean hasStream() {
+	return docSrc.hasStream();
+    }
+
+    /** 
+     * Get the XML stream representing this record. 
+     * @return the XML stream
+     */
+    public InputStream getStream() {
+	return docSrc.getStream();
+    }
+
+    /** 
+     * Is there a XML stream representing this record?
+     * @return the answer to this question
+     */
+    public boolean hasSource() {
+	return docSrc.hasSource();
+    }
+
+    /** 
+     * Get the XML stream representing this record. 
+     * @return the XML stream
+     */
+    public InputSource getSource() {
+	return docSrc.getSource();
     }
 
     /** 

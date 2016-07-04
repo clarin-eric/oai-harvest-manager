@@ -34,6 +34,7 @@ import javax.xml.transform.TransformerException;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import java.io.IOException;
+import nl.mpi.oai.harvester.utils.DocumentSource;
 
 /**
  * <br> Format harvesting <br><br>
@@ -139,7 +140,7 @@ public class FormatHarvesting extends AbstractHarvesting implements
     }
 
     @Override
-    public Document getResponse() {
+    public DocumentSource getResponse() {
 
         // check for a protocol error
         if (document == null){
@@ -166,7 +167,7 @@ public class FormatHarvesting extends AbstractHarvesting implements
      * @return true if the list was successfully created, false otherwise
      */
     @Override
-    public boolean processResponse(Document document) {
+    public boolean processResponse(DocumentSource document) {
 
         // check for a protocol error
         if (document == null){
@@ -179,7 +180,7 @@ public class FormatHarvesting extends AbstractHarvesting implements
              */
             nodeList = (NodeList) provider.xpath.evaluate(
                     "//*[local-name() = 'metadataFormat']",
-                    document, XPathConstants.NODESET);
+                    document.getDocument(), XPathConstants.NODESET);
         } catch (XPathExpressionException e) {
             logger.error(e.getMessage(), e);
             logger.info("Cannot create list of formats matching " +

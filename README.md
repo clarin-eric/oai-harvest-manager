@@ -1,14 +1,13 @@
 oai-harvest-manager
 ===================
 
-
-OAI Harvest Manager is a simple Java application for managing OAI-PMH
+OAI Harvest Manager is a Java application for managing OAI-PMH
 harvesting. It is intended to allow definition of a harvesting
 workflow (involving OAI harvesting and subsequent operations like
 transformations or mappings of metadata between schemata) in a few
 minutes using a configuration file only.
 
-This application contains slightly modified version of the 
+This application contains a modified version of the 
 [OCLC harvester2 library](https://github.com/OCLC-Research/oaiharvester2)
 ([license](http://www.apache.org/licenses/LICENSE-2.0.html)),
 which implements the OAI-PMH requests.
@@ -166,6 +165,10 @@ For each provider, the following can be defined:
   provider is static. See the section below on static providers for
   details.
 
+- Some of the global configuration options (retry count, connection
+  delay and timeout) can be overwritten for a specific provider by
+  adding them as attributes to the provider element. 
+
 - The provider element may contain multiple *set* child elements,
   which specify the names of OAI-PMH sets to be harvested.
 
@@ -208,8 +211,9 @@ response datestamps.
 # Logging
 
 The harvester will create the directory 'log' in which log files will reside.
-Alternatively, you can specify a directory for these by defining the LOGDIR
-environment variable.
+Alternatively, you can specify a directory for these by defining the LOG_DIR
+environment variable. A log file per provider will be created, which is
+convenient for debugging specific providers.
 
 # Implementation Notes
 

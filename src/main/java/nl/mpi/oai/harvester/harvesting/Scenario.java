@@ -27,6 +27,9 @@ import org.w3c.dom.Document;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
+import nl.mpi.oai.harvester.utils.DocumentSource;
 
 /**
  * Scenarios for harvesting
@@ -42,6 +45,9 @@ public class Scenario {
 
     //
     ActionSequence actionSequence;
+    
+    //
+    private static final ReadWriteLock exclusiveLock = new ReentrantReadWriteLock(true);
 
     public Scenario (Provider provider, ActionSequence actionSequence) {
         this.provider = provider;
@@ -59,7 +65,7 @@ public class Scenario {
     public List<String> getPrefixes(Harvesting harvesting){
 
         //
-        Document document;
+        DocumentSource document;
 
         // list of prefixes provided by the endpoint
         final List<String> prefixes = new ArrayList<>();
@@ -105,45 +111,89 @@ public class Scenario {
      */
     public boolean listIdentifiers(AbstractHarvesting harvesting) {
 
-        Document identifiers;
+        DocumentSource identifiers;
 
         for (;;) {
-            if (!harvesting.request()) {
-                return false;
-            } else {
-                identifiers = harvesting.getResponse();
+            try {
 
-                if (identifiers == null) {
+                if (provider.isExclusive()) {
+                    logger.debug("request exclusive lock");
+                    exclusiveLock.writeLock().lock();
+                    logger.debug("acquired exclusive lock");
+                } else {
+                    logger.debug("request inclusive lock");
+                    exclusiveLock.readLock().lock();
+                    logger.debug("acquired inclusive lock");
+                }
+
+                if (!harvesting.request()) {
                     return false;
                 } else {
-                    if (!harvesting.processResponse(identifiers)) {
-                        // something went wrong, no identifiers for this endpoint
+                    identifiers = harvesting.getResponse();
+
+                    if (identifiers == null) {
                         return false;
                     } else {
-                        // received response
+                        if (!harvesting.processResponse(identifiers)) {
+                            // something went wrong, no identifiers for this endpoint
+                            return false;
+                        } else {
+                            // received response
 
-                        if (!harvesting.requestMore()) {
-                            // finished requesting
-                            break;
+                            if (!harvesting.requestMore()) {
+                                // finished requesting
+                                break;
+                            }
                         }
                     }
                 }
+            } finally {
+                if (provider.isExclusive()) {
+                    logger.debug("release exclusive lock");
+                    exclusiveLock.writeLock().unlock();
+                    logger.debug("released exclusive lock");
+                } else {
+                    logger.debug("release inclusive lock");
+                    exclusiveLock.readLock().unlock();
+                    logger.debug("released inclusive lock");
+                }
             }
-
         }
 
         /* Iterate over the list of pairs, for each pair, get the record it
            identifies.
          */
         while(!harvesting.fullyParsed()) {
-            Metadata record = (Metadata)
-                    harvesting.parseResponse();
+            try {
 
-            if (record == null) {
-                // something went wrong, skip the record
-            } else {
-                // apply the action sequence to the record
-                actionSequence.runActions(record);
+                if (provider.isExclusive()) {
+                    logger.debug("request exclusive lock");
+                    exclusiveLock.writeLock().lock();
+                    logger.debug("acquired exclusive lock");
+                } else {
+                    logger.debug("request inclusive lock");
+                    exclusiveLock.readLock().lock();
+                    logger.debug("acquired inclusive lock");
+                }
+
+                Metadata record = (Metadata) harvesting.parseResponse();
+
+                if (record == null) {
+                    // something went wrong, skip the record
+                } else {
+                    // apply the action sequence to the record
+                    actionSequence.runActions(record);
+                }
+            } finally {
+                if (provider.isExclusive()) {
+                    logger.debug("release exclusive lock");
+                    exclusiveLock.writeLock().unlock();
+                    logger.debug("released exclusive lock");
+                } else {
+                    logger.debug("release inclusive lock");
+                    exclusiveLock.readLock().unlock();
+                    logger.debug("released inclusive lock");
+                }
             }
         }
 
@@ -165,42 +215,65 @@ public class Scenario {
      */
     public boolean listRecords(AbstractHarvesting harvesting) {
 
-        Document records;
+        DocumentSource records;
 
         Integer n = 0;
 
         do {
-            if (!harvesting.request()) {
-                return false;
-            } else {
-                records = harvesting.getResponse();
-                if (records == null) {
+            try {
+                
+                if (provider.isExclusive()) {
+                    logger.debug("request exclusive lock");
+                    exclusiveLock.writeLock().lock();
+                    logger.debug("acquired exclusive lock");
+                } else {
+                    logger.debug("request inclusive lock");
+                    exclusiveLock.readLock().lock();
+                    logger.debug("acquired inclusive lock");
+                }
+                
+                if (!harvesting.request()) {
                     return false;
                 } else {
-                    if (!harvesting.processResponse(records)) {
+                    records = harvesting.getResponse();
+                    if (records == null) {
                         return false;
                     } else {
-                        String id;
-                        id = String.format("%07d", n);
-                        
-                        Metadata metadata = harvesting.getMetadataFactory().create(
-                                provider.getName() + "-" + id,
-                                OAIHelper.getPrefix(records),
-                                records, this.provider, true, true);
+                        //if (!harvesting.processResponse(records)) {
+                        //    return false;
+                        //} else {
+                            String id;
+                            id = String.format("%07d", n);
 
-                        n++;
+                            Metadata metadata = harvesting.getMetadataFactory().create(
+                                    provider.getName() + "-" + id,
+                                    OAIHelper.getPrefix(records),
+                                    records, this.provider, true, true);
 
-                        // apply the action sequence to the records
-                        actionSequence.runActions(metadata);
+                            n++;
+
+                            // apply the action sequence to the records
+                            actionSequence.runActions(metadata);
+                        //}
                     }
                 }
+                /* Check if in principle another response would be
+                   available.
+                 */
+            } finally {
+                if (provider.isExclusive()) {
+                    logger.debug("release exclusive lock");
+                    exclusiveLock.writeLock().unlock();
+                    logger.debug("released exclusive lock");
+                } else {
+                    logger.debug("release inclusive lock");
+                    exclusiveLock.readLock().unlock();
+                    logger.debug("released inclusive lock");
+                }
             }
-            /* Check if in principle another response would be
-               available.
-             */
         } while (harvesting.requestMore());
 
-        return  true;
+        return true;
     }
 }
 

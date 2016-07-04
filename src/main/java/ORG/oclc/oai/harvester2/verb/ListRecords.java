@@ -25,6 +25,14 @@ import javax.xml.transform.TransformerException;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URLEncoder;
+import java.util.concurrent.Semaphore;
+import javax.xml.namespace.QName;
+import javax.xml.stream.XMLStreamException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.codehaus.stax2.XMLInputFactory2;
+import org.codehaus.stax2.XMLStreamReader2;
+import org.codehaus.stax2.evt.XMLEvent2;
 
 /**
  * This class represents an ListRecords response on either the server or
@@ -33,6 +41,10 @@ import java.net.URLEncoder;
  * @author Jeffrey A. Young, OCLC Online Computer Library Center
  */
 public class ListRecords extends HarvesterVerb {
+    private static Logger logger = LogManager.getLogger(ListRecords.class);
+    
+    private static Semaphore semaphore = new Semaphore(1);
+    
     /**
      * Mock object constructor (for unit testing purposes)
      */
@@ -83,6 +95,27 @@ public class ListRecords extends HarvesterVerb {
         super(getRequestURL(baseURL, resumptionToken), timeout);
     }
     
+    public void harvest(String requestURL, int timeout) throws MalformedURLException, IOException {
+        if (semaphore!=null) {
+            for (;;) {
+                try {
+                    logger.debug("request ListRecords verb");
+                    semaphore.acquire();
+                    logger.debug("acquired ListRecords verb");
+                    break;
+                } catch (InterruptedException e) { }
+            }
+        }
+        try {
+            super.harvest(requestURL, timeout);
+        } finally {
+            if (semaphore!=null) {
+                semaphore.release();
+                logger.debug("released ListRecords verb");
+            }
+        }
+    }
+    
     /**
      * Get the oai:resumptionToken from the response
      * 
@@ -91,10 +124,52 @@ public class ListRecords extends HarvesterVerb {
      * @throws NoSuchFieldException
      */
     public String getResumptionToken()
-    throws TransformerException, NoSuchFieldException {
+    throws TransformerException, NoSuchFieldException, ParserConfigurationException, SAXException, IOException, XMLStreamException {
         String schemaLocation = getSchemaLocation();
         if (schemaLocation.indexOf(SCHEMA_LOCATION_V2_0) != -1) {
-            return getSingleString("/oai20:OAI-PMH/oai20:ListRecords/oai20:resumptionToken");
+            if (hasDocument())
+                return getSingleString("/oai20:OAI-PMH/oai20:ListRecords/oai20:resumptionToken");
+            String token = null;
+            XMLInputFactory2 xmlif = (XMLInputFactory2) XMLInputFactory2.newInstance();
+            xmlif.configureForConvenience();
+            XMLStreamReader2 xmlr = (XMLStreamReader2) xmlif.createXMLStreamReader(getStream());
+            int state = 1; // 1:START 2:FOUND 0:STOP -1:ERROR
+            while (state > 0) {
+                int eventType = xmlr.getEventType();
+                switch (state) {
+                    case 1://START
+                        switch (eventType) {
+                            case XMLEvent2.START_ELEMENT:
+                                QName qn = xmlr.getName();
+                                //logger.debug("finding token in the XML stream: node["+qn.getNamespaceURI()+"]["+qn.getLocalPart()+"]");
+                                if (qn.getNamespaceURI().equals("http://www.openarchives.org/OAI/2.0/") && qn.getLocalPart().equals("resumptionToken"))
+                                    state = 2;//FOUND
+                                break;
+                        }
+                        break;
+                    case 2://FOUND
+                        switch (eventType) {
+                            case XMLEvent2.CHARACTERS:
+                                token = xmlr.getText();
+                                state = 0;//STOP
+                                break;
+                            default:
+                                state = -1;//ERROR
+                                break;
+                        }
+                        break;
+                }
+                if (xmlr.hasNext())
+                    xmlr.next();
+                else
+                    state = state == 1? 0: -1;// if START then STOP else ERROR
+            }
+            if (state < 0 || token == null) {
+                logger.error("couldn't find token in the XML stream!");
+                return null;
+            }
+            logger.debug("found token["+token+"] in the XML stream!");
+            return token;
         } else if (schemaLocation.indexOf(SCHEMA_LOCATION_V1_1_LIST_RECORDS) != -1) {
             return getSingleString("/oai11_ListRecords:ListRecords/oai11_ListRecords:resumptionToken");
         } else {

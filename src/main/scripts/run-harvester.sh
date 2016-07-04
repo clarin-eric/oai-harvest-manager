@@ -21,13 +21,12 @@ thisDir="$(dirname "$(${READLINK} -f "$0")")"
 JAR=$thisDir/oai-harvest-manager-${versionNumber}.jar
 
 # Determine the logging mode
-if [ "z${LOGDIR}" != "z" ]; then
-  LOGDIR=$(ensureSlash $LOGDIR)
+if [ "z${LOG_DIR}" != "z" ]; then
+  LOG_DIR=$(ensureSlash $LOG_DIR)
 else
-  LOGDIR=$thisDir
+  LOG_DIR=$thisDir
 fi
 
-PROPS="${PROPS} -Dlogdir=${LOGDIR}"
-
+PROPS="${PROPS} -Dlogdir=${LOG_DIR}"
 
 nice ${JAVA} ${PROPS} -jar ${JAR} $*

@@ -24,6 +24,7 @@ import nl.mpi.oai.harvester.metadata.MetadataFactory;
 import org.w3c.dom.Document;
 
 import java.util.List;
+import nl.mpi.oai.harvester.utils.DocumentSource;
 
 /**
  * <br> Definition of elements common to various implementations of the
@@ -78,7 +79,7 @@ public abstract class AbstractHarvesting implements Harvesting {
     /**
      * <br> Response to the OAI request in the form of an XML document
      */
-    Document document;
+    DocumentSource document;
 
     /**
      * <br> The resumption token send by the previous request

@@ -17,6 +17,8 @@
 
 package ORG.oclc.oai.harvester2.verb;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.xpath.XPathAPI;
@@ -34,13 +36,25 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
+import java.lang.management.GarbageCollectorMXBean;
+import java.lang.management.ManagementFactory;
+import java.lang.management.MemoryPoolMXBean;
+import java.net.ConnectException;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
+import java.util.logging.Level;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.InflaterInputStream;
 import java.util.zip.ZipInputStream;
+import javax.xml.stream.XMLStreamException;
+import nl.mpi.oai.harvester.utils.DocumentSource;
+import org.codehaus.stax2.XMLInputFactory2;
+import org.codehaus.stax2.XMLStreamReader2;
+import org.codehaus.stax2.evt.XMLEvent2;
 
 /**
  * HarvesterVerb is the parent class for each of the OAI verbs.
@@ -58,6 +72,7 @@ public abstract class HarvesterVerb {
     public static final String SCHEMA_LOCATION_V1_1_LIST_METADATA_FORMATS = "http://www.openarchives.org/OAI/1.1/OAI_ListMetadataFormats http://www.openarchives.org/OAI/1.1/OAI_ListMetadataFormats.xsd";
     public static final String SCHEMA_LOCATION_V1_1_LIST_RECORDS = "http://www.openarchives.org/OAI/1.1/OAI_ListRecords http://www.openarchives.org/OAI/1.1/OAI_ListRecords.xsd";
     public static final String SCHEMA_LOCATION_V1_1_LIST_SETS = "http://www.openarchives.org/OAI/1.1/OAI_ListSets http://www.openarchives.org/OAI/1.1/OAI_ListSets.xsd";
+    private byte[] bytes = null;
     private Document doc = null;
     private String schemaLocation = null;
     private String requestURL = null;
@@ -112,12 +127,50 @@ public abstract class HarvesterVerb {
     	}
     }
     
+    public boolean hasStream() {
+        return (bytes!=null);
+    }
+    
+    public boolean hasDocument() {
+        return (doc!=null);
+    }
+    
+    public DocumentSource getDocumentSource() {
+        if (hasDocument())
+            return new DocumentSource(requestURL,doc);
+        return new DocumentSource(requestURL,getStream());
+    }
+    
+    /**
+     * Get the OAI response as a stream
+     * 
+     * @return the InputStream for the OAI response
+     */
+    public InputStream getStream() {
+        return new ByteArrayInputStream(bytes);
+    }
+    
+    public InputSource getSource() {
+        return new InputSource(getStream());
+    }
+    
     /**
      * Get the OAI response as a DOM object
      * 
      * @return the DOM for the OAI response
      */
-    public Document getDocument() {
+    public Document getDocument() throws ParserConfigurationException, SAXException, IOException {
+        if (doc == null) {
+            Thread t = Thread.currentThread();
+            DocumentBuilder builder = (DocumentBuilder) builderMap.get(t);
+            if (builder == null) {
+                builder = factory.newDocumentBuilder();
+                builderMap.put(t, builder);
+            }
+            doc = builder.parse(getSource());
+            bytes = null;
+            logger.debug("switched from stream to tree for request["+requestURL+"]",new Throwable());
+        }
         return doc;
     }
     
@@ -126,7 +179,38 @@ public abstract class HarvesterVerb {
      * 
      * @return the xsi:schemaLocation value
      */
-    public String getSchemaLocation() {
+    public String getSchemaLocation() throws TransformerException, ParserConfigurationException, SAXException, IOException, XMLStreamException {
+        if (this.schemaLocation == null) {
+            if (hasDocument()) {
+                this.schemaLocation = getSingleString("/*/@xsi:schemaLocation");
+                logger.debug("found schemaLocation["+schemaLocation+"] in the XML tree");
+            } else {
+                XMLInputFactory2 xmlif = (XMLInputFactory2) XMLInputFactory2.newInstance();
+                xmlif.configureForConvenience();
+                XMLStreamReader2 xmlr = (XMLStreamReader2) xmlif.createXMLStreamReader(getStream());
+                int state = 1; // 1:START 0:STOP -1:ERROR
+                while (state > 0) {
+                    int eventType = xmlr.getEventType();
+                    switch (eventType) {
+                        case XMLEvent2.START_ELEMENT:
+                            schemaLocation = xmlr.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance","schemaLocation");
+                            if (schemaLocation != null)
+                                state = 0;
+                            break;
+                    }
+                    if (xmlr.hasNext())
+                        xmlr.next();
+                    else
+                        state = state == 1? 0: -1;// if START then STOP else ERROR
+                }
+                xmlr.close();
+                logger.debug("found schemaLocation["+schemaLocation+"] in the XML stream");
+            }
+
+            // The URIs in xsi:schemaLocation are separated by (any kind
+            // of) white space. Normalize it to a single space.
+            this.schemaLocation = schemaLocation.trim().replaceAll("\\s+", " ");
+        }
         return schemaLocation;
     }
     
@@ -135,7 +219,7 @@ public abstract class HarvesterVerb {
      * @return a NodeList of /oai:OAI-PMH/oai:error elements
      * @throws TransformerException
      */
-    public NodeList getErrors() throws TransformerException {
+    public NodeList getErrors() throws TransformerException, ParserConfigurationException, SAXException, IOException, XMLStreamException {
         if (SCHEMA_LOCATION_V2_0.equals(getSchemaLocation())) {
             return getNodeList("/oai20:OAI-PMH/oai20:error");
         } else {
@@ -185,8 +269,7 @@ public abstract class HarvesterVerb {
      * @throws SAXException
      * @throws TransformerException
      */
-    public void harvest(String requestURL, int timeout) throws IOException,
-    ParserConfigurationException, SAXException, TransformerException {
+    public void harvest(String requestURL, int timeout) throws MalformedURLException, IOException {
         this.requestURL = requestURL;
         logger.debug("requestURL=" + this.requestURL);
         InputStream in = null;
@@ -210,8 +293,10 @@ public abstract class HarvesterVerb {
                 // assume it's a 503 response
                 logger.info(requestURL, e);
                 responseCode = HttpURLConnection.HTTP_UNAVAILABLE;
+            } catch(Exception e) {
+                logger.error("couldn't connect to '"+requestURL+"': "+e.getMessage());
+                throw e;
             }
-            
             if (responseCode == HttpURLConnection.HTTP_MOVED_PERM || responseCode == HttpURLConnection.HTTP_MOVED_TEMP || responseCode == HttpURLConnection.HTTP_SEE_OTHER) {
                 this.requestURL = con.getHeaderField("Location");
                 logger.debug("redirect to requestURL=" + this.requestURL);
@@ -238,7 +323,7 @@ public abstract class HarvesterVerb {
             }
         } while (responseCode == HttpURLConnection.HTTP_UNAVAILABLE);
         String contentEncoding = con.getHeaderField("Content-Encoding");
-        logger.debug("contentEncoding=" + contentEncoding);
+        logger.debug("Content-Encoding=" + contentEncoding);
         if ("compress".equals(contentEncoding)) {
             ZipInputStream zis = new ZipInputStream(con.getInputStream());
             zis.getNextEntry();
@@ -251,20 +336,24 @@ public abstract class HarvesterVerb {
             in = con.getInputStream();
         }
         
-        InputSource data = new InputSource(in);
-        
-        Thread t = Thread.currentThread();
-        DocumentBuilder builder = (DocumentBuilder) builderMap.get(t);
-        if (builder == null) {
-            builder = factory.newDocumentBuilder();
-            builderMap.put(t, builder);
+        // maybe we're lucky
+        System.gc();
+        logger.debug("Content-Length=" + con.getHeaderField("Content-Length"));
+        ManagementFactory.getMemoryMXBean().getHeapMemoryUsage();
+        logger.debug("Heap="+ManagementFactory.getMemoryMXBean().getHeapMemoryUsage());
+        logger.debug("NonHeap="+ManagementFactory.getMemoryMXBean().getNonHeapMemoryUsage());
+        List<MemoryPoolMXBean> beans = ManagementFactory.getMemoryPoolMXBeans();
+        for (MemoryPoolMXBean bean: beans) {
+            logger.debug(bean.getName()+"="+bean.getUsage());
         }
-        doc = builder.parse(data);
-
-        // The URIs in xsi:schemaLocation are separated by (any kind
-        // of) white space. Normalize it to a single space.
-        String schemaLoc = getSingleString("/*/@xsi:schemaLocation");
-        this.schemaLocation = schemaLoc.trim().replaceAll("\\s+", " ");
+        for (GarbageCollectorMXBean bean: ManagementFactory.getGarbageCollectorMXBeans()) {
+            logger.debug(bean.getName()+"="+bean.getCollectionCount(), bean.getCollectionTime());
+        }
+        
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        int size = org.apache.commons.io.IOUtils.copy(in, baos);
+        logger.debug("buffered ["+size+"] bytes for URL["+requestURL+"]");
+        bytes = baos.toByteArray();
     }
     
     /**
@@ -274,7 +363,7 @@ public abstract class HarvesterVerb {
      * @return a String containing the value of the XPath location.
      * @throws TransformerException
      */
-    public String getSingleString(String xpath) throws TransformerException {
+    public String getSingleString(String xpath) throws TransformerException, ParserConfigurationException, SAXException, IOException {
         return getSingleString(getDocument(), xpath);
 //        return XPathAPI.eval(getDocument(), xpath, namespaceElement).str();
 //      String str = null;
@@ -299,24 +388,29 @@ public abstract class HarvesterVerb {
      * @return the NodeList for the xpath into the response DOM
      * @throws TransformerException
      */
-    public NodeList getNodeList(String xpath) throws TransformerException {
+    public NodeList getNodeList(String xpath) throws TransformerException, ParserConfigurationException, SAXException, IOException {
         return XPathAPI.selectNodeList(getDocument(), xpath, namespaceElement);
     }
     
     public String toString() {
-        // Element docEl = getDocument().getDocumentElement();
-        // return docEl.toString();
-        Source input = new DOMSource(getDocument());
-        StringWriter sw = new StringWriter();
-        Result output = new StreamResult(sw);
         try {
-        	Transformer idTransformer = xformFactory.newTransformer();
-            idTransformer.setOutputProperty(
-                    OutputKeys.OMIT_XML_DECLARATION, "yes");
-            idTransformer.transform(input, output);
-            return sw.toString();
-        } catch (TransformerException e) {
-            return e.getMessage();
+            // Element docEl = getDocument().getDocumentElement();
+            // return docEl.toString();
+            Source input = new DOMSource(getDocument());
+            StringWriter sw = new StringWriter();
+            Result output = new StreamResult(sw);
+            try {
+                Transformer idTransformer = xformFactory.newTransformer();
+                idTransformer.setOutputProperty(
+                        OutputKeys.OMIT_XML_DECLARATION, "yes");
+                idTransformer.transform(input, output);
+                return sw.toString();
+            } catch (TransformerException e) {
+                return e.getMessage();
+            }
+        } catch (ParserConfigurationException | SAXException | IOException ex) {
+            logger.error("document is invalid: " + ex);
         }
+        return null;
     }
 }

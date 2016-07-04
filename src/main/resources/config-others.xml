@@ -31,7 +31,7 @@
     is not fulfilled, this setting has no effect.-->
     <incremental>true</incremental>
     
-    <scenario>ListRecords</scenario>
+    <scenario>ListIdentifiers</scenario>
   </settings>
 
 
@@ -83,12 +83,12 @@
       <set>xyz</set>
     </provider>
       -->
-
+    
     <provider url="http://www.language-archives.org/hosted/acl.xml" static="true"
 	      name="A Digital Archive of Research Papers in Computational Linguistics"/>
     <provider url="http://www.language-archives.org/hosted/ailla.xml" static="true"
 	      name="Archive of the Indigenous Languages of Latin America"/>
-    <provider url="http://www.language-archives.org/hosted/atilf.xml"/>
+    <provider url="http://www.language-archives.org/hosted/atilf.xml" static="true"/>
     <provider url="http://cla.berkeley.edu/olac.xml" static="true"/>
     <provider url="https://metadata-wg.mannlib.cornell.edu/clal.xml" static="true"/>
     <!--<provider url="http://victoria.linguistlist.org/php4/ore/XMLnamespacefiles/CoCoSP/CoCoSP.xml"

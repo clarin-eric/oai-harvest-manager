@@ -68,6 +68,9 @@ public class Main {
     }
 
     public static void main(String[] args) {
+        
+        logger.info("Welcome to the main OAI Harvest Manager!");
+        
 	String configFile = null;
 
 	// Select Saxon XSLT/XPath implementation (necessary in case there
@@ -118,5 +121,8 @@ public class Main {
 	config.applyTimeoutSetting();
 
 	runHarvesting(config);
+        
+        logger.info("Goodbye from the main OAI Harvest Manager!");
+
     }
 }

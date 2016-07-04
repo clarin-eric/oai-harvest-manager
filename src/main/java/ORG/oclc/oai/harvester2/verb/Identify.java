@@ -24,6 +24,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import javax.xml.stream.XMLStreamException;
 
 /**
  * This class represents an Identify response on either the server or
@@ -66,7 +67,7 @@ public class Identify extends HarvesterVerb {
      * @throws NoSuchFieldException
      */
     public String getProtocolVersion()
-    throws TransformerException, NoSuchFieldException {
+    throws TransformerException, NoSuchFieldException, ParserConfigurationException, SAXException, IOException, XMLStreamException {
         if (SCHEMA_LOCATION_V2_0.equals(getSchemaLocation())) {
             return getSingleString("/oai20:OAI-PMH/oai20:Identify/oai20:protocolVersion");
         } else if (SCHEMA_LOCATION_V1_1_IDENTIFY.equals(getSchemaLocation())) {

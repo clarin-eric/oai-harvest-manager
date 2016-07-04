@@ -23,12 +23,12 @@ import nl.mpi.oai.harvester.Provider;
 import nl.mpi.oai.harvester.metadata.MetadataFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import java.io.IOException;
+import nl.mpi.oai.harvester.utils.DocumentSource;
 
 /**
  * <br> Record harvesting <br><br>
@@ -122,7 +122,7 @@ public final class RecordHarvesting extends AbstractHarvesting {
     }
 
     @Override
-    public Document getResponse() {
+    public DocumentSource getResponse() {
 
         // check for protocol error
         if (document == null){
@@ -140,7 +140,7 @@ public final class RecordHarvesting extends AbstractHarvesting {
     }
 
     @Override
-    public boolean processResponse(Document document){
+    public boolean processResponse(DocumentSource document){
 
         this.document = document;
         return true;

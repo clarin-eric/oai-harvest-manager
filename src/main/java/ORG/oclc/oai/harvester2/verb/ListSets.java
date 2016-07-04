@@ -24,6 +24,7 @@ import java.net.MalformedURLException;
 import java.net.URLEncoder;
 
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.stream.XMLStreamException;
 import javax.xml.transform.TransformerException;
 import org.xml.sax.SAXException;
 
@@ -91,7 +92,7 @@ public class ListSets extends HarvesterVerb {
 	 * @throws NoSuchFieldException
 	 */
 	public String getResumptionToken()
-	throws TransformerException, NoSuchFieldException {
+	throws TransformerException, NoSuchFieldException, ParserConfigurationException, SAXException, IOException, XMLStreamException {
 		if (SCHEMA_LOCATION_V2_0.equals(getSchemaLocation())) {
 			return getSingleString("/oai20:OAI-PMH/oai20:ListSets/oai20:resumptionToken");
 		} else if (SCHEMA_LOCATION_V1_1_LIST_SETS.equals(getSchemaLocation())) {

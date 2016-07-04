@@ -18,6 +18,7 @@
 
 package nl.mpi.oai.harvester.harvesting;
 
+import java.io.IOException;
 import nl.mpi.oai.harvester.StaticProvider;
 import nl.mpi.oai.harvester.metadata.Metadata;
 import nl.mpi.oai.harvester.metadata.MetadataFactory;
@@ -30,6 +31,9 @@ import org.w3c.dom.NodeList;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import java.util.List;
+import javax.xml.parsers.ParserConfigurationException;
+import nl.mpi.oai.harvester.utils.DocumentSource;
+import org.xml.sax.SAXException;
 
 /**
  * <br> Get metadata records represented in a static content <br><br>
@@ -110,10 +114,14 @@ public final class StaticRecordListHarvesting extends AbstractListHarvesting
      * @return the response
      */
     @Override
-    public Document getResponse() {
-
-        // static content is in place, please refer to the constructor
-        return response.getDocument();
+    public DocumentSource getResponse() {
+        try {
+            // static content is in place, please refer to the constructor
+            return response.getDocumentSource();
+        } catch (Exception ex) {
+            logger.error(ex.getMessage(), ex);
+        }
+        return null;
     }
 
     /**
@@ -122,7 +130,7 @@ public final class StaticRecordListHarvesting extends AbstractListHarvesting
      * @return false if there was an error, true otherwise
      */
     @Override
-    public boolean processResponse(Document document) {
+    public boolean processResponse(DocumentSource document) {
 
         // check for protocol errors
         if (pIndex >= prefixes.size()) {
@@ -143,7 +151,7 @@ public final class StaticRecordListHarvesting extends AbstractListHarvesting
         Node node;
         try {
             node = (Node) provider.xpath.evaluate(expression,
-                    document, XPathConstants.NODE);
+                    document.getDocument(), XPathConstants.NODE);
         } catch (XPathExpressionException e) {
             // something went wrong, let the scenario try another provider
             logger.error(e.getMessage(), e);
@@ -153,8 +161,9 @@ public final class StaticRecordListHarvesting extends AbstractListHarvesting
         }
 
         // node contains subtree with records, turn the tree into a document
-        document = provider.db.newDocument();
-        document.appendChild(document.importNode(node, true));
+        Document doc = provider.db.newDocument();
+        doc.appendChild(doc.importNode(node, true));
+        document.setDocument(doc);
 
         // create expression for selecting the identifiers from the subtree
         expression = "//*[starts-with(local-name(),'identifier') " +
@@ -208,15 +217,16 @@ public final class StaticRecordListHarvesting extends AbstractListHarvesting
                 + pair.identifier + "']";
 
         // get the static content from the response
-        Document document = response.getDocument();
+        Document document = null;
 
         // parse the content
         Node node;
 
         try {
+            document = response.getDocument();
             node = (Node) provider.xpath.evaluate(expression,
                     document, XPathConstants.NODE);
-        } catch (XPathExpressionException e) {
+        } catch (ParserConfigurationException | SAXException | IOException | XPathExpressionException e) {
             // something went wrong, let the scenario try another record
             logger.error(e.getMessage(), e);
             logger.info("Cannot get " + pair.prefix + " record with id " +

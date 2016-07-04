@@ -26,6 +26,8 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
+import nl.mpi.oai.harvester.utils.DocumentSource;
+import org.xml.sax.InputSource;
 
 /**
  * <br> Factory for metadata objects <br><br>
@@ -63,7 +65,7 @@ public class MetadataFactory {
      * @param isList whether or not the document is a list of records
      * @return a metadata object
      */
-    public Metadata create (String id, String prefix, Document doc,
+    public Metadata create (String id, String prefix, DocumentSource doc,
                             Provider endpoint,
                             Boolean isEnvelope, Boolean isList){
 

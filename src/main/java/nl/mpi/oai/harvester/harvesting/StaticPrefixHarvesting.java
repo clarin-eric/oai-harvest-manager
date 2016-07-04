@@ -15,6 +15,8 @@ import javax.xml.transform.TransformerException;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import java.io.IOException;
+import java.util.logging.Level;
+import nl.mpi.oai.harvester.utils.DocumentSource;
 
 /**
  * <br> Get prefixes <br><br>
@@ -102,10 +104,15 @@ public final class StaticPrefixHarvesting extends FormatHarvesting
     }
     
     @Override
-    public Document getResponse() {
-        StaticProvider p = (StaticProvider) provider;
-        HarvesterVerb response = p.getResponse();
-        return response.getDocument();
+    public DocumentSource getResponse() {
+        try {
+            StaticProvider p = (StaticProvider) provider;
+            HarvesterVerb response = p.getResponse();
+            return response.getDocumentSource();
+        } catch (Exception ex) {
+            logger.error(ex.getMessage(), ex);
+        }
+        return null;
     }
 
     /**
@@ -125,7 +132,7 @@ public final class StaticPrefixHarvesting extends FormatHarvesting
                     "//*[local-name() = 'metadataFormat']",
                     response.getDocument(),
                     XPathConstants.NODESET);
-        } catch (XPathExpressionException e) {
+        } catch (XPathExpressionException | ParserConfigurationException | SAXException | IOException e) {
             // could not extract metadata prefixes from the static content.
             logger.error(e.getMessage(), e);
             logger.info("Cannot obtain " + actions.getInputFormat() +

@@ -2,7 +2,7 @@
 <Configuration status="INFO" name="harvester-config">
 
     <Properties>
-        <Property name="LOG_DIR">${sys:logdir}/logs</Property>
+        <Property name="LOG_DIR">${sys:logdir}</Property>
         <Property name="ARCHIVE">${LOG_DIR}/archive</Property>
         <Property name="PATTERN">%d{ABSOLUTE} %level{length=5} [%thread] %logger{1} - %msg%n</Property>
     </Properties>
@@ -14,7 +14,8 @@
                      filePattern="${ARCHIVE}/oai-harvester.log.%d{yyyy-MM-dd}.gz">
             <PatternLayout pattern="${PATTERN}"/>
             <Policies>
-                <TimeBasedTriggeringPolicy interval="1" modulate="true" />
+                <OnStartupTriggeringPolicy/>
+                <TimeBasedTriggeringPolicy interval="3" modulate="true" />
             </Policies>
         </RollingFile>
 
@@ -30,8 +31,9 @@
                                  filePattern="${ARCHIVE}/${ctx:logFileName}.log.%d{yyyy-MM-dd}.gz">
                         <PatternLayout pattern="${PATTERN}" />
                         <Policies>
-                            <SizeBasedTriggeringPolicy size="10MB" />
-                            <TimeBasedTriggeringPolicy interval="1" modulate="true" />
+                            <OnStartupTriggeringPolicy/>
+                            <!--<SizeBasedTriggeringPolicy size="10MB" />-->
+                            <TimeBasedTriggeringPolicy interval="3" modulate="true" />
                         </Policies>
                     </RollingFile>
                 </Route>
@@ -55,7 +57,7 @@
             <AppenderRef ref="RoutingAppender"/>
         </Logger>
 
-        <Root level="DEBUG">
+        <Root level="INFO">
             <AppenderRef ref="fileWriter"/>
         </Root>
     </Loggers>

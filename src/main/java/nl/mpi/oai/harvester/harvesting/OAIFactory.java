@@ -26,6 +26,10 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import java.io.IOException;
 import java.net.ConnectException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.xml.stream.XMLStreamException;
+import nl.mpi.oai.harvester.utils.DocumentSource;
 
 /**
  * <br> Factory for OAI protocol objects <br><br>
@@ -67,7 +71,7 @@ public class OAIFactory {
      * @param endpointURI the endpoint URI
      * @return the OAI response
      */
-    Document createListMetadataFormats(String endpointURI, int timeout) throws 
+    DocumentSource createListMetadataFormats(String endpointURI, int timeout) throws 
             IOException,
             ParserConfigurationException,
             SAXException,
@@ -75,7 +79,7 @@ public class OAIFactory {
             NoSuchFieldException {
 
         // the verb response
-        Document response = null;
+        DocumentSource response = null;
 
         oaiInterface = connectInterface();
 
@@ -84,7 +88,7 @@ public class OAIFactory {
             // no object connected
             try {
                 HarvesterVerb verb = new ListMetadataFormats(endpointURI, timeout);
-                response = verb.getDocument();
+                response = verb.getDocumentSource();
             } catch (IOException
                     | ParserConfigurationException
                     | SAXException
@@ -107,15 +111,16 @@ public class OAIFactory {
      * @param p2 the resumption token
      * @return the OAI response
      */
-    Document createListRecords(String p1, String p2, int timeout) throws 
+    DocumentSource createListRecords(String p1, String p2, int timeout) throws 
             IOException,
             ParserConfigurationException,
             SAXException,
             TransformerException,
-            NoSuchFieldException {
+            NoSuchFieldException,
+            XMLStreamException {
 
         // the verb response
-        Document response = null;
+        DocumentSource response = null;
 
         oaiInterface = connectInterface();
 
@@ -124,13 +129,14 @@ public class OAIFactory {
             // no object connected
             try {
                 HarvesterVerb verb = new ListRecords(p1, p2, timeout);
-                response = verb.getDocument();
+                response = verb.getDocumentSource();
                 resumptionToken = ((ListRecords) verb).getResumptionToken();
             } catch (IOException
                     | ParserConfigurationException
                     | SAXException
                     | TransformerException
-                    | NoSuchFieldException e) {
+                    | NoSuchFieldException
+                    | XMLStreamException e) {
                 e.printStackTrace();
                 throw(e);
             }
@@ -154,16 +160,17 @@ public class OAIFactory {
      * @param p5 the metadata prefix the records should have
      * @return the OAI response
      */
-    Document createListRecords(String p1, String p2, String p3, String p4,
+    DocumentSource createListRecords(String p1, String p2, String p3, String p4,
                                String p5, int timeout) throws 
             IOException,
             ParserConfigurationException,
             SAXException,
             TransformerException,
-            NoSuchFieldException {
+            NoSuchFieldException,
+            XMLStreamException {
 
         // the verb response
-        Document response = null;
+        DocumentSource response = null;
 
         oaiInterface = connectInterface();
 
@@ -172,13 +179,14 @@ public class OAIFactory {
             // no object connected
             try {
                 HarvesterVerb verb = new ListRecords(p1, p2, p3, p4, p5, timeout);
-                response = verb.getDocument();
+                response = verb.getDocumentSource();
                 resumptionToken = ((ListRecords) verb).getResumptionToken();
             } catch (IOException
                     | ParserConfigurationException
                     | SAXException
                     | TransformerException
-                    | NoSuchFieldException e) {
+                    | NoSuchFieldException
+                    | XMLStreamException e) {
                 e.printStackTrace();
                 throw(e);
             }
@@ -200,7 +208,7 @@ public class OAIFactory {
      * @param p3 the metadata prefix
      * @return the OAI response
      */
-    Document createGetRecord(String p1, String p2, String p3) throws 
+    DocumentSource createGetRecord(String p1, String p2, String p3) throws 
             IOException,
             ParserConfigurationException,
             SAXException,
@@ -208,7 +216,7 @@ public class OAIFactory {
             NoSuchFieldException {
 
         // the verb response
-        Document response = null;
+        DocumentSource response = null;
 
         oaiInterface = connectInterface();
 
@@ -217,7 +225,7 @@ public class OAIFactory {
             // no object connected
             try {
                 HarvesterVerb verb = new GetRecord(p1, p2, p3);
-                response = verb.getDocument();
+                response = verb.getDocumentSource();
             } catch (IOException
                     | ParserConfigurationException
                     | SAXException
@@ -242,15 +250,16 @@ public class OAIFactory {
      * @param p2 resumption token
      * @return the OAI response
      */
-    Document createListIdentifiers(String p1, String p2, int timeout) throws 
+    DocumentSource createListIdentifiers(String p1, String p2, int timeout) throws 
             IOException,
             ParserConfigurationException,
             SAXException,
             TransformerException,
-            NoSuchFieldException {
+            NoSuchFieldException,
+            XMLStreamException {
 
         // the verb response
-        Document response = null;
+        DocumentSource response = null;
 
         oaiInterface = connectInterface();
 
@@ -259,13 +268,14 @@ public class OAIFactory {
             // no object connected
             try {
                 HarvesterVerb verb = new ListIdentifiers(p1, p2, timeout);
-                response = verb.getDocument();
+                response = verb.getDocumentSource();
                 resumptionToken = ((ListIdentifiers) verb).getResumptionToken();
             } catch (IOException
                     | ParserConfigurationException
                     | SAXException
                     | TransformerException
-                    | NoSuchFieldException e) {
+                    | NoSuchFieldException
+                    | XMLStreamException e) {
                 e.printStackTrace();
                 throw(e);
             }
@@ -289,16 +299,17 @@ public class OAIFactory {
      * @param p5 the metadata prefix the records should have
      * @return the OAI response
      */
-    Document createListIdentifiers(String p1, String p2, String p3,
+    DocumentSource createListIdentifiers(String p1, String p2, String p3,
                                    String p4, String p5, int timeout) throws 
             IOException,
             ParserConfigurationException,
             SAXException,
             TransformerException,
-            NoSuchFieldException {
+            NoSuchFieldException,
+            XMLStreamException {
 
         // the verb response
-        Document response = null;
+        DocumentSource response = null;
 
         oaiInterface = connectInterface();
 
@@ -307,13 +318,14 @@ public class OAIFactory {
             // no object connected
             try {
                 HarvesterVerb verb = new ListIdentifiers(p1, p2, p3, p4, p5, timeout);
-                response = verb.getDocument();
+                response = verb.getDocumentSource();
                 resumptionToken = ((ListIdentifiers) verb).getResumptionToken();
             } catch (IOException
                     | ParserConfigurationException
                     | SAXException
                     | TransformerException
-                    | NoSuchFieldException e) {
+                    | NoSuchFieldException
+                    | XMLStreamException e) {
                 e.printStackTrace();
                 throw(e);
             }

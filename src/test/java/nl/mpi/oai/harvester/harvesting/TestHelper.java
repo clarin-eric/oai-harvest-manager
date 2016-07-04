@@ -31,6 +31,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
+import nl.mpi.oai.harvester.utils.DocumentSource;
 
 /**
  * <br> Help mocking the OAI protocol by supplying the XML document part of OAI
@@ -352,7 +353,7 @@ abstract class TestHelper implements OAIInterface, MetadataInterface {
      *
      * @return a response document or null if there are no more documents
      */
-    Document getDocument(String type) {
+    DocumentSource getDocumentSource(String type) {
         // check for a change in document type
         if (this.type == null || ! this.type.equals(type)){
 
@@ -380,45 +381,45 @@ abstract class TestHelper implements OAIInterface, MetadataInterface {
             nextDocument = null;
         }
 
-        return nextDocument;
+        return new DocumentSource(nextDocument);
     }
 
     @Override
-    public Document newListMetadata(String endpointURI){
+    public DocumentSource newListMetadata(String endpointURI){
 
-        return getDocument("FormatLists");
+        return getDocumentSource("FormatLists");
     }
 
     @Override
-    public Document newListRecords(String p1, String p2){
+    public DocumentSource newListRecords(String p1, String p2){
 
-        return getDocument("RecordLists");
+        return getDocumentSource("RecordLists");
     }
 
     @Override
-    public Document newListRecords(String p1, String p2, String p3,
+    public DocumentSource newListRecords(String p1, String p2, String p3,
                                         String p4, String p5){
 
-        return getDocument("RecordLists");
+        return getDocumentSource("RecordLists");
     }
 
     @Override
-    public Document newGetRecord(String p1, String p2, String p3){
+    public DocumentSource newGetRecord(String p1, String p2, String p3){
 
-        return getDocument("Records");
+        return getDocumentSource("Records");
     }
 
     @Override
-    public Document newListIdentifiers (String p1, String p2){
+    public DocumentSource newListIdentifiers (String p1, String p2){
 
-        return getDocument("IdentifierLists");
+        return getDocumentSource("IdentifierLists");
     }
 
     @Override
-    public Document newListIdentifiers (String p1, String p2, String p3,
+    public DocumentSource newListIdentifiers (String p1, String p2, String p3,
                                              String p4, String p5){
 
-        return getDocument("IdentifierLists");
+        return getDocumentSource("IdentifierLists");
     }
 
     String prefix = null;
@@ -443,7 +444,7 @@ abstract class TestHelper implements OAIInterface, MetadataInterface {
 
             // check for a prefix change
             nextDocument = documentList.get(dIndex);
-            String prefix = OAIHelper.getPrefix(nextDocument);
+            String prefix = OAIHelper.getPrefix(new DocumentSource(nextDocument));
 
             if (this.prefix != null && ! prefix.equals(this.prefix)){
                 /* Since the document's prefix differs from the current prefix,

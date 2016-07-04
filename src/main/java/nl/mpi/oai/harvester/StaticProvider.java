@@ -59,8 +59,8 @@ public class StaticProvider extends Provider {
      */
     private Document providerContent = null;
 
-	/** static content response from the provider */
-	private HarvesterVerb response;
+    /** static content response from the provider */
+    private HarvesterVerb response;
 
     /**
      * Create new static provider with the specified URL.
@@ -83,23 +83,23 @@ public class StaticProvider extends Provider {
 	providerContent = doc;
     }
 
-	/**
-	 * Set the response
-	 *
-	 * @param response the provider response
-	 */
-	public void setResponse(HarvesterVerb response){
-		this.response = response;
-	}
+    /**
+     * Set the response
+     *
+     * @param response the provider response
+     */
+    public void setResponse(HarvesterVerb response){
+            this.response = response;
+    }
 
-	/**
-	 * Get the response
-	 *
-	 * @return the provider response
-	 */
-	public HarvesterVerb getResponse () {
-		return this.response;
-	}
+    /**
+     * Get the response
+     *
+     * @return the provider response
+     */
+    public HarvesterVerb getResponse () {
+            return this.response;
+    }
 
     @Override
     public void init() {
