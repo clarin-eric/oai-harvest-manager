@@ -32,6 +32,8 @@ echo "LOGS_DIR=${LOGS_DIR}"
 echo "OUTPUT_DIR=${OUTPUT_DIR}"
 echo "RESULTSET_DIR=${RESULTSET_DIR}"
 
+export LOG_DIR
+
 if [ ! -d $BASE_DIR ]; then
 	echo "$BASE_DIR does not exist; aborting!"
 	exit 1

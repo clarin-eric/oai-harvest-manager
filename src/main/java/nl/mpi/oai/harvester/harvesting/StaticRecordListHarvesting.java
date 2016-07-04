@@ -171,7 +171,7 @@ public final class StaticRecordListHarvesting extends AbstractListHarvesting
                 "and not(@status='deleted')]]/text()";
         try{
             nodeList = (NodeList)provider.xpath.evaluate(expression,
-                    document, XPathConstants.NODESET);
+                    document.getDocument(), XPathConstants.NODESET);
         } catch (XPathExpressionException e) {
             // something went wrong, let the scenario try another provider
             logger.error(e.getMessage(), e);
