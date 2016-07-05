@@ -221,7 +221,8 @@ class Worker implements Runnable {
             logger.error("Processing failed for " + provider+": "+e.getMessage(),e);
             t = e;
             throw e;
-        } finally {
+        } finally {            
+            provider.close();
                 
             ThreadContext.clearAll();
             

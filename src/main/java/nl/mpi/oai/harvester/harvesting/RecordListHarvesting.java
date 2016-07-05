@@ -33,6 +33,7 @@ import javax.xml.transform.TransformerException;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.List;
 import javax.xml.stream.XMLStreamException;
 import nl.mpi.oai.harvester.utils.DocumentSource;
@@ -106,7 +107,7 @@ public class RecordListHarvesting extends ListHarvesting
             NoSuchFieldException,
             XMLStreamException {
 
-        document = oaiFactory.createListRecords(p1, p2, timeout);
+        document = oaiFactory.createListRecords(p1, p2, timeout, provider.temp);
 
         // implement by returning ListRecords with the two parameters supplied
         return document;
@@ -133,7 +134,7 @@ public class RecordListHarvesting extends ListHarvesting
      */
     @Override
     public DocumentSource verb5(String p1, String p2, String p3, String p4,
-            String p5, int timeout) throws
+            String p5, int timeout, Path temp) throws
             IOException,
             ParserConfigurationException,
             SAXException,
@@ -141,7 +142,7 @@ public class RecordListHarvesting extends ListHarvesting
             NoSuchFieldException,
             XMLStreamException {
 
-        document = oaiFactory.createListRecords(p1, p2, p3, p4, p5, timeout);
+        document = oaiFactory.createListRecords(p1, p2, p3, p4, p5, timeout, temp);
 
         // implement by returning ListRecords with the five parameters supplied
         return document;

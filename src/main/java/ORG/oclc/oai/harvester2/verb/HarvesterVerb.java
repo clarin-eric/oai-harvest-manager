@@ -19,6 +19,7 @@ package ORG.oclc.oai.harvester2.verb;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.xpath.XPathAPI;
@@ -33,6 +34,7 @@ import javax.xml.transform.*;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
@@ -43,6 +45,7 @@ import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.Path;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -52,6 +55,7 @@ import java.util.zip.InflaterInputStream;
 import java.util.zip.ZipInputStream;
 import javax.xml.stream.XMLStreamException;
 import nl.mpi.oai.harvester.utils.DocumentSource;
+import nl.mpi.oai.harvester.utils.MarkableFileInputStream;
 import org.codehaus.stax2.XMLInputFactory2;
 import org.codehaus.stax2.XMLStreamReader2;
 import org.codehaus.stax2.evt.XMLEvent2;
@@ -72,7 +76,7 @@ public abstract class HarvesterVerb {
     public static final String SCHEMA_LOCATION_V1_1_LIST_METADATA_FORMATS = "http://www.openarchives.org/OAI/1.1/OAI_ListMetadataFormats http://www.openarchives.org/OAI/1.1/OAI_ListMetadataFormats.xsd";
     public static final String SCHEMA_LOCATION_V1_1_LIST_RECORDS = "http://www.openarchives.org/OAI/1.1/OAI_ListRecords http://www.openarchives.org/OAI/1.1/OAI_ListRecords.xsd";
     public static final String SCHEMA_LOCATION_V1_1_LIST_SETS = "http://www.openarchives.org/OAI/1.1/OAI_ListSets http://www.openarchives.org/OAI/1.1/OAI_ListSets.xsd";
-    private byte[] bytes = null;
+    private InputStream str = null;
     private Document doc = null;
     private String schemaLocation = null;
     private String requestURL = null;
@@ -128,7 +132,7 @@ public abstract class HarvesterVerb {
     }
     
     public boolean hasStream() {
-        return (bytes!=null);
+        return (str!=null);
     }
     
     public boolean hasDocument() {
@@ -147,7 +151,14 @@ public abstract class HarvesterVerb {
      * @return the InputStream for the OAI response
      */
     public InputStream getStream() {
-        return new ByteArrayInputStream(bytes);
+        if (hasStream()) {
+            try {
+                str.reset();
+            } catch (IOException ex) {
+                logger.warn("stream for '"+requestURL+"' could not be reset!");
+            }
+        }
+        return str;
     }
     
     public InputSource getSource() {
@@ -168,7 +179,7 @@ public abstract class HarvesterVerb {
                 builderMap.put(t, builder);
             }
             doc = builder.parse(getSource());
-            bytes = null;
+            str = null;
             logger.debug("switched from stream to tree for request["+requestURL+"]",new Throwable());
         }
         return doc;
@@ -252,24 +263,31 @@ public abstract class HarvesterVerb {
      */
     public HarvesterVerb(String requestURL) throws IOException,
     ParserConfigurationException, SAXException, TransformerException {
-        harvest(requestURL,0);
+        harvest(requestURL,0,null);
     }
     
     public HarvesterVerb(String requestURL,int timeout) throws IOException,
     ParserConfigurationException, SAXException, TransformerException {
-        harvest(requestURL,timeout);
+        harvest(requestURL,timeout,null);
     }
     
+    public HarvesterVerb(String requestURL,int timeout,Path temp) throws IOException,
+    ParserConfigurationException, SAXException, TransformerException {
+        harvest(requestURL,timeout,temp);
+    }
+
     /**
      * Preforms the OAI request
      * 
      * @param requestURL
+     * @param timeout
+     * @param temp
      * @throws IOException
      * @throws ParserConfigurationException
      * @throws SAXException
      * @throws TransformerException
      */
-    public void harvest(String requestURL, int timeout) throws MalformedURLException, IOException {
+    public void harvest(String requestURL, int timeout, Path temp) throws MalformedURLException, IOException {
         this.requestURL = requestURL;
         logger.debug("requestURL=" + this.requestURL);
         InputStream in = null;
@@ -350,10 +368,18 @@ public abstract class HarvesterVerb {
             logger.debug(bean.getName()+"="+bean.getCollectionCount(), bean.getCollectionTime());
         }
         
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        int size = org.apache.commons.io.IOUtils.copy(in, baos);
-        logger.debug("buffered ["+size+"] bytes for URL["+requestURL+"]");
-        bytes = baos.toByteArray();
+        if (temp!=null) {
+            FileOutputStream out = new FileOutputStream(temp.toFile());
+            org.apache.commons.io.IOUtils.copy(in,out,1000000);
+            out.close();
+            logger.debug("temp["+temp+"] for URL["+requestURL+"]");
+            str = new MarkableFileInputStream(new FileInputStream(temp.toFile()));
+        } else {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            int size = org.apache.commons.io.IOUtils.copy(in, baos);
+            logger.debug("buffered ["+size+"] bytes for URL["+requestURL+"]");
+            str = new ByteArrayInputStream(baos.toByteArray());
+        }
     }
     
     /**

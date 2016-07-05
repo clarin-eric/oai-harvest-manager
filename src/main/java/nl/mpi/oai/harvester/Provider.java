@@ -44,6 +44,8 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.*;
 import javax.xml.stream.XMLStreamException;
 
@@ -93,6 +95,8 @@ public class Provider {
     
     // document builder factory
     public final DocumentBuilder db;
+    
+    public Path temp;
 
     /**
      * Provider constructor
@@ -133,6 +137,12 @@ public class Provider {
 	nsContext.add("oai", "http://www.openarchives.org/OAI/2.0/");
 	nsContext.add("os", "http://www.openarchives.org/OAI/2.0/static-repository");
 	xpath.setNamespaceContext(nsContext);
+        
+        try {
+            temp = Files.createTempFile("oai-",null);
+        } catch (IOException ex) {
+            temp = null;
+        }
 
     }
 
@@ -143,6 +153,16 @@ public class Provider {
 	if (name == null)
 	    fetchName();
     }
+    
+    public void close() {
+	if (temp != null) {
+	    try {
+                Files.deleteIfExists(temp);
+            } catch (IOException ex) {
+            }
+        }
+    }
+
 
     /**
      * Query the provider for its name and store it in this object.

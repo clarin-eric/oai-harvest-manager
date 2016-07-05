@@ -25,6 +25,7 @@ import javax.xml.transform.TransformerException;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URLEncoder;
+import java.nio.file.Path;
 import java.util.concurrent.Semaphore;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
@@ -74,6 +75,13 @@ public class ListRecords extends HarvesterVerb {
         super(getRequestURL(baseURL, from, until, set, metadataPrefix), timeout);
     }
     
+    public ListRecords(String baseURL, String from, String until,
+            String set, String metadataPrefix, int timeout, Path temp)
+    throws IOException, ParserConfigurationException, SAXException,
+    TransformerException {
+        super(getRequestURL(baseURL, from, until, set, metadataPrefix), timeout, temp);
+    }
+
     /**
      * Client-side ListRecords verb constructor (resumptionToken version)
      * @param baseURL
@@ -95,7 +103,13 @@ public class ListRecords extends HarvesterVerb {
         super(getRequestURL(baseURL, resumptionToken), timeout);
     }
     
-    public void harvest(String requestURL, int timeout) throws MalformedURLException, IOException {
+    public ListRecords(String baseURL, String resumptionToken, int timeout, Path temp)
+    throws IOException, ParserConfigurationException, SAXException,
+    TransformerException {
+        super(getRequestURL(baseURL, resumptionToken), timeout, temp);
+    }
+    
+    public void harvest(String requestURL, int timeout, Path temp) throws MalformedURLException, IOException {
         if (semaphore!=null) {
             for (;;) {
                 try {
@@ -107,7 +121,7 @@ public class ListRecords extends HarvesterVerb {
             }
         }
         try {
-            super.harvest(requestURL, timeout);
+            super.harvest(requestURL, timeout, temp);
         } finally {
             if (semaphore!=null) {
                 semaphore.release();
@@ -165,7 +179,7 @@ public class ListRecords extends HarvesterVerb {
                     state = state == 1? 0: -1;// if START then STOP else ERROR
             }
             if (state < 0 || token == null) {
-                logger.error("couldn't find token in the XML stream!");
+                logger.warn("couldn't find token in the XML stream!");
                 return null;
             }
             logger.debug("found token["+token+"] in the XML stream!");

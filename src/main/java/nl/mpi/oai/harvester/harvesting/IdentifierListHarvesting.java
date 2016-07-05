@@ -32,6 +32,7 @@ import javax.xml.transform.TransformerException;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.List;
 import javax.xml.stream.XMLStreamException;
 import nl.mpi.oai.harvester.utils.DocumentSource;
@@ -115,7 +116,7 @@ public class IdentifierListHarvesting extends ListHarvesting
      */
     @Override
     public DocumentSource verb5(String p1, String p2, String p3, String p4,
-            String p5, int timeout) throws
+            String p5, int timeout, Path temp) throws
             IOException,
             ParserConfigurationException,
             SAXException,

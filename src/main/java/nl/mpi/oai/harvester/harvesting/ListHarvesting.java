@@ -27,6 +27,7 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.List;
 import javax.xml.stream.XMLStreamException;
 import nl.mpi.oai.harvester.utils.DocumentSource;
@@ -120,7 +121,7 @@ public abstract class ListHarvesting extends AbstractListHarvesting implements
      * @throws NoSuchFieldException introspection problem
      */
     abstract DocumentSource verb5(String s1, String s2, String s3, String s4,
-            String s5, int timeout)
+            String s5, int timeout, Path temp)
             throws 
             IOException,
             ParserConfigurationException,
@@ -192,13 +193,15 @@ public abstract class ListHarvesting extends AbstractListHarvesting implements
                         document = verb5(provider.oaiUrl, null, null,
                                 null,
                                 prefixes.get(pIndex),
-                                provider.getTimeout());
+                                provider.getTimeout(),
+                                provider.temp);
                     } else {
                         // request targets for a new set and prefix combination
                         document = verb5(provider.oaiUrl, null, null,
                                 provider.sets[sIndex],
                                 prefixes.get(pIndex),
-                                provider.getTimeout());
+                                provider.getTimeout(),
+                                provider.temp);
                     }
                 }
 

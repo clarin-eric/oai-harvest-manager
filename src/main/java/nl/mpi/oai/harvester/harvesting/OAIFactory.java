@@ -26,6 +26,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import java.io.IOException;
 import java.net.ConnectException;
+import java.nio.file.Path;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.stream.XMLStreamException;
@@ -111,7 +112,7 @@ public class OAIFactory {
      * @param p2 the resumption token
      * @return the OAI response
      */
-    DocumentSource createListRecords(String p1, String p2, int timeout) throws 
+    DocumentSource createListRecords(String p1, String p2, int timeout, Path temp) throws 
             IOException,
             ParserConfigurationException,
             SAXException,
@@ -128,7 +129,7 @@ public class OAIFactory {
         if (oaiInterface == null) {
             // no object connected
             try {
-                HarvesterVerb verb = new ListRecords(p1, p2, timeout);
+                HarvesterVerb verb = new ListRecords(p1, p2, timeout, temp);
                 response = verb.getDocumentSource();
                 resumptionToken = ((ListRecords) verb).getResumptionToken();
             } catch (IOException
@@ -161,7 +162,7 @@ public class OAIFactory {
      * @return the OAI response
      */
     DocumentSource createListRecords(String p1, String p2, String p3, String p4,
-                               String p5, int timeout) throws 
+                               String p5, int timeout, Path temp) throws 
             IOException,
             ParserConfigurationException,
             SAXException,
@@ -178,7 +179,7 @@ public class OAIFactory {
         if (oaiInterface == null) {
             // no object connected
             try {
-                HarvesterVerb verb = new ListRecords(p1, p2, p3, p4, p5, timeout);
+                HarvesterVerb verb = new ListRecords(p1, p2, p3, p4, p5, timeout, temp);
                 response = verb.getDocumentSource();
                 resumptionToken = ((ListRecords) verb).getResumptionToken();
             } catch (IOException
