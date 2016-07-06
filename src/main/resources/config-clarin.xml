@@ -50,14 +50,14 @@
   <!-- ### actions to take on metadata formats (in order of preference) ### -->
   <actions>
     <format match="namespace" value="http://www.clarin.eu/cmd/1">
-      <action type="save" dir="oai" suffix=".xml"/>
+      <!--<action type="save" dir="oai" suffix=".xml"/>-->
       <action type="split"/>
       <action type="save" dir="rec" suffix=".xml"/>
       <action type="strip"/>
       <action type="save" dir="cmdi-1_2" suffix=".xml"/>
     </format>
     <format match="namespace" value="http://www.clarin.eu/cmd/">
-      <action type="save" dir="oai" suffix=".xml"/>
+      <!--<action type="save" dir="oai" suffix=".xml"/>-->
       <action type="split"/>
       <action type="save" dir="rec" suffix=".xml"/>
       <action type="strip"/>
@@ -66,7 +66,7 @@
       <action type="save" dir="cmdi-1_2" suffix=".xml"/>
     </format>
     <format match="prefix" value="olac">
-      <action type="save" dir="oai" suffix=".xml"/>
+      <!--<action type="save" dir="oai" suffix=".xml"/>-->
       <action type="transform" file="resources/addOAISetName.xsl" cache="cache"/>
       <action type="split"/>
       <action type="save" dir="rec" suffix=".xml"/>
@@ -76,7 +76,7 @@
       <action type="save" dir="cmdi-1_2" suffix=".xml"/>
     </format>
     <format match="prefix" value="oai_dc">
-      <action type="save" dir="oai" suffix=".xml"/>
+     <!-- <action type="save" dir="oai" suffix=".xml"/>-->
       <action type="transform" file="resources/addOAISetName.xsl" cache="cache"/>
       <action type="split"/>
       <action type="save" dir="rec" suffix=".xml"/>

@@ -116,7 +116,8 @@ fi
 #
 if [ "$2" == "clarin" ]; then
 	if [ -d $BASE_DIR/work/meertens ]; then
-        nice rsync -av  $BASE_DIR/work/meertens/ $OUTPUT_DIR
+# for now Meertens is back again in the main CLARIN harvest
+#        nice rsync -av  $BASE_DIR/work/meertens/ $OUTPUT_DIR
 	fi
 	if [ -d $BASE_DIR/work/vu ]; then
         nice rsync -av  $BASE_DIR/work/vu/ $OUTPUT_DIR
