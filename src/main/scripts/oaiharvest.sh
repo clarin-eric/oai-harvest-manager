@@ -142,6 +142,6 @@ fi
 #
 # Create web-view
 #
-#nice perl -CSD /opt/oai-webview.pl
+nice perl -CSD /opt/oai-webview.pl
 
 exit 0
