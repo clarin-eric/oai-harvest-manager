@@ -115,10 +115,10 @@ fi
 # For the clarin run, the meertens/vu data which is harvested seperately, is copied in
 #
 if [ "$2" == "clarin" ]; then
-	if [ -d $BASE_DIR/work/meertens ]; then
+#	if [ -d $BASE_DIR/work/meertens ]; then
 # for now Meertens is back again in the main CLARIN harvest
 #        nice rsync -av  $BASE_DIR/work/meertens/ $OUTPUT_DIR
-	fi
+#	fi
 	if [ -d $BASE_DIR/work/vu ]; then
         nice rsync -av  $BASE_DIR/work/vu/ $OUTPUT_DIR
 	fi
