@@ -18,18 +18,14 @@
 
 package nl.mpi.oai.harvester.metadata;
 
-import java.io.IOException;
-import java.io.InputStream;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import nl.mpi.oai.harvester.Provider;
 import nl.mpi.oai.harvester.utils.DocumentSource;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
+
+import java.io.InputStream;
 
 /**
  * Metadata container <br><br>
@@ -144,7 +140,7 @@ public class Metadata {
      * Modify the XML stream representation of this record in a way that does
      * not change its identity.
      * 
-     * @param src modified content of this record
+     * @param str modified content of this record
      */
     public void setStream(InputStream str) {
         docSrc.setStream(str);

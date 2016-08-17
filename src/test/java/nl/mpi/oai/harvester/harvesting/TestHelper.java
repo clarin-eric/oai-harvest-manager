@@ -19,7 +19,10 @@
 package nl.mpi.oai.harvester.harvesting;
 
 import nl.mpi.oai.harvester.Provider;
-import nl.mpi.oai.harvester.metadata.*;
+import nl.mpi.oai.harvester.metadata.Metadata;
+import nl.mpi.oai.harvester.metadata.MetadataFormat;
+import nl.mpi.oai.harvester.metadata.MetadataInterface;
+import nl.mpi.oai.harvester.utils.DocumentSource;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
@@ -31,7 +34,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
-import nl.mpi.oai.harvester.utils.DocumentSource;
 
 /**
  * <br> Help mocking the OAI protocol by supplying the XML document part of OAI
@@ -499,10 +501,7 @@ abstract class TestHelper implements OAIInterface, MetadataInterface {
                 if (! trace.prefix.equals(this.prefix)){
                     return false;
                 }
-                if (! trace.identifier.equals(this.identifier)){
-                    return false;
-                }
-                return true;
+                return trace.identifier.equals(this.identifier);
             }
         }
     }

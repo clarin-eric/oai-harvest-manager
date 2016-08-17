@@ -38,6 +38,7 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.stream.XMLStreamException;
 import javax.xml.transform.TransformerException;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
@@ -47,7 +48,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
-import javax.xml.stream.XMLStreamException;
 
 /**
  * This class represents a single OAI-PMH provider.
@@ -97,6 +97,11 @@ public class Provider {
     public final DocumentBuilder db;
     
     public Path temp;
+
+	/**
+	 * Provider deletion mode
+	 */
+	public DeletionMode deletionMode;
 
     /**
      * Provider constructor
@@ -150,10 +155,10 @@ public class Provider {
      * Prepare this object for use.
      */
     public void init() {
-	if (name == null)
-	    fetchName();
+		if (name == null) fetchName();
+		if(deletionMode == null) fetchDeletionMode();
     }
-    
+
     public void close() {
 	if (temp != null) {
 	    try {
@@ -162,7 +167,6 @@ public class Provider {
             }
         }
     }
-
 
     /**
      * Query the provider for its name and store it in this object.
@@ -177,7 +181,19 @@ public class Provider {
 	}
     }
 
-    /**
+	void fetchDeletionMode(){
+		deletionMode = getProviderDeletionMode();
+	}
+
+	public DeletionMode getDeletionMode() {
+		return deletionMode;
+	}
+
+	public void setDeletionMode(DeletionMode deletionMode) {
+		this.deletionMode = deletionMode;
+	}
+
+	/**
      * Set the name of this provider
      *
      * @param name name of provider
@@ -210,15 +226,26 @@ public class Provider {
      * @return provider name
      */
     public String getProviderName() {
-	try {
-	    Identify ident = new Identify(oaiUrl,timeout);
-	    return parseProviderName(ident.getDocument());
-	} catch (IOException | ParserConfigurationException | SAXException
-		| TransformerException e) {
-	    logger.error(e.getMessage(), e);
+		try {
+			Identify ident = new Identify(oaiUrl, timeout);
+			return parseProviderName(ident.getDocument());
+		} catch (IOException | ParserConfigurationException | SAXException
+				| TransformerException e) {
+			logger.error(e.getMessage(), e);
+		}
+		return null;
 	}
-	return null;
-    }
+
+	public DeletionMode getProviderDeletionMode() {
+		try {
+			Identify ident = new Identify(oaiUrl, timeout);
+			return parseDeletionMode(ident.getDocument());
+		} catch (IOException | ParserConfigurationException | SAXException
+				| TransformerException e) {
+			logger.error(e.getMessage(), e);
+		}
+		return null;
+	}
 
     /**
      * Parse provider's name from an Identify response.
@@ -240,7 +267,22 @@ public class Provider {
 	}
 	return null;
     }
-    
+
+	public DeletionMode parseDeletionMode(Document response) {
+		try {
+			NodeList name = (NodeList) xpath.evaluate("//*[local-name() = 'deletedRecord']/text()",
+					response, XPathConstants.NODESET);
+			if (name != null && name.getLength() > 0) {
+				String deletionMode = name.item(0).getNodeValue();
+				logger.info("Contacted " + oaiUrl + " to get its deletionMode, received: \"" + deletionMode + "\"");
+				return DeletionMode.valueOf(deletionMode.toUpperCase());
+			}
+		} catch (XPathExpressionException e) {
+			logger.error(e.getMessage(), e);
+		}
+		return DeletionMode.NO;
+	}
+
     public void setScenario(String scenario) {
         this.scenario = scenario;
     }
@@ -276,7 +318,7 @@ public class Provider {
     public void setExclusive(boolean exclusive) {
         this.exclusive = exclusive;
     }
-    
+
     public boolean isExclusive() {
         return this.exclusive;
     }
@@ -531,4 +573,8 @@ public class Provider {
 	sb.append(" @ ").append(oaiUrl);
 	return sb.toString();
     }
+
+	public enum DeletionMode {
+		NO, PERSISTENT, TRANSIENT
+	}
 }

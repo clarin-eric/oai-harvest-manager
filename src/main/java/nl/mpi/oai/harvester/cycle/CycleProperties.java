@@ -112,7 +112,7 @@ public interface CycleProperties {
      *
      * kj: rename to ScenarioName
      */
-    public enum Scenario {
+    enum Scenario {
 
         /**
          * Query the metadata prefixes the endpoint supports. The cycle uses
@@ -142,7 +142,7 @@ public interface CycleProperties {
      *
      * @return the harvesting mode
      */
-    abstract Mode getHarvestMode();
+    Mode getHarvestMode();
 
     /**
      * <br> Get the harvesting scenario <br><br>
@@ -152,5 +152,5 @@ public interface CycleProperties {
      *
      * @return the scenario
      */
-    abstract Scenario getScenario ();
+    Scenario getScenario ();
 }

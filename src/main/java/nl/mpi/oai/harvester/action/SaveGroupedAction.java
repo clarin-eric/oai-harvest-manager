@@ -48,9 +48,9 @@ public class SaveGroupedAction extends SaveAction implements Action {
      * @param dir output directory to save to
      * @param suffix suffix to be added to identifier to generate filename
      */
-    public SaveGroupedAction(OutputDirectory dir, String suffix, boolean offload) {
-	super(dir, suffix, offload);
-	locations = Collections.synchronizedMap(new HashMap<Provider, OutputDirectory>());
+    public SaveGroupedAction(OutputDirectory dir, String suffix, boolean offload, boolean history) {
+	super(dir, suffix, offload, history);
+	locations = Collections.synchronizedMap(new HashMap<>());
     }
 
     /**
@@ -58,7 +58,7 @@ public class SaveGroupedAction extends SaveAction implements Action {
      * set of subdirectories with the given action.
      */
     private SaveGroupedAction(SaveGroupedAction sga) {
-	super(sga.dir, sga.suffix, sga.offload);
+	super(sga.dir, sga.suffix, sga.offload, sga.history);
 	locations = sga.locations;
     }
 

@@ -19,7 +19,6 @@
 package nl.mpi.oai.harvester.harvesting;
 
 import nl.mpi.oai.harvester.utils.DocumentSource;
-import org.w3c.dom.Document;
 
 /**
  * <br> A protocol for processing metadata elements <br><br>
@@ -61,7 +60,7 @@ public interface Harvesting {
      *
      * @return  false if there was an error, true otherwise
      */
-    public boolean request ();
+    boolean request ();
 
     /**
      * <br> Get the current endpoint response <br><br>
@@ -71,7 +70,7 @@ public interface Harvesting {
      *
      * @return null if an error occurred, otherwise the response to the request
      */
-    public DocumentSource getResponse ();
+    DocumentSource getResponse ();
     
     /**
      * <br> Find out if it would be sensible to make another request <br><br>
@@ -84,7 +83,7 @@ public interface Harvesting {
      * otherwise
      *
      */
-    public boolean requestMore ();
+    boolean requestMore ();
 
     /**
      * <br> Create metadata elements from the response <br><br>
@@ -103,7 +102,7 @@ public interface Harvesting {
      * @param document response
      * @return  false if there was an error, true otherwise
      */
-    public boolean processResponse (DocumentSource document);
+    boolean processResponse (DocumentSource document);
     
     /**
      * <br> Return the next metadata element <br><br>
@@ -116,13 +115,13 @@ public interface Harvesting {
      *
      * @return  null if an error occurred, otherwise the next element
      */
-    public Object parseResponse ();
+    Object parseResponse ();
     
     /**
      * <br> Check if all metadata elements stored have been parsed <br><br>
      * 
      * @return  true if it is, false otherwise
      */
-    public boolean fullyParsed ();
+    boolean fullyParsed ();
 
 }

@@ -19,18 +19,22 @@
 package nl.mpi.oai.harvester.harvesting;
 
 import nl.mpi.oai.harvester.Provider;
+import nl.mpi.oai.harvester.control.Main;
+import nl.mpi.oai.harvester.cycle.Endpoint;
 import nl.mpi.oai.harvester.metadata.MetadataFactory;
+import nl.mpi.oai.harvester.utils.DocumentSource;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.stream.XMLStreamException;
 import javax.xml.transform.TransformerException;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
-import javax.xml.stream.XMLStreamException;
-import nl.mpi.oai.harvester.utils.DocumentSource;
 
 /**
  * <br> A request method in a list based harvesting protocol <br><br>
@@ -56,7 +60,7 @@ public abstract class ListHarvesting extends AbstractListHarvesting implements
      * Messages specific to extending classes
      */
     final static String[] message = new String [3];
-
+    final Endpoint endpoint;
     /**
      * Associate endpoint data and desired prefix
      * 
@@ -66,13 +70,14 @@ public abstract class ListHarvesting extends AbstractListHarvesting implements
      * @param metadataFactory the metadata factory
      */
     ListHarvesting(OAIFactory oaiFactory, Provider provider,
-                   List<String> prefixes, MetadataFactory metadataFactory){
+                   List<String> prefixes, MetadataFactory metadataFactory, Endpoint endpoint){
 
         super(oaiFactory, provider, metadataFactory);
         this.prefixes   = prefixes;
         document        = null;
         resumptionToken = null;
         tIndex          = 0;
+        this.endpoint = endpoint;
 
         // check for protocol errors
         if (prefixes == null){
@@ -85,8 +90,8 @@ public abstract class ListHarvesting extends AbstractListHarvesting implements
      * effective for example by creating a ListRecords or ListIdentifiers
      * class object.
      *
-     * @param s1 string one
-     * @param s2 string two
+     * @param metadataPrefix metadata prefix
+     * @param resumptionToken resumption token
      * @return the response
      * @throws IOException IO problem
      * @throws ParserConfigurationException configuration problem
@@ -94,7 +99,7 @@ public abstract class ListHarvesting extends AbstractListHarvesting implements
      * @throws TransformerException XSL problem
      * @throws NoSuchFieldException introspection problem
      */
-    abstract DocumentSource verb2(String s1, String s2, int timeout)
+    abstract DocumentSource verb2(String metadataPrefix, String resumptionToken, int timeout)
             throws 
             IOException,
             ParserConfigurationException,
@@ -108,11 +113,11 @@ public abstract class ListHarvesting extends AbstractListHarvesting implements
      * effective for example by creating a ListRecords or ListIdentifiers
      * class method.
      *
-     * @param s1 string one
-     * @param s2 string two
-     * @param s3 string three
-     * @param s4 string four
-     * @param s5 string five
+     * @param endpoint endpoint URL
+     * @param fromDate from date, for selective harvesting
+     * @param untilDate until date, for selective harvesting
+     * @param metadataPrefix metadata prefix
+     * @param set set
      * @return the response
      * @throws IOException IO problem
      * @throws ParserConfigurationException configuration problem
@@ -120,8 +125,8 @@ public abstract class ListHarvesting extends AbstractListHarvesting implements
      * @throws TransformerException XSL problem
      * @throws NoSuchFieldException introspection problem
      */
-    abstract DocumentSource verb5(String s1, String s2, String s3, String s4,
-            String s5, int timeout, Path temp)
+    abstract DocumentSource verb5(String endpoint, String fromDate, String untilDate, String metadataPrefix,
+            String set, int timeout, Path temp)
             throws 
             IOException,
             ParserConfigurationException,
@@ -168,6 +173,20 @@ public abstract class ListHarvesting extends AbstractListHarvesting implements
         // create a new node list for processing the list records request
         nIndex = 0;
 
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+
+        String fromDate = null;
+        String untilDate = null;
+
+        if(Main.config.isIncremental() && endpoint != null) {
+            untilDate = formatter.format(new Date());
+            if (endpoint.allowIncrementalHarvest()) {
+                if (endpoint.getHarvestedDate() != null) {
+                    fromDate = formatter.format(endpoint.getHarvestedDate().toDate());
+                }
+            }
+        }
+
         // number of requests attempted
         int i = 0;
         for (; ; ) {
@@ -190,14 +209,16 @@ public abstract class ListHarvesting extends AbstractListHarvesting implements
 
                     if (provider.sets == null) {
                         // no sets specified, ask for records by prefix
-                        document = verb5(provider.oaiUrl, null, null,
+
+
+                        document = verb5(provider.oaiUrl, fromDate, untilDate,
                                 null,
                                 prefixes.get(pIndex),
                                 provider.getTimeout(),
                                 provider.temp);
                     } else {
                         // request targets for a new set and prefix combination
-                        document = verb5(provider.oaiUrl, null, null,
+                        document = verb5(provider.oaiUrl, fromDate, untilDate,
                                 provider.sets[sIndex],
                                 prefixes.get(pIndex),
                                 provider.getTimeout(),

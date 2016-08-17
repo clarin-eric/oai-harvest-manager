@@ -19,18 +19,14 @@
 package nl.mpi.oai.harvester.harvesting;
 
 import ORG.oclc.oai.harvester2.verb.*;
-import org.w3c.dom.Document;
+import nl.mpi.oai.harvester.utils.DocumentSource;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.stream.XMLStreamException;
 import javax.xml.transform.TransformerException;
 import java.io.IOException;
-import java.net.ConnectException;
 import java.nio.file.Path;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.xml.stream.XMLStreamException;
-import nl.mpi.oai.harvester.utils.DocumentSource;
 
 /**
  * <br> Factory for OAI protocol objects <br><br>
@@ -80,7 +76,7 @@ public class OAIFactory {
             NoSuchFieldException {
 
         // the verb response
-        DocumentSource response = null;
+        DocumentSource response;
 
         oaiInterface = connectInterface();
 
@@ -108,11 +104,11 @@ public class OAIFactory {
     /**
      * <br> Create a list records object <br><br>
      *
-     * @param p1 the endpoint URI
-     * @param p2 the resumption token
+     * @param endpoint the endpoint URI
+     * @param resumptionToken the resumption token
      * @return the OAI response
      */
-    DocumentSource createListRecords(String p1, String p2, int timeout, Path temp) throws 
+    DocumentSource createListRecords(String endpoint, String resumptionToken, int timeout, Path temp) throws
             IOException,
             ParserConfigurationException,
             SAXException,
@@ -121,7 +117,7 @@ public class OAIFactory {
             XMLStreamException {
 
         // the verb response
-        DocumentSource response = null;
+        DocumentSource response;
 
         oaiInterface = connectInterface();
 
@@ -129,9 +125,9 @@ public class OAIFactory {
         if (oaiInterface == null) {
             // no object connected
             try {
-                HarvesterVerb verb = new ListRecords(p1, p2, timeout, temp);
+                HarvesterVerb verb = new ListRecords(endpoint, resumptionToken, timeout, temp);
                 response = verb.getDocumentSource();
-                resumptionToken = ((ListRecords) verb).getResumptionToken();
+                this.resumptionToken = ((ListRecords) verb).getResumptionToken();
             } catch (IOException
                     | ParserConfigurationException
                     | SAXException
@@ -144,8 +140,8 @@ public class OAIFactory {
         } else {
             // let the object connected return the OAI response
 
-            response = oaiInterface.newListRecords(p1, p2);
-            resumptionToken = oaiInterface.getResumptionToken();
+            response = oaiInterface.newListRecords(endpoint, resumptionToken);
+            this.resumptionToken = oaiInterface.getResumptionToken();
         }
 
         return response;
@@ -154,15 +150,15 @@ public class OAIFactory {
     /**
      * <br> Create a list records object <br><br>
      *
-     * @param p1 the endpoint URI
-     * @param p2 the start of the date window on the records
-     * @param p3 the end of the date window on the records
-     * @param p4 the set the records should be in
-     * @param p5 the metadata prefix the records should have
+     * @param endpoint the endpoint URI
+     * @param fromDate the start of the date window on the records
+     * @param untilDate the end of the date window on the records
+     * @param set the set the records should be in
+     * @param metadataPrefix the metadata prefix the records should have
      * @return the OAI response
      */
-    DocumentSource createListRecords(String p1, String p2, String p3, String p4,
-                               String p5, int timeout, Path temp) throws 
+    DocumentSource createListRecords(String endpoint, String fromDate, String untilDate, String set,
+                               String metadataPrefix, int timeout, Path temp) throws
             IOException,
             ParserConfigurationException,
             SAXException,
@@ -171,7 +167,7 @@ public class OAIFactory {
             XMLStreamException {
 
         // the verb response
-        DocumentSource response = null;
+        DocumentSource response;
 
         oaiInterface = connectInterface();
 
@@ -179,7 +175,7 @@ public class OAIFactory {
         if (oaiInterface == null) {
             // no object connected
             try {
-                HarvesterVerb verb = new ListRecords(p1, p2, p3, p4, p5, timeout, temp);
+                HarvesterVerb verb = new ListRecords(endpoint, fromDate, untilDate, set, metadataPrefix, timeout, temp);
                 response = verb.getDocumentSource();
                 resumptionToken = ((ListRecords) verb).getResumptionToken();
             } catch (IOException
@@ -194,7 +190,7 @@ public class OAIFactory {
         } else {
             // let the object connected return the OAI response
 
-            response = oaiInterface.newListRecords(p1, p2, p3, p4, p5);
+            response = oaiInterface.newListRecords(endpoint, fromDate, untilDate, set, metadataPrefix);
             resumptionToken = oaiInterface.getResumptionToken();
         }
 
@@ -204,12 +200,12 @@ public class OAIFactory {
     /**
      * <br> Create a get record object <br><br>
      *
-     * @param p1 the endpoint URI
-     * @param p2 the record identifier
-     * @param p3 the metadata prefix
+     * @param endpoint the endpoint URI
+     * @param recordIdentifier the record identifier
+     * @param metadataPrefix the metadata prefix
      * @return the OAI response
      */
-    DocumentSource createGetRecord(String p1, String p2, String p3) throws 
+    DocumentSource createGetRecord(String endpoint, String recordIdentifier, String metadataPrefix) throws
             IOException,
             ParserConfigurationException,
             SAXException,
@@ -217,7 +213,7 @@ public class OAIFactory {
             NoSuchFieldException {
 
         // the verb response
-        DocumentSource response = null;
+        DocumentSource response;
 
         oaiInterface = connectInterface();
 
@@ -225,7 +221,7 @@ public class OAIFactory {
         if (oaiInterface == null) {
             // no object connected
             try {
-                HarvesterVerb verb = new GetRecord(p1, p2, p3);
+                HarvesterVerb verb = new GetRecord(endpoint, recordIdentifier, metadataPrefix);
                 response = verb.getDocumentSource();
             } catch (IOException
                     | ParserConfigurationException
@@ -237,7 +233,7 @@ public class OAIFactory {
         } else {
             // let the object connected return the OAI response
 
-            response = oaiInterface.newGetRecord(p1, p2, p3);
+            response = oaiInterface.newGetRecord(endpoint, recordIdentifier, metadataPrefix);
             resumptionToken = oaiInterface.getResumptionToken();
         }
 
@@ -247,11 +243,11 @@ public class OAIFactory {
     /**
      * <br> Create a list identifiers object <br><br>
      *
-     * @param p1 endpoint URI
-     * @param p2 resumption token
+     * @param endpoint endpoint URI
+     * @param resumptionToken resumption token
      * @return the OAI response
      */
-    DocumentSource createListIdentifiers(String p1, String p2, int timeout) throws 
+    DocumentSource createListIdentifiers(String endpoint, String resumptionToken, int timeout) throws
             IOException,
             ParserConfigurationException,
             SAXException,
@@ -260,7 +256,7 @@ public class OAIFactory {
             XMLStreamException {
 
         // the verb response
-        DocumentSource response = null;
+        DocumentSource response;
 
         oaiInterface = connectInterface();
 
@@ -268,7 +264,57 @@ public class OAIFactory {
         if (oaiInterface == null) {
             // no object connected
             try {
-                HarvesterVerb verb = new ListIdentifiers(p1, p2, timeout);
+                HarvesterVerb verb = new ListIdentifiers(endpoint, resumptionToken, timeout);
+                response = verb.getDocumentSource();
+                this.resumptionToken = ((ListIdentifiers) verb).getResumptionToken();
+            } catch (IOException
+                    | ParserConfigurationException
+                    | SAXException
+                    | TransformerException
+                    | NoSuchFieldException
+                    | XMLStreamException e) {
+                e.printStackTrace();
+                throw(e);
+            }
+        } else {
+            // let the object connected return the OAI response
+
+            response = oaiInterface.newListIdentifiers(endpoint, resumptionToken);
+            this.resumptionToken = oaiInterface.getResumptionToken();
+        }
+
+        return response;
+    }
+
+    /**
+     * <br> Create a list identifiers object <br><br>
+     *
+     * @param endpoint the endpoint URI
+     * @param fromDate the start of the date window on the records
+     * @param untilDate the end of the date window on the records
+     * @param set the set the records should be in
+     * @param metadataPrefix the metadata prefix the records should have
+     * @return the OAI response
+     */
+    DocumentSource createListIdentifiers(String endpoint, String fromDate, String untilDate,
+                                   String set, String metadataPrefix, int timeout) throws
+            IOException,
+            ParserConfigurationException,
+            SAXException,
+            TransformerException,
+            NoSuchFieldException,
+            XMLStreamException {
+
+        // the verb response
+        DocumentSource response;
+
+        oaiInterface = connectInterface();
+
+        // check if the client connected an object the interface
+        if (oaiInterface == null) {
+            // no object connected
+            try {
+                HarvesterVerb verb = new ListIdentifiers(endpoint, fromDate, untilDate, set, metadataPrefix, timeout);
                 response = verb.getDocumentSource();
                 resumptionToken = ((ListIdentifiers) verb).getResumptionToken();
             } catch (IOException
@@ -283,57 +329,7 @@ public class OAIFactory {
         } else {
             // let the object connected return the OAI response
 
-            response = oaiInterface.newListIdentifiers(p1, p2);
-            resumptionToken = oaiInterface.getResumptionToken();
-        }
-
-        return response;
-    }
-
-    /**
-     * <br> Create a list identifiers object <br><br>
-     *
-     * @param p1 the endpoint URI
-     * @param p2 the start of the date window on the records
-     * @param p3 the end of the date window on the records
-     * @param p4 the set the records should be in
-     * @param p5 the metadata prefix the records should have
-     * @return the OAI response
-     */
-    DocumentSource createListIdentifiers(String p1, String p2, String p3,
-                                   String p4, String p5, int timeout) throws 
-            IOException,
-            ParserConfigurationException,
-            SAXException,
-            TransformerException,
-            NoSuchFieldException,
-            XMLStreamException {
-
-        // the verb response
-        DocumentSource response = null;
-
-        oaiInterface = connectInterface();
-
-        // check if the client connected an object the interface
-        if (oaiInterface == null) {
-            // no object connected
-            try {
-                HarvesterVerb verb = new ListIdentifiers(p1, p2, p3, p4, p5, timeout);
-                response = verb.getDocumentSource();
-                resumptionToken = ((ListIdentifiers) verb).getResumptionToken();
-            } catch (IOException
-                    | ParserConfigurationException
-                    | SAXException
-                    | TransformerException
-                    | NoSuchFieldException
-                    | XMLStreamException e) {
-                e.printStackTrace();
-                throw(e);
-            }
-        } else {
-            // let the object connected return the OAI response
-
-            response = oaiInterface.newListIdentifiers(p1, p2, p3, p4, p5);
+            response = oaiInterface.newListIdentifiers(endpoint, fromDate, untilDate, set, metadataPrefix);
             resumptionToken = oaiInterface.getResumptionToken();
         }
 

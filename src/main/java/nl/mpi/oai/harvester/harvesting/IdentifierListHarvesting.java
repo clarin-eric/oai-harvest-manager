@@ -20,22 +20,22 @@
 package nl.mpi.oai.harvester.harvesting;
 
 import nl.mpi.oai.harvester.Provider;
+import nl.mpi.oai.harvester.cycle.Endpoint;
 import nl.mpi.oai.harvester.metadata.MetadataFactory;
+import nl.mpi.oai.harvester.utils.DocumentSource;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.stream.XMLStreamException;
 import javax.xml.transform.TransformerException;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
-import javax.xml.stream.XMLStreamException;
-import nl.mpi.oai.harvester.utils.DocumentSource;
 
 /**
  * <br> List based identifier harvesting <br><br>
@@ -72,9 +72,9 @@ public class IdentifierListHarvesting extends ListHarvesting
      */
     public IdentifierListHarvesting(OAIFactory oaiFactory,
                                     Provider provider, List<String> prefixes,
-                                    MetadataFactory metadataFactory){
+                                    MetadataFactory metadataFactory, Endpoint endpoint){
 
-        super(oaiFactory, provider, prefixes, metadataFactory);
+        super(oaiFactory, provider, prefixes, metadataFactory, endpoint);
         // supply the superclass with messages specific to requesting identifiers
         message [0] = "Requesting more identifiers of records with prefix ";
         message [1] = "Requesting identifiers of records with prefix ";

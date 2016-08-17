@@ -20,7 +20,9 @@
 package nl.mpi.oai.harvester.harvesting;
 
 import nl.mpi.oai.harvester.Provider;
+import nl.mpi.oai.harvester.cycle.Endpoint;
 import nl.mpi.oai.harvester.metadata.MetadataFactory;
+import nl.mpi.oai.harvester.utils.DocumentSource;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.w3c.dom.Document;
@@ -29,14 +31,13 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.stream.XMLStreamException;
 import javax.xml.transform.TransformerException;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
-import javax.xml.stream.XMLStreamException;
-import nl.mpi.oai.harvester.utils.DocumentSource;
 
 /**
  * <br> List based record harvesting <br><br>
@@ -65,16 +66,16 @@ public class RecordListHarvesting extends ListHarvesting
 
     /**
      * Associate endpoint data and desired prefix
-     * 
-     * @param oaiFactory the OAI factory
+     *  @param oaiFactory the OAI factory
      * @param provider the endpoint to address in the request
-     * @param prefixes the prefixes returned by the endpoint 
+     * @param prefixes the prefixes returned by the endpoint
      * @param metadataFactory the metadata factory
+     * @param endpoint
      */
     public RecordListHarvesting(OAIFactory oaiFactory, Provider provider,
-                                List<String> prefixes, MetadataFactory metadataFactory) {
+                                List<String> prefixes, MetadataFactory metadataFactory, Endpoint endpoint) {
 
-        super (oaiFactory, provider, prefixes, metadataFactory);
+        super (oaiFactory, provider, prefixes, metadataFactory, endpoint);
         // supply the superclass with messages specific to requesting records
         message [0] = "Requesting more records with prefix ";
         message [1] = "Requesting records with prefix ";
@@ -89,8 +90,8 @@ public class RecordListHarvesting extends ListHarvesting
      * based on the ListRecords verb and two parameters. It returns a ListRecord
      * object from the OCLC library.
      *
-     * @param p1 metadata prefix
-     * @param p2 resumption token
+     * @param metadataPrefix metadata prefix
+     * @param resumptionToken resumption token
      * @return the response to the request
      * @throws IOException IO problem
      * @throws ParserConfigurationException configuration problem
@@ -99,7 +100,7 @@ public class RecordListHarvesting extends ListHarvesting
      * @throws NoSuchFieldException introspection problem
      */
     @Override
-    public DocumentSource verb2(String p1, String p2, int timeout) throws
+    public DocumentSource verb2(String metadataPrefix, String resumptionToken, int timeout) throws
             IOException,
             ParserConfigurationException,
             SAXException,
@@ -107,7 +108,7 @@ public class RecordListHarvesting extends ListHarvesting
             NoSuchFieldException,
             XMLStreamException {
 
-        document = oaiFactory.createListRecords(p1, p2, timeout, provider.temp);
+        document = oaiFactory.createListRecords(metadataPrefix, resumptionToken, timeout, provider.temp);
 
         // implement by returning ListRecords with the two parameters supplied
         return document;
@@ -120,11 +121,11 @@ public class RecordListHarvesting extends ListHarvesting
      * on the ListRecords verb and five parameters. It returns a ListRecord
      * object from the OCLC library.
      *
-     * @param p1 endpoint URL
-     * @param p2 from date, for selective harvesting
-     * @param p3 until date, for selective harvesting
-     * @param p4 metadata prefix
-     * @param p5 set
+     * @param endpoint endpoint URL
+     * @param fromDate from date, for selective harvesting
+     * @param untilDate until date, for selective harvesting
+     * @param metadataPrefix metadata prefix
+     * @param set set
      * @return the response to the request
      * @throws IOException IO problem
      * @throws ParserConfigurationException configuration problem
@@ -133,8 +134,8 @@ public class RecordListHarvesting extends ListHarvesting
      * @throws NoSuchFieldException introspection problem
      */
     @Override
-    public DocumentSource verb5(String p1, String p2, String p3, String p4,
-            String p5, int timeout, Path temp) throws
+    public DocumentSource verb5(String endpoint, String fromDate, String untilDate, String metadataPrefix,
+            String set, int timeout, Path temp) throws
             IOException,
             ParserConfigurationException,
             SAXException,
@@ -142,7 +143,7 @@ public class RecordListHarvesting extends ListHarvesting
             NoSuchFieldException,
             XMLStreamException {
 
-        document = oaiFactory.createListRecords(p1, p2, p3, p4, p5, timeout, temp);
+        document = oaiFactory.createListRecords(endpoint, fromDate, untilDate, metadataPrefix, set, timeout, temp);
 
         // implement by returning ListRecords with the five parameters supplied
         return document;

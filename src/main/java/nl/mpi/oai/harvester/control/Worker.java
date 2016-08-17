@@ -120,6 +120,7 @@ class Worker implements Runnable {
         try {
             logger.debug("Welcome to OAI Harvest Manager worker!");
             provider.init();
+            long harvestStartTime = System.currentTimeMillis();
 
             // setting specific log filename
             ThreadContext.put("logFileName", Util.toFileFormat(provider.getName()).replaceAll("/",""));
@@ -193,18 +194,21 @@ class Worker implements Runnable {
                         if (scenarioName == CycleProperties.Scenario.ListIdentifiers) {
                             // kj: annotate, connect verb to scenario
                             harvesting = new IdentifierListHarvesting(oaiFactory,
-                                    provider, prefixes, metadataFactory);
+                                    provider, prefixes, metadataFactory, endpoint);
 
                             // get the records
                             done = scenario.listIdentifiers(harvesting);
                             logger.debug("list identifiers -> done["+done+"]");
                         } else {
                             harvesting = new RecordListHarvesting(oaiFactory,
-                                    provider, prefixes, metadataFactory);
+                                    provider, prefixes, metadataFactory, endpoint);
 
                             // get the records
                             done = scenario.listRecords(harvesting);
-                            logger.debug("list records -> done["+done+"]");
+                            logger.debug("list records -> done[" + done + "]");
+                        }
+                        if(Main.config.isIncremental()) {
+                            FileSynchronization.execute(provider);
                         }
                     }
                 }
@@ -215,13 +219,16 @@ class Worker implements Runnable {
 
             // report back success or failure to the cycle
             endpoint.doneHarvesting(done);
+            long harvestFinishTime = System.currentTimeMillis();
+            long totalTime = (harvestFinishTime - harvestStartTime)/1000;
+            FileSynchronization.saveHarvestTime(provider, totalTime );
 
             logger.info("Processing finished for " + provider);
         } catch (Throwable e) {
             logger.error("Processing failed for " + provider+": "+e.getMessage(),e);
             t = e;
             throw e;
-        } finally {            
+        } finally {
             provider.close();
                 
             ThreadContext.clearAll();

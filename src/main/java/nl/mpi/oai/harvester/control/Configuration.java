@@ -52,7 +52,7 @@ import java.util.Map;
 /**
  * This class represents the settings of the application as defined in its
  * configuration file (and, optionally, using command line parameters).
- * 
+ *
  * @author Lari Lampen (MPI-PL)
  */
 public class Configuration {
@@ -69,7 +69,9 @@ public class Configuration {
      */
     private Map<String, OutputDirectory> outputs;
 
-    /** All defined action sequences, in order of preference. */
+    /**
+     * All defined action sequences, in order of preference.
+     */
     private List<ActionSequence> actionSequences;
 
     /**
@@ -82,181 +84,189 @@ public class Configuration {
      * List of names of known configuration options.
      */
     public enum KnownOptions {
-	WORKDIR("workdir"), RETRYCOUNT("max-retry-count"),
-	RETRYDELAY("retry-delay"), MAXJOBS("max-jobs"),
-	POOLSIZE("resource-pool-size"), TIMEOUT("timeout"),
+        WORKDIR("workdir"), RETRYCOUNT("max-retry-count"),
+        RETRYDELAY("retry-delay"), MAXJOBS("max-jobs"),
+        POOLSIZE("resource-pool-size"), TIMEOUT("timeout"),
         OVERVIEWFILE("overview-file"),
-        SAVERESPONSE("save-response"), SCENARIO("scenario");
-	private final String val;
-	private KnownOptions(final String s) { val = s; }
-	public String toString() { return val; }
+        SAVERESPONSE("save-response"), SCENARIO("scenario"), INCREMENTAL("incremental");
+        private final String val;
+
+        KnownOptions(final String s) {
+            val = s;
+        }
+
+        public String toString() {
+            return val;
+        }
     }
 
     /**
      * Create a new configuration object based on a configuration file.
-     *
-	 */
+     */
     public Configuration() {
-	XPathFactory xpf = XPathFactory.newInstance();
-	xpath = xpf.newXPath();
-	settings = new HashMap<>();
-	outputs = new HashMap<>();
-	actionSequences = new ArrayList<>();
-	providers = new ArrayList<>();
+        XPathFactory xpf = XPathFactory.newInstance();
+        xpath = xpf.newXPath();
+        settings = new HashMap<>();
+        outputs = new HashMap<>();
+        actionSequences = new ArrayList<>();
+        providers = new ArrayList<>();
     }
 
     /**
      * Read configuration from file. Options that are already set will not be
      * overridden.
-     * 
+     *
      * @param filename configuration file
      * @throws ParserConfigurationException problem with the configuration
-     * @throws SAXException problem with the XML of the configuration
-     * @throws XPathExpressionException problem with the paths accessing the configuration
-     * @throws IOException problem accessing the configuration
+     * @throws SAXException                 problem with the XML of the configuration
+     * @throws XPathExpressionException     problem with the paths accessing the configuration
+     * @throws IOException                  problem accessing the configuration
      */
     public void readConfig(String filename) throws ParserConfigurationException,
-	    SAXException, XPathExpressionException, IOException {
-	DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-	DocumentBuilder db = dbf.newDocumentBuilder();
-	Document doc = db.parse(filename);
+            SAXException, XPathExpressionException, IOException {
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        DocumentBuilder db = dbf.newDocumentBuilder();
+        Document doc = db.parse(filename);
 
-	logger.debug("Reading: settings");
-	// ----- Read configuration options -----
-	parseSettings((Node) xpath.evaluate("/config/settings",
-		doc.getDocumentElement(), XPathConstants.NODE));
+        logger.debug("Reading: settings");
+        // ----- Read configuration options -----
+        parseSettings((Node) xpath.evaluate("/config/settings",
+                doc.getDocumentElement(), XPathConstants.NODE));
 
-	logger.debug("Reading: outputs");
-	// ----- Read list of outputs -----
-	parseOutputs((Node) xpath.evaluate("/config/directories",
-		doc.getDocumentElement(), XPathConstants.NODE));
+        logger.debug("Reading: outputs");
+        // ----- Read list of outputs -----
+        parseOutputs((Node) xpath.evaluate("/config/directories",
+                doc.getDocumentElement(), XPathConstants.NODE));
 
-	logger.debug("Reading: actions");
-	// ----- Read list of actions -----
-	parseActions((Node) xpath.evaluate("/config/actions",
-		doc.getDocumentElement(), XPathConstants.NODE));
+        logger.debug("Reading: actions");
+        // ----- Read list of actions -----
+        parseActions((Node) xpath.evaluate("/config/actions",
+                doc.getDocumentElement(), XPathConstants.NODE));
 
-	logger.debug("Reading: providers");
-	// Some provider names are fetched over the network, so a reasonable
-	// timeout should be set here.
-	setTimeout(10);
+        logger.debug("Reading: providers");
+        // Some provider names are fetched over the network, so a reasonable
+        // timeout should be set here.
+        setTimeout(10);
 
-	// ----- Read list of providers -----
-	parseProviders((Node) xpath.evaluate("/config/providers",
-		doc.getDocumentElement(), XPathConstants.NODE));
+        // ----- Read list of providers -----
+        parseProviders((Node) xpath.evaluate("/config/providers",
+                doc.getDocumentElement(), XPathConstants.NODE));
 
-	// Apply configured timeout, overriding our temporary value.
-	applyTimeoutSetting();
+        // Apply configured timeout, overriding our temporary value.
+        applyTimeoutSetting();
 
-	logger.debug("Finished reading config");
+        logger.debug("Finished reading config");
     }
 
     /**
      * Parse the settings section only.
-     * 
+     *
      * @param base top node of the settings section
      */
     private void parseSettings(Node base) throws XPathExpressionException {
-	for (KnownOptions x : KnownOptions.values()) {
-	    String opt = x.toString();
-	    Node curr = (Node) xpath.evaluate(opt,
-		    base, XPathConstants.NODE);
-	    if (curr == null) {
-		logger.warn("Config file has no value for " + opt
-			+ ". This may be an error. Continuing anyway.");
-		continue;
-	    }
-	    String text = curr.getTextContent();
-	    if (text != null && !text.isEmpty()
-		    && !settings.containsKey(opt)) {
-		settings.put(opt, text);
-	    }
-	}
+        for (KnownOptions x : KnownOptions.values()) {
+            String opt = x.toString();
+            Node curr = (Node) xpath.evaluate(opt,
+                    base, XPathConstants.NODE);
+            if (curr == null) {
+                logger.warn("Config file has no value for " + opt
+                        + ". This may be an error. Continuing anyway.");
+                continue;
+            }
+            String text = curr.getTextContent();
+            if (text != null && !text.isEmpty()
+                    && !settings.containsKey(opt)) {
+                settings.put(opt, text);
+            }
+        }
     }
 
     /**
      * Parse the outputs section only.
-     * 
+     *
      * @param base top node of the outputs section
      */
     private void parseOutputs(Node base) throws XPathExpressionException,
-	    IOException {
-	NodeList nodeList = (NodeList) xpath.evaluate("./dir", base,
-		XPathConstants.NODESET);
-	Path workDir = Paths.get(getWorkingDirectory());
-        for (int i=0; i<nodeList.getLength(); i++) {
-            Node curr=nodeList.item(i);
+            IOException {
+        NodeList nodeList = (NodeList) xpath.evaluate("./dir", base,
+                XPathConstants.NODESET);
+        Path workDir = Paths.get(getWorkingDirectory());
+        for (int i = 0; i < nodeList.getLength(); i++) {
+            Node curr = nodeList.item(i);
             String path = Util.getNodeText(xpath, "./@path", curr);
             String id = Util.getNodeText(xpath, "./@id", curr);
             String maxString = Util.getNodeText(xpath, "./@max-files", curr);
-	    int max = (maxString==null) ? 0 : Integer.valueOf(maxString);
-	    OutputDirectory od = new OutputDirectory(workDir.resolve(path), max);
+            int max = (maxString == null) ? 0 : Integer.valueOf(maxString);
+            OutputDirectory od = new OutputDirectory(workDir.resolve(path), max);
 
-	    if (outputs.containsKey(id)) {
-		logger.error("Configuration file defines several files with id "
-			+ id + ". Please fix it.");
-		continue;
-	    }
-	    outputs.put(id, od);
+            if (outputs.containsKey(id)) {
+                logger.error("Configuration file defines several files with id "
+                        + id + ". Please fix it.");
+                continue;
+            }
+            outputs.put(id, od);
         }
     }
 
     /**
      * Parse the actions section only.
-     * 
+     *
      * @param base top node of the actions section
      */
     private void parseActions(Node base) throws XPathExpressionException {
-	NodeList nodeList = (NodeList) xpath.evaluate("./format", base,
-		XPathConstants.NODESET);
-        for (int i=0; i<nodeList.getLength(); i++) {
+        NodeList nodeList = (NodeList) xpath.evaluate("./format", base,
+                XPathConstants.NODESET);
+        for (int i = 0; i < nodeList.getLength(); i++) {
             Node curr = nodeList.item(i);
             String matchType = Util.getNodeText(xpath, "./@match", curr);
             String matchValue = Util.getNodeText(xpath, "./@value", curr);
-	    MetadataFormat format = new MetadataFormat(matchType, matchValue);
+            MetadataFormat format = new MetadataFormat(matchType, matchValue);
 
-	    NodeList actions = (NodeList) xpath.evaluate("./action", curr,
-		    XPathConstants.NODESET);
-	    if (actions != null && actions.getLength() > 0) {
-		ArrayList<Action> ac = new ArrayList<>();
-		for (int k=0; k<actions.getLength(); k++) {
-		    Node s = actions.item(k);
-		    String actionType = Util.getNodeText(xpath, "./@type", s);
-		    Action act = null;
-		    if ("strip".equals(actionType)) {
-			try {
-			    act = new StripAction();
-			} catch (ParserConfigurationException ex) {
-			    logger.error(ex);
-			}
+            NodeList actions = (NodeList) xpath.evaluate("./action", curr,
+                    XPathConstants.NODESET);
+            if (actions != null && actions.getLength() > 0) {
+                ArrayList<Action> ac = new ArrayList<>();
+                for (int k = 0; k < actions.getLength(); k++) {
+                    Node s = actions.item(k);
+                    String actionType = Util.getNodeText(xpath, "./@type", s);
+                    Action act = null;
+                    if ("strip".equals(actionType)) {
+                        try {
+                            act = new StripAction();
+                        } catch (ParserConfigurationException ex) {
+                            logger.error(ex);
+                        }
                     } else if ("split".equals(actionType)) {
-			try {
-			    act = new SplitAction();
-			} catch (ParserConfigurationException ex) {
-			    logger.error(ex);
-			}
-		    } else if ("save".equals(actionType)) {
-			String outDirId = Util.getNodeText(xpath, "./@dir", s);
-			String suffix = Util.getNodeText(xpath, "./@suffix", s);
+                        try {
+                            act = new SplitAction();
+                        } catch (ParserConfigurationException ex) {
+                            logger.error(ex);
+                        }
+                    } else if ("save".equals(actionType)) {
+                        String outDirId = Util.getNodeText(xpath, "./@dir", s);
+                        boolean history = Boolean.parseBoolean(Util.getNodeText(xpath, "./@history", s));
+                        String suffix = Util.getNodeText(xpath, "./@suffix", s);
+
                         // if null defaults to false, only "true" leads to true
                         boolean offload = Boolean.parseBoolean(Util.getNodeText(xpath, "./@offload", s));
-			if (outputs.containsKey(outDirId)) {
-			    OutputDirectory outDir = outputs.get(outDirId);
-			    String group = Util.getNodeText(xpath,
-				    "./@group-by-provider", s);
-			    // If the group-by-provider attribute is
-			    // not defined, it defaults to true.
-			    if (group != null && !Boolean.valueOf(group)) {
-				act = new SaveAction(outDir, suffix, offload);
-			    } else {
-				act = new SaveGroupedAction(outDir, suffix, offload);
-			    }
-			} else {
-			    logger.error("Invalid output directory " + outDirId
-				    + " specified for save action");
-			}
-		    } else if ("transform".equals(actionType)) {
-			try {
+
+                        if (outputs.containsKey(outDirId)) {
+                            OutputDirectory outDir = outputs.get(outDirId);
+                            String group = Util.getNodeText(xpath,
+                                    "./@group-by-provider", s);
+                            // If the group-by-provider attribute is
+                            // not defined, it defaults to true.
+                            if (group != null && !Boolean.valueOf(group)) {
+                                act = new SaveAction(outDir, suffix, offload, history);
+                            } else {
+                                act = new SaveGroupedAction(outDir, suffix, offload, history);
+                            }
+                        } else {
+                            logger.error("Invalid output directory " + outDirId
+                                    + " specified for save action");
+                        }
+                    } else if ("transform".equals(actionType)) {
+                        try {
                             String xslFile = Util.getNodeText(xpath, "./@file", s);
                             Path cache = null;
                             String cacheDir = Util.getNodeText(xpath, "./@cache", s);
@@ -267,58 +277,58 @@ public class Configuration {
                             }
                             int jobs = 0;
                             String jobsStr = Util.getNodeText(xpath, "./@max-jobs", s);
-                            if (jobsStr!=null) {
+                            if (jobsStr != null) {
                                 try {
                                     jobs = Integer.parseInt(jobsStr);
-                                } catch(NumberFormatException e) {
-                                    logger.error("@max-jobs["+jobsStr+"] doesn't contain a valid number",e);
+                                } catch (NumberFormatException e) {
+                                    logger.error("@max-jobs[" + jobsStr + "] doesn't contain a valid number", e);
                                 }
                             }
-			    act = new TransformAction(xslFile,cache,jobs);
-			} catch (IOException | TransformerConfigurationException ex) {
-			    logger.error(ex);
-			}
-		    }
+                            act = new TransformAction(xslFile, cache, jobs);
+                        } catch (IOException | TransformerConfigurationException ex) {
+                            logger.error(ex);
+                        }
+                    }
                     if (act != null)
-			ac.add(act);
+                        ac.add(act);
                     else
-                        logger.error("Unknown action["+actionType+"]");
-		}
+                        logger.error("Unknown action[" + actionType + "]");
+                }
 
-		ActionSequence ap = new ActionSequence(format, ac.toArray(new Action[ac.size()]),
-			getResourcePoolSize());
-		actionSequences.add(ap);
-	    } else {
-		logger.warn("A format has no actions defined; skipping it");
-	    }
+                ActionSequence ap = new ActionSequence(format, ac.toArray(new Action[ac.size()]),
+                        getResourcePoolSize());
+                actionSequences.add(ap);
+            } else {
+                logger.warn("A format has no actions defined; skipping it");
+            }
         }
     }
 
     /**
      * Parse the providers section only. Included reading from the registry
      * if required.
-     * 
+     *
      * @param base top node of the providers section
      */
-    private void parseProviders(Node base) throws 
+    private void parseProviders(Node base) throws
             XPathExpressionException,
-	    MalformedURLException,
-	    ParserConfigurationException {
-        
+            MalformedURLException,
+            ParserConfigurationException {
+
         // check if there is an import node
-        Node importNode = (Node) xpath.evaluate("./import", base, 
+        Node importNode = (Node) xpath.evaluate("./import", base,
                 XPathConstants.NODE);
         if (importNode == null) {
             logger.debug("No import node in the configuration file");
         } else {
-            
+
             // within the import node, look for the mandatory registry node   
             Node registryNode = (Node) xpath.evaluate("./registry", importNode,
                     XPathConstants.NODE);
             if (registryNode == null) {
                 logger.error("No registry specified in the configuration file");
             } else {
-                
+
                 // get the registry URL
                 String rUrl = Util.getNodeText(xpath, "./@url", registryNode);
 
@@ -345,7 +355,7 @@ public class Configuration {
                     }
 
                     // list of endpoints to be extra configured
-                    HashMap<String,Node> configMap = new HashMap<>();
+                    HashMap<String, Node> configMap = new HashMap<>();
 
                     // create the list
                     NodeList configList = (NodeList) xpath.evaluate("./config", importNode,
@@ -358,7 +368,7 @@ public class Configuration {
                         if (eUrl == null) {
                             logger.warn("No URL in config specification");
                         } else {
-                            configMap.put(eUrl,configNode);
+                            configMap.put(eUrl, configNode);
                         }
                     }
                     // get the list of endpoints from the centre registry
@@ -373,7 +383,7 @@ public class Configuration {
                             logger.debug("Excluding endpoint" + provUrl);
                         } else {
                             logger.debug("Including endpoint" + provUrl);
-                            Provider provider = new Provider(provUrl, getMaxRetryCount (), getRetryDelay());
+                            Provider provider = new Provider(provUrl, getMaxRetryCount(), getRetryDelay());
                             if (configMap.containsKey(provUrl)) {
                                 Node configNode = configMap.get(provUrl);
                                 String pScenario = Util.getNodeText(xpath, "./@scenario", configNode);
@@ -382,9 +392,9 @@ public class Configuration {
                                 String pRetryDelay = Util.getNodeText(xpath, "./@retry-delay", configNode);
                                 String pExclusive = Util.getNodeText(xpath, "./@exclusive", configNode);
 
-                                int timeout = (pTimeout != null)?Integer.valueOf(pTimeout):getTimeout();
-                                int maxRetryCount = (pMaxRetryCount != null)?Integer.valueOf(pMaxRetryCount):getMaxRetryCount();
-                                int retryDelay = (pRetryDelay != null)?Integer.valueOf(pRetryDelay):getRetryDelay();
+                                int timeout = (pTimeout != null) ? Integer.valueOf(pTimeout) : getTimeout();
+                                int maxRetryCount = (pMaxRetryCount != null) ? Integer.valueOf(pMaxRetryCount) : getMaxRetryCount();
+                                int retryDelay = (pRetryDelay != null) ? Integer.valueOf(pRetryDelay) : getRetryDelay();
                                 boolean exclusive = Boolean.parseBoolean(pExclusive);
 
                                 if (pScenario != null)
@@ -401,31 +411,31 @@ public class Configuration {
             }
         }
 
-	NodeList prov = (NodeList) xpath.evaluate("./provider", base,
-		XPathConstants.NODESET);
-	for (int j=0; j<prov.getLength(); j++) {
-	    Node cur = prov.item(j);
-	    String pName = Util.getNodeText(xpath, "./@name", cur);
-	    String pUrl = Util.getNodeText(xpath, "./@url", cur);
-	    String pStatic = Util.getNodeText(xpath, "./@static", cur);
-	    String pScenario = Util.getNodeText(xpath, "./@scenario", cur);
+        NodeList prov = (NodeList) xpath.evaluate("./provider", base,
+                XPathConstants.NODESET);
+        for (int j = 0; j < prov.getLength(); j++) {
+            Node cur = prov.item(j);
+            String pName = Util.getNodeText(xpath, "./@name", cur);
+            String pUrl = Util.getNodeText(xpath, "./@url", cur);
+            String pStatic = Util.getNodeText(xpath, "./@static", cur);
+            String pScenario = Util.getNodeText(xpath, "./@scenario", cur);
             String pTimeout = Util.getNodeText(xpath, "./@timeout", cur);
             String pMaxRetryCount = Util.getNodeText(xpath, "./@max-retry-count", cur);
             String pRetryDelay = Util.getNodeText(xpath, "./@retry-delay", cur);
             String pExclusive = Util.getNodeText(xpath, "./@exclusive", cur);
-            
-            int timeout = (pTimeout != null)?Integer.valueOf(pTimeout):getTimeout();
-            int maxRetryCount = (pMaxRetryCount != null)?Integer.valueOf(pMaxRetryCount):getMaxRetryCount();
-            int retryDelay = (pRetryDelay != null)?Integer.valueOf(pRetryDelay):getRetryDelay();
-            boolean exclusive = Boolean.parseBoolean(pExclusive);
-            
-	    if (pUrl == null) {
-		logger.error("Skipping provider " + pName + ": URL is missing");
-		continue;
-	    }
 
-            logger.info("Provider[" + pUrl + "] scenario["+pScenario+"] timeout["+timeout+"] retry["+maxRetryCount+","+retryDelay+"]");
-	    Provider provider = (Boolean.valueOf(pStatic))?new StaticProvider(pUrl, maxRetryCount, retryDelay):new Provider(pUrl, maxRetryCount, retryDelay);
+            int timeout = (pTimeout != null) ? Integer.valueOf(pTimeout) : getTimeout();
+            int maxRetryCount = (pMaxRetryCount != null) ? Integer.valueOf(pMaxRetryCount) : getMaxRetryCount();
+            int retryDelay = (pRetryDelay != null) ? Integer.valueOf(pRetryDelay) : getRetryDelay();
+            boolean exclusive = Boolean.parseBoolean(pExclusive);
+
+            if (pUrl == null) {
+                logger.error("Skipping provider " + pName + ": URL is missing");
+                continue;
+            }
+
+            logger.info("Provider[" + pUrl + "] scenario[" + pScenario + "] timeout[" + timeout + "] retry[" + maxRetryCount + "," + retryDelay + "]");
+            Provider provider = (Boolean.valueOf(pStatic)) ? new StaticProvider(pUrl, maxRetryCount, retryDelay) : new Provider(pUrl, maxRetryCount, retryDelay);
 
             if (pName != null)
                 provider.setName(pName);
@@ -434,51 +444,51 @@ public class Configuration {
                 provider.setScenario(pScenario);
 
             provider.setTimeout(timeout);
-            
+
             provider.setExclusive(exclusive);
 
-	    if (!Boolean.valueOf(pStatic)) {
+            if (!Boolean.valueOf(pStatic)) {
                 // Note: static providers do not support sets, so this only
-		// needs to be done here.
-		NodeList sets = (NodeList) xpath.evaluate("./set", cur,
-			XPathConstants.NODESET);
-		if (sets != null && sets.getLength() > 0) {
-		    ArrayList<String> setSpec = new ArrayList<>();
-		    for (int k=0; k<sets.getLength(); k++) {
-			Node s = sets.item(k);
-			setSpec.add(s.getTextContent());
-		    }
-		    provider.setSets(setSpec.toArray(new String[setSpec.size()]));
-		}
-	    }
-	    providers.add(provider);
-	}
+                // needs to be done here.
+                NodeList sets = (NodeList) xpath.evaluate("./set", cur,
+                        XPathConstants.NODESET);
+                if (sets != null && sets.getLength() > 0) {
+                    ArrayList<String> setSpec = new ArrayList<>();
+                    for (int k = 0; k < sets.getLength(); k++) {
+                        Node s = sets.item(k);
+                        setSpec.add(s.getTextContent());
+                    }
+                    provider.setSets(setSpec.toArray(new String[setSpec.size()]));
+                }
+            }
+            providers.add(provider);
+        }
     }
 
     public List<Provider> getProviders() {
-	return providers;
+        return providers;
     }
 
     public List<ActionSequence> getActionSequences() {
-	return actionSequences;
+        return actionSequences;
     }
 
     /**
      * Set a configuration option, overriding the previous value if there
      * was one.
-     * 
-     * @param key the option name (must be one of known values)
+     *
+     * @param key   the option name (must be one of known values)
      * @param value the value to be set
      */
     public void setOption(String key, String value) {
-	for (KnownOptions x : KnownOptions.values()) {
-	    String opt = x.toString();
-	    if (opt.equals(key)) {
-		settings.put(key, value);
-		return;
-	    }
-	}
-	logger.warn("Ignoring attempt to set unknown parameter " + key);
+        for (KnownOptions x : KnownOptions.values()) {
+            String opt = x.toString();
+            if (opt.equals(key)) {
+                settings.put(key, value);
+                return;
+            }
+        }
+        logger.warn("Ignoring attempt to set unknown parameter " + key);
     }
 
     // The default value for each option is set in its respective
@@ -486,7 +496,7 @@ public class Configuration {
     public String getWorkingDirectory() {
         String s = settings.get(KnownOptions.WORKDIR.toString());
         if (s == null)
-	    return "workspace";
+            return "workspace";
         return s;
     }
 
@@ -495,24 +505,28 @@ public class Configuration {
         if (s == null) return 1;
         return Integer.valueOf(s);
     }
+
     public int getRetryDelay() {
         String s = settings.get(KnownOptions.RETRYDELAY.toString());
         if (s == null) return 0;
         return Integer.valueOf(s);
     }
+
     public int getMaxJobs() {
         String s = settings.get(KnownOptions.MAXJOBS.toString());
         if (s == null) return 1;
         return Integer.valueOf(s);
     }
+
     public int getResourcePoolSize() {
         String s = settings.get(KnownOptions.POOLSIZE.toString());
         // Note that the default value is not fixed; instead, it is equal
-	// to the maximum number of jobs.
+        // to the maximum number of jobs.
         if (s == null) return getMaxJobs();
         return Integer.valueOf(s);
     }
-    /** 
+
+    /**
      * @return string indicating the location of the overview file
      */
     public String getOverviewFile() {
@@ -525,23 +539,23 @@ public class Configuration {
         Path p = Paths.get(o);
         if (!Files.exists(p)) {
             try {
-                String overview = "<overviewType><scenario>"+s+"</scenario></overviewType>";
+                String overview = "<overviewType><scenario>" + s + "</scenario></overviewType>";
                 BufferedWriter writer = Files.newBufferedWriter(p);
-                writer.write(overview,0,overview.length());
+                writer.write(overview, 0, overview.length());
                 writer.close();
             } catch (IOException e) {
                 o = null;
-                logger.error("couldn't create an initial/default "+o+" file: ",e);
+                logger.error("couldn't create an initial/default " + o + " file: ", e);
             }
         }
         return o;
     }
-    
+
     /**
-     * @return if the response should be saved 
+     * @return if the response should be saved
      */
-    public boolean saveResponse (){
-     
+    public boolean saveResponse() {
+
         String s = settings.get(KnownOptions.SAVERESPONSE.toString());
         if (s == null) return true;
         return Boolean.valueOf(s);
@@ -553,8 +567,8 @@ public class Configuration {
      */
     public void applyTimeoutSetting() {
         String s = settings.get(KnownOptions.TIMEOUT.toString());
-	int timeout = (s==null) ? 0 : Integer.valueOf(s);
-	setTimeout(timeout);
+        int timeout = (s == null) ? 0 : Integer.valueOf(s);
+        setTimeout(timeout);
     }
 
     /**
@@ -562,46 +576,51 @@ public class Configuration {
      */
     public int getTimeout() {
         String s = settings.get(KnownOptions.TIMEOUT.toString());
-	return (s==null) ? 0 : Integer.valueOf(s);
+        return (s == null) ? 0 : Integer.valueOf(s);
+    }
+
+    public boolean isIncremental() {
+        String s = settings.get(KnownOptions.INCREMENTAL.toString());
+        return (s == null) ? false : Boolean.valueOf(s);
     }
 
     /**
      * Set network timeout to the specified number of seconds.
-     * 
+     *
      * @param sec timeout in seconds (if 0 or negative, will disable timeout)
      */
     private void setTimeout(int sec) {
-	String t = (sec > 0) ? String.valueOf(sec*1000) : "-1";
+        String t = (sec > 0) ? String.valueOf(sec * 1000) : "-1";
 
-	// NOTE: This is specific to the Sun implementation of URL
-	// connections. It works in Sun JDK and OpenJDK, but not
-	// everywhere (e.g. not on Dalvik).
-	System.setProperty("sun.net.client.defaultReadTimeout", t);
-	System.setProperty("sun.net.client.defaultConnectTimeout", t);	    
+        // NOTE: This is specific to the Sun implementation of URL
+        // connections. It works in Sun JDK and OpenJDK, but not
+        // everywhere (e.g. not on Dalvik).
+        System.setProperty("sun.net.client.defaultReadTimeout", t);
+        System.setProperty("sun.net.client.defaultConnectTimeout", t);
     }
 
     /**
      * Log parsed contents of the configuration.
      */
     void log() {
-	logger.info("--- configuration options ---");
-	for (Map.Entry<String, String> me : settings.entrySet()) {
-	    logger.info("  " + me.getKey() + " --> " + me.getValue());
+        logger.info("--- configuration options ---");
+        for (Map.Entry<String, String> me : settings.entrySet()) {
+            logger.info("  " + me.getKey() + " --> " + me.getValue());
         }
 
-	logger.info("--- list of outputs ---");
-	for (Map.Entry<String, OutputDirectory> me : outputs.entrySet()) {
-	    logger.info("  " + me.getKey() + " --> " + me.getValue());
+        logger.info("--- list of outputs ---");
+        for (Map.Entry<String, OutputDirectory> me : outputs.entrySet()) {
+            logger.info("  " + me.getKey() + " --> " + me.getValue());
         }
 
-	logger.info("--- list of action sequences ---");
-	for (ActionSequence act : actionSequences) {
-	    logger.info("  " + act);
-	}
+        logger.info("--- list of action sequences ---");
+        for (ActionSequence act : actionSequences) {
+            logger.info("  " + act);
+        }
 
-	logger.info("--- list of providers ---");
-	for (Provider prov : providers) {
-	    logger.info("  " + prov);
-	}
+        logger.info("--- list of providers ---");
+        for (Provider prov : providers) {
+            logger.info("  " + prov);
+        }
     }
 }

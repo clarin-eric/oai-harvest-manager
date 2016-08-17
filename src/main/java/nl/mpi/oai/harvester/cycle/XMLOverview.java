@@ -18,13 +18,12 @@
 
 package nl.mpi.oai.harvester.cycle;
 
-import nl.mpi.oai.harvester.generated.OverviewType;
 import nl.mpi.oai.harvester.generated.EndpointType;
 import nl.mpi.oai.harvester.generated.ObjectFactory;
+import nl.mpi.oai.harvester.generated.OverviewType;
 import org.joda.time.DateTime;
 
-import javax.xml.bind.*;
-
+import javax.xml.bind.JAXB;
 import java.io.File;
 
 /**

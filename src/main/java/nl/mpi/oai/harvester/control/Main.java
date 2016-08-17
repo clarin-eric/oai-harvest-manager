@@ -41,7 +41,7 @@ public class Main {
     private static final Logger logger = LogManager.getLogger(Main.class);
 
     /** Object containing entries from configuration file. */
-    private static Configuration config;
+    public static Configuration config;
 
     private static void runHarvesting(Configuration config) {
 	config.log();

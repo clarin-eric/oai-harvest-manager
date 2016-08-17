@@ -18,8 +18,6 @@
 
 package nl.mpi.oai.harvester.action;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import net.sf.saxon.Configuration;
 import net.sf.saxon.TransformerFactoryImpl;
 import nl.mpi.oai.harvester.metadata.Metadata;
@@ -30,10 +28,13 @@ import org.w3c.dom.Document;
 import javax.xml.transform.*;
 import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.net.MalformedURLException;
@@ -42,7 +43,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.concurrent.Semaphore;
-import javax.xml.transform.sax.SAXSource;
 
 /**
  * This class represents the application of an XSL transformation to the
@@ -94,7 +94,7 @@ public class TransformAction implements Action {
 	this.xsltFile = xsltFile;
         this.cacheDir = cacheDir;
         this.semaphore = semaphore;
-	factory = TransformerFactory.newInstance();
+	factory = TransformerFactory.newInstance("net.sf.saxon.TransformerFactoryImpl", null);
         if(factory instanceof TransformerFactoryImpl) {
             TransformerFactoryImpl transformerFactoryImpl = ((TransformerFactoryImpl)factory);
             logger.debug("Telling Saxon to send messages as warnings to logger");
@@ -150,7 +150,7 @@ public class TransformAction implements Action {
                     logger.debug("transformed to XML doc with ["+XPathFactory.newInstance().newXPath().evaluate("count(//*)", record.getDoc())+"] nodes");
                 }
             } catch (TransformerException | XPathExpressionException ex) {
-                logger.error(ex);
+                logger.error("Transformation error: ",ex);
                 return false;
             } finally {
                 if (semaphore!=null) {

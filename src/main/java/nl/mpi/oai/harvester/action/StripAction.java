@@ -18,33 +18,34 @@
 
 package nl.mpi.oai.harvester.action;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
+import nl.mpi.oai.harvester.control.Util;
 import nl.mpi.oai.harvester.metadata.Metadata;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.codehaus.stax2.XMLInputFactory2;
+import org.codehaus.stax2.evt.XMLEvent2;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
-import java.util.ArrayList;
-import java.util.List;
-import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLEventWriter;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.XMLEvent;
-import org.codehaus.stax2.XMLInputFactory2;
-import org.codehaus.stax2.evt.XMLEvent2;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This action corresponds to stripping off the OAI-PMH envelope surrounding
@@ -67,7 +68,7 @@ public class StripAction implements Action {
 
     @Override
     public boolean perform(List<Metadata> records) {
-        List<Metadata> newRecords = new ArrayList();
+        List<Metadata> newRecords = new ArrayList<>();
         while (!records.isEmpty()) {
             Metadata record = records.remove(0);
             
@@ -124,21 +125,21 @@ public class StripAction implements Action {
                     if (reader.hasNext()) {
                         XMLEvent event = reader.nextEvent();
 
-                        int state = 1; // 1:START 2:RECORD 3:HEADER 4:ID 5:METADATA 0:STOP -1:ERROR
+                        State state = State.START;
                         int depth = 0;
                         String status = null;
                         String id = null;
-                        while (state > 0) {
+                        while (!state.equals(State.STOP) && !state.equals(State.ERROR)) {
                             //logger.debug("BEGIN loop: state["+state+"] event["+event+"]["+event.getEventType()+"]");
                             int eventType = event.getEventType();
                             switch (state) {
-                                case 1://START
+                                case START:
                                     //logger.debug("state[START]");
                                     switch (eventType) {
                                         case XMLEvent2.START_ELEMENT:
                                             QName qn = event.asStartElement().getName();
                                             if (qn.getLocalPart().equals("record")) {
-                                                state = 2;//RECORD
+                                                state = State.RECORD;
                                                 i++;
                                                 depth = 1;
                                                 status = null;
@@ -147,7 +148,7 @@ public class StripAction implements Action {
                                             break;
                                     }
                                     break;
-                                case 2://RECORD
+                                case RECORD:
                                     //logger.debug("state[RECORD] depth["+depth+"]");
                                     switch (eventType) {
                                         case XMLEvent2.START_ELEMENT:
@@ -159,9 +160,9 @@ public class StripAction implements Action {
                                                     status = attr.getValue();//record/header/@status
                                                     //logger.debug("status["+status+"]");
                                                 }
-                                                state = 3;//HEADER
+                                                state = State.HEADER;
                                             } else if (depth==2 && event.asStartElement().getName().getLocalPart().equals("metadata")) { //record/metadata
-                                                state = 5;//METADATA
+                                                state = State.METADATA;
                                                 baos = new ByteArrayOutputStream();
                                                 writer = xmlOutputFactory.createXMLEventWriter(baos);
                                             }
@@ -170,57 +171,57 @@ public class StripAction implements Action {
                                             //logger.debug("end["+event.asEndElement().getName()+"] depth["+depth+"]");
                                             if (depth==1) { 
                                                 if (event.asEndElement().getName().getLocalPart().equals("record")) {
-                                                    state = 1;//START
+                                                    state = State.START;
                                                     status = null;
                                                     id = null;
                                                 } else {
                                                     logger.error("record XML element out of sync! Expected record got ["+event.asEndElement().getName()+"]");
-                                                    state = -1;//ERROR
+                                                    state = State.ERROR;
                                                 }
                                             }
                                             depth--;
                                             break;
                                     }
                                     break;
-                                case 3://HEADER
+                                case HEADER:
                                     //logger.debug("state[HEADER] depth["+depth+"]");
                                     switch (eventType) {
                                         case XMLEvent2.START_ELEMENT:
                                             depth++;
                                             //logger.debug("start["+event.asStartElement().getName()+"] depth["+depth+"]");
                                             if (event.asStartElement().getName().getLocalPart().equals("identifier")) {//record/header/identifier
-                                                state = 4;//ID
+                                                state = State.ID;
                                             }
                                             break;
                                         case XMLEvent2.END_ELEMENT:
                                             //logger.debug("end["+event.asEndElement().getName()+"] depth["+depth+"]");
                                             if (depth==2) { 
                                                 if (event.asEndElement().getName().getLocalPart().equals("header")) {
-                                                    state = 2;//RECORD
+                                                    state = State.RECORD;
                                                 } else {
                                                     logger.error("header XML element out of sync! Expected header got ["+event.asEndElement().getName()+"]");
-                                                    state = -1;//ERROR
+                                                    state = State.ERROR;
                                                 }
                                             }
                                             depth--;
                                             break;
                                     }
                                     break;
-                                case 4://ID
+                                case ID://ID
                                     //logger.debug("state[ID] depth["+depth+"]");
                                     switch (eventType) {
                                         case XMLEvent2.CHARACTERS:
                                             id = event.asCharacters().getData();//record/header/identifier/text()
                                             //logger.debug("id["+id+"]");
-                                            state = 3;//HEADER
+                                            state = State.HEADER;
                                             break;
                                         default:
-                                            state = -1;//ERROR
+                                            state = State.ERROR;
                                             logger.error("identifier XML element out of sync!");
                                             break;
                                     }
                                     break;
-                                case 5://METADATA
+                                case METADATA:
                                     //logger.debug("state[METADATA] depth["+depth+"]");
                                     switch (eventType) {
                                         case XMLEvent2.START_ELEMENT:
@@ -230,16 +231,16 @@ public class StripAction implements Action {
                                             //logger.debug("end["+event.asEndElement().getName()+"] depth["+depth+"]");
                                             if (depth==2) { 
                                                 if (event.asEndElement().getName().getLocalPart().equals("metadata")) {
-                                                    state = 2;//RECORD
+                                                    state = State.RECORD;
                                                 } else {
                                                     logger.error("metadata XML element out of sync! Expected metadata got ["+event.asEndElement().getName()+"]");
-                                                    state = -1;//ERROR
+                                                    state = State.ERROR;
                                                 }
                                             }
                                             depth--;
                                             break;
                                     }
-                                    if (state==5) {//METADATA
+                                    if (state==State.METADATA) {
                                         writer.add(event);
                                     } else {
                                         writer.close();
@@ -251,6 +252,8 @@ public class StripAction implements Action {
                                                 record.getOrigin(),
                                                 false, false)
                                             );
+                                        }else {
+                                            System.out.println(Util.toFileFormat(id) + ".xml");
                                         }
                                         writer = null;
                                         baos = null;
@@ -260,10 +263,10 @@ public class StripAction implements Action {
                             if (reader.hasNext())
                                 event = reader.nextEvent();
                             else
-                                state = state == 1? 0: -1;// if START then STOP else ERROR
+                                state = state == State.START? State.STOP: State.ERROR;
                             //logger.debug("END loop: state["+state+"] event["+event+"]["+event.getEventType()+"]");
                         }
-                        if (state < 0)
+                        if (state == State.ERROR)
                             logger.error("the XML was not properly processed!");
                     }
                     if (i==0)
@@ -300,10 +303,7 @@ public class StripAction implements Action {
     }
     @Override
     public boolean equals(Object o) {
-	if (o instanceof StripAction) {
-	    return true;
-	}
-	return false;
+        return o instanceof StripAction;
     }
 
     @Override
@@ -317,4 +317,5 @@ public class StripAction implements Action {
 	}
 	return null;
     }
+
 }

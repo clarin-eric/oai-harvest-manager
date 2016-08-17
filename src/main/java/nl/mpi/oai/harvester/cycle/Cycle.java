@@ -63,7 +63,7 @@ public interface Cycle {
      * @param group the group the endpoint belongs to
      * @return the endpoint
      */
-    public Endpoint next (String URI, String group, String scenario);
+    Endpoint next (String URI, String group, String scenario);
 
     /**
      * <br> Get the next residual endpoint in the cycle <br><br>
@@ -76,7 +76,7 @@ public interface Cycle {
      *
      * @return an endpoint not visited in the current cycle
      */
-    public Endpoint next ();
+    Endpoint next ();
 
     /**
      * <br> Check if the endpoint should be harvested <br><br>
@@ -103,7 +103,7 @@ public interface Cycle {
      * @param endpoint the endpoint considered
      * @return true if and only if the endpoint should be harvested
      */
-    public boolean doHarvest (Endpoint endpoint);
+    boolean doHarvest (Endpoint endpoint);
 
     /**
      * <br> Check if the endpoint indicated by the URI should be harvested <br><br>
@@ -114,7 +114,7 @@ public interface Cycle {
      * @param URI the endpoint considered
      * @return true if and only if the endpoint should be harvested
      */
-    public boolean doHarvest (String URI);
+    boolean doHarvest (String URI);
 
     /**
      * <br> Get the date needed when issuing the OAI request <br><br>
@@ -134,6 +134,6 @@ public interface Cycle {
      * @param endPoint the endpoint
      * @return date needed for the OAI request
      */
-    public DateTime getRequestDate (Endpoint endPoint);
+    DateTime getRequestDate (Endpoint endPoint);
 
 }

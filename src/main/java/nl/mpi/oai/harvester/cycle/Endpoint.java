@@ -91,7 +91,7 @@ public interface Endpoint {
      *
      * @return endpoint URI
      */
-    public abstract String getURI ();
+     String getURI ();
 
     /**
      * <br> Get the group <br><br>
@@ -109,7 +109,7 @@ public interface Endpoint {
      * @return the group the endpoint belongs to
      *
      */
-    public abstract String getGroup ();
+    String getGroup ();
 
     /**
      * <br> Check if the cycle is allowed to harvest the endpoint <br><br>
@@ -127,7 +127,7 @@ public interface Endpoint {
      *
      * @return true if the endpoint should be skipped, false otherwise
      */
-    public abstract boolean blocked ();
+   boolean blocked ();
 
     /**
      * <br> Check if the cycle is allow to retry harvesting the endpoint <br><br>
@@ -142,7 +142,7 @@ public interface Endpoint {
      *
      * @return true is a retry is allowed, false otherwise
      */
-    public abstract boolean retry();
+    boolean retry();
 
     /**
      * <br> Check if the cycle should incrementally harvest the endpoint <br><br>
@@ -160,7 +160,7 @@ public interface Endpoint {
      *
      * @return true if incremental harvesting is allowed, false otherwise
      */
-    public abstract boolean allowIncrementalHarvest ();
+     boolean allowIncrementalHarvest ();
 
     /**
      * <br> Check if the cycle should refresh the endpoint <br><br>
@@ -178,7 +178,7 @@ public interface Endpoint {
      *
      * @return true if a refresh is allowed, false otherwise
      */
-    public abstract boolean allowRefresh ();
+    boolean allowRefresh ();
 
     /**
      * <br> Get the scenario for harvesting <br><br>
@@ -193,7 +193,7 @@ public interface Endpoint {
      *
      * @return the scenario
      */
-    public abstract CycleProperties.Scenario getScenario ();
+     CycleProperties.Scenario getScenario ();
 
     /**
      * <br> Return the date of the most recent harvest attempt <br><br>
@@ -209,7 +209,7 @@ public interface Endpoint {
      * @return epoch date if the overview does not contain the date, otherwise
      * the date of the most recent harvest attempt
      */
-    public abstract DateTime getAttemptedDate();
+     DateTime getAttemptedDate();
 
     /**
      * <br> Return the date of the most recent successful harvest attempt <br><br>
@@ -225,7 +225,7 @@ public interface Endpoint {
      * @return epoch date if the overview does not contain the date, otherwise
      * the date of the most recent successful harvest attempt
      */
-    public abstract DateTime getHarvestedDate();
+    DateTime getHarvestedDate();
 
     /**
      * <br> Indicate success or failure <br><br>
@@ -237,7 +237,7 @@ public interface Endpoint {
      *
      * @param done true in case of success, false otherwise
      */
-    public abstract void doneHarvesting(Boolean done);
+     void doneHarvesting(Boolean done);
 
     /**
      * <br> Get the record count <br><br>
@@ -249,14 +249,14 @@ public interface Endpoint {
      *
      * @return the number of records harvested
      */
-    public abstract long getCount ();
+    long getCount ();
 
     /**
      * <br> Set record count
      *
      * @param count the number of records harvested
      */
-    public abstract void setCount (long count);
+    void setCount (long count);
 
     /**
      * <br> Get the record increment <br><br>
@@ -266,7 +266,7 @@ public interface Endpoint {
      *
      * @return the increment
      */
-    public abstract long getIncrement ();
+    long getIncrement ();
 
     /**
      * <br> Set the record increment <br><br>
@@ -276,5 +276,5 @@ public interface Endpoint {
      *
      * @param increment the increment
      */
-    public abstract void setIncrement (long increment);
+    void setIncrement (long increment);
 }
