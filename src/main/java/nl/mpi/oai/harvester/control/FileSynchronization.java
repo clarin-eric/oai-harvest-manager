@@ -249,6 +249,15 @@ public final class FileSynchronization {
         writeToHistoryFile(file, sb.toString());
     }
 
+    public static  void saveFilesToRemove(String file, Provider provider){
+        String dir = Main.config.getWorkingDirectory()+ CMDI + Util.toFileFormat(provider.getName());
+        java.io.File toRemove = new java.io.File(dir+"_remove.txt");
+        try(FileWriter writer = new FileWriter(toRemove, true)) {
+            writer.write(file + "\n");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
     public enum Operation{
         INSERT, DELETE
     }

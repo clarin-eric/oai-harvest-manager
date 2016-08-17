@@ -19,6 +19,7 @@
             <xs:element minOccurs="0" name="retry" type="xs:boolean"/>
             <xs:element minOccurs="0" name="refresh" type="xs:boolean"/>
             <xs:element minOccurs="0" name="incremental" type="xs:boolean"/>
+            <xs:element minOccurs="0" name="synchronised" type="xs:boolean"/>
             <xs:element maxOccurs="1" name="scenario" minOccurs="0" type="ScenarioType"> </xs:element>
             <xs:element name="attempted" minOccurs="0" type="xs:dateTime"/>
             <xs:element name="harvested" minOccurs="0" type="xs:dateTime"/>

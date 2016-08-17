@@ -178,7 +178,14 @@ public abstract class ListHarvesting extends AbstractListHarvesting implements
         String fromDate = null;
         String untilDate = null;
 
-        if(Main.config.isIncremental() && endpoint != null) {
+
+        boolean incremental = false;
+
+        if(Main.config != null){
+          incremental = Main.config.isIncremental();
+        }
+
+        if(incremental && endpoint != null) {
             untilDate = formatter.format(new Date());
             if (endpoint.allowIncrementalHarvest()) {
                 if (endpoint.getHarvestedDate() != null) {

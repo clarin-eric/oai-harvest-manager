@@ -21,10 +21,10 @@ package ORG.oclc.oai.harvester2.verb;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.stream.XMLStreamException;
 import javax.xml.transform.TransformerException;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import javax.xml.stream.XMLStreamException;
 
 /**
  * This class represents an Identify response on either the server or
@@ -83,8 +83,11 @@ public class Identify extends HarvesterVerb {
      * @return the requestURL
      */
     private static String getRequestURL(String baseURL) {
-        StringBuffer requestURL =  new StringBuffer(baseURL);
-        requestURL.append("?verb=Identify");
+        StringBuffer requestURL =  new StringBuffer();
+        if(baseURL !=  null) {
+            requestURL.append(baseURL);
+            requestURL.append("?verb=Identify");
+        }
         return requestURL.toString();
     }
 }
