@@ -72,6 +72,7 @@ public class SplitAction implements Action {
     @Override
     public boolean perform(List<Metadata> records) {
         List<Metadata> newRecords = new ArrayList<>();
+
         while (!records.isEmpty()) {
             Metadata record = records.remove(0);
 
@@ -110,6 +111,7 @@ public class SplitAction implements Action {
 
                             } else {
                                 logger.warn("record[" + id + "] is marked as deleted");
+                                FileSynchronization.saveFilesToRemove(Util.toFileFormat(id) + ".xml", record.getOrigin());
                             }
                         } catch (XPathExpressionException ex) {
                             logger.error(ex);
@@ -308,5 +310,4 @@ public class SplitAction implements Action {
 	}
 	return null;
     }
-
 }

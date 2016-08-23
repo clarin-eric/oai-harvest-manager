@@ -18,10 +18,10 @@
 
 package nl.mpi.oai.harvester.action;
 
-import nl.mpi.oai.harvester.metadata.Metadata;
-import nl.mpi.oai.harvester.control.OutputDirectory;
 import nl.mpi.oai.harvester.Provider;
+import nl.mpi.oai.harvester.control.OutputDirectory;
 import nl.mpi.oai.harvester.control.Util;
+import nl.mpi.oai.harvester.metadata.Metadata;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -60,6 +60,7 @@ public class SaveGroupedAction extends SaveAction implements Action {
     private SaveGroupedAction(SaveGroupedAction sga) {
 	super(sga.dir, sga.suffix, sga.offload, sga.history);
 	locations = sga.locations;
+
     }
 
     @Override
@@ -99,4 +100,5 @@ public class SaveGroupedAction extends SaveAction implements Action {
 	// a single OutputDirectory, which is as intended.
 	return new SaveGroupedAction(this);
     }
+
 }

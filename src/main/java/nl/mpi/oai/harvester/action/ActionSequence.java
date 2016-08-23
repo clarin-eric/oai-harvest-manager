@@ -131,7 +131,6 @@ public class ActionSequence {
                 Action action = actPool.get();
 
                 boolean done = action.perform(metadata);
-
                 actPool.release(action);
                 if (!done) {
                         logger.error("Action " + action + " failed, terminating" +

@@ -26,6 +26,7 @@ import nl.mpi.oai.harvester.cycle.CycleProperties;
 import nl.mpi.oai.harvester.cycle.Endpoint;
 import nl.mpi.oai.harvester.harvesting.*;
 import nl.mpi.oai.harvester.metadata.MetadataFactory;
+import nl.mpi.oai.harvester.utils.Statistic;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
@@ -120,10 +121,10 @@ class Worker implements Runnable {
         try {
             logger.debug("Welcome to OAI Harvest Manager worker!");
             provider.init();
-            long harvestStartTime = System.currentTimeMillis();
+
 
             // setting specific log filename
-            ThreadContext.put("logFileName", Util.toFileFormat(provider.getName()).replaceAll("/",""));
+            ThreadContext.put("logFileName", Util.toFileFormat(provider.getName()).replaceAll("/", ""));
 
             boolean done = false;
 
@@ -134,6 +135,9 @@ class Worker implements Runnable {
             OAIFactory oaiFactory = new OAIFactory();
 
             logger.info("Processing provider " + provider + " using " + scenarioName + " scenario and timeout " + provider.getTimeout() + " and retry ("+provider.getMaxRetryCount()+","+provider.getRetryDelay()+")");
+
+            Statistic statistic = new Statistic();
+            FileSynchronization.addProviderStatistic(provider);
 
             for (final ActionSequence actionSequence : actionSequences) {
 
@@ -207,7 +211,7 @@ class Worker implements Runnable {
                             done = scenario.listRecords(harvesting);
                             logger.debug("list records -> done[" + done + "]");
                         }
-                        if(Main.config.isIncremental()) {
+                        if(Main.config.isIncremental() && endpoint.allowIncrementalHarvest()) {
                             FileSynchronization.execute(provider);
                         }
                     }
@@ -215,14 +219,12 @@ class Worker implements Runnable {
 
                 // break after an action sequence has completed successfully
                 if (done) break;
+
             }
 
             // report back success or failure to the cycle
             endpoint.doneHarvesting(done);
-            long harvestFinishTime = System.currentTimeMillis();
-            long totalTime = (harvestFinishTime - harvestStartTime)/1000;
-            FileSynchronization.saveHarvestTime(provider, totalTime );
-
+            endpoint.setIncrement(FileSynchronization.getProviderStatistic(provider).getHarvestedRecords());
             logger.info("Processing finished for " + provider);
         } catch (Throwable e) {
             logger.error("Processing failed for " + provider+": "+e.getMessage(),e);

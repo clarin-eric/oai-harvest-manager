@@ -19,6 +19,7 @@
 package nl.mpi.oai.harvester.harvesting;
 
 import nl.mpi.oai.harvester.Provider;
+import nl.mpi.oai.harvester.control.FileSynchronization;
 import nl.mpi.oai.harvester.control.Main;
 import nl.mpi.oai.harvester.cycle.Endpoint;
 import nl.mpi.oai.harvester.metadata.MetadataFactory;
@@ -70,7 +71,8 @@ public abstract class ListHarvesting extends AbstractListHarvesting implements
      * @param metadataFactory the metadata factory
      */
     ListHarvesting(OAIFactory oaiFactory, Provider provider,
-                   List<String> prefixes, MetadataFactory metadataFactory, Endpoint endpoint){
+                   List<String> prefixes, MetadataFactory metadataFactory,
+                   Endpoint endpoint){
 
         super(oaiFactory, provider, metadataFactory);
         this.prefixes   = prefixes;
@@ -235,7 +237,8 @@ public abstract class ListHarvesting extends AbstractListHarvesting implements
 
                 // check if more records would be available
                 resumptionToken = getToken();
-
+                if( FileSynchronization.getProviderStatistic(provider) !=null)
+                    FileSynchronization.getProviderStatistic(provider).incRequestCount();
             } catch (IOException
                     | ParserConfigurationException
                     | SAXException
@@ -247,7 +250,7 @@ public abstract class ListHarvesting extends AbstractListHarvesting implements
                 done = false;
 
                 // report
-                logger.error("ListHarvesting["+this+"]["+provider+"] request try["+(i+1)+"/"+provider.maxRetryCount+"] failed!");
+                logger.error("ListHarvesting[" + this + "][" + provider + "] request try[" + (i + 1) + "/" + provider.maxRetryCount + "] failed!");
                 logger.error(e.getMessage(), e);
             }
             // tried the request
@@ -255,12 +258,12 @@ public abstract class ListHarvesting extends AbstractListHarvesting implements
             if (done) {
                 if (provider.sets == null) {
                     logger.info("retrieved " + prefixes.get(pIndex)
-                            + " records from endpoint " + provider.oaiUrl + (i>0?" after " + (i+1) +" tries":""));
+                            + " records from endpoint " + provider.oaiUrl + (i > 0 ? " after " + (i + 1) + " tries" : ""));
 
                 } else {
                     logger.info("retrieved " + prefixes.get(pIndex)
                             + " records in set " + provider.sets[sIndex]
-                            + " from endpoint " + provider.oaiUrl + (i>0?" after " + (i+1) +" tries":""));
+                            + " from endpoint " + provider.oaiUrl + (i > 0 ? " after " + (i + 1) + " tries" : ""));
                 }
                 // the request completed successfully
                 return true;
@@ -269,12 +272,12 @@ public abstract class ListHarvesting extends AbstractListHarvesting implements
                 if (i == provider.maxRetryCount) {
                     if (provider.sets == null) {
                         logger.error(message[2] + prefixes.get(pIndex)
-                                + " records from endpoint " + provider.oaiUrl + " after " + i +" tries!");
+                                + " records from endpoint " + provider.oaiUrl + " after " + i + " tries!");
 
                     } else {
                         logger.error(message[2] + prefixes.get(pIndex)
                                 + " records in set " + provider.sets[sIndex]
-                                + " from endpoint " + provider.oaiUrl + " after " + i +" tries!");
+                                + " from endpoint " + provider.oaiUrl + " after " + i + " tries!");
                     }
                     // do not retry any more, try another prefix instead
                     return false;
@@ -282,11 +285,11 @@ public abstract class ListHarvesting extends AbstractListHarvesting implements
                 // retry the request once more
                 if (provider.retryDelay > 0) {
                     try {
-                    Thread.sleep(provider.retryDelay);
-                    } catch(InterruptedException e) {
+                        Thread.sleep(provider.retryDelay);
+                    } catch (InterruptedException e) {
                         logger.error(e.getMessage(), e);
                     }
-                }                
+                }
             }
         }
     }

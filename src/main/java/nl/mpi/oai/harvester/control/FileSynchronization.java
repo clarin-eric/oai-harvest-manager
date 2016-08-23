@@ -20,6 +20,7 @@ package nl.mpi.oai.harvester.control;
 
 import ORG.oclc.oai.harvester2.verb.ListIdentifiers;
 import nl.mpi.oai.harvester.Provider;
+import nl.mpi.oai.harvester.utils.Statistic;
 import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -34,6 +35,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Stream;
 
 /**
@@ -46,11 +48,15 @@ public final class FileSynchronization {
     private static final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
     private static final String currentDate = formatter.format(new Date());
     private static final String CMDI = "/results/cmdi/";
+    private static final String CMDI1_1 = "/results/cmdi-1_1/";
     private static final String CMDI1_2 = "/results/cmdi-1_2/";
+
+    private static final ConcurrentHashMap<Provider, Statistic> statistic = new ConcurrentHashMap<>();
 
     public static void execute(Provider provider) {
 
         switch (provider.getDeletionMode()){
+
             case NO:
                 runSynchronizationForNoDeletionMode(provider);
                 break;
@@ -61,23 +67,28 @@ public final class FileSynchronization {
             default:
                 break;
         }
+       saveStatistics(provider);
     }
 
     private static void runSynchronizationForTransientDeletionMode(final Provider provider){
         String dir = Main.config.getWorkingDirectory()+ CMDI;
         File file = new File(dir + Util.toFileFormat(provider.getName())+"_remove.txt");
 
-        String firstDirToRemove = Main.config.getWorkingDirectory() +CMDI+ Util.toFileFormat(provider.getName())+"/";
-        String scenedDirToRemove = Main.config.getWorkingDirectory() +CMDI1_2+ Util.toFileFormat(provider.getName())+"/";
+        String firstDirToRemove = Main.config.getWorkingDirectory() + CMDI + Util.toFileFormat(provider.getName())+"/";
+        String scenedDirToRemove = Main.config.getWorkingDirectory() + CMDI1_1 + Util.toFileFormat(provider.getName())+"/";
+        String thirdDirToRemove = Main.config.getWorkingDirectory() + CMDI1_2 + Util.toFileFormat(provider.getName())+"/";
 
         delete(provider, file, firstDirToRemove);
         delete(provider, file, scenedDirToRemove);
+        delete(provider, file, thirdDirToRemove);
         FileUtils.deleteQuietly(file);
     }
 
     private static void runSynchronizationForNoDeletionMode(final Provider provider){
-        String dir1 = Main.config.getWorkingDirectory()+ CMDI+ Util.toFileFormat(provider.getName());
-        String dir2 = Main.config.getWorkingDirectory()+ CMDI1_2+ Util.toFileFormat(provider.getName());
+        String dir1 = Main.config.getWorkingDirectory() + CMDI + Util.toFileFormat(provider.getName());
+        String dir2 = Main.config.getWorkingDirectory() + CMDI1_2 + Util.toFileFormat(provider.getName());
+        String dir3 = Main.config.getWorkingDirectory() + CMDI1_1 + Util.toFileFormat(provider.getName());
+
         File file = new File(dir1 + "/current.txt");
         String resumptionToken = null;
         boolean done = false;
@@ -86,7 +97,6 @@ public final class FileSynchronization {
             int counter = 0;
             while (!done) {
                 if (counter == provider.maxRetryCount) {
-                    done = false;
                     break;
                 } else {
                     if (provider.retryDelay > 0) {
@@ -131,8 +141,10 @@ public final class FileSynchronization {
         }
         move(file, dir1);
         move(file, dir2);
+        move(file, dir3);
         deleteDirectory(dir1, provider);
         deleteDirectory(dir2, provider);
+        deleteDirectory(dir3, provider);
 
         FileUtils.deleteQuietly(file);
     }
@@ -140,7 +152,7 @@ public final class FileSynchronization {
     /**
      *   Removes temporary directory and renames to original name
      */
-    private static void deleteDirectory(String dir, Provider provider){
+    private static void deleteDirectory(final String dir, final Provider provider){
         File[] files = new File(dir).listFiles();
         if(files != null) {
             for (File f : files) {
@@ -218,12 +230,15 @@ public final class FileSynchronization {
         }
     }
 
-    public static void saveHarvestTime(final Provider provider, long time){
+    public static void saveStatistics(final Provider provider){
         String dir = Main.config.getWorkingDirectory()+ CMDI;
         File file = new File(dir + Util.toFileFormat(provider.getName())+"_history.xml");
+        Statistic stats = statistic.get(provider);
         StringBuffer sb = new StringBuffer();
           sb.append("<harvest date=\"").append(currentDate).append("\" ")
-             .append("operationTime=\""+time+"s\" ")
+             .append("operationTime=\"" + stats.getHarvestTime() + "s\" ")
+             .append("requestsToServer=\"" + stats.getRequests() + "\" ")
+             .append("collectedRecords=\"" + stats.getHarvestedRecords() + "\" ")
              .append("/>\n");
         writeToHistoryFile(file, sb.toString());
     }
@@ -237,6 +252,13 @@ public final class FileSynchronization {
 
     }
 
+    public static Statistic getProviderStatistic(Provider provider){
+        return  statistic.get(provider);
+    }
+
+    public static void addProviderStatistic(Provider provider){
+        statistic.put(provider, new Statistic());
+    }
     public static void saveToHistoryFile(final Provider provider, final Path filePath, final Operation operation){
         String dir = Main.config.getWorkingDirectory()+ CMDI;
         File file = new File(dir + Util.toFileFormat(provider.getName())+"_history.xml");

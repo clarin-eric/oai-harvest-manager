@@ -122,7 +122,7 @@ action types are available:
   can be used to specify the file extension (the most typical value
   being ```suffix=".xml"`). If the attribute *group-by-provider* is
   specified, a separate subdirectory will be created for each
-  endpoint.
+  endpoint. By setting history param operation  will created history file.
 
 - The *split* action split a OAI-PMH envelope that contains multiple records
   into individual record. It retains the part of the OAI-PMH envelope that
@@ -238,7 +238,7 @@ the configuration parameter *resource-pool-size* is set to 5:
     <format match="namespace" value="http://www.clarin.eu/cmd/">
       <action type="save" dir="orig"/>
       <action type="strip"/>
-      <action type="save" dir="cmdi"/>
+      <action type="save" dir="cmdi" history="true"/>
     </format>
     <format match="prefix" value="olac">
       <action type="save" dir="orig"/>

@@ -45,8 +45,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -62,8 +60,6 @@ public class SaveAction implements Action {
     protected boolean offload;
     protected boolean history;
 
-    private SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-    private String currentDate = formatter.format(new Date());
     /**
      * Create a new save action.
      *
@@ -76,7 +72,6 @@ public class SaveAction implements Action {
         this.offload = offload;
         this.history = history;
     }
-
 
     public Document getDocument(Metadata metadata) {
         return metadata.getDoc();
@@ -91,7 +86,10 @@ public class SaveAction implements Action {
             XMLEventWriter writer = null;
             try {
                 Path path = chooseLocation(record);
-                if(history)FileSynchronization.saveToHistoryFile(record.getOrigin(), path, FileSynchronization.Operation.INSERT);
+                if(history){
+                    FileSynchronization.saveToHistoryFile(record.getOrigin(), path, FileSynchronization.Operation.INSERT);
+                    FileSynchronization.getProviderStatistic(record.getOrigin()).incRecordCount();
+                }
                 os = Files.newOutputStream(path);
                 if (record.hasDoc()) {
                     TransformerFactory transformerFactory = TransformerFactory.newInstance();
@@ -137,6 +135,7 @@ public class SaveAction implements Action {
                 }
             }
         }
+
         return true;
     }
 
@@ -182,5 +181,4 @@ public class SaveAction implements Action {
         // OutputDirectory, which is as intended.
         return new SaveAction(dir, suffix, offload, history);
     }
-
 }

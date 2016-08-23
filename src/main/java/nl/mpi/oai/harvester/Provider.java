@@ -559,8 +559,7 @@ public class Provider {
 	return this.name.equals(Util.toFileFormat(name));
     }
 
-
-    @Override
+	@Override
     public String toString() {
 	StringBuilder sb = new StringBuilder(name == null ? "provider" : name);
 	if (sets != null) {

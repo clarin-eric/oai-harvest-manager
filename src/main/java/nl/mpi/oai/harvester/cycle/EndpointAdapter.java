@@ -385,7 +385,7 @@ class EndpointAdapter implements Endpoint {
 
         if (increment == null){
             // attribute not XML cycle element, add it to it
-            endpointType.setIncrement((long) 0);
+            endpointType.setIncrement(0l);
             return 0;
         } else {
             return increment;

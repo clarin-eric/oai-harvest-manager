@@ -21,15 +21,14 @@ package nl.mpi.oai.harvester.harvesting;
 import nl.mpi.oai.harvester.Provider;
 import nl.mpi.oai.harvester.action.ActionSequence;
 import nl.mpi.oai.harvester.metadata.Metadata;
+import nl.mpi.oai.harvester.utils.DocumentSource;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.w3c.dom.Document;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-import nl.mpi.oai.harvester.utils.DocumentSource;
 
 /**
  * Scenarios for harvesting
@@ -45,7 +44,7 @@ public class Scenario {
 
     //
     ActionSequence actionSequence;
-    
+
     //
     private static final ReadWriteLock exclusiveLock = new ReentrantReadWriteLock(true);
 
