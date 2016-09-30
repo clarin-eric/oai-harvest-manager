@@ -26,7 +26,6 @@ import nl.mpi.oai.harvester.cycle.CycleProperties;
 import nl.mpi.oai.harvester.cycle.Endpoint;
 import nl.mpi.oai.harvester.harvesting.*;
 import nl.mpi.oai.harvester.metadata.MetadataFactory;
-import nl.mpi.oai.harvester.utils.Statistic;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
@@ -136,7 +135,6 @@ class Worker implements Runnable {
 
             logger.info("Processing provider " + provider + " using " + scenarioName + " scenario and timeout " + provider.getTimeout() + " and retry ("+provider.getMaxRetryCount()+","+provider.getRetryDelay()+")");
 
-            Statistic statistic = new Statistic();
             FileSynchronization.addProviderStatistic(provider);
 
             for (final ActionSequence actionSequence : actionSequences) {
@@ -224,6 +222,7 @@ class Worker implements Runnable {
 
             // report back success or failure to the cycle
             endpoint.doneHarvesting(done);
+            FileSynchronization.saveStatistics(provider);
             endpoint.setIncrement(FileSynchronization.getProviderStatistic(provider).getHarvestedRecords());
             logger.info("Processing finished for " + provider);
         } catch (Throwable e) {
