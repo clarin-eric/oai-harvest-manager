@@ -41,7 +41,6 @@ import java.io.StringWriter;
 import java.lang.management.GarbageCollectorMXBean;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryPoolMXBean;
-import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -49,7 +48,6 @@ import java.nio.file.Path;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.InflaterInputStream;
 import java.util.zip.ZipInputStream;
@@ -352,20 +350,6 @@ public abstract class HarvesterVerb {
             in = new InflaterInputStream(con.getInputStream());
         } else {
             in = con.getInputStream();
-        }
-        
-        // maybe we're lucky
-        System.gc();
-        logger.debug("Content-Length=" + con.getHeaderField("Content-Length"));
-        ManagementFactory.getMemoryMXBean().getHeapMemoryUsage();
-        logger.debug("Heap="+ManagementFactory.getMemoryMXBean().getHeapMemoryUsage());
-        logger.debug("NonHeap="+ManagementFactory.getMemoryMXBean().getNonHeapMemoryUsage());
-        List<MemoryPoolMXBean> beans = ManagementFactory.getMemoryPoolMXBeans();
-        for (MemoryPoolMXBean bean: beans) {
-            logger.debug(bean.getName()+"="+bean.getUsage());
-        }
-        for (GarbageCollectorMXBean bean: ManagementFactory.getGarbageCollectorMXBeans()) {
-            logger.debug(bean.getName()+"="+bean.getCollectionCount(), bean.getCollectionTime());
         }
         
         if (temp!=null) {
