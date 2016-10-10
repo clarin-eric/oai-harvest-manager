@@ -354,20 +354,6 @@ public abstract class HarvesterVerb {
             in = con.getInputStream();
         }
         
-        // maybe we're lucky
-        System.gc();
-        logger.debug("Content-Length=" + con.getHeaderField("Content-Length"));
-        ManagementFactory.getMemoryMXBean().getHeapMemoryUsage();
-        logger.debug("Heap="+ManagementFactory.getMemoryMXBean().getHeapMemoryUsage());
-        logger.debug("NonHeap="+ManagementFactory.getMemoryMXBean().getNonHeapMemoryUsage());
-        List<MemoryPoolMXBean> beans = ManagementFactory.getMemoryPoolMXBeans();
-        for (MemoryPoolMXBean bean: beans) {
-            logger.debug(bean.getName()+"="+bean.getUsage());
-        }
-        for (GarbageCollectorMXBean bean: ManagementFactory.getGarbageCollectorMXBeans()) {
-            logger.debug(bean.getName()+"="+bean.getCollectionCount(), bean.getCollectionTime());
-        }
-        
         if (temp!=null) {
             FileOutputStream out = new FileOutputStream(temp.toFile());
             org.apache.commons.io.IOUtils.copy(in,out,1000000);
