@@ -68,8 +68,8 @@ public class StaticProvider extends Provider {
      * @param oaiUrl endpoint
      * @throws ParserConfigurationException configuration problem
      */
-    public StaticProvider(String oaiUrl,int maxRetryCount, int retryDelay) throws ParserConfigurationException {
-	super(oaiUrl, maxRetryCount, retryDelay);
+    public StaticProvider(String oaiUrl,int maxRetryCount, int[] retryDelays) throws ParserConfigurationException {
+	super(oaiUrl, maxRetryCount, retryDelays);
     }
 
     /**
@@ -79,7 +79,7 @@ public class StaticProvider extends Provider {
      * @throws ParserConfigurationException configuration problem
      */
     public StaticProvider(Document doc) throws ParserConfigurationException {
-	super(null, 1, 0);
+	super(null, 1, new int[]{0});
 	providerContent = doc;
     }
 

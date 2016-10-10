@@ -124,9 +124,10 @@ public class FormatHarvesting extends AbstractHarvesting implements
                             provider.getOaiUrl());
                     return false;
                 } else {
-                    if (provider.retryDelay > 0) {
+                    int retryDelay = provider.getRetryDelay(i-1);
+                    if (retryDelay > 0) {
                         try {
-                            Thread.sleep(provider.retryDelay);
+                            Thread.sleep(retryDelay);
                         } catch (InterruptedException e) {
                             logger.error(e.getMessage(), e);
                         }

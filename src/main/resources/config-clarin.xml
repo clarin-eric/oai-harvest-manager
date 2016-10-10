@@ -92,27 +92,35 @@
   <providers>
     <import>
       <registry url="https://centres.clarin.eu/restxml/"/>
-      <!-- Block harvesting from a specific provider defined in the registry 
-           element by supplying its endpoint URL as an child element tagged 
-           'exclude'. You can add multiple exclude elements. Please note that
-           the exclusion only applies to the registry element, not to the 
-           provider elements 
+      <!--
+        Block harvesting from a specific provider defined in the registry 
+        element by supplying its endpoint URL as an child element tagged 
+        'exclude'. You can add multiple exclude elements. Please note that
+        the exclusion only applies to the registry element, not to the 
+        provider elements.
+      -->
+      <!--
+        <exclude url=""/>
+      -->
+      <!-- 
+        Add endpoint specific configuration to providers defined in the registry.
       -->
       <!-- Leipzig doesn't like too much time between calls within one session, GetRecord calls don't care -->
       <config url="http://clarinoai.informatik.uni-leipzig.de:8080/oaiprovider/oai" scenario="ListIdentifiers"/>
-      <!-- BAS runs sometimes into memory when its big CMD records get processed in batch -->
+      <!-- BAS runs sometimes into memory problems when its big CMD records get processed in batch -->
       <config url="http://www.phonetik.uni-muenchen.de/cgi-bin/BASRepository/oaipmh/oai.pl" scenario="ListIdentifiers"/>
     </import>
     <!-- Virtual Collection Registry -->
      <provider url="http://clarin.ids-mannheim.de/vcr/oai"/> 
     <!--
-        In addition to the registry entries, there are some "D centres" that
-	don't belong in the centre registry. They are manually included here.
-	If one is later added to the registry the entry should be removed from
-	this file.
+     In addition to the registry entries, there are some "D centres" that
+	   don't belong in the centre registry. They are manually included here.
+	   If one is later added to the registry the entry should be removed from
+	   this file.
 
-        Currently included: Utrecht University Library and Het Nederlands
-        Instituut voor Beeld en Geluid.
+     Currently included:
+     - Utrecht University Library and Het Nederlands
+     - Instituut voor Beeld en Geluid.
     -->
     <provider url="http://dspace.library.uu.nl/oai/clarin"/>
     <provider url="http://oai.beeldengeluid.nl/academia/oai"/>

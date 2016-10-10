@@ -73,7 +73,7 @@ public class Provider {
     public int maxRetryCount = 0;
 
     /** Maximum number of retries to use when a connection fails. */
-    public int retryDelay = 0;
+    public int[] retryDelays = {0};
     
     /** Maximum timeout for a connection */
     public int timeout = 0;
@@ -115,10 +115,10 @@ public class Provider {
      *
      * @param url OAI-PMH URL (endpoint) of the provider
      * @param maxRetryCount maximum number of retries
-     * @param retryDelay how long to wait between tries
+     * @param retryDelays how long to wait between tries
      * @throws ParserConfigurationException configuration problem
      */
-    public Provider(String url, int maxRetryCount, int retryDelay)
+    public Provider(String url, int maxRetryCount, int[] retryDelays)
             throws ParserConfigurationException {
 
 	// If the base URL is given with parameters (most often
@@ -130,7 +130,7 @@ public class Provider {
 
 	this.maxRetryCount = maxRetryCount;
         
-        this.retryDelay = retryDelay;
+        this.retryDelays = retryDelays;
 
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         // note: the dbf might throw the checked ParserConfigurationException
@@ -307,12 +307,17 @@ public class Provider {
         return this.maxRetryCount;
     }
 
-    public void setRetryDelay(int retryDelay) {
-        this.retryDelay = retryDelay;
+    public void setRetryDelays(int[] retryDelays) {
+        this.retryDelays = retryDelays;
     }
     
-    public int getRetryDelay() {
-        return this.retryDelay;
+    public int[] getRetryDelays() {
+        return this.retryDelays;
+    }
+
+    public int getRetryDelay(int retry) {
+        retry = (this.retryDelays.length<=retry?this.retryDelays.length-1:retry);
+        return this.retryDelays[retry];
     }
 
     public void setExclusive(boolean exclusive) {
@@ -392,6 +397,7 @@ public class Provider {
 		logger.error(e);
 	    }
             // retry the request once more
+            int retryDelay = getRetryDelay(i);
             if (retryDelay > 0) {
                 try {
                     Thread.sleep(retryDelay);

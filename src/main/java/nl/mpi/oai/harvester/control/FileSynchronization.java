@@ -99,9 +99,10 @@ public final class FileSynchronization {
                 if (counter == provider.maxRetryCount) {
                     break;
                 } else {
-                    if (provider.retryDelay > 0) {
+                    int retryDelay = provider.getRetryDelay(counter);
+                    if (retryDelay > 0) {
                         try {
-                            Thread.sleep(provider.retryDelay);
+                            Thread.sleep(retryDelay);
                         } catch (InterruptedException e) {
                             logger.error(e.getMessage(), e);
                         }

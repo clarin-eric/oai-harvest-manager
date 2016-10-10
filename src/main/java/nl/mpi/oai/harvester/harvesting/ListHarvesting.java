@@ -283,9 +283,10 @@ public abstract class ListHarvesting extends AbstractListHarvesting implements
                     return false;
                 }
                 // retry the request once more
-                if (provider.retryDelay > 0) {
+                int retryDelay = provider.getRetryDelay(i-1);
+                if (retryDelay > 0) {
                     try {
-                        Thread.sleep(provider.retryDelay);
+                        Thread.sleep(retryDelay);
                     } catch (InterruptedException e) {
                         logger.error(e.getMessage(), e);
                     }

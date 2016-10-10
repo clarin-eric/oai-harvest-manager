@@ -99,6 +99,7 @@ public final class RecordHarvesting extends AbstractHarvesting {
             }
 
             if (document == null){
+                i++;
                 // something went wrong with the request
                 logger.info("Cannot get " + prefix + " record with id " + identifier
                         + " from endpoint " + provider.oaiUrl);
@@ -106,10 +107,10 @@ public final class RecordHarvesting extends AbstractHarvesting {
                     // try another record
                     return false;
                 } else {
-                    i++;
-                    if (provider.retryDelay > 0) {
+                    int retryDelay = provider.getRetryDelay(i-1);
+                    if (retryDelay > 0) {
                         try {
-                            Thread.sleep(provider.retryDelay);
+                            Thread.sleep(retryDelay);
                         } catch (InterruptedException e) {
                             logger.error(e.getMessage(), e);
                         }

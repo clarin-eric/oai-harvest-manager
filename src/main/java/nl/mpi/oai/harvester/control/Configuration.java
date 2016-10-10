@@ -383,25 +383,25 @@ public class Configuration {
                             logger.debug("Excluding endpoint" + provUrl);
                         } else {
                             logger.debug("Including endpoint" + provUrl);
-                            Provider provider = new Provider(provUrl, getMaxRetryCount(), getRetryDelay());
+                            Provider provider = new Provider(provUrl, getMaxRetryCount(), getRetryDelays());
                             if (configMap.containsKey(provUrl)) {
                                 Node configNode = configMap.get(provUrl);
                                 String pScenario = Util.getNodeText(xpath, "./@scenario", configNode);
                                 String pTimeout = Util.getNodeText(xpath, "./@timeout", configNode);
                                 String pMaxRetryCount = Util.getNodeText(xpath, "./@max-retry-count", configNode);
-                                String pRetryDelay = Util.getNodeText(xpath, "./@retry-delay", configNode);
+                                String pRetryDelays = Util.getNodeText(xpath, "./@retry-delay", configNode);
                                 String pExclusive = Util.getNodeText(xpath, "./@exclusive", configNode);
 
                                 int timeout = (pTimeout != null) ? Integer.valueOf(pTimeout) : getTimeout();
                                 int maxRetryCount = (pMaxRetryCount != null) ? Integer.valueOf(pMaxRetryCount) : getMaxRetryCount();
-                                int retryDelay = (pRetryDelay != null) ? Integer.valueOf(pRetryDelay) : getRetryDelay();
+                                int[] retryDelays = (pRetryDelays != null)?parseRetryDelays(pRetryDelays):getRetryDelays();
                                 boolean exclusive = Boolean.parseBoolean(pExclusive);
 
                                 if (pScenario != null)
                                     provider.setScenario(pScenario);
                                 provider.setTimeout(timeout);
                                 provider.setMaxRetryCount(maxRetryCount);
-                                provider.setRetryDelay(retryDelay);
+                                provider.setRetryDelays(retryDelays);
                                 provider.setExclusive(exclusive);
                             }
                             providers.add(provider);
@@ -421,12 +421,12 @@ public class Configuration {
             String pScenario = Util.getNodeText(xpath, "./@scenario", cur);
             String pTimeout = Util.getNodeText(xpath, "./@timeout", cur);
             String pMaxRetryCount = Util.getNodeText(xpath, "./@max-retry-count", cur);
-            String pRetryDelay = Util.getNodeText(xpath, "./@retry-delay", cur);
+            String pRetryDelays = Util.getNodeText(xpath, "./@retry-delay", cur);
             String pExclusive = Util.getNodeText(xpath, "./@exclusive", cur);
 
             int timeout = (pTimeout != null) ? Integer.valueOf(pTimeout) : getTimeout();
             int maxRetryCount = (pMaxRetryCount != null) ? Integer.valueOf(pMaxRetryCount) : getMaxRetryCount();
-            int retryDelay = (pRetryDelay != null) ? Integer.valueOf(pRetryDelay) : getRetryDelay();
+            int[] retryDelays = (pRetryDelays != null)?parseRetryDelays(pRetryDelays):getRetryDelays();
             boolean exclusive = Boolean.parseBoolean(pExclusive);
 
             if (pUrl == null) {
@@ -434,8 +434,8 @@ public class Configuration {
                 continue;
             }
 
-            logger.info("Provider[" + pUrl + "] scenario[" + pScenario + "] timeout[" + timeout + "] retry[" + maxRetryCount + "," + retryDelay + "]");
-            Provider provider = (Boolean.valueOf(pStatic)) ? new StaticProvider(pUrl, maxRetryCount, retryDelay) : new Provider(pUrl, maxRetryCount, retryDelay);
+            logger.info("Provider[" + pUrl + "] scenario[" + pScenario + "] timeout[" + timeout + "] retry[" + maxRetryCount + "," + retryDelays + "]");
+            Provider provider = (Boolean.valueOf(pStatic)) ? new StaticProvider(pUrl, maxRetryCount, retryDelays) : new Provider(pUrl, maxRetryCount, retryDelays);
 
             if (pName != null)
                 provider.setName(pName);
@@ -506,10 +506,17 @@ public class Configuration {
         return Integer.valueOf(s);
     }
 
-    public int getRetryDelay() {
-        String s = settings.get(KnownOptions.RETRYDELAY.toString());
-        if (s == null) return 0;
-        return Integer.valueOf(s);
+    protected int[] parseRetryDelays(String s) {
+        if (s == null) return new int[]{0};
+        String[] sa = s.split("\\s+");
+        int[] da = new int[sa.length];
+        for (int i=0;i<sa.length;i++)
+            da[i] = Integer.valueOf(sa[i]);
+        return da;
+    }
+
+    public int[] getRetryDelays() {
+        return parseRetryDelays(settings.get(KnownOptions.RETRYDELAY.toString()));
     }
 
     public int getMaxJobs() {

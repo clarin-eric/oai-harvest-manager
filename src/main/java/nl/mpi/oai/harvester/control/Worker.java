@@ -133,7 +133,7 @@ class Worker implements Runnable {
             // factory for OAI verbs
             OAIFactory oaiFactory = new OAIFactory();
 
-            logger.info("Processing provider " + provider + " using " + scenarioName + " scenario and timeout " + provider.getTimeout() + " and retry ("+provider.getMaxRetryCount()+","+provider.getRetryDelay()+")");
+            logger.info("Processing provider " + provider + " using " + scenarioName + " scenario and timeout " + provider.getTimeout() + " and retry ("+provider.getMaxRetryCount()+","+provider.getRetryDelays()+")");
 
             FileSynchronization.addProviderStatistic(provider);
 

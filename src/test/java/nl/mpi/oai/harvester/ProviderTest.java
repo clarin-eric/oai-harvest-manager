@@ -48,7 +48,7 @@ public class ProviderTest {
 
 	String expResult = "CLARIN Centre Vienna / Language Resources Portal";
 
-	Provider instance = new Provider("dummy", 1, 0);
+	Provider instance = new Provider("dummy", 1, new int[]{0});
 	String result = instance.parseProviderName(doc);
 
 	assertEquals(expResult, result);
@@ -69,7 +69,7 @@ public class ProviderTest {
 	expResult.add("lrp:dict-gate.3");
 
 	List<String> ids = new ArrayList<>();
-	Provider instance = new Provider("dummy", 1, 0);
+	Provider instance = new Provider("dummy", 1, new int[]{0});
 	instance.addIdentifiers(doc, ids);
 
 	assertEquals(expResult, ids);
@@ -93,7 +93,7 @@ public class ProviderTest {
 
 	MetadataFormat format = new MetadataFormat("namespace",
 		"http://www.clarin.eu/cmd/");
-	Provider instance = new Provider("dummy", 1, 0);
+	Provider instance = new Provider("dummy", 1, new int[]{0});
 	List<String> result = instance.parsePrefixes(doc, format);
 
 	assertEquals(expResult, result);
@@ -113,7 +113,7 @@ public class ProviderTest {
 	expResult.add("oai_dc");
 
 	MetadataFormat format = new MetadataFormat("prefix", "oai_dc");
-	Provider instance = new Provider("dummy", 1, 0);
+	Provider instance = new Provider("dummy", 1, new int[]{0});
 	List<String> result = instance.parsePrefixes(doc, format);
 
 	assertEquals(expResult, result);
@@ -132,7 +132,7 @@ public class ProviderTest {
 	List<String> expResult = Collections.emptyList();
 
 	MetadataFormat format = new MetadataFormat("schema", "garbage");
-	Provider instance = new Provider("dummy", 1, 0);
+	Provider instance = new Provider("dummy", 1, new int[]{0});
 	List<String> result = instance.parsePrefixes(doc, format);
 
 	assertEquals(expResult, result);
