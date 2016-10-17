@@ -5,6 +5,8 @@
     xmlns:oai="http://www.openarchives.org/OAI/2.0/">
 
     <xsl:output method="xml" version="1.0" encoding="UTF-8" indent="yes"/>
+    
+    <xsl:param name="provider_uri" select="()"/>
 
     <xsl:template match="node() | @*">
         <xsl:copy>
@@ -14,7 +16,7 @@
     
     <xsl:template match="oai:OAI-PMH">
         <xsl:variable name="sets">
-            <xsl:variable name="uri" select="concat(oai:request,'?verb=ListSets')"/>
+            <xsl:variable name="uri" select="concat(($provider_uri,oai:request)[1],'?verb=ListSets')"/>
             <xsl:choose>
                 <xsl:when test="doc-available($uri)">
                     <xsl:sequence select="doc($uri)"/>

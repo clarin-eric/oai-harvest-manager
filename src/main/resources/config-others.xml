@@ -31,7 +31,7 @@
     is not fulfilled, this setting has no effect.-->
     <incremental>true</incremental>
     
-    <scenario>ListIdentifiers</scenario>
+    <scenario>ListRecords</scenario>
   </settings>
 
 
@@ -110,7 +110,7 @@
     <provider url="http://catalog.paradisec.org.au/oai/item"
 	      name="Pacific And Regional Archive for Digital Sources in Endangered Cultures (PARADISEC)"/>
     <provider url="http://www.language-archives.org/hosted/rosettaproject.org.xml" static="true"/>
-    <provider url="http://archive.ethnologue.com/sil_archives.asp"/>
+    <provider url="http://archive.ethnologue.com/sil_archives.asp" scenario="ListIdentifiers"/>
     <provider url="http://www.language-archives.org/hosted/AcademiaSinica.xml" static="true"
 	      name="Academia Sinica Balanced Corpus of Modern Chinese"/>
     <provider url="http://www.language-archives.org/hosted/tdproject.xml" static="true"
