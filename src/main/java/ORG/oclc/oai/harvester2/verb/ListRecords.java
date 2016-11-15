@@ -44,8 +44,6 @@ import org.codehaus.stax2.evt.XMLEvent2;
 public class ListRecords extends HarvesterVerb {
     private static Logger logger = LogManager.getLogger(ListRecords.class);
     
-    private static Semaphore semaphore = new Semaphore(1);
-    
     /**
      * Mock object constructor (for unit testing purposes)
      */
@@ -107,27 +105,6 @@ public class ListRecords extends HarvesterVerb {
     throws IOException, ParserConfigurationException, SAXException,
     TransformerException {
         super(getRequestURL(baseURL, resumptionToken), timeout, temp);
-    }
-    
-    public void harvest(String requestURL, int timeout, Path temp) throws MalformedURLException, IOException {
-        if (semaphore!=null) {
-            for (;;) {
-                try {
-                    logger.debug("request ListRecords verb");
-                    semaphore.acquire();
-                    logger.debug("acquired ListRecords verb");
-                    break;
-                } catch (InterruptedException e) { }
-            }
-        }
-        try {
-            super.harvest(requestURL, timeout, temp);
-        } finally {
-            if (semaphore!=null) {
-                semaphore.release();
-                logger.debug("released ListRecords verb");
-            }
-        }
     }
     
     /**

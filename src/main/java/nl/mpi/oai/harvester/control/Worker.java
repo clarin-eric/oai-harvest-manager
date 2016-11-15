@@ -46,9 +46,6 @@ class Worker implements Runnable {
     
     private static final Logger logger = LogManager.getLogger(Worker.class);
     
-    /** A standard semaphore is used to track the number of running threads. */
-    private static Semaphore semaphore;
-
     /** The provider this worker deals with. */
     private final Provider provider;
 
@@ -64,15 +61,6 @@ class Worker implements Runnable {
 
     // kj: annotate
     Endpoint endpoint;
-
-    /**
-     * Set the maximum number of concurrent worker threads.
-     * 
-     * @param num number of running threads that may not be exceeded
-     */
-    public static void setConcurrentLimit(int num) {
-	semaphore = new Semaphore(num);
-    }
 
     /**
      * Associate a provider and action actionSequences with a scenario
@@ -97,29 +85,14 @@ class Worker implements Runnable {
         this.scenarioName = endpoint.getScenario();
     }
 
-    /**
-     * <br>Start this worker thread <br><br>
-     *
-     * This method will block for as long as necessary until a thread can be
-     * started without violating the limit.
-     */
-    public void startWorker() {
-	for (;;) {
-	    try {
-		semaphore.acquire();
-		break;
-	    } catch (InterruptedException e) { }
-	}
-	Thread t = new Thread(this);
-	t.start();
-    }
-
     @Override
     public void run() {
         Throwable t = null;
         try {
             logger.debug("Welcome to OAI Harvest Manager worker!");
             provider.init();
+            
+            Thread.currentThread().setName(provider.getName());
 
             // setting specific log filename
             ThreadContext.put("logFileName", Util.toFileFormat(provider.getName()).replaceAll("/",""));
@@ -232,12 +205,8 @@ class Worker implements Runnable {
             else
                 logger.info("Processing finished for " + provider);
 
-            semaphore.release();
-
             logger.debug("Goodbye from OAI Harvest Manager worker!");
         }
     }
 
 }
-
-

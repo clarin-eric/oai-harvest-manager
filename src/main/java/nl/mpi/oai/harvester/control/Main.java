@@ -29,6 +29,8 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPathExpressionException;
 import java.io.File;
 import java.io.IOException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 
 /**
@@ -45,11 +47,9 @@ public class Main {
 
     private static void runHarvesting(Configuration config) {
 	config.log();
+        
+        ExecutorService executor = new ScheduledThreadPoolExecutor(config.getMaxJobs());
 
-	// Start a new worker thread for each provider. The Worker class
-	// is responsible for honouring the configured limit of
-	// concurrent worker threads.
-	Worker.setConcurrentLimit(config.getMaxJobs());
 	// create a CycleFactory
 	CycleFactory factory = new CycleFactory();
 	// get a cycle based on the overview file
@@ -57,13 +57,10 @@ public class Main {
 	Cycle cycle = factory.createCycle(OverviewFile);
 
 	for (Provider provider : config.getProviders()) {
-
-		// create a new working, passing one and the same for each cycle
-	    Worker worker = new Worker(
-				provider, config.getActionSequences(), cycle);
-
-	    worker.startWorker();
-
+            
+            // create a new worker, passing one and the same for each cycle
+	    Worker worker = new Worker(provider, config.getActionSequences(), cycle);
+            executor.execute(worker);
 	}
     }
 

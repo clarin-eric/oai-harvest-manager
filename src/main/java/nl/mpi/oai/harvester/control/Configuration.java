@@ -393,6 +393,11 @@ public class Configuration {
                                 provider.setMaxRetryCount(maxRetryCount);
                                 provider.setRetryDelay(retryDelay);
                                 provider.setExclusive(exclusive);
+                            } else {
+                                provider.setTimeout(getTimeout());
+                                provider.setMaxRetryCount(getMaxRetryCount());
+                                provider.setRetryDelay(getRetryDelay());
+                                provider.setExclusive(false);
                             }
                             providers.add(provider);
                         }
