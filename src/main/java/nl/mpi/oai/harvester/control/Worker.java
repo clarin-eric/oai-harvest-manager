@@ -92,7 +92,7 @@ class Worker implements Runnable {
             logger.debug("Welcome to OAI Harvest Manager worker!");
             provider.init();
             
-            Thread.currentThread().setName(provider.getName());
+            Thread.currentThread().setName(provider.getName().replaceAll("[^a-zA-Z0-9\\-\\(\\)]"," "));
 
             // setting specific log filename
             ThreadContext.put("logFileName", Util.toFileFormat(provider.getName()).replaceAll("/",""));

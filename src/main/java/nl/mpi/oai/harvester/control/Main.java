@@ -62,6 +62,8 @@ public class Main {
 	    Worker worker = new Worker(provider, config.getActionSequences(), cycle);
             executor.execute(worker);
 	}
+        
+        executor.shutdown();
     }
 
     public static void main(String[] args) {
