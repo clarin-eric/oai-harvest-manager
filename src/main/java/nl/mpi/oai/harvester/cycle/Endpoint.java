@@ -145,24 +145,6 @@ public interface Endpoint {
     boolean retry();
 
     /**
-     * <br> Check if the cycle should incrementally harvest the endpoint <br><br>
-     *
-     * On harvesting the endpoint, if the cycle is allowed to incrementally
-     * harvest the endpoint, it will use the 'harvested' endpoint property,
-     * the date of the most recent successful harvest attempt, to determine
-     * the selective harvest OAI request. It will try to obtain the records
-     * that were added since.
-     *
-     * Note: there is no method for setting the value indicating whether or
-     * not incremental harvesting is allowed. The value needs to be specified
-     * elsewhere, for example in an XML file managed by a class implementing
-     * this interface.
-     *
-     * @return true if incremental harvesting is allowed, false otherwise
-     */
-     boolean allowIncrementalHarvest ();
-
-    /**
      * <br> Check if the cycle should refresh the endpoint <br><br>
      *
      * Refreshing the endpoint means that the cycle will create a request to
@@ -179,21 +161,6 @@ public interface Endpoint {
      * @return true if a refresh is allowed, false otherwise
      */
     boolean allowRefresh ();
-
-    /**
-     * <br> Get the scenario for harvesting <br><br>
-     *
-     * Depending on the endpoint, the cycle will apply a specific scenario for
-     * harvesting records. It can, for example, first harvest a list of
-     * identifiers to metadata elements, and after that, harvest the records
-     * one by one. Alternatively, it can harvest the records directly. <br><br>
-     *
-     * Note: there is no method for setting the scenario. The value needs to
-     * be specified independently from the harvest cycle.
-     *
-     * @return the scenario
-     */
-     CycleProperties.Scenario getScenario ();
 
     /**
      * <br> Return the date of the most recent harvest attempt <br><br>

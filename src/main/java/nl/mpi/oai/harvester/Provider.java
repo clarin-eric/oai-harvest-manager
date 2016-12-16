@@ -63,6 +63,9 @@ public class Provider {
     /** Scenario used for this provider. */
     public String scenario;
 
+    /** Incremental used for this provider. */
+    public boolean incremental;
+
     /** Address through which the OAI repository is accessed. */
     public final String oaiUrl;
 
@@ -181,17 +184,17 @@ public class Provider {
 	}
     }
 
-	void fetchDeletionMode(){
-		deletionMode = getProviderDeletionMode();
-	}
+    void fetchDeletionMode(){
+        deletionMode = getProviderDeletionMode();
+    }
 
-	public DeletionMode getDeletionMode() {
-		return deletionMode;
-	}
+    public DeletionMode getDeletionMode() {
+        return deletionMode;
+    }
 
-	public void setDeletionMode(DeletionMode deletionMode) {
-		this.deletionMode = deletionMode;
-	}
+    public void setDeletionMode(DeletionMode deletionMode) {
+        this.deletionMode = deletionMode;
+    }
 
 	/**
      * Set the name of this provider
@@ -226,26 +229,26 @@ public class Provider {
      * @return provider name
      */
     public String getProviderName() {
-		try {
-			Identify ident = new Identify(oaiUrl, timeout);
-			return parseProviderName(ident.getDocument());
-		} catch (IOException | ParserConfigurationException | SAXException
-				| TransformerException e) {
-			logger.error(e.getMessage(), e);
-		}
-		return null;
-	}
+        try {
+            Identify ident = new Identify(oaiUrl, timeout);
+            return parseProviderName(ident.getDocument());
+        } catch (IOException | ParserConfigurationException | SAXException
+                    | TransformerException e) {
+            logger.error(e.getMessage(), e);
+        }
+        return null;
+    }
 
-	public DeletionMode getProviderDeletionMode() {
-		try {
-			Identify ident = new Identify(oaiUrl, timeout);
-			return parseDeletionMode(ident.getDocument());
-		} catch (IOException | ParserConfigurationException | SAXException
-				| TransformerException e) {
-			logger.error(e.getMessage(), e);
-		}
-		return null;
-	}
+    public DeletionMode getProviderDeletionMode() {
+        try {
+            Identify ident = new Identify(oaiUrl, timeout);
+            return parseDeletionMode(ident.getDocument());
+        } catch (IOException | ParserConfigurationException | SAXException
+                | TransformerException e) {
+            logger.error(e.getMessage(), e);
+        }
+        return null;
+    }
 
     /**
      * Parse provider's name from an Identify response.
@@ -268,20 +271,20 @@ public class Provider {
 	return null;
     }
 
-	public DeletionMode parseDeletionMode(Document response) {
-		try {
-			NodeList name = (NodeList) xpath.evaluate("//*[local-name() = 'deletedRecord']/text()",
-					response, XPathConstants.NODESET);
-			if (name != null && name.getLength() > 0) {
-				String deletionMode = name.item(0).getNodeValue();
-				logger.info("Contacted " + oaiUrl + " to get its deletionMode, received: \"" + deletionMode + "\"");
-				return DeletionMode.valueOf(deletionMode.toUpperCase());
-			}
-		} catch (XPathExpressionException e) {
-			logger.error(e.getMessage(), e);
-		}
-		return DeletionMode.NO;
-	}
+    public DeletionMode parseDeletionMode(Document response) {
+        try {
+            NodeList name = (NodeList) xpath.evaluate("//*[local-name() = 'deletedRecord']/text()",
+                            response, XPathConstants.NODESET);
+            if (name != null && name.getLength() > 0) {
+                String deletionMode = name.item(0).getNodeValue();
+                logger.info("Contacted " + oaiUrl + " to get its deletionMode, received: \"" + deletionMode + "\"");
+                return DeletionMode.valueOf(deletionMode.toUpperCase());
+            }
+        } catch (XPathExpressionException e) {
+            logger.error(e.getMessage(), e);
+        }
+        return DeletionMode.NO;
+    }
 
     public void setScenario(String scenario) {
         this.scenario = scenario;
@@ -289,6 +292,14 @@ public class Provider {
     
     public String getScenario() {
         return this.scenario;
+    }
+
+    public void setIncremental(boolean incremental) {
+        this.incremental = incremental;
+    }
+    
+    public boolean getIncremental() {
+        return this.incremental;
     }
 
     public void setTimeout(int timeout) {

@@ -68,10 +68,6 @@ public class CycleTest {
 
         // second endpoint
         endpoint = cycle.next();
-        /* While the endpoint allows retrying, it does not allow incremental
-           harvesting, so the client should harvest it from the beginning.
-         */
-        assertEquals(zeroUTC, cycle.getRequestDate(endpoint).toDateTime());
 
         // third endpoint
         endpoint = cycle.next();
@@ -115,7 +111,6 @@ public class CycleTest {
         assertEquals("http://www.endpoint1.org", endpoint.getURI());
         assertFalse(endpoint.blocked());
         assertTrue(endpoint.retry());
-        assertTrue(endpoint.allowIncrementalHarvest());
         // with no date in the overview, this endpoint should be harvested
         assertTrue(cycle.doHarvest(endpoint));
 

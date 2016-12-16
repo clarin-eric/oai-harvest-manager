@@ -6,7 +6,7 @@
   <groupId>nl.mpi</groupId>
   <artifactId>oai-harvest-manager</artifactId>
   <packaging>jar</packaging>
-  <version>0.5</version>
+  <version>0.6-SNAPSHOT</version>
   <name>OAI Harvest Manager</name>
   <description>This application manages OAI-PMH harvesting workflows</description>
 

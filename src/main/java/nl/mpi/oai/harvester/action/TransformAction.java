@@ -37,12 +37,14 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.concurrent.Semaphore;
+import java.util.logging.Level;
 
 /**
  * This class represents the application of an XSL transformation to the
@@ -139,6 +141,7 @@ public class TransformAction implements Action {
                     output = new DOMResult();
                 }
                 transformer.setParameter("provider_name",record.getOrigin().getName());
+                transformer.setParameter("provider_uri",record.getOrigin().getOaiUrl());
                 transformer.setParameter("record_identifier",record.getId());
                 transformer.transform(source, output);
                 if (record.hasStream()) {                 
@@ -235,6 +238,7 @@ public class TransformAction implements Action {
                     logger.error("Transformer resolver: couldn't resolve("+href+","+base+") continuing with just "+href,ex);
                 }
             }
+            logger.debug("Transformer resolver: uri["+uri+"]");
             String cacheFile = uri.replaceAll("[^a-zA-Z0-9]", "_");
             logger.debug("Transformer resolver: check cache for "+cacheFile);
             Source res = null;
@@ -243,6 +247,13 @@ public class TransformAction implements Action {
                 logger.debug("Transformer resolver: loaded "+cacheFile+" from cache");
             } else {
                 res = resolver.resolve(href, base);
+                try {
+                    HttpURLConnection con = (HttpURLConnection)(new URL(uri)).openConnection();
+                    //con.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11");
+                    System.out.println("!MENZO: resolver["+uri+"] connection response["+con.getResponseCode()+"]");
+                } catch (Exception ex) {
+                    System.out.println("!MENZO: resolver["+uri+"] connection exception["+ex+"]");
+                }
                 Result result = new StreamResult(cacheDir.resolve(cacheFile).toFile());
                 Transformer xformer = factory.newTransformer();
                 xformer.transform(res, result);

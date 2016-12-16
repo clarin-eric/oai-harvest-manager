@@ -1,19 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <overviewType>
     <mode>normal</mode>
-    <scenario>ListRecords</scenario>
     <endpoint>
         <URI>http://www.endpoint1.org</URI>
         <group>group1</group>
         <block>false</block>
         <retry>true</retry>
-        <incremental>true</incremental>
     </endpoint>
     <endpoint>
         <URI>http://www.endpoint2.org</URI>
         <block>false</block>
         <retry>true</retry>
-        <incremental>false</incremental>
         <attempted>2014-07-24T00:00:00.000Z</attempted>
         <harvested>2014-07-21T00:00:00.000Z</harvested>
     </endpoint>
@@ -21,7 +18,6 @@
         <URI>http://www.endpoint3.org</URI>
         <block>true</block>
         <retry>true</retry>
-        <incremental>false</incremental>
         <attempted>2014-12-17T00:00:00.000Z</attempted>
         <harvested>2014-12-11T00:00:00.000Z</harvested>
     </endpoint>
@@ -29,14 +25,12 @@
         <URI>http://www.endpoint4.org</URI>
         <block>false</block>
         <retry>false</retry>
-        <incremental>false</incremental>
         <attempted>2014-07-19T00:00:00.000Z</attempted>
     </endpoint>
     <endpoint>
         <URI>http://www.endpoint5.org</URI>
         <block>false</block>
         <retry>false</retry>
-        <incremental>true</incremental>
         <attempted>2014-07-19T00:00:00.000Z</attempted>
         <harvested>2014-07-19T00:00:00.000Z</harvested>
     </endpoint>

@@ -85,8 +85,10 @@
 	      name="Pacific And Regional Archive for Digital Sources in Endangered Cultures (PARADISEC)"/>
     <provider url="https://b2share.eudat.eu/oai2d/" name="B2SHARE">
       <set>Linguistics</set>
-    </provider>-->
+    </provider>
     <provider url="http://clarino.uib.no/oai"/>
     <provider url="https://repo.clarino.uib.no/oai/request"/>
+-->
+    <provider url="https://www.meertens.knaw.nl/flat/oaiprovider/"/>
   </providers>
 </config>

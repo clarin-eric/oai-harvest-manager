@@ -112,35 +112,6 @@ final class XMLOverview {
      *
      * @param endpointURI the URI of the endpoint requested
      * @param group       the group the endpoint belongs to
-     * @param scenario    the scenario used by this endpoint
-     * @return            endpoint properties
-     */
-    public Endpoint getEndpoint(String endpointURI, String group, String scenario) {
-
-        /* Since methods outside the package can invoke this method, check for
-           the parameter object to be in place.
-         */
-        if (endpointURI == null){
-            throw new IllegalArgumentException("endpoint URI is null");
-        }
-        if (group == null){
-            throw new IllegalArgumentException("endpoint group is null");
-        }
-
-        return new EndpointAdapter(endpointURI, group, scenario, this);
-    }
-
-    /**
-     * <br> Create an adapter for an EndpointType object <br><br>
-     *
-     * This method returns the adapter object for the endpoint indicated. <br><br>
-     *
-     * Note: the adapter only makes available the properties for the endpoint
-     * indicated. Other endpoints or general properties defined in the overview
-     * are outside the scope of the adapter.
-     *
-     * @param endpointURI the URI of the endpoint requested
-     * @param group       the group the endpoint belongs to
      * @return            endpoint properties
      */
     public Endpoint getEndpoint(String endpointURI, String group) {
@@ -155,7 +126,7 @@ final class XMLOverview {
             throw new IllegalArgumentException("endpoint group is null");
         }
 
-        return new EndpointAdapter(endpointURI, group, null, this);
+        return new EndpointAdapter(endpointURI, group, this);
     }
 
     /**
@@ -175,8 +146,7 @@ final class XMLOverview {
         /* Since only methods in the package can invoke this method, assume the
            endpointType is in place.
          */
-        return new EndpointAdapter(endpointType.getURI(), endpointType.getGroup(),
-                (endpointType.getScenario()!=null?endpointType.getScenario().toString():null), this);
+        return new EndpointAdapter(endpointType.getURI(), endpointType.getGroup(), this);
     }
 
     /**

@@ -29,6 +29,8 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPathExpressionException;
 import java.io.File;
 import java.io.IOException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 
 /**
@@ -45,11 +47,9 @@ public class Main {
 
     private static void runHarvesting(Configuration config) {
 	config.log();
+        
+        ExecutorService executor = new ScheduledThreadPoolExecutor(config.getMaxJobs());
 
-	// Start a new worker thread for each provider. The Worker class
-	// is responsible for honouring the configured limit of
-	// concurrent worker threads.
-	Worker.setConcurrentLimit(config.getMaxJobs());
 	// create a CycleFactory
 	CycleFactory factory = new CycleFactory();
 	// get a cycle based on the overview file
@@ -57,14 +57,12 @@ public class Main {
 	Cycle cycle = factory.createCycle(OverviewFile);
 
 	for (Provider provider : config.getProviders()) {
-
-		// create a new working, passing one and the same for each cycle
-	    Worker worker = new Worker(
-				provider, config.getActionSequences(), cycle);
-
-	    worker.startWorker();
-
+            // create a new worker
+	    Worker worker = new Worker(provider, config.getActionSequences(), cycle);
+            executor.execute(worker);
 	}
+        
+        executor.shutdown();
     }
 
     public static void main(String[] args) {
@@ -74,11 +72,15 @@ public class Main {
 	String configFile = null;
 
 	// Select Saxon XSLT/XPath implementation (necessary in case there
-    // are other XSLT/XPath libraries in classpath).
-    System.setProperty("javax.xml.transform.TransformerFactory",    
-        "net.sf.saxon.TransformerFactoryImpl");
-    System.setProperty("javax.xml.xpath.XPathFactory",
-        "net.sf.saxon.xpath.XPathFactoryImpl");
+        // are other XSLT/XPath libraries in classpath).
+        System.setProperty("javax.xml.transform.TransformerFactory",    
+            "net.sf.saxon.TransformerFactoryImpl");
+        System.setProperty("javax.xml.xpath.XPathFactory",
+            "net.sf.saxon.xpath.XPathFactoryImpl");
+    
+        // Some endpoints behave differently when you're not a browser, so fake it
+        System.setProperty("http.agent",
+            "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11");
 
 	// If the "config" parameter is specified, take it as the
 	// configuration file name.

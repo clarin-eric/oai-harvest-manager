@@ -4,7 +4,7 @@
     <Properties>
         <Property name="LOG_DIR">${sys:logdir}</Property>
         <Property name="ARCHIVE">${LOG_DIR}/archive</Property>
-        <Property name="PATTERN">%d{ABSOLUTE} %level{length=5} [%thread] %logger{1} - %msg%n</Property>
+        <Property name="PATTERN">%d{ISO8601} %level{length=5} [%thread] %logger{1} - %msg%n</Property>
     </Properties>
 
     <Appenders>
@@ -49,11 +49,11 @@
 
     <Loggers>
 
-        <Logger name="nl.mpi.oai.harvester" level="INFO" additivity="false">
+        <Logger name="nl.mpi.oai.harvester" level="DEBUG" additivity="false">
             <AppenderRef ref="RoutingAppender"/>
         </Logger>
         
-        <Logger name="ORG.oclc.oai.harvester2.verb" level="INFO" additivity="false">
+        <Logger name="ORG.oclc.oai.harvester2.verb" level="DEBUG" additivity="false">
             <AppenderRef ref="RoutingAppender"/>
         </Logger>
 

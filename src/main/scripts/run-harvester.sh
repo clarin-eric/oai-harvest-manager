@@ -27,6 +27,6 @@ else
   LOG_DIR=$thisDir
 fi
 
-PROPS="${PROPS} -Dlogdir=${LOG_DIR}"
+PROPS="${PROPS} -Dlogdir=${LOG_DIR} -Dhttp.user=Mozilla/5.0"
 
 nice ${JAVA} ${PROPS} -jar ${JAR} $*

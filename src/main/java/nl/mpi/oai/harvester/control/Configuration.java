@@ -363,7 +363,7 @@ public class Configuration {
                     for (int i = 0; i < configList.getLength(); i++) {
                         Node configNode = configList.item(i);
 
-                        // find exlude node
+                        // find config node
                         String eUrl = Util.getNodeText(xpath, "./@url", configNode);
                         if (eUrl == null) {
                             logger.warn("No URL in config specification");
@@ -396,13 +396,21 @@ public class Configuration {
                                 int maxRetryCount = (pMaxRetryCount != null) ? Integer.valueOf(pMaxRetryCount) : getMaxRetryCount();
                                 int[] retryDelays = (pRetryDelays != null)?parseRetryDelays(pRetryDelays):getRetryDelays();
                                 boolean exclusive = Boolean.parseBoolean(pExclusive);
+                                String scenario = (pScenario != null) ?  pScenario : getScenario();
 
-                                if (pScenario != null)
-                                    provider.setScenario(pScenario);
                                 provider.setTimeout(timeout);
                                 provider.setMaxRetryCount(maxRetryCount);
                                 provider.setRetryDelays(retryDelays);
                                 provider.setExclusive(exclusive);
+                                provider.setIncremental(isIncremental());
+                                provider.setScenario(scenario);
+                            } else {
+                                provider.setTimeout(getTimeout());
+                                provider.setMaxRetryCount(getMaxRetryCount());
+                                provider.setRetryDelays(getRetryDelays());
+                                provider.setExclusive(false);
+                                provider.setIncremental(isIncremental());
+                                provider.setScenario(getScenario());
                             }
                             providers.add(provider);
                         }
@@ -428,6 +436,7 @@ public class Configuration {
             int maxRetryCount = (pMaxRetryCount != null) ? Integer.valueOf(pMaxRetryCount) : getMaxRetryCount();
             int[] retryDelays = (pRetryDelays != null)?parseRetryDelays(pRetryDelays):getRetryDelays();
             boolean exclusive = Boolean.parseBoolean(pExclusive);
+            String scenario = (pScenario != null) ?  pScenario : getScenario();
 
             if (pUrl == null) {
                 logger.error("Skipping provider " + pName + ": URL is missing");
@@ -440,12 +449,10 @@ public class Configuration {
             if (pName != null)
                 provider.setName(pName);
 
-            if (pScenario != null)
-                provider.setScenario(pScenario);
-
             provider.setTimeout(timeout);
-
             provider.setExclusive(exclusive);
+            provider.setIncremental(isIncremental());
+            provider.setScenario(scenario);
 
             if (!Boolean.valueOf(pStatic)) {
                 // Note: static providers do not support sets, so this only
@@ -537,16 +544,13 @@ public class Configuration {
      * @return string indicating the location of the overview file
      */
     public String getOverviewFile() {
-        String s = settings.get(KnownOptions.SCENARIO.toString());
         String o = settings.get(KnownOptions.OVERVIEWFILE.toString());
-        if (s == null)
-            s = "ListIdentifiers";
         if (o == null)
             o = "overview.xml";
         Path p = Paths.get(o);
         if (!Files.exists(p)) {
             try {
-                String overview = "<overviewType><scenario>" + s + "</scenario></overviewType>";
+                String overview = "<overviewType/>";
                 BufferedWriter writer = Files.newBufferedWriter(p);
                 writer.write(overview, 0, overview.length());
                 writer.close();
@@ -586,11 +590,6 @@ public class Configuration {
         return (s == null) ? 0 : Integer.valueOf(s);
     }
 
-    public boolean isIncremental() {
-        String s = settings.get(KnownOptions.INCREMENTAL.toString());
-        return (s == null) ? false : Boolean.valueOf(s);
-    }
-
     /**
      * Set network timeout to the specified number of seconds.
      *
@@ -604,6 +603,22 @@ public class Configuration {
         // everywhere (e.g. not on Dalvik).
         System.setProperty("sun.net.client.defaultReadTimeout", t);
         System.setProperty("sun.net.client.defaultConnectTimeout", t);
+    }
+
+    /**
+     * Get incremental harvesting flag.
+     */
+    public boolean isIncremental() {
+        String s = settings.get(KnownOptions.INCREMENTAL.toString());
+        return (s == null) ? false : Boolean.valueOf(s);
+    }
+    
+    /**
+     * Get scenario.
+     */
+    public String getScenario() {
+        String s = settings.get(KnownOptions.SCENARIO.toString());
+        return (s == null) ? "ListIndentifiers" : s;
     }
 
     /**

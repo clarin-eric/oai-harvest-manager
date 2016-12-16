@@ -69,7 +69,6 @@ public class XMLBasedCycle implements Cycle {
         xmlOverview = new XMLOverview(overviewFile);
 
         cycleProperties = xmlOverview.getCycleProperties();
-        cycleProperties.getScenario();
 
         // no longer consider endpoints cycled before
         endpointsCycled = new ArrayList<>();
@@ -80,10 +79,10 @@ public class XMLBasedCycle implements Cycle {
      * Note: the method needs synchronisation because endpoints might be
      * harvested in parallel.
      */
-    public synchronized Endpoint next(String URI, String group, String scenario) {
+    public synchronized Endpoint next(String URI, String group) {
 
         // get the endpoint from the overview
-        return xmlOverview.getEndpoint(URI, group, scenario);
+        return xmlOverview.getEndpoint(URI, group);
     }
 
     @Override
@@ -259,17 +258,11 @@ public class XMLBasedCycle implements Cycle {
                      */
                     return zeroUTC;
                 } else {
-                    // consider a selective harvest
-                    if (! endpoint.allowIncrementalHarvest()){
-                        // again, the cycle does not need a date
-                        return zeroUTC;
-                    } else {
-                        /* The cycle should use the date of the most recent
-                           successful attempt
-                         */
-                        return new DateTime(endpoint.getHarvestedDate(),
-                                DateTimeZone.UTC);
-                    }
+                    /* The cycle should use the date of the most recent
+                       successful attempt
+                     */
+                    return new DateTime(endpoint.getHarvestedDate(),
+                            DateTimeZone.UTC);
                 }
 
             case retry:

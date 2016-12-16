@@ -5,7 +5,6 @@
     <xs:complexType name="OverviewType">
         <xs:sequence>
             <xs:element form="unqualified" maxOccurs="1" name="mode" type="ModeType" minOccurs="0"/>
-            <xs:element minOccurs="0" name="scenario" type="ScenarioType"> </xs:element>
             <xs:sequence maxOccurs="unbounded" minOccurs="0">
                 <xs:element name="endpoint" type="EndpointType"/>
             </xs:sequence>
@@ -18,9 +17,7 @@
             <xs:element name="block" minOccurs="0" type="xs:boolean"/>
             <xs:element minOccurs="0" name="retry" type="xs:boolean"/>
             <xs:element minOccurs="0" name="refresh" type="xs:boolean"/>
-            <xs:element minOccurs="0" name="incremental" type="xs:boolean"/>
             <xs:element minOccurs="0" name="synchronised" type="xs:boolean"/>
-            <xs:element maxOccurs="1" name="scenario" minOccurs="0" type="ScenarioType"> </xs:element>
             <xs:element name="attempted" minOccurs="0" type="xs:dateTime"/>
             <xs:element name="harvested" minOccurs="0" type="xs:dateTime"/>
             <xs:element minOccurs="0" name="count" type="xs:unsignedInt"> </xs:element>
@@ -34,15 +31,6 @@
             <xs:enumeration value="normal"/>
             <xs:enumeration value="retry"/>
             <xs:enumeration value="refresh"/>
-        </xs:restriction>
-    </xs:simpleType>
-    <xs:simpleType name="ScenarioType">
-        <xs:restriction base="xs:string">
-            <xs:enumeration value="ListPrefixes"/>
-            <xs:enumeration value="ListIdentifiers"/>
-            <xs:enumeration value="ListRecords"/>
-            <xs:minLength value="1"/>
-            <xs:maxLength value="20"/>
         </xs:restriction>
     </xs:simpleType>
 </xs:schema>

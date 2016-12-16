@@ -63,7 +63,7 @@ public interface Cycle {
      * @param group the group the endpoint belongs to
      * @return the endpoint
      */
-    Endpoint next (String URI, String group, String scenario);
+    Endpoint next (String URI, String group);
 
     /**
      * <br> Get the next residual endpoint in the cycle <br><br>

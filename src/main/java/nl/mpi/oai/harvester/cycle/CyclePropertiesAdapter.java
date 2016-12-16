@@ -21,7 +21,6 @@ package nl.mpi.oai.harvester.cycle;
 
 import nl.mpi.oai.harvester.generated.OverviewType;
 import nl.mpi.oai.harvester.generated.ModeType;
-import nl.mpi.oai.harvester.generated.ScenarioType;
 
 /**
  * <br> Access to general harvest cycle properties stored as XML elements <br><br>
@@ -86,38 +85,4 @@ class CyclePropertiesAdapter implements CycleProperties {
         return mode;
     }
 
-
-    /**
-     * Return the scenario attribute by invoking the appropriate generated
-     * method
-     *
-     * @return the mode
-     */
-    @Override
-    public Scenario getScenario() {
-
-        ScenarioType scenarioType;
-        scenarioType = overviewType.getScenario();
-
-        Scenario scenario;
-
-        if (scenarioType == null) {
-            scenario = Scenario.ListIdentifiers;
-            overviewType.setScenario(ScenarioType.LIST_IDENTIFIERS);
-        } else {
-
-            switch (overviewType.getScenario()) {
-
-                case LIST_PREFIXES:
-                    scenario = Scenario.ListPrefixes;
-                    break;
-                case LIST_IDENTIFIERS:
-                    scenario = Scenario.ListIdentifiers;
-                    break;
-                default:
-                    scenario = Scenario.ListRecords;
-            }
-        }
-        return scenario;
-    }
 }

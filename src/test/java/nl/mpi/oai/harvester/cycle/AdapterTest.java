@@ -19,7 +19,6 @@
 package nl.mpi.oai.harvester.cycle;
 
 import nl.mpi.oai.harvester.cycle.CycleProperties.Mode;
-import nl.mpi.oai.harvester.cycle.CycleProperties.Scenario;
 import org.joda.time.DateTime;
 import org.junit.Rule;
 import org.junit.Test;
@@ -63,15 +62,12 @@ public class AdapterTest {
         final XMLOverview xmlOverview = new XMLOverview(overviewFile);
 
         // check if the CycleProperties adapter returns the expected values
-        Scenario scenario;
         Mode mode;
 
         mode = xmlOverview.getCycleProperties().getHarvestMode();
-        scenario = xmlOverview.getCycleProperties().getScenario();
 
         // compare the object values against those defined in the overview file
         assertEquals(mode.toString(), "normal");
-        assertEquals(scenario.toString(), "ListRecords");
     }
 
     @Test

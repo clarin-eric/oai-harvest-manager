@@ -46,9 +46,6 @@ class Worker implements Runnable {
     
     private static final Logger logger = LogManager.getLogger(Worker.class);
     
-    /** A standard semaphore is used to track the number of running threads. */
-    private static Semaphore semaphore;
-
     /** The provider this worker deals with. */
     private final Provider provider;
 
@@ -60,19 +57,10 @@ class Worker implements Runnable {
        retrieve each record in the list individually. ListRecords: skip the
        list, retrieve multiple records per request.
      */
-    private final CycleProperties.Scenario scenarioName;
+    private final String scenarioName;
 
     // kj: annotate
     Endpoint endpoint;
-
-    /**
-     * Set the maximum number of concurrent worker threads.
-     * 
-     * @param num number of running threads that may not be exceeded
-     */
-    public static void setConcurrentLimit(int num) {
-	semaphore = new Semaphore(num);
-    }
 
     /**
      * Associate a provider and action actionSequences with a scenario
@@ -80,8 +68,6 @@ class Worker implements Runnable {
      * @param provider OAI-PMH provider that this thread will harvest
      * @param actionSequences list of actions to take on harvested metadata
      * @param cycle the harvesting cycle
-     *
-     * kj: ideally, give a worker the endpoint URI instead of the provider
      */
     public Worker(Provider provider, List<ActionSequence> actionSequences,
                   Cycle cycle) {
@@ -91,27 +77,10 @@ class Worker implements Runnable {
 	this.actionSequences = actionSequences;
 
         // register the endpoint with the cycle, kj: get the group
-        endpoint = cycle.next(provider.getOaiUrl(), "group", provider.getScenario());
+        endpoint = cycle.next(provider.getOaiUrl(), "group");
 
         // get the name of the scenario the worker needs to apply
-        this.scenarioName = endpoint.getScenario();
-    }
-
-    /**
-     * <br>Start this worker thread <br><br>
-     *
-     * This method will block for as long as necessary until a thread can be
-     * started without violating the limit.
-     */
-    public void startWorker() {
-	for (;;) {
-	    try {
-		semaphore.acquire();
-		break;
-	    } catch (InterruptedException e) { }
-	}
-	Thread t = new Thread(this);
-	t.start();
+        this.scenarioName = provider.getScenario();
     }
 
     @Override
@@ -120,6 +89,8 @@ class Worker implements Runnable {
         try {
             logger.debug("Welcome to OAI Harvest Manager worker!");
             provider.init();
+            
+            Thread.currentThread().setName(provider.getName().replaceAll("[^a-zA-Z0-9\\-\\(\\)]"," "));
 
 
             // setting specific log filename
@@ -168,7 +139,7 @@ class Worker implements Runnable {
                                 (StaticProvider) provider, prefixes, metadataFactory);
 
                         // get the records
-                        if (scenarioName == CycleProperties.Scenario.ListIdentifiers) {
+                        if (scenarioName.equals("ListIdentifiers")) {
                             done = scenario.listIdentifiers(harvesting);
                             logger.debug("list identifiers -> done["+done+"]");
                         } else {
@@ -193,7 +164,7 @@ class Worker implements Runnable {
                         done = false;
                     } else {
                         // determine the type of record harvesting to apply
-                        if (scenarioName == CycleProperties.Scenario.ListIdentifiers) {
+                        if (scenarioName.equals("ListIdentifiers")) {
                             // kj: annotate, connect verb to scenario
                             harvesting = new IdentifierListHarvesting(oaiFactory,
                                     provider, prefixes, metadataFactory, endpoint);
@@ -209,7 +180,7 @@ class Worker implements Runnable {
                             done = scenario.listRecords(harvesting);
                             logger.debug("list records -> done[" + done + "]");
                         }
-                        if(Main.config.isIncremental() && endpoint.allowIncrementalHarvest()) {
+                        if(Main.config.isIncremental()) {
                             FileSynchronization.execute(provider);
                         }
                     }
@@ -240,12 +211,8 @@ class Worker implements Runnable {
             else
                 logger.info("Processing finished for " + provider);
 
-            semaphore.release();
-
             logger.debug("Goodbye from OAI Harvest Manager worker!");
         }
     }
 
 }
-
-

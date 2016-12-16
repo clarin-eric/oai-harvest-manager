@@ -20,7 +20,6 @@ package nl.mpi.oai.harvester.cycle;
 
 import nl.mpi.oai.harvester.generated.EndpointType;
 import nl.mpi.oai.harvester.generated.OverviewType;
-import nl.mpi.oai.harvester.generated.ScenarioType;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
@@ -69,7 +68,6 @@ class EndpointAdapter implements Endpoint {
 
         // create the endpoint fields, and set them to default values
         endpointType.setBlock(Boolean.FALSE);
-        endpointType.setIncremental(Boolean.TRUE);
         endpointType.setURI(endpointURI);
         endpointType.setGroup(group);
 
@@ -126,7 +124,7 @@ class EndpointAdapter implements Endpoint {
      * @param xmlOverview  overview marshalling object
      *
      */
-     EndpointAdapter(String endpointURI, String group, String scenario,
+     EndpointAdapter(String endpointURI, String group,
              XMLOverview xmlOverview) {
 
         // remember the cycle, remember the factory
@@ -141,15 +139,6 @@ class EndpointAdapter implements Endpoint {
 
             // and add it to the cycle
             xmlOverview.overviewType.getEndpoint().add(endpointType);
-        }
-        
-        if (scenario!=null) {
-            if (scenario.equals("ListPrefixes"))
-                endpointType.setScenario(ScenarioType.LIST_PREFIXES);
-            else if (scenario.equals("ListIdentifiers"))
-                endpointType.setScenario(ScenarioType.LIST_IDENTIFIERS);
-            else if (scenario.equals("ListRecords"))
-                endpointType.setScenario(ScenarioType.LIST_RECORDS);
         }
     }
 
@@ -206,21 +195,6 @@ class EndpointAdapter implements Endpoint {
     }
 
     @Override
-    public boolean allowIncrementalHarvest() {
-
-        // try to get attribute, use boolean reference type to check for null
-        Boolean allow = endpointType.isIncremental();
-
-        if (allow == null){
-            // attribute not XML cycle element, add it to it
-            endpointType.setIncremental(false);
-            return false;
-        } else {
-            return allow;
-        }
-    }
-
-    @Override
     public boolean allowRefresh() {
 
         // try to get attribute, use boolean reference type to check for null
@@ -232,32 +206,6 @@ class EndpointAdapter implements Endpoint {
             return false;
         } else {
             return allow;
-        }
-    }
-
-    @Override
-    public CycleProperties.Scenario getScenario() {
-
-        // try to get attribute
-        ScenarioType scenarioType = endpointType.getScenario();
-
-        if (scenarioType == null) {
-            // look for a global scenario
-            scenarioType = this.xmlOverview.overviewType.getScenario();
-        }
-        if (scenarioType == null) {
-            // fall back to default
-            endpointType.setScenario(ScenarioType.LIST_IDENTIFIERS);
-            return CycleProperties.Scenario.ListIdentifiers;
-        } else {
-            switch (scenarioType) {
-                case LIST_PREFIXES:
-                    return CycleProperties.Scenario.ListPrefixes;
-                case LIST_IDENTIFIERS:
-                    return CycleProperties.Scenario.ListIdentifiers;
-                default:
-                    return CycleProperties.Scenario.ListRecords;
-            }
         }
     }
 

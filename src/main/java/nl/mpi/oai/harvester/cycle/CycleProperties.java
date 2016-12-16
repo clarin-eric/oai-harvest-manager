@@ -29,9 +29,8 @@ package nl.mpi.oai.harvester.cycle;
  * parameters in an OAI request to the endpoint. It can, for example, use the
  * harvested attribute to specify a date for selective harvesting <br><br>
  *
- * General characteristics of cycle include the mode of harvesting, the date
- * specified in a incremental or selective harvesting request, and the intended
- * harvest scenario.
+ * General characteristics of cycle include the mode of harvesting, and the date
+ * specified in a incremental or selective harvesting request.
  *
  * <table summary="">
  * <tr>
@@ -41,10 +40,6 @@ package nl.mpi.oai.harvester.cycle;
  * <tr>
  * <td>date</td>
  * <td>defaults to '1970-01-01'</td>
- * </tr>
- * <tr>
- * <td>scenario</td>
- * <td>defaults to 'ListRecords'</td>
  * </tr>
  * </table>
  *
@@ -100,57 +95,10 @@ public interface CycleProperties {
     }
 
     /**
-     * The harvest scenario the cycle needs to apply <br> <br><br><br>
-     *
-     * A harvest scenario is a particular implementation and application of the
-     * methods declared in the harvesting interface. A class implements a method
-     * by invoking methods that establish primitives in the OAI protocol. <br><br>
-     *
-     * Applying a particular scenario, the cycle can, for example, first harvest
-     * the identifiers of metadata records and request the identified records,
-     * or alternatively, harvest the records directly.
-     *
-     * kj: rename to ScenarioName
-     */
-    enum Scenario {
-
-        /**
-         * Query the metadata prefixes the endpoint supports. The cycle uses
-         * metadata formats it associates with the endpoint to identify the
-         * prefixes.
-         */
-        ListPrefixes,
-
-        /**
-         * In this scenario, by selecting a prefix, the cycle first obtains a
-         * list of identifiers of metadata elements the endpoint provides. Next,
-         * it gets the records the list identifies.
-         */
-        ListIdentifiers,
-
-        /**
-         * In this scenario, instead of getting a list of identifiers first,
-         * the cycle can also select a prefix and query the endpoint for
-         * matching records without first obtaining a list of their identifiers.
-         */
-        ListRecords
-    }
-
-    /**
      * <br> Return the mode in which the cycle will in principle harvest the
      * endpoints
      *
      * @return the harvesting mode
      */
     Mode getHarvestMode();
-
-    /**
-     * <br> Get the harvesting scenario <br><br>
-     *
-     * Note: the range of valid scenarios depends on the capabilities of the
-     * current implementation of the harvesting cycle.
-     *
-     * @return the scenario
-     */
-    Scenario getScenario ();
 }
