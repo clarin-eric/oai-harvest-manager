@@ -11,7 +11,7 @@ class OaiHarvestError(StandardError):
 
 class OaiHarvest:
 
-    def __init__(self, base="/data/harvester", output="test", name="test1", verbose=False):
+    def __init__(self, oai="/app/oai-harvest-manager", base="/app/workdir", output="test", name="test1", verbose=False):
         self.verbose = verbose
         self.output = output
         self.name = name
@@ -19,10 +19,10 @@ class OaiHarvest:
         
         self.find = local["find"]
         self.rsync = local["rsync"]
-        self.docker = local["docker"]
+        self.harvester = local[os.path.join(oai, "run-harvester.sh")]
         self.workdir = os.path.join(base, "workdir", "%s-%s" % (output, name))
         self.logdir = os.path.join(base, "log", "%s-%s" % (output, name))
-        self.confdir = os.path.join(base, "conf")
+        self.confdir = os.path.join(oai, "resources")
         self.outputdir = os.path.join(base, "output", output)
         self.config_file = "config-%s-%s.xml" % (output, name)
 
@@ -34,23 +34,23 @@ class OaiHarvest:
             self.print_to_stdout("\twork dir: %s\n" % self.workdir)
             self.print_to_stdout("\toutput dir: %s\n" % self.outputdir)
 
-
     def run(self):
-        self.print_to_stdout("Harvest run started. output=%s, name=%s. " % (self.ouput, self.name))
-        self.print_to_stdout("Initializing. ")
+        self.print_to_stdout("Harvest run started, output=%s, name=%s.\n" % (self.output, self.name))
+        self.print_to_stdout("Initializing.\n")
         self.initialize()
-        self.print_to_stdout("Done\n")
+        self.print_to_stdout("\tDone\n")
 
-        self.print_to_stdout("Running harvester. ")
+        self.print_to_stdout("Running harvester.\n")
         self.run_harvest()
-        self.print_to_stdout("Done\n")
+        self.print_to_stdout("\tDone\n")
 
-        self.print_to_stdout("Merging harvest result to output. ")
+        self.print_to_stdout("Merging harvest result to output.\n")
         self.merge("results/cmdi")
-        self.merge("results/olac")
-        self.merge("results/dc")
+        self.merge("results/cmdi-1_1")
+        #self.merge("results/olac")
+        #self.merge("results/dc")
         self.merge("oai-pmh")
-        self.print_to_stdout("Done\n")
+        self.print_to_stdout("\tDone\n")
 
     def initialize(self):
         """
@@ -61,37 +61,34 @@ class OaiHarvest:
         #Ensure conf dir and file exist
         if not os.path.exists(self.confdir):
             raise OaiHarvestError("Config dir [%s] not found" % self.confdir)
+        #self.print_to_stdout("\tChecked config dir.\n")
         absolute_config_file = os.path.join(self.confdir, self.config_file)
         if not os.path.isfile(absolute_config_file):
             raise OaiHarvestError("Config file [%s] not found" % absolute_config_file)
+        #self.print_to_stdout("\tChecked config file.\n")
         #Ensure work, output and log directories exist
-        self.make_dir(self.workdir, self.outputdir, self.logdir)
-
+        self.make_dir(self.base, self.workdir, self.outputdir, self.logdir)
+        #self.print_to_stdout("Created dirs.\n")
 
     def run_harvest(self):
         """
-        Run the harvester docker container
+        Run the harvester
         """
+        local.env["LOG_DIR"] = self.logdir
         command = [
-            "run",
-            "--name", "oai",
-            "--rm",
-            "-e", "LOGDIR=/app/log",
-            "-e", "LOGPROPS=/app/conf/log4j.properties",
-            "-v", "%s:/app/workdir" % self.workdir,
-            "-v", "%s:/app/conf" % self.confdir,
-            "-v", "%s:/app/log" % self.logdir,
-            "oai",
-            "/app/conf/%s" % self.config_file]
+            "workdir=%s" % self.workdir,
+            "overview-file=%s" % os.path.join(self.workdir, "overview.xml"),
+            os.path.join(self.confdir, self.config_file)
+        ]
 
         if self.verbose:
-            self.print_to_stdout("\n\tDocker command:\n")
-            self.print_to_stdout("\tdocker ")
+            self.print_to_stdout("\tHarvester command:\n")
+            self.print_to_stdout("\t\t%s " % self.harvester)
             for i in command:
                 self.print_to_stdout("%s " % i)
             self.print_to_stdout("\n")
 
-        return self.docker(command)
+        return self.harvester(command)
 
     def merge(self, dir):
         """
@@ -99,6 +96,7 @@ class OaiHarvest:
         directory is properly cleaned
         """
         search_directory=os.path.join(self.workdir, dir)
+        self.print_to_stdout("\tSearch directory: %s\n" % search_directory)
 
         if not os.path.isdir(search_directory):
             print "Directory doesn't exist: %s" % search_directory
@@ -108,6 +106,7 @@ class OaiHarvest:
         for line in list:
             source = line.strip()
             destination = source.replace(self.workdir, self.outputdir)
+            self.print_to_stdout("\t\t%s -> %s\n" % (source,destination))
             self.do_rsync(source, destination)
             self.do_cleanup(source)
 
@@ -115,7 +114,7 @@ class OaiHarvest:
         """
         Search all leaf directories in the specified directory
         """
-        result = self.find(directory, "-mindepth", "1", "-type", "d", "-links", "2")
+        result = self.find(directory, "-mindepth", "1", "-type", "d")#, "-links", "2"
         return result.splitlines()
 
     def do_rsync(self, source, destination):
@@ -129,7 +128,7 @@ class OaiHarvest:
         """
         Perform cleanup actions
         """
-        local["rm"]("-r", dir)
+        #local["rm"]("-r", dir)
 
     def make_dir(self, *dirs):
         """
@@ -137,7 +136,7 @@ class OaiHarvest:
         """
         for dir in dirs:
             if not os.path.isdir(dir):
-                os.makedirs(dir)
+                os.makedirs(name=dir)
 
     def print_to_stdout(self, text):
         """
@@ -145,7 +144,6 @@ class OaiHarvest:
         """
         sys.stdout.write(text)
         sys.stdout.flush()
-
 
 class App(cli.Application):
     PROGNAME = "oai-harvest.py"
