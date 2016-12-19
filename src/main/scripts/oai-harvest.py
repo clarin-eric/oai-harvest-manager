@@ -36,19 +36,19 @@ class OaiHarvest:
 
     def run(self):
         self.print_to_stdout("Harvest run started, output=%s, name=%s.\n" % (self.output, self.name))
-        self.print_to_stdout("Initializing.\n")
+        self.print_to_stdout("\tInitializing.\n")
         self.initialize()
-        self.print_to_stdout("\tDone\n")
+        self.print_to_stdout("\t\tDone\n")
 
-        self.print_to_stdout("Running harvester.\n")
+        self.print_to_stdout("\tRunning harvester.\n")
         self.run_harvest()
+        self.print_to_stdout("\t\tDone\n")
+
         self.print_to_stdout("\tDone\n")
 
         self.print_to_stdout("Merging harvest result to output.\n")
         self.merge("results/cmdi")
         self.merge("results/cmdi-1_1")
-        #self.merge("results/olac")
-        #self.merge("results/dc")
         self.merge("oai-pmh")
         self.print_to_stdout("\tDone\n")
 
@@ -61,14 +61,11 @@ class OaiHarvest:
         #Ensure conf dir and file exist
         if not os.path.exists(self.confdir):
             raise OaiHarvestError("Config dir [%s] not found" % self.confdir)
-        #self.print_to_stdout("\tChecked config dir.\n")
         absolute_config_file = os.path.join(self.confdir, self.config_file)
         if not os.path.isfile(absolute_config_file):
             raise OaiHarvestError("Config file [%s] not found" % absolute_config_file)
-        #self.print_to_stdout("\tChecked config file.\n")
         #Ensure work, output and log directories exist
         self.make_dir(self.base, self.workdir, self.outputdir, self.logdir)
-        #self.print_to_stdout("Created dirs.\n")
 
     def run_harvest(self):
         """
@@ -82,8 +79,8 @@ class OaiHarvest:
         ]
 
         if self.verbose:
-            self.print_to_stdout("\tHarvester command:\n")
-            self.print_to_stdout("\t\t%s " % self.harvester)
+            self.print_to_stdout("\t\tHarvester command:\n")
+            self.print_to_stdout("\t\t\t%s " % self.harvester)
             for i in command:
                 self.print_to_stdout("%s " % i)
             self.print_to_stdout("\n")
@@ -96,17 +93,18 @@ class OaiHarvest:
         directory is properly cleaned
         """
         search_directory=os.path.join(self.workdir, dir)
-        self.print_to_stdout("\tSearch directory: %s\n" % search_directory)
 
         if not os.path.isdir(search_directory):
             print "Directory doesn't exist: %s" % search_directory
             return None
 
+        destination = search_directory.replace(self.workdir, self.outputdir)
+
+        self.print_to_stdout("\tDirectory: %s -> %s\n" % (search_directory,destination)
         list = self.search(search_directory)
         for line in list:
             source = line.strip()
-            destination = source.replace(self.workdir, self.outputdir)
-            self.print_to_stdout("\t\t%s -> %s\n" % (source,destination))
+            self.print_to_stdout("\t\t%s\n" % source)
             self.do_rsync(source, destination)
             self.do_cleanup(source)
 
@@ -114,7 +112,7 @@ class OaiHarvest:
         """
         Search all leaf directories in the specified directory
         """
-        result = self.find(directory, "-mindepth", "1", "-type", "d")#, "-links", "2"
+        result = self.find(directory, "-mindepth", "1", "-type", "d")
         return result.splitlines()
 
     def do_rsync(self, source, destination):
@@ -122,13 +120,12 @@ class OaiHarvest:
         Rsync source to destination
         """
         self.make_dir(destination)
-        return self.rsync("-ahrv", "-delete", "--remove-source-files", source, destination)
+        return self.rsync("-ahrv", "-delete", source, destination)
 
     def do_cleanup(self, dir):
         """
         Perform cleanup actions
         """
-        #local["rm"]("-r", dir)
 
     def make_dir(self, *dirs):
         """
