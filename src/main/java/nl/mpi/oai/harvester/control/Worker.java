@@ -18,6 +18,7 @@
 
 package nl.mpi.oai.harvester.control;
 
+import java.util.Arrays;
 import nl.mpi.oai.harvester.Provider;
 import nl.mpi.oai.harvester.StaticProvider;
 import nl.mpi.oai.harvester.action.ActionSequence;
@@ -104,7 +105,7 @@ class Worker implements Runnable {
             // factory for OAI verbs
             OAIFactory oaiFactory = new OAIFactory();
 
-            logger.info("Processing provider " + provider + " using " + scenarioName + " scenario and timeout " + provider.getTimeout() + " and retry ("+provider.getMaxRetryCount()+","+provider.getRetryDelays()+")");
+            logger.info("Processing provider[" + provider + "] using scenario[" + scenarioName + "], incremental[" + provider.getIncremental() + "], timeout[" + provider.getTimeout() + "] and retry[count="+provider.getMaxRetryCount()+",delays="+Arrays.toString(provider.getRetryDelays())+"]");
 
             FileSynchronization.addProviderStatistic(provider);
 

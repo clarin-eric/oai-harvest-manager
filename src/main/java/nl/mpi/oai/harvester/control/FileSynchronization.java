@@ -182,10 +182,12 @@ public final class FileSynchronization {
 
         Stream<String> fileStream = null;
 
-        try{
-            fileStream = Files.lines(Paths.get(file.toURI()));
-        }catch (IOException ex){
-            logger.error("No File "+ file + ": ", ex);
+        if (file.exists() && file.isFile() && file.canRead()) {
+            try{
+                fileStream = Files.lines(file.toPath());
+            }catch (IOException ex){
+                logger.error("No File "+ file + ": ", ex);
+            }
         }
         return fileStream;
     }

@@ -22,6 +22,7 @@
     http request in seconds. If unspecified, will be INFINITE.  -->
     <timeout>60</timeout>
     <scenario>ListRecords</scenario>
+    <incremental>true</incremental>
   </settings>
 
   <!-- ### output directories (referenced in the action section) ### -->
@@ -31,8 +32,8 @@
          number of files. -->
     <dir path="oai-rec" id="rec" max-files="0"/>
     <dir path="oai-pmh" id="oai" max-files="0"/>
-    <dir path="results/cmdi" id="cmdi" max-files="0"/>
-    <dir path="results/cmdi-1_2" id="cmdi-1_2" max-files="0"/>
+    <dir path="results/cmdi-1_1" id="cmdi-1_1" max-files="0"/>
+    <dir path="results/cmdi" id="cmdi-1_2" max-files="0"/>
   </directories>
   
   
@@ -50,7 +51,7 @@
       <action type="split"/>
       <action type="save" dir="rec" suffix=".xml"/>
       <action type="strip"/>
-      <action type="save" dir="cmdi" suffix=".xml"/>
+      <action type="save" dir="cmdi-1_1" suffix=".xml"/>
       <action type="transform" file="https://infra.clarin.eu/CMDI/1.x/upgrade/cmd-record-1_1-to-1_2.xsl" cache="cache"/>
       <action type="save" dir="cmdi-1_2" suffix=".xml"/>
     </format>
@@ -60,7 +61,7 @@
       <action type="split"/>
       <action type="save" dir="rec" suffix=".xml"/>
       <action type="transform" file="resources/olac2cmdi.xsl"/>
-      <action type="save" dir="cmdi" suffix=".xml"/>
+      <action type="save" dir="cmdi-1_1" suffix=".xml"/>
       <action type="transform" file="https://infra.clarin.eu/CMDI/1.x/upgrade/cmd-record-1_1-to-1_2.xsl" cache="cache"/>
       <action type="save" dir="cmdi-1_2" suffix=".xml"/>
     </format>
@@ -70,7 +71,7 @@
       <action type="split"/>
       <action type="save" dir="rec" suffix=".xml"/>
       <action type="transform" file="resources/olac2cmdi.xsl"/>
-      <action type="save" dir="cmdi" suffix=".xml"/>
+      <action type="save" dir="cmdi-1_1" suffix=".xml"/>
       <action type="transform" file="https://infra.clarin.eu/CMDI/1.x/upgrade/cmd-record-1_1-to-1_2.xsl" cache="cache"/>
       <action type="save" dir="cmdi-1_2" suffix=".xml"/>
     </format>

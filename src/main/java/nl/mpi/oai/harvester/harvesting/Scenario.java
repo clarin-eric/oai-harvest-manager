@@ -116,13 +116,9 @@ public class Scenario {
             try {
 
                 if (provider.isExclusive()) {
-                    logger.debug("request exclusive lock");
                     exclusiveLock.writeLock().lock();
-                    logger.debug("acquired exclusive lock");
                 } else {
-                    logger.debug("request inclusive lock");
                     exclusiveLock.readLock().lock();
-                    logger.debug("acquired inclusive lock");
                 }
 
                 if (!harvesting.request()) {
@@ -148,13 +144,9 @@ public class Scenario {
                 }
             } finally {
                 if (provider.isExclusive()) {
-                    logger.debug("release exclusive lock");
                     exclusiveLock.writeLock().unlock();
-                    logger.debug("released exclusive lock");
                 } else {
-                    logger.debug("release inclusive lock");
                     exclusiveLock.readLock().unlock();
-                    logger.debug("released inclusive lock");
                 }
             }
         }
@@ -166,13 +158,9 @@ public class Scenario {
             try {
 
                 if (provider.isExclusive()) {
-                    logger.debug("request exclusive lock");
                     exclusiveLock.writeLock().lock();
-                    logger.debug("acquired exclusive lock");
                 } else {
-                    logger.debug("request inclusive lock");
                     exclusiveLock.readLock().lock();
-                    logger.debug("acquired inclusive lock");
                 }
 
                 Metadata record = (Metadata) harvesting.parseResponse();
@@ -185,13 +173,9 @@ public class Scenario {
                 }
             } finally {
                 if (provider.isExclusive()) {
-                    logger.debug("release exclusive lock");
                     exclusiveLock.writeLock().unlock();
-                    logger.debug("released exclusive lock");
                 } else {
-                    logger.debug("release inclusive lock");
                     exclusiveLock.readLock().unlock();
-                    logger.debug("released inclusive lock");
                 }
             }
         }
@@ -222,13 +206,9 @@ public class Scenario {
             try {
                 
                 if (provider.isExclusive()) {
-                    logger.debug("request exclusive lock");
                     exclusiveLock.writeLock().lock();
-                    logger.debug("acquired exclusive lock");
                 } else {
-                    logger.debug("request inclusive lock");
                     exclusiveLock.readLock().lock();
-                    logger.debug("acquired inclusive lock");
                 }
                 
                 if (!harvesting.request()) {
@@ -261,13 +241,9 @@ public class Scenario {
                  */
             } finally {
                 if (provider.isExclusive()) {
-                    logger.debug("release exclusive lock");
                     exclusiveLock.writeLock().unlock();
-                    logger.debug("released exclusive lock");
                 } else {
-                    logger.debug("release inclusive lock");
                     exclusiveLock.readLock().unlock();
-                    logger.debug("released inclusive lock");
                 }
             }
         } while (harvesting.requestMore());

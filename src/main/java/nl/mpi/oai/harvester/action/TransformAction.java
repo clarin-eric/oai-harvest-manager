@@ -247,13 +247,6 @@ public class TransformAction implements Action {
                 logger.debug("Transformer resolver: loaded "+cacheFile+" from cache");
             } else {
                 res = resolver.resolve(href, base);
-                try {
-                    HttpURLConnection con = (HttpURLConnection)(new URL(uri)).openConnection();
-                    //con.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11");
-                    System.out.println("!MENZO: resolver["+uri+"] connection response["+con.getResponseCode()+"]");
-                } catch (Exception ex) {
-                    System.out.println("!MENZO: resolver["+uri+"] connection exception["+ex+"]");
-                }
                 Result result = new StreamResult(cacheDir.resolve(cacheFile).toFile());
                 Transformer xformer = factory.newTransformer();
                 xformer.transform(res, result);
