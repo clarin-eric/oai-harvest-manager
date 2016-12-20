@@ -100,7 +100,7 @@ class OaiHarvest:
 
         destination = search_directory.replace(self.workdir, self.outputdir)
 
-        self.print_to_stdout("\tDirectory: %s -> %s\n" % (search_directory,destination)
+        self.print_to_stdout("\tDirectory: %s -> %s\n" % (search_directory,destination))
         list = self.search(search_directory)
         for line in list:
             source = line.strip()
