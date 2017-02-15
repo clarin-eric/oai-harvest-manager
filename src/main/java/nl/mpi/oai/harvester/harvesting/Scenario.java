@@ -184,6 +184,9 @@ public class Scenario {
                     // apply the action sequence to the record
                     actionSequence.runActions(record);
                 }
+
+		record.close();
+
             } finally {
                 if (provider.isExclusive()) {
                     logger.debug("release exclusive lock");
@@ -239,22 +242,21 @@ public class Scenario {
                     if (records == null) {
                         return false;
                     } else {
-                        //if (!harvesting.processResponse(records)) {
-                        //    return false;
-                        //} else {
-                            String id;
-                            id = String.format("%07d", n);
+                        String id;
+                        id = String.format("%07d", n);
 
-                            Metadata metadata = harvesting.getMetadataFactory().create(
-                                    provider.getName() + "-" + id,
-                                    OAIHelper.getPrefix(records),
-                                    records, this.provider, true, true);
+                        Metadata metadata = harvesting.getMetadataFactory().create(
+                                provider.getName() + "-" + id,
+                                OAIHelper.getPrefix(records),
+                                records, this.provider, true, true);
 
-                            n++;
+                        n++;
 
-                            // apply the action sequence to the records
-                            actionSequence.runActions(metadata);
-                        //}
+                        // apply the action sequence to the records
+                        actionSequence.runActions(metadata);
+
+			// cleanup
+			metadata.close();
                     }
                 }
                 /* Check if in principle another response would be

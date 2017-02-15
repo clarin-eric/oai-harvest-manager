@@ -116,4 +116,15 @@ public class DocumentSource {
         this.str = str;
         this.doc = null;
     }
+
+    public void close() {
+        if (str!=null) {
+            try {
+                str.close();
+            } catch (IOException ex) {
+                logger.error(ex.getMessage(),ex);
+                logger.debug("failed to close stream for DocumentSource["+id+"]");
+            }
+        }
+    }
 }

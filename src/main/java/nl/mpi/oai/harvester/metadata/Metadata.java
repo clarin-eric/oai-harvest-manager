@@ -257,4 +257,11 @@ public class Metadata {
     public void setIsList(boolean isList) {
         this.isList = isList;
     }
+
+    /**
+     * Close the underlying streams
+     */
+    public void close() {
+        this.docSrc.close();
+    }
 }
