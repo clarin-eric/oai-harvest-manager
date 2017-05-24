@@ -38,9 +38,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLEventWriter;
 import javax.xml.stream.XMLOutputFactory;
@@ -140,7 +138,7 @@ public class SaveAction implements Action {
      * @throws IOException something went wrong when creating the new file
      */
     protected Path chooseLocation(Metadata metadata) throws IOException {
-	return dir.placeNewFile(Util.toFileFormat(metadata.getId()) + suffix);
+	return dir.placeNewFile(Util.toFileFormat(metadata.getId(),suffix));
     }
 
     @Override

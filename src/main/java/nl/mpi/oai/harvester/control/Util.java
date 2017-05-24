@@ -72,19 +72,40 @@ public class Util {
     /**
      * Convert name string to format suitable for use in the file system and
      * in URLs. In practice, convert into a string that matches the regular
-     * expression "^\w*$".
+     * expression "^\w*$". Also trims the file name (from the front) 
+     * if it will exceed 256 chars.
+     * 
+     * @param name original name
+     * @param suffix to be added suffix
+     * @return cleaned up name
+     */
+    public static String toFileFormat(String name, String suffix) {
+	if (name == null)
+	    return null;
+
+	name = Normalizer.normalize(name.trim(), Normalizer.Form.NFD)
+		.replaceAll("\\p{M}", "").replaceAll("\\W+", "_");
+        
+        name += suffix;
+        if (name.length() > 255)
+            name = name.substring(name.length() - 255);
+
+        return name;
+    }
+
+    /**
+     * Convert name string to format suitable for use in the file system and
+     * in URLs. In practice, convert into a string that matches the regular
+     * expression "^\w*$". Also trims the file name (from the front) 
+     * if it will exceed 256 chars.
      * 
      * @param name original name
      * @return cleaned up name
      */
     public static String toFileFormat(String name) {
-	if (name == null)
-	    return null;
-
-	return Normalizer.normalize(name.trim(), Normalizer.Form.NFD)
-		.replaceAll("\\p{M}", "").replaceAll("\\W+", "_");
+        return toFileFormat(name,"");
     }
-
+    
     /** 
      * Return text content of a node, or null if it has none. 
      * 
