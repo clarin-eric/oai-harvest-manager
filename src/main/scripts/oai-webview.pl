@@ -491,19 +491,19 @@ sub h_preamble {
     h_opentag('head');
     h_shorttag('title', '', 'CLARIN OAI Harvester Web View');
     h_shorttag('meta', 'http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8"', '');
-    h_shorttag('link', 'rel="stylesheet" type="text/css" href="http://user.clarin.eu/external/css/style.css"');
-    h_shorttag('link', 'rel="stylesheet" type="text/css" href="http://user.clarin.eu/external/css/navi.css"');
+    h_shorttag('link', 'rel="stylesheet" type="text/css" href="./style.css"');
+    h_shorttag('link', 'rel="stylesheet" type="text/css" href="./navi.css"');
     h_closetag();
 
     # ---- beginning of body, top images
     h_opentag('body', 'class="background" bgcolor="#D4DEEF"');
     h_opentag('div', 'id="topleft"');
     h_opentag('a', 'onFocus="this.blur()" href="index.html"');
-    h_shorttag('img', 'src="http://user.clarin.eu/external/img/topleft.gif" alt="" height="176" width="498" border="0"','');
+    h_shorttag('img', 'src="./topleft.gif" alt="" height="176" width="498" border="0"','');
     h_closetag();
     h_closetag();
     h_opentag('div', 'id="topright"');
-    h_shorttag('img', 'src="http://user.clarin.eu/external/img/topright.gif" alt="" height="176" width="526" border="0"');
+    h_shorttag('img', 'src="./topright.gif" alt="" height="176" width="526" border="0"');
     h_closetag();
 }
 
