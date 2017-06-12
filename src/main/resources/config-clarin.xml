@@ -116,5 +116,7 @@
     -->
     <provider url="http://dspace.library.uu.nl/oai/clarin"/>
     <provider url="http://oai.beeldengeluid.nl/academia/oai"/>
+    <!-- extra -->
+    <provider url="http://phonotheque.mmsh.huma-num.fr/oai/provider"/>
   </providers>
 </config>
