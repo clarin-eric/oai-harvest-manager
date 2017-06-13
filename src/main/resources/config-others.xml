@@ -176,7 +176,7 @@
     <provider url="http://oai.hab.de/" name="Wolfenbuettel Digital Library" scenario="ListIdentifiers"/>
     <provider url="http://www.e-codices.unifr.ch/oai/oai.php?verb=Identify"/>
     <provider url="http://gei-digital.gei.de/viewer/oai?verb=Identify" name="GEI historic German textbooks"/>
-    <provider url="https://b2share.eudat.eu/api/oai2d/" name="B2SHARE">
+    <provider url="https://b2share.eudat.eu/api/oai2d" name="B2SHARE">
       <set>Linguistics</set>
     </provider>
     <provider url="https://repository.ortolang.fr/api/oai"/>
