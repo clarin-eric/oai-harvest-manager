@@ -23,15 +23,15 @@
   <!-- REPOSITORIES -->
   <repositories>
 
-    <!-- The OCLC harvester2 artifact is in the MPI repository
+    <!-- The OCLC harvester2 artifact is in the CLARIN repository
 	 (because the owner of the project does not currently make it
 	 available via Maven).
       -->
-    <repository>
-      <id>MPI</id>
-      <name>MPI LAT Repository</name>
-      <url>http://lux15.mpi.nl/nexus/content/groups/public</url>
-    </repository>
+	<repository>
+		<id>CLARIN</id>
+		<name>CLARIN Repository</name>
+		<url>https://nexus.clarin.eu/content/repositories/Clarin</url>
+	</repository>
 
     <repository>
       <id>ibiblio</id>
