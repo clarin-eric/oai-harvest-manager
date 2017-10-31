@@ -143,8 +143,8 @@ sub print_intro {
     my $now = localtime time;
     h_shorttag('p', '', "This information was updated <strong>$now</strong>.");
     h_opentag('p');
-    h_out('This simple web resource presents a view to the OAI records harvested by the OAI Harvester at ');
-    h_out('the Max Planck Institute for Psycholinguistics. This is intended primarily as a techical tool ');
+    h_out('This simple web resource presents a view to the OAI records harvested by our OAI Harvester.');
+    h_out('This is intended primarily as a techical tool ');
     h_out('to enable providers to check the status of harvested data. For actually viewing these metadata ');
     h_out('resources, there are more suitable alternatives, including the Virtual Language Observatory.');
     h_closetag();
