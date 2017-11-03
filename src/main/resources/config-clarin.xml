@@ -118,5 +118,6 @@
     <provider url="http://oai.beeldengeluid.nl/academia/oai"/>
     <!-- extra -->
     <provider url="http://phonotheque.mmsh.huma-num.fr/oai/provider"/>
+    <provider url="https://repository.ortolang.fr/api/oai"/>
   </providers>
 </config>

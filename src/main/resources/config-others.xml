@@ -179,6 +179,5 @@
     <provider url="https://b2share.eudat.eu/api/oai2d" name="B2SHARE">
       <set>Linguistics</set>
     </provider>
-    <provider url="https://repository.ortolang.fr/api/oai"/>
   </providers>
 </config>
