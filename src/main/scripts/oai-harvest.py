@@ -1,25 +1,44 @@
 #!/usr/bin/env python
 
-from plumbum import local,cli
+from plumbum import local, cli, FG, BG, TF
 import os
 import sys
+import re
 
 class OaiHarvestError(StandardError):
-    def __init__(self, message, args=None):
+    def __init__(self, message, args=[]):
         self.message = message
         self.args = args
 
 class OaiHarvest:
 
-    def __init__(self, oai="/app/oai-harvest-manager", base="/app/workdir", output="test", name="test1", verbose=False):
+    def __init__(self, oai="/app/oai", base="/app/workdir", output="test", name="test", postgres="oai:oai@localhost:5432/oai", verbose=False):
         self.verbose = verbose
-        self.output = output
-        self.name = name
+
+        self.oai = oai
         self.base = base
+
+        self.name = name
+        self.output = output
+
+        self.pg = False
+        if postgres:
+            self.pg = True
+            pgg = re.search("(.*):(.*)@(.*):(.*)/(.*)",postgres)
+            self.pg_user = pgg.group(1)
+            self.pg_pass = pgg.group(2)
+            self.pg_host = pgg.group(3)
+            self.pg_port = pgg.group(4)
+            self.pg_db   = pgg.group(5)
         
         self.find = local["find"]
         self.rsync = local["rsync"]
+        if self.pg:
+            self.psql = local["psql"]
+
         self.harvester = local[os.path.join(oai, "run-harvester.sh")]
+        if self.pg:
+            self.viewer = local[os.path.join(oai, "run-viewer.sh")]
         self.workdir = os.path.join(base, "workdir", "%s-%s" % (output, name))
         self.logdir = os.path.join(base, "log", "%s-%s" % (output, name))
         self.confdir = os.path.join(oai, "resources")
@@ -33,6 +52,7 @@ class OaiHarvest:
             self.print_to_stdout("\tlog dir: %s:\n" % self.logdir)
             self.print_to_stdout("\twork dir: %s\n" % self.workdir)
             self.print_to_stdout("\toutput dir: %s\n" % self.outputdir)
+            self.print_to_stdout("\tview db: %s/%s\n" % (self.pg_host,self.pg_db))
 
     def run(self):
         self.print_to_stdout("Harvest run started, output=%s, name=%s.\n" % (self.output, self.name))
@@ -52,6 +72,15 @@ class OaiHarvest:
         self.merge("oai-pmh")
         self.print_to_stdout("\tDone\n")
 
+        if self.pg: 
+            self.print_to_stdout("Generate update for the harvest view database.\n")
+            self.run_viewer()
+            self.print_to_stdout("\tDone\n")
+            self.print_to_stdout("Updating harvest view database.\n")
+            self.run_psql()
+            self.print_to_stdout("\tDone\n")
+        
+
     def initialize(self):
         """
         Make sure that:
@@ -61,9 +90,11 @@ class OaiHarvest:
         #Ensure conf dir and file exist
         if not os.path.exists(self.confdir):
             raise OaiHarvestError("Config dir [%s] not found" % self.confdir)
+
         absolute_config_file = os.path.join(self.confdir, self.config_file)
         if not os.path.isfile(absolute_config_file):
             raise OaiHarvestError("Config file [%s] not found" % absolute_config_file)
+
         #Ensure work, output and log directories exist
         self.make_dir(self.base, self.workdir, self.outputdir, self.logdir)
 
@@ -107,6 +138,45 @@ class OaiHarvest:
             self.print_to_stdout("\t\t%s\n" % source)
             self.do_rsync(source, destination)
             self.do_cleanup(source)
+
+    def run_viewer(self):
+        """
+        Run the viewer
+        """
+        command = [
+            self.output,
+            self.outputdir,
+            os.path.join(self.workdir, "viewer.sql")
+        ]
+
+        if self.verbose:
+            self.print_to_stdout("\tViewer command:\n")
+            self.print_to_stdout("\t\t%s " % self.viewer)
+            for i in command:
+                self.print_to_stdout("%s " % i)
+            self.print_to_stdout("\n")
+
+        return self.viewer(command)
+
+    def run_psql(self):
+        """
+        Run the psql
+        """
+        command = ["-f", os.path.join(self.workdir, "viewer.sql"),
+            "-U", self.pg_user,
+            "-h", self.pg_host,
+            "-p", self.pg_port,
+            self.pg_db]
+
+        if self.verbose:
+            self.print_to_stdout("\tPSQL command:\n")
+            self.print_to_stdout("\t\t%s " % self.psql)
+            for i in command:
+                self.print_to_stdout("%s " % i)
+            self.print_to_stdout("\n")
+
+        local.env["PGPASSWORD"] = self.pg_pass
+        return self.psql(command)
 
     def search(self, directory):
         """
