@@ -12,7 +12,7 @@ class OaiHarvestError(StandardError):
 
 class OaiHarvest:
 
-    def __init__(self, oai="/app/oai", base="/app/workdir", output="test", name="test", postgres="oai:oai@localhost:5432/oai", verbose=False):
+    def __init__(self, oai="/app/oai", base="/app/workdir", output="test", name="test", jvm="-Xmx1G", postgres="oai:oai@localhost:5432/oai", verbose=False):
         self.verbose = verbose
 
         self.oai = oai
@@ -20,6 +20,8 @@ class OaiHarvest:
 
         self.name = name
         self.output = output
+
+        self.jvm = jvm
 
         self.pg = False
         if postgres:
@@ -103,6 +105,7 @@ class OaiHarvest:
         Run the harvester
         """
         local.env["LOG_DIR"] = self.logdir
+        local.env["PROPS"] = self.jvm
         command = [
             "workdir=%s" % self.workdir,
             "overview-file=%s" % os.path.join(self.workdir, "overview.xml"),
@@ -162,6 +165,7 @@ class OaiHarvest:
         """
         Run the psql
         """
+        local.env["PGPASSWORD"] = self.pg_pass
         command = ["-f", os.path.join(self.workdir, "viewer.sql"),
             "-U", self.pg_user,
             "-h", self.pg_host,
@@ -175,7 +179,6 @@ class OaiHarvest:
                 self.print_to_stdout("%s " % i)
             self.print_to_stdout("\n")
 
-        local.env["PGPASSWORD"] = self.pg_pass
         return self.psql(command)
 
     def search(self, directory):
