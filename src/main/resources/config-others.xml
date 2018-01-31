@@ -54,7 +54,7 @@
       <action type="transform" file="resources/addOAISetName.xsl" cache="cache"/>
       <action type="split"/>
       <action type="save" dir="rec" suffix=".xml"/>
-      <action type="transform" file="resources/olac2cmdi.xsl"/>
+      <action type="transform" file="https://raw.githubusercontent.com/clarin-eric/metadata-conversion/olac-cmdi/olac-cmdi/olac2cmdi.xsl"/>
       <action type="save" dir="cmdi-1_1" suffix=".xml"/>
       <action type="transform" file="https://infra.clarin.eu/CMDI/1.x/upgrade/cmd-record-1_1-to-1_2.xsl" cache="cache"/>
       <action type="save" dir="cmdi-1_2" suffix=".xml"/>
@@ -64,7 +64,7 @@
       <action type="transform" file="resources/addOAISetName.xsl" cache="cache"/>
       <action type="split"/>
       <action type="save" dir="rec" suffix=".xml"/>
-      <action type="transform" file="resources/olac2cmdi.xsl"/>
+      <action type="transform" file="https://raw.githubusercontent.com/clarin-eric/metadata-conversion/olac-cmdi/olac-cmdi/olac2cmdi.xsl"/>
       <action type="save" dir="cmdi-1_1" suffix=".xml"/>
       <action type="transform" file="https://infra.clarin.eu/CMDI/1.x/upgrade/cmd-record-1_1-to-1_2.xsl" cache="cache"/>
       <action type="save" dir="cmdi-1_2" suffix=".xml"/>
