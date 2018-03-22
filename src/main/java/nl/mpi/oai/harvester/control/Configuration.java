@@ -38,7 +38,9 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -85,7 +87,7 @@ public class Configuration {
 	WORKDIR("workdir"), RETRYCOUNT("max-retry-count"),
 	RETRYDELAY("retry-delay"), MAXJOBS("max-jobs"),
 	POOLSIZE("resource-pool-size"), TIMEOUT("timeout"),
-        OVERVIEWFILE("overview-file"),
+        OVERVIEWFILE("overview-file"), MAPFILE("map-file"),
         SAVERESPONSE("save-response"), SCENARIO("scenario");
 	private final String val;
 	private KnownOptions(final String s) { val = s; }
@@ -93,9 +95,15 @@ public class Configuration {
     }
 
     /**
+     * Map file
+     */
+    
+    private String mapFile = "map.csv";
+
+    /**
      * Create a new configuration object based on a configuration file.
      *
-	 */
+     */
     public Configuration() {
 	XPathFactory xpf = XPathFactory.newInstance();
 	xpath = xpf.newXPath();
@@ -542,6 +550,29 @@ public class Configuration {
         return o;
     }
     
+    /**
+     * @return string indicating the location of the map file
+     */
+    public String getMapFile() {
+        String m = settings.get(KnownOptions.MAPFILE.toString());
+        if (m != null)
+            mapFile = m;
+        Path p = Paths.get(mapFile);
+        if (!Files.exists(p)) {
+            PrintWriter map = null;
+            try {
+                map = new PrintWriter(new FileWriter(mapFile,true));
+                map.println("endpointUrl,directoryName");
+            } catch (IOException e) {
+                logger.error("couldn't create an initial/default " + mapFile + " file: ", e);
+            } finally {
+                if (map!=null)
+                    map.close();
+            }
+        }
+        return mapFile;
+    }
+
     /**
      * @return if the response should be saved 
      */
