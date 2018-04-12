@@ -78,11 +78,11 @@ mkdir -p $WORK_DIR
 # Start harvesting into $WORK_DIR
 #
 
-echo Command: "`pwd`/./run-harvester.sh workdir=$WORK_DIR $1"
-./run-harvester.sh workdir=$WORK_DIR $1
+echo Command: "`pwd`/./run-harvester.sh workdir=$WORK_DIR map-file=$WORK_DIR/map.csv $1"
+./run-harvester.sh workdir=$WORK_DIR map-file=$WORK_DIR/map.csv $1
 
 if [ $? -ne 0 ]; then
-	echo "Failed to run importer"
+	echo "Failed to run harvester"
 	exit 1
 fi
 

@@ -33,8 +33,8 @@
          number of files. -->
     <dir path="oai-rec" id="rec" max-files="0"/>
     <dir path="oai-pmh" id="oai" max-files="0"/>
-    <dir path="results/cmdi" id="cmdi" max-files="0"/>
-    <dir path="results/cmdi-1_2" id="cmdi-1_2" max-files="0"/>
+    <dir path="results/cmdi-1_1" id="cmdi-1_1" max-files="0"/>
+    <dir path="results/cmdi" id="cmdi-1_2" max-files="0"/>
   </directories>
   
   
@@ -52,7 +52,7 @@
       <action type="split"/>
       <action type="save" dir="rec" suffix=".xml"/>
       <action type="strip"/>
-      <action type="save" dir="cmdi" suffix=".xml"/>
+      <action type="save" dir="cmdi-1_1" suffix=".xml"/>
       <action type="transform" file="https://infra.clarin.eu/CMDI/1.x/upgrade/cmd-record-1_1-to-1_2.xsl" cache="cache"/>
       <action type="save" dir="cmdi-1_2" suffix=".xml"/>
     </format>
@@ -62,7 +62,7 @@
       <action type="split"/>
       <action type="save" dir="rec" suffix=".xml"/>
       <action type="transform" file="https://raw.githubusercontent.com/clarin-eric/metadata-conversion/olac-cmdi/olac-cmdi/olac2cmdi.xsl"/>
-      <action type="save" dir="cmdi" suffix=".xml"/>
+      <action type="save" dir="cmdi-1_1" suffix=".xml"/>
       <action type="transform" file="https://infra.clarin.eu/CMDI/1.x/upgrade/cmd-record-1_1-to-1_2.xsl" cache="cache"/>
       <action type="save" dir="cmdi-1_2" suffix=".xml"/>
     </format>
@@ -72,7 +72,7 @@
       <action type="split"/>
       <action type="save" dir="rec" suffix=".xml"/>
       <action type="transform" file="https://raw.githubusercontent.com/clarin-eric/metadata-conversion/olac-cmdi/olac-cmdi/olac2cmdi.xsl"/>
-      <action type="save" dir="cmdi" suffix=".xml"/>
+      <action type="save" dir="cmdi-1_1" suffix=".xml"/>
       <action type="transform" file="https://infra.clarin.eu/CMDI/1.x/upgrade/cmd-record-1_1-to-1_2.xsl" cache="cache"/>
       <action type="save" dir="cmdi-1_2" suffix=".xml"/>
     </format>
@@ -91,11 +91,14 @@
     <provider url="http://clarino.uib.no/oai"/>
     <provider url="https://repo.clarino.uib.no/oai/request"/>
     <provider url="https://talar.sfb833.uni-tuebingen.de:8443/erdora/rest/oai"/>
-   <provider url="https://repository.ortolang.fr/api/oai"/>
+    <provider url="https://repository.ortolang.fr/api/oai"/>
     <provider url="https://clarin-pl.eu/oai/request"/>
     <provider url="https://arche.acdh.oeaw.ac.at/oai"/>
     <provider url="http://sweclarin.se/oai-data/"/>
+    <provider url="http://clst.science.ru.nl/oai/provider"/>
 -->
-    <provider url="http://www.ota.ox.ac.uk/cgi-bin/oai.pl"/>
+    <provider url="https://dataverse.no/oai">
+      <set>trolling</set>
+    </provider>
   </providers>
 </config>

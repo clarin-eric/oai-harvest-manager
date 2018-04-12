@@ -81,11 +81,11 @@
             <xsl:if test="normalize-space($np/fn:string[@key='name'])!=''">
                 <xsl:text>"</xsl:text>
                 <xsl:value-of select="replace($np/fn:string[@key='name'],'&quot;','&quot;&quot;')"/>
-                <xsl:if test="normalize-space($np/fn:string[@key='country_code'])!=''">
+                <!--<xsl:if test="normalize-space($np/fn:string[@key='country_code'])!=''">
                     <xsl:text> (</xsl:text>
                     <xsl:value-of select="replace($np/fn:string[@key='country_code'],'&quot;','&quot;&quot;')"/>
                     <xsl:text>)</xsl:text>
-                </xsl:if>
+                </xsl:if>-->
                 <xsl:text>"</xsl:text>
             </xsl:if>
             <xsl:value-of select="$NL"/>

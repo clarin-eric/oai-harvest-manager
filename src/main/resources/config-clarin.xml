@@ -99,7 +99,7 @@
            provider elements 
       -->
       <!-- Leipzig doesn't like too much time between calls within one session, GetRecord calls don't care -->
-      <config url="http://clarinoai.informatik.uni-leipzig.de:8080/oaiprovider/oai" scenario="ListIdentifiers"/>
+      <config url="https://clarinoai.informatik.uni-leipzig.de/oaiprovider/oai" scenario="ListIdentifiers"/>
       <!-- BAS runs sometimes into memory when its big CMD records get processed in batch -->
       <config url="http://www.phonetik.uni-muenchen.de/cgi-bin/BASRepository/oaipmh/oai.pl" scenario="ListIdentifiers"/>
     </import>
