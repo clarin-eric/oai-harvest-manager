@@ -87,6 +87,13 @@ if [ $? -ne 0 ]; then
 fi
 
 #
+# Expand map.csv
+#
+
+echo Command: "`pwd`/./expand-map.sh $WORK_DIR/map.csv"
+./expand-map.sh $WORK_DIR/map.csv
+
+#
 # Archive log files
 #
 if [ -d "$LOG_DIR" ]; then
@@ -142,6 +149,8 @@ fi
 #
 # Create web-view
 #
-nice perl -CSD /opt/oai-webview.pl
+if [ -f /opt/oai-webview.pl ]; then
+	nice perl -CSD /opt/oai-webview.pl
+fi
 
 exit 0
