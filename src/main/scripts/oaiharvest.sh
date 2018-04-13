@@ -98,7 +98,7 @@ echo Command: "`pwd`/./expand-map.sh $WORK_DIR/map.csv"
 #
 if [ -d "$LOG_DIR" ]; then
 	cd $LOG_DIR
-	nice tar cjf $LOGS_DIR/oai-harvester-$2.log.`date "+%Y-%m-%d"`.tar.bz2 *
+	nice tar cf - * | nice pbzip2 > $LOGS_DIR/oai-harvester-$2.log.`date "+%Y-%m-%d"`.tar.bz2
 	cd $thisDir
 fi
 
@@ -137,7 +137,7 @@ fi
 if [ "$2" != "meertens" ]; then
 	echo "Archiving"
 	cd $OUTPUT_DIR
-	nice tar cfj $2.tar.bz2 results
+	nice tar cf - results | nice pbzip2 > $2.tar.bz2
 	targ=$RESULTSET_DIR/$2.tar.bz2
 	if [ -f $targ ]; then
  		nice mv -f $targ $RESULTSET_DIR/backups/$2.`date "+%Y-%m-%d"`.tar.bz2
