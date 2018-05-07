@@ -36,11 +36,11 @@ fi
 JAR=${thisDir}/saxon9he.jar
 
 echo Command: "${JAVA} -jar ${JAR} -xsl:./resources/expandMap.xsl -it:main map=$1"
-nice ${JAVA} -jar ${JAR} -xsl:${thisDir}/expandMap.xsl -it:main map=$1 2> /tmp/expand-map.log > /tmp/expand-map.csv
+nice ${JAVA} -jar ${JAR} -xsl:${thisDir}/expandMap.xsl -it:main map=$1 2> ${thisDir}/expand-map.log > ${thisDir}/expand-map.csv
 if [ $? -ne 0 ]; then
 	echo "Failed to expand map"
-    cat /tmp/expand-map.log
+    cat ${thisDir}/expand-map.log
 	exit 1
 fi
 mv $1 $1.bak
-mv /tmp/expand-map.csv $1
+mv ${thisDir}/expand-map.csv $1

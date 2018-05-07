@@ -119,5 +119,8 @@
     <!-- extra -->
     <provider url="http://phonotheque.mmsh.huma-num.fr/oai/provider"/>
     <provider url="https://repository.ortolang.fr/api/oai"/>
+    <provider url="https://dataverse.no/oai">
+      <set>trolling</set>
+    </provider>    
   </providers>
 </config>
