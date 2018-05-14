@@ -22,7 +22,7 @@
     http request in seconds. If unspecified, will be INFINITE.  -->
     <timeout>60</timeout>
     <scenario>ListRecords</scenario>
-    <incremental>true</incremental>
+    <incremental>false</incremental>
   </settings>
 
   <!-- ### output directories (referenced in the action section) ### -->
@@ -89,9 +89,12 @@
     </provider>
     <provider url="http://clarino.uib.no/oai"/>
     <provider url="https://repo.clarino.uib.no/oai/request"/>
-    <provider url="https://www.meertens.knaw.nl/flat/oaiprovider/"/>
--->
     <provider url="http://catalog.paradisec.org.au/oai/item"
       name="Pacific And Regional Archive for Digital Sources in Endangered Cultures (PARADISEC)"/>
+    <provider url="https://lindat.mff.cuni.cz/repository/oai/request"/>
+    <provider url="https://arche.acdh.oeaw.ac.at/oai"/>
+    <provider url="https://clarinportulan.net/oaipmh/"/>
+-->
+    <provider url="https://www.meertens.knaw.nl/flat/oai2"/>
   </providers>
 </config>

@@ -109,6 +109,7 @@ class OaiHarvest:
         command = [
             "workdir=%s" % self.workdir,
             "overview-file=%s" % os.path.join(self.workdir, "overview.xml"),
+            "map-file=%s" % os.path.join(self.workdir, "map.csv"),
             os.path.join(self.confdir, self.config_file)
         ]
 
@@ -221,6 +222,7 @@ class App(cli.Application):
     verbose = cli.Flag(["v", "verbose"], help="Verbose output")
     output = None
     name = None
+    postgres = None
 
     @cli.switch(["-o", "--output"], str, mandatory=True, help="Output folder (collection) this harvest is part of.")
     def set_output(self, output):
@@ -230,8 +232,12 @@ class App(cli.Application):
     def set_name(self, name):
         self.name = name
 
+    @cli.switch(["-p", "--postgres"], str, mandatory=False, help="Postgres database (<user>:<pass>@<host>:<port>/<db>) to connext to.")
+    def set_postgres(self, postgres):
+        self.postgres = postgres
+
     def main(self):
-        oai = OaiHarvest(output=self.output, name=self.name, verbose=self.verbose)
+        oai = OaiHarvest(output=self.output, name=self.name, postgres=self.postgres, verbose=self.verbose)
         try:
             oai.run()
         except Exception as e:
