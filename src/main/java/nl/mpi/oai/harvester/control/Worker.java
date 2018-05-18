@@ -18,12 +18,14 @@
 
 package nl.mpi.oai.harvester.control;
 
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Arrays;
 import nl.mpi.oai.harvester.Provider;
 import nl.mpi.oai.harvester.StaticProvider;
 import nl.mpi.oai.harvester.action.ActionSequence;
 import nl.mpi.oai.harvester.cycle.Cycle;
-import nl.mpi.oai.harvester.cycle.CycleProperties;
 import nl.mpi.oai.harvester.cycle.Endpoint;
 import nl.mpi.oai.harvester.harvesting.*;
 import nl.mpi.oai.harvester.metadata.MetadataFactory;
@@ -32,7 +34,6 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
 
 import java.util.List;
-import java.util.concurrent.Semaphore;
 
 /**
  * This class represents a single processing thread in the harvesting actions
@@ -46,6 +47,9 @@ import java.util.concurrent.Semaphore;
 class Worker implements Runnable {
     
     private static final Logger logger = LogManager.getLogger(Worker.class);
+    
+    /** The configuration */
+    private final Configuration config;
     
     /** The provider this worker deals with. */
     private final Provider provider;
@@ -70,12 +74,14 @@ class Worker implements Runnable {
      * @param actionSequences list of actions to take on harvested metadata
      * @param cycle the harvesting cycle
      */
-    public Worker(Provider provider, List<ActionSequence> actionSequences,
+    public Worker(Provider provider, Configuration config,
                   Cycle cycle) {
 
+        this.config = config;
+        
 	this.provider = provider;
 
-	this.actionSequences = actionSequences;
+	this.actionSequences = config.getActionSequences();
 
         // register the endpoint with the cycle, kj: get the group
         endpoint = cycle.next(provider.getOaiUrl(), "group");
@@ -93,9 +99,23 @@ class Worker implements Runnable {
             
             Thread.currentThread().setName(provider.getName().replaceAll("[^a-zA-Z0-9\\-\\(\\)]"," "));
 
-
             // setting specific log filename
             ThreadContext.put("logFileName", Util.toFileFormat(provider.getName()).replaceAll("/", ""));
+            
+            String map = config.getMapFile();
+            synchronized(map) {
+                PrintWriter m = null;
+                try {
+                    m = new PrintWriter(new FileWriter(map,true));
+                    m.printf("%s,%s", provider.getOaiUrl(),Util.toFileFormat(provider.getName()).replaceAll("/", ""));
+                    m.println();
+                } catch (IOException e) {
+                    logger.error("failed to write to the map file!",e);
+                } finally {
+                    if (m!=null)
+                        m.close();
+                }
+            }
 
             boolean done = false;
 

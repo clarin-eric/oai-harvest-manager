@@ -58,7 +58,7 @@ public class Main {
 
 	for (Provider provider : config.getProviders()) {
             // create a new worker
-	    Worker worker = new Worker(provider, config.getActionSequences(), cycle);
+	    Worker worker = new Worker(provider, config, cycle);
             executor.execute(worker);
 	}
         
