@@ -73,41 +73,48 @@ class OaiHarvest:
         self.print_to_stdout("Harvest run started, output=%s, name=%s.\n" % (self.output, self.name))
         self.print_to_stdout("\tInitializing.\n")
         self.initialize()
-        self.print_to_stdout("\t\tDone\n")
+        self.print_to_stdout("\tDone\n")
 
         self.print_to_stdout("\tRunning harvester.\n")
         self.run_harvest()
-        self.print_to_stdout("\t\tDone\n")
-
         self.print_to_stdout("\tDone\n")
-
-        self.do_reset()
 
         self.print_to_stdout("\tExpand map.\n")
         self.expand_map()
-        self.print_to_stdout("\t\tDone\n")
+        self.print_to_stdout("\tDone\n")
 
-        self.print_to_stdout("Merging harvest result to output.\n")
+        self.print_to_stdout("\tReset output.\n")
+        self.do_reset()
+        self.print_to_stdout("\tDone\n")
+
+        self.print_to_stdout("\tMerging harvest result to output.\n")
         self.merge("results/cmdi")
         self.merge("results/cmdi-1_1")
         self.merge("oai-pmh")
+        # TODO merge map.csv
         move(os.path.join(self.workdir, "map.csv"), os.path.join(self.outputdir, "results", "map.csv"))
         self.merge_logs()
         self.print_to_stdout("\tDone\n")
 
-        self.print_to_stdout("Backup harvest result.\n")
+        self.print_to_stdout("\tBackup harvest result.\n")
         self.run_backup()
         self.print_to_stdout("\tDone\n")
 
         if self.pg: 
-            self.print_to_stdout("Generate update for the harvest view database.\n")
+            move(os.path.join(self.outputdir, "results", "map.csv"), os.path.join(self.workdir, "map.csv"))
+            self.print_to_stdout("\tGenerate update for the harvest view database.\n")
             self.run_viewer()
             self.print_to_stdout("\tDone\n")
-            self.print_to_stdout("Updating harvest view database.\n")
+            self.print_to_stdout("\tUpdating harvest view database.\n")
             self.run_psql()
             self.print_to_stdout("\tDone\n")
-        
+            move(os.path.join(self.workdir, "map.csv"), os.path.join(self.outputdir, "results", "map.csv"))        
+
+        self.print_to_stdout("\tCleanup.\n")
         self.do_cleanup()
+        self.print_to_stdout("\tDone\n")
+
+        self.print_to_stdout("Done\n")
 
     def initialize(self):
         """
@@ -176,7 +183,7 @@ class OaiHarvest:
         if (self.output == self.name):
 
             if self.verbose:
-                self.print_to_stdout("Reset output: %s\n" % self.outputdir)
+                self.print_to_stdout("\t\tReset output: %s\n" % self.outputdir)
 
             delete(self.tempdir)
             move(self.outputdir, os.path.join(self.tempdir, "output"))
@@ -201,11 +208,11 @@ class OaiHarvest:
 
         destination = search_directory.replace(self.workdir, self.outputdir)
 
-        self.print_to_stdout("\tDirectory: %s -> %s\n" % (search_directory,destination))
+        self.print_to_stdout("\t\tDirectory: %s -> %s\n" % (search_directory,destination))
         list = self.search(search_directory)
         for line in list:
             source = line.strip()
-            self.print_to_stdout("\t\t%s\n" % source)
+            self.print_to_stdout("\t\t\t%s\n" % source)
             self.do_rsync(source, destination)
 
     def merge_logs(self):
@@ -225,8 +232,8 @@ class OaiHarvest:
             chain = ((self.tar["cf", "-", "results", "log"] | self.bzip2) > ball)
 
             if self.verbose:
-                self.print_to_stdout("\tbackup command:\n")
-                self.print_to_stdout("\t\t%s " % chain)
+                self.print_to_stdout("\t\tbackup command:\n")
+                self.print_to_stdout("\t\t\t%s " % chain)
                 self.print_to_stdout("\n")
 
             chain()
@@ -236,8 +243,8 @@ class OaiHarvest:
             backup = "%s.%s-%s-%s.tar.bz2" % (self.output, now.year, now.month, now.day)
             move(os.path.join(self.resultdir, ball), os.path.join(self.backupdir, backup))
             if self.verbose:
-                self.print_to_stdout("\tbackup previous run:\n")
-                self.print_to_stdout("\t\t%s " % backup)
+                self.print_to_stdout("\t\tbackup previous run:\n")
+                self.print_to_stdout("\t\t\t%s " % backup)
                 self.print_to_stdout("\n")
 
         move(os.path.join(self.outputdir, ball), os.path.join(self.resultdir, ball))
@@ -253,8 +260,8 @@ class OaiHarvest:
         ]
 
         if self.verbose:
-            self.print_to_stdout("\tViewer command:\n")
-            self.print_to_stdout("\t\t%s " % self.viewer)
+            self.print_to_stdout("\t\tViewer command:\n")
+            self.print_to_stdout("\t\t\t%s " % self.viewer)
             for i in command:
                 self.print_to_stdout("%s " % i)
             self.print_to_stdout("\n")
@@ -276,8 +283,8 @@ class OaiHarvest:
             self.pg_db]
 
         if self.verbose:
-            self.print_to_stdout("\tPSQL command:\n")
-            self.print_to_stdout("\t\t%s " % self.psql)
+            self.print_to_stdout("\t\tPSQL command:\n")
+            self.print_to_stdout("\t\t\t%s " % self.psql)
             for i in command:
                 self.print_to_stdout("%s " % i)
             self.print_to_stdout("\n")
@@ -291,8 +298,8 @@ class OaiHarvest:
             self.pg_db]
 
         if self.verbose:
-            self.print_to_stdout("\tPSQL command:\n")
-            self.print_to_stdout("\t\t%s " % self.psql)
+            self.print_to_stdout("\t\tPSQL command:\n")
+            self.print_to_stdout("\t\t\t%s " % self.psql)
             for i in command:
                 self.print_to_stdout("%s " % i)
             self.print_to_stdout("\n")
