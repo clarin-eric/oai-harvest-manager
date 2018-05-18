@@ -43,6 +43,7 @@ class OaiHarvest:
             self.psql = local["psql"]
 
         self.harvester = local[os.path.join(oai, "run-harvester.sh")]
+        self.mapexpander = local[os.path.join(oai, "expand-map.sh")]
         if self.pg:
             self.viewer = local[os.path.join(oai, "run-viewer.sh")]
         self.workdir = os.path.join(base, "workdir", "%s-%s" % (output, name))
@@ -82,13 +83,17 @@ class OaiHarvest:
 
         self.do_reset()
 
+        self.print_to_stdout("\Expand map.\n")
+        self.expand_map()
+        self.print_to_stdout("\t\tDone\n")
+
         self.print_to_stdout("Merging harvest result to output.\n")
+        move(os.path.join(self.workdir, "map.csv"), os.path.join(self.outputdir, "results", "map.csv"))
         self.merge("results/cmdi")
         self.merge("results/cmdi-1_1")
         self.merge("oai-pmh")
         self.merge_logs()
         self.print_to_stdout("\tDone\n")
-
 
         self.print_to_stdout("Backup harvest result.\n")
         self.run_backup()
@@ -146,6 +151,23 @@ class OaiHarvest:
             self.print_to_stdout("\n")
 
         return self.harvester(command)
+
+    def expand_map(self):
+        """
+        Expand the map
+        """
+        command = [
+            os.path.join(self.workdir, "map.csv")
+        ]
+
+        if self.verbose:
+            self.print_to_stdout("\t\tExpander command:\n")
+            self.print_to_stdout("\t\t\t%s " % self.mapexpander)
+            for i in command:
+                self.print_to_stdout("%s " % i)
+            self.print_to_stdout("\n")
+
+        return self.mapexpander(command)
 
     def do_reset(self):
         """
