@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 
 from plumbum import local, cli, FG, BG, TF
+from plumbum.path.utils import move, delete
+import datetime
 import os
 import sys
 import re
@@ -35,6 +37,8 @@ class OaiHarvest:
         
         self.find = local["find"]
         self.rsync = local["rsync"]
+        self.tar = local["tar"]
+        self.bzip2 = local["bzip2"]
         if self.pg:
             self.psql = local["psql"]
 
@@ -42,18 +46,26 @@ class OaiHarvest:
         if self.pg:
             self.viewer = local[os.path.join(oai, "run-viewer.sh")]
         self.workdir = os.path.join(base, "workdir", "%s-%s" % (output, name))
-        self.logdir = os.path.join(base, "log", "%s-%s" % (output, name))
+        self.logdir = os.path.join(self.workdir, "log")
+        self.tempdir = os.path.join(base, "tmp", "zzz-%s-%s" % (output, name))
         self.confdir = os.path.join(oai, "resources")
         self.outputdir = os.path.join(base, "output", output)
+        self.logsdir = os.path.join(self.outputdir, "log")
+        self.resultdir = os.path.join(base, "resultsets")
+        self.backupdir = os.path.join(self.resultdir, "backups")
         self.config_file = "config-%s-%s.xml" % (output, name)
 
         if self.verbose:
             self.print_to_stdout("Config:\n")
             self.print_to_stdout("\tconf dir: %s\n" % self.confdir)
             self.print_to_stdout("\tconf file: %s\n" % self.config_file)
-            self.print_to_stdout("\tlog dir: %s:\n" % self.logdir)
+            self.print_to_stdout("\tlog dir: %s\n" % self.logdir)
+            self.print_to_stdout("\tlogs dir: %s\n" % self.logsdir)
             self.print_to_stdout("\twork dir: %s\n" % self.workdir)
+            self.print_to_stdout("\ttemp dir: %s\n" % self.tempdir)
             self.print_to_stdout("\toutput dir: %s\n" % self.outputdir)
+            self.print_to_stdout("\tresults dir: %s\n" % self.resultdir)
+            self.print_to_stdout("\tbackup dir: %s\n" % self.backupdir)
             self.print_to_stdout("\tview db: %s/%s\n" % (self.pg_host,self.pg_db))
 
     def run(self):
@@ -68,10 +80,18 @@ class OaiHarvest:
 
         self.print_to_stdout("\tDone\n")
 
+        self.do_reset()
+
         self.print_to_stdout("Merging harvest result to output.\n")
         self.merge("results/cmdi")
         self.merge("results/cmdi-1_1")
         self.merge("oai-pmh")
+        self.merge_logs()
+        self.print_to_stdout("\tDone\n")
+
+
+        self.print_to_stdout("Backup harvest result.\n")
+        self.run_backup()
         self.print_to_stdout("\tDone\n")
 
         if self.pg: 
@@ -82,6 +102,7 @@ class OaiHarvest:
             self.run_psql()
             self.print_to_stdout("\tDone\n")
         
+        self.do_cleanup()
 
     def initialize(self):
         """
@@ -97,8 +118,12 @@ class OaiHarvest:
         if not os.path.isfile(absolute_config_file):
             raise OaiHarvestError("Config file [%s] not found" % absolute_config_file)
 
-        #Ensure work, output and log directories exist
-        self.make_dir(self.base, self.workdir, self.outputdir, self.logdir)
+        #Clean workdir
+        if os.path.exists(self.workdir):
+            delete(self.workdir)
+
+        #Ensure directories exist
+        self.make_dir(self.base, self.workdir, self.outputdir, self.resultdir, self.backupdir, self.logdir, self.logsdir, self.tempdir)
 
     def run_harvest(self):
         """
@@ -122,10 +147,29 @@ class OaiHarvest:
 
         return self.harvester(command)
 
+    def do_reset(self):
+        """
+        start with a fresh output
+        """
+        if (self.output == self.name):
+
+            if self.verbose:
+                self.print_to_stdout("Reset output: %s\n" % self.outputdir)
+
+            delete(self.tempdir)
+            move(self.outputdir, os.path.join(self.tempdir, "output"))
+            self.make_dir(self.outputdir)
+            self.make_dir(self.logsdir)
+
+    def do_cleanup(self):
+        """
+        cleanup
+        """
+        delete(self.tempdir)
+
     def merge(self, dir):
         """
-        Merge the harvest result from the output directory into the output directory and make sure the source
-        directory is properly cleaned
+        Merge the harvest result from the output directory into the output directory
         """
         search_directory=os.path.join(self.workdir, dir)
 
@@ -141,7 +185,40 @@ class OaiHarvest:
             source = line.strip()
             self.print_to_stdout("\t\t%s\n" % source)
             self.do_rsync(source, destination)
-            self.do_cleanup(source)
+
+    def merge_logs(self):
+        """
+        save the logs
+        """
+        for log in local.path(self.logdir).list():
+            move(log, os.path.join(self.logsdir,log.name))
+
+    def run_backup(self):
+        """
+        Make a backup
+        """
+        ball = "%s.tar.bz2" % self.output
+
+        with local.cwd(self.outputdir):
+            chain = ((self.tar["cf", "-", "results", "log"] | self.bzip2) > ball)
+
+            if self.verbose:
+                self.print_to_stdout("\tbackup command:\n")
+                self.print_to_stdout("\t\t%s " % chain)
+                self.print_to_stdout("\n")
+
+            chain()
+        
+        if os.path.exists(os.path.join(self.resultdir, ball)):
+            now = datetime.datetime.now()
+            backup = "%s.%s-%s-%s.tar.bz2" % (self.output, now.year, now.month, now.day)
+            move(os.path.join(self.resultdir, ball), os.path.join(self.backupdir, backup))
+            if self.verbose:
+                self.print_to_stdout("\tbackup previous run:\n")
+                self.print_to_stdout("\t\t%s " % backup)
+                self.print_to_stdout("\n")
+
+        move(os.path.join(self.outputdir, ball), os.path.join(self.resultdir, ball))
 
     def run_viewer(self):
         """
@@ -167,6 +244,24 @@ class OaiHarvest:
         Run the psql
         """
         local.env["PGPASSWORD"] = self.pg_pass
+
+        now = datetime.datetime.now()
+        backup = "%s.%s-%s-%s.tar.bz2" % (self.output, now.year, now.month, now.day)
+        command = ["-c", "UPDATE harvest SET location = '%s' WHERE \"type\" = '%s' AND location = '%s';" % (backup, self.output, self.outputdir),
+            "-U", self.pg_user,
+            "-h", self.pg_host,
+            "-p", self.pg_port,
+            self.pg_db]
+
+        if self.verbose:
+            self.print_to_stdout("\tPSQL command:\n")
+            self.print_to_stdout("\t\t%s " % self.psql)
+            for i in command:
+                self.print_to_stdout("%s " % i)
+            self.print_to_stdout("\n")
+
+        self.psql(command)
+
         command = ["-f", os.path.join(self.workdir, "viewer.sql"),
             "-U", self.pg_user,
             "-h", self.pg_host,
@@ -180,7 +275,7 @@ class OaiHarvest:
                 self.print_to_stdout("%s " % i)
             self.print_to_stdout("\n")
 
-        return self.psql(command)
+        self.psql(command)
 
     def search(self, directory):
         """
@@ -195,11 +290,6 @@ class OaiHarvest:
         """
         self.make_dir(destination)
         return self.rsync("-ahrv", "-delete", source, destination)
-
-    def do_cleanup(self, dir):
-        """
-        Perform cleanup actions
-        """
 
     def make_dir(self, *dirs):
         """
