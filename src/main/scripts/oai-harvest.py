@@ -83,15 +83,15 @@ class OaiHarvest:
 
         self.do_reset()
 
-        self.print_to_stdout("\Expand map.\n")
+        self.print_to_stdout("\tExpand map.\n")
         self.expand_map()
         self.print_to_stdout("\t\tDone\n")
 
         self.print_to_stdout("Merging harvest result to output.\n")
-        move(os.path.join(self.workdir, "map.csv"), os.path.join(self.outputdir, "results", "map.csv"))
         self.merge("results/cmdi")
         self.merge("results/cmdi-1_1")
         self.merge("oai-pmh")
+        move(os.path.join(self.workdir, "map.csv"), os.path.join(self.outputdir, "results", "map.csv"))
         self.merge_logs()
         self.print_to_stdout("\tDone\n")
 
