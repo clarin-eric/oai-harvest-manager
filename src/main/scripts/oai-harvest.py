@@ -360,11 +360,15 @@ class App(cli.Application):
         try:
             oai.run()
         except Exception as e:
-            print e.message
+            sys.stdout.write(str(e))
+            sys.stdout.flush()
+            sys.exit(1)
+        except:
+            e = sys.exc_info()[0]
+            print e
             sys.exit(1)
         else:
             sys.exit(0)
-
 
 if __name__ == "__main__":
     App.run()
