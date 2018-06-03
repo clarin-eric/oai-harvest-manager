@@ -29,7 +29,7 @@
     work, state-file must be defined, the file must exist, and the provider
     in question must have been harvested previously. If any of these conditions
     is not fulfilled, this setting has no effect.-->
-    <incremental>true</incremental>
+    <incremental>false</incremental>
     
     <scenario>ListRecords</scenario>
   </settings>
@@ -40,8 +40,8 @@
     <!-- When the attribute 'max-files' is non-zero, subdirectories
          will be created to ensure no directory has more than that
          number of files. -->
-    <dir path="oai-org" id="oai" max-files="0"/>
-    <dir path="oai-pmh" id="rec" max-files="0"/>
+    <dir path="oai-rec" id="rec" max-files="0"/>
+    <dir path="oai-pmh" id="oai" max-files="0"/>
     <dir path="results/cmdi-1_1" id="cmdi-1_1" max-files="0"/>
     <dir path="results/cmdi" id="cmdi-1_2" max-files="0"/>
   </directories>
@@ -50,21 +50,21 @@
   <!-- ### actions to take on metadata formats (in order of preference) ### -->
   <actions>
     <format match="prefix" value="olac">
-      <!--<action type="save" dir="oai" suffix=".xml"/>-->
+      <action type="save" dir="oai" suffix=".xml"/>
       <action type="transform" file="resources/addOAISetName.xsl" cache="cache"/>
       <action type="split"/>
       <action type="save" dir="rec" suffix=".xml"/>
-      <action type="transform" file="https://raw.githubusercontent.com/clarin-eric/metadata-conversion/olac-cmdi/olac-cmdi/olac2cmdi.xsl"/>
+      <action type="transform" file="https://raw.githubusercontent.com/menzowindhouwer/metadata-conversion/olac-cmdi/olac-cmdi/olac2cmdi.xsl"/>
       <action type="save" dir="cmdi-1_1" suffix=".xml"/>
       <action type="transform" file="https://infra.clarin.eu/CMDI/1.x/upgrade/cmd-record-1_1-to-1_2.xsl" cache="cache"/>
       <action type="save" dir="cmdi-1_2" suffix=".xml"/>
     </format>
     <format match="prefix" value="oai_dc">
-      <!--<action type="save" dir="oai" suffix=".xml"/>-->
+      <action type="save" dir="oai" suffix=".xml"/>
       <action type="transform" file="resources/addOAISetName.xsl" cache="cache"/>
       <action type="split"/>
       <action type="save" dir="rec" suffix=".xml"/>
-      <action type="transform" file="https://raw.githubusercontent.com/clarin-eric/metadata-conversion/olac-cmdi/olac-cmdi/olac2cmdi.xsl"/>
+      <action type="transform" file="https://raw.githubusercontent.com/menzowindhouwer/metadata-conversion/olac-cmdi/olac-cmdi/olac2cmdi.xsl"/>
       <action type="save" dir="cmdi-1_1" suffix=".xml"/>
       <action type="transform" file="https://infra.clarin.eu/CMDI/1.x/upgrade/cmd-record-1_1-to-1_2.xsl" cache="cache"/>
       <action type="save" dir="cmdi-1_2" suffix=".xml"/>
@@ -171,13 +171,14 @@
 	      name="University of the Basque Country"/>
     <provider url="http://lrl-diffusion.univ-bpclermont.fr/mulce/metadata/repository/mulce-sr.xml" static="true"
 	      name="Multimodal Learning and teaching Corpora Exchange"/>
-    <provider url="http://www.fihrist.org.uk/oaipmh"
-	      name="Fihrist"/>
+    <!--<provider url="http://www.fihrist.org.uk/oaipmh"
+	      name="Fihrist"/>-->
     <provider url="http://oai.hab.de/" name="Wolfenbuettel Digital Library" scenario="ListIdentifiers"/>
     <provider url="http://www.e-codices.unifr.ch/oai/oai.php?verb=Identify"/>
     <provider url="http://gei-digital.gei.de/viewer/oai?verb=Identify" name="GEI historic German textbooks"/>
-    <provider url="https://b2share.eudat.eu/oai2d/" name="B2SHARE">
+    <provider url="https://b2share.eudat.eu/api/oai2d/" name="B2SHARE">
       <set>Linguistics</set>
     </provider>
+    <provider url="https://repository.ortolang.fr/api/oai"/>
   </providers>
 </config>
