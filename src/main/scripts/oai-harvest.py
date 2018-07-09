@@ -67,7 +67,8 @@ class OaiHarvest:
             self.print_to_stdout("\toutput dir: %s\n" % self.outputdir)
             self.print_to_stdout("\tresults dir: %s\n" % self.resultdir)
             self.print_to_stdout("\tbackup dir: %s\n" % self.backupdir)
-            self.print_to_stdout("\tview db: %s/%s\n" % (self.pg_host,self.pg_db))
+            if self.pg:
+                self.print_to_stdout("\tview db: %s/%s\n" % (self.pg_host,self.pg_db))
 
     def run(self):
         self.print_to_stdout("Harvest run started, output=%s, name=%s.\n" % (self.output, self.name))
