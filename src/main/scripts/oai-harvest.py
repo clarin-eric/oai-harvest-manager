@@ -44,8 +44,7 @@ class OaiHarvest:
 
         self.harvester = local[os.path.join(oai, "run-harvester.sh")]
         self.mapexpander = local[os.path.join(oai, "expand-map.sh")]
-        if self.pg:
-            self.viewer = local[os.path.join(oai, "run-viewer.sh")]
+        self.viewer = local[os.path.join(oai, "run-viewer.sh")]
         self.workdir = os.path.join(base, "workdir", "%s-%s" % (output, name))
         self.logdir = os.path.join(self.workdir, "log")
         self.tempdir = os.path.join(base, "tmp", "zzz-%s-%s" % (output, name))
@@ -101,15 +100,15 @@ class OaiHarvest:
         self.run_backup()
         self.print_to_stdout("\tDone\n")
 
+        move(os.path.join(self.outputdir, "results", "map.csv"), os.path.join(self.workdir, "map.csv"))
+        self.print_to_stdout("\tGenerate update for the harvest view database.\n")
+        self.run_viewer()
+        self.print_to_stdout("\tDone\n")
         if self.pg: 
-            move(os.path.join(self.outputdir, "results", "map.csv"), os.path.join(self.workdir, "map.csv"))
-            self.print_to_stdout("\tGenerate update for the harvest view database.\n")
-            self.run_viewer()
-            self.print_to_stdout("\tDone\n")
             self.print_to_stdout("\tUpdating harvest view database.\n")
             self.run_psql()
             self.print_to_stdout("\tDone\n")
-            move(os.path.join(self.workdir, "map.csv"), os.path.join(self.outputdir, "results", "map.csv"))        
+        move(os.path.join(self.workdir, "map.csv"), os.path.join(self.outputdir, "results", "map.csv"))        
 
         self.print_to_stdout("\tCleanup.\n")
         self.do_cleanup()
