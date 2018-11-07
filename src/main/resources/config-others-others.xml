@@ -159,8 +159,8 @@
 	      name="Information Retrieval Facility"/>
     <!--<provider url="http://nactem.ac.uk/software/Farm/oai/oai.pl"
 	      name="National Centre for Text Mining NaCTeM"/>-->
-    <provider url="http://services.gate.ac.uk/oai"
-	      name="University of Sheffield"/>
+    <!--<provider url="http://services.gate.ac.uk/oai"
+	      name="University of Sheffield"/>-->
     <provider url="http://sag.art.uniroma2.it/oai/oai.pl"
 	      name="University of Roma Tor Vergata"/>
     <provider url="http://redac.univ-tlse2.fr/metadata/oai/oai.pl"
@@ -176,8 +176,8 @@
     <provider url="http://oai.hab.de/" name="Wolfenbuettel Digital Library" scenario="ListIdentifiers"/>
     <provider url="http://www.e-codices.unifr.ch/oai/oai.php?verb=Identify"/>
     <provider url="http://gei-digital.gei.de/viewer/oai?verb=Identify" name="GEI historic German textbooks"/>
-    <provider url="https://b2share.eudat.eu/api/oai2d/" name="B2SHARE">
-      <set>Linguistics</set>
+   <provider url="https://b2share.eudat.eu/api/oai2d" name="B2SHARE">
+      <set>0afede87-2bf2-4d89-867e-d2ee57251c62</set>
     </provider>
     <provider url="https://repository.ortolang.fr/api/oai"/>
   </providers>
