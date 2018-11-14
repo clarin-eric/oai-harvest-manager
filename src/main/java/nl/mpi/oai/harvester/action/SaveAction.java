@@ -147,7 +147,7 @@ public class SaveAction implements Action {
      * @throws IOException something went wrong when creating the new file
      */
     protected Path chooseLocation(Metadata metadata) throws IOException {
-        return dir.placeNewFile(Util.toFileFormat(metadata.getId()) + suffix);
+        return dir.placeNewFile(Util.toFileFormat(metadata.getId(),suffix));
     }
 
     @Override
