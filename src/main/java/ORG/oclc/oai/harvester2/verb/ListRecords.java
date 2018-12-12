@@ -159,7 +159,6 @@ public class ListRecords extends HarvesterVerb {
                     } catch (WstxUnexpectedCharException ex) {
                         logger.info("Invalid char found in XML, skipping the current one and look for next one");
                     }
-
                 else
                     state = state == 1? 0: -1;// if START then STOP else ERROR
             }
