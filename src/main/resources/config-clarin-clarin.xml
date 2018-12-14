@@ -132,6 +132,7 @@
     <provider url="https://repository.ortolang.fr/api/oai"/>
     <provider url="https://dataverse.no/oai">
       <set>trolling</set>
-    </provider>    
+    </provider>
+    <provider url="https://lat1.lis.soas.ac.uk/ds/oaiprovider/oai2"/>
   </providers>
 </config>
