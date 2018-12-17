@@ -37,14 +37,13 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.concurrent.Semaphore;
-import java.util.logging.Level;
+import org.w3c.dom.Node;
 
 /**
  * This class represents the application of an XSL transformation to the
@@ -69,6 +68,9 @@ public class TransformAction implements Action {
     
     /** A standard semaphore is used to track the number of running transforms. */
     private Semaphore semaphore;
+    
+    /** The configuration */
+    private Node config;
 
     /** 
      * Create a new transform action using the specified XSLT. 
@@ -79,8 +81,8 @@ public class TransformAction implements Action {
      * @throws FileNotFoundException stylesheet couldn't be found
      * @throws TransformerConfigurationException there is a problem with the stylesheet
      */
-    public TransformAction(String xsltFile,Path cacheDir,int maxJobs) throws FileNotFoundException, TransformerConfigurationException {
-        this(xsltFile,cacheDir,(maxJobs>0?new Semaphore(maxJobs):null));
+    public TransformAction(Node conf, String xsltFile,Path cacheDir,int maxJobs) throws FileNotFoundException, TransformerConfigurationException {
+        this(conf, xsltFile,cacheDir,(maxJobs>0?new Semaphore(maxJobs):null));
     }
     
     /** 
@@ -92,7 +94,8 @@ public class TransformAction implements Action {
      * @throws FileNotFoundException stylesheet couldn't be found
      * @throws TransformerConfigurationException there is a problem with the stylesheet
      */
-    public TransformAction(String xsltFile,Path cacheDir,Semaphore semaphore) throws FileNotFoundException, TransformerConfigurationException {
+    public TransformAction(Node conf, String xsltFile,Path cacheDir,Semaphore semaphore) throws FileNotFoundException, TransformerConfigurationException {
+        this.config = conf;
 	this.xsltFile = xsltFile;
         this.cacheDir = cacheDir;
         this.semaphore = semaphore;
@@ -140,6 +143,7 @@ public class TransformAction implements Action {
                     source = new DOMSource(record.getDoc());
                     output = new DOMResult();
                 }
+                transformer.setParameter("config", this.config.getOwnerDocument());
                 transformer.setParameter("provider_name",record.getOrigin().getName());
                 transformer.setParameter("provider_uri",record.getOrigin().getOaiUrl());
                 transformer.setParameter("record_identifier",record.getId());
@@ -188,7 +192,7 @@ public class TransformAction implements Action {
     public Action clone() {
 	try {
 	    // This is a deep copy. The new object has its own Transform object.
-	    return new TransformAction(xsltFile,cacheDir,semaphore);
+	    return new TransformAction(config, xsltFile,cacheDir,semaphore);
 	} catch (FileNotFoundException | TransformerConfigurationException ex) {
 	    logger.error(ex);
 	}

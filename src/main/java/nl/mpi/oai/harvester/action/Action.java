@@ -46,8 +46,4 @@ public interface Action {
      * @return Action
      */
     Action clone();
-
-    enum State {
-        START,RECORD,HEADER,ID,METADATA,STOP,ERROR
-    }
 }

@@ -62,6 +62,10 @@ public class SplitAction implements Action {
     private final XPath xpath;
     private final DocumentBuilder db;
 
+    private enum State {
+        START,RECORD,HEADER,ID,METADATA,STOP,ERROR
+    }
+
     public SplitAction() throws ParserConfigurationException {
 	XPathFactory xpf = XPathFactory.newInstance();
 	xpath = xpf.newXPath();	
@@ -136,7 +140,7 @@ public class SplitAction implements Action {
                     
                     if (reader.hasNext()) {
                         XMLEvent event = reader.nextEvent();
-
+                        
                         State state = State.START; // 1:START 2:RECORD 3:HEADER 4:ID 0:STOP -1:ERROR
                         int depth = 0;
                         String status = null;

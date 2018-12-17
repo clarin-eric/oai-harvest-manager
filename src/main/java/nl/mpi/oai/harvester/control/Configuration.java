@@ -292,7 +292,7 @@ public class Configuration {
                                     logger.error("@max-jobs[" + jobsStr + "] doesn't contain a valid number", e);
                                 }
                             }
-                            act = new TransformAction(xslFile, cache, jobs);
+                            act = new TransformAction(base, xslFile, cache, jobs);
                         } catch (IOException | TransformerConfigurationException ex) {
                             logger.error(ex);
                         }

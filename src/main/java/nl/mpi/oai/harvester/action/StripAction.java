@@ -59,6 +59,10 @@ public class StripAction implements Action {
     private final XPath xpath;
     private final DocumentBuilder db;
 
+    private enum State {
+        START,RECORD,HEADER,ID,METADATA,STOP,ERROR
+    }
+
     public StripAction() throws ParserConfigurationException {
 	XPathFactory xpf = XPathFactory.newInstance();
 	xpath = xpf.newXPath();	

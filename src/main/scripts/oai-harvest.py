@@ -6,6 +6,7 @@ import datetime
 import os
 import sys
 import re
+import urlparse
 
 class OaiHarvestError(StandardError):
     def __init__(self, message, args=[]):
@@ -14,7 +15,7 @@ class OaiHarvestError(StandardError):
 
 class OaiHarvest:
 
-    def __init__(self, oai="/app/oai", base="/app/workdir", output="test", name="test", jvm="-Xmx1G", postgres="oai:oai@localhost:5432/oai", verbose=False):
+    def __init__(self, conf=None, oai="/app/oai", base="/app/workdir", output="test", name="test", jvm="-Xmx1G", postgres="oai:oai@localhost:5432/oai", verbose=False):
         self.verbose = verbose
 
         self.oai = oai
@@ -22,6 +23,8 @@ class OaiHarvest:
 
         self.name = name
         self.output = output
+
+        self.confdir = conf
 
         self.jvm = jvm
 
@@ -48,7 +51,8 @@ class OaiHarvest:
         self.workdir = os.path.join(base, "workdir", "%s-%s" % (output, name))
         self.logdir = os.path.join(self.workdir, "log")
         self.tempdir = os.path.join(base, "tmp", "zzz-%s-%s" % (output, name))
-        self.confdir = os.path.join(oai, "resources")
+        if not conf:
+            self.confdir = os.path.join(oai, "resources")
         self.outputdir = os.path.join(base, "output", output)
         self.logsdir = os.path.join(self.outputdir, "log")
         self.resultdir = os.path.join(base, "resultsets")
@@ -122,13 +126,16 @@ class OaiHarvest:
         - all required directories exist (create if needed)
         - all required files exist (throw error if they don't exist)
         """
-        #Ensure conf dir and file exist
-        if not os.path.exists(self.confdir):
-            raise OaiHarvestError("Config dir [%s] not found" % self.confdir)
 
-        absolute_config_file = os.path.join(self.confdir, self.config_file)
-        if not os.path.isfile(absolute_config_file):
-            raise OaiHarvestError("Config file [%s] not found" % absolute_config_file)
+        online = re.match("http(s)?://.*",self.confdir)
+        if not online:
+            #Ensure conf dir and file exist
+            if not os.path.exists(self.confdir):
+                raise OaiHarvestError("Config dir [%s] not found" % self.confdir)
+
+            absolute_config_file = os.path.join(self.confdir, self.config_file)
+            if not os.path.isfile(absolute_config_file):
+                raise OaiHarvestError("Config file [%s] not found" % absolute_config_file)
 
         #Clean workdir
         if os.path.exists(self.workdir):
@@ -143,11 +150,16 @@ class OaiHarvest:
         """
         local.env["LOG_DIR"] = self.logdir
         local.env["PROPS"] = self.jvm
+        conf = None
+        if re.match("http(s)?://.*",self.confdir):
+            conf = urlparse.urljoin(self.confdir, self.config_file)
+        else:
+            conf = os.path.join(self.confdir, self.config_file)
         command = [
             "workdir=%s" % self.workdir,
             "overview-file=%s" % os.path.join(self.workdir, "overview.xml"),
             "map-file=%s" % os.path.join(self.workdir, "map.csv"),
-            os.path.join(self.confdir, self.config_file)
+            conf
         ]
 
         if self.verbose:
@@ -339,9 +351,14 @@ class App(cli.Application):
     PROGNAME = "oai-harvest.py"
     VERSION = "0.0.1"
     verbose = cli.Flag(["v", "verbose"], help="Verbose output")
+    confdir = None
     output = None
     name = None
     postgres = None
+
+    @cli.switch(["-c", "--config"], str, mandatory=False, help="Config directory (can be online). (optional)")
+    def set_config(self, config):
+        self.confdir = config
 
     @cli.switch(["-o", "--output"], str, mandatory=True, help="Output folder (collection) this harvest is part of.")
     def set_output(self, output):
@@ -351,12 +368,12 @@ class App(cli.Application):
     def set_name(self, name):
         self.name = name
 
-    @cli.switch(["-p", "--postgres"], str, mandatory=False, help="Postgres database (<user>:<pass>@<host>:<port>/<db>) to connext to.")
+    @cli.switch(["-p", "--postgres"], str, mandatory=False, help="Postgres database (<user>:<pass>@<host>:<port>/<db>) to connext to. (optional)")
     def set_postgres(self, postgres):
         self.postgres = postgres
 
     def main(self):
-        oai = OaiHarvest(output=self.output, name=self.name, postgres=self.postgres, verbose=self.verbose)
+        oai = OaiHarvest(conf=self.confdir, output=self.output, name=self.name, postgres=self.postgres, verbose=self.verbose)
         try:
             oai.run()
         except Exception as e:
