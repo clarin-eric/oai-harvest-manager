@@ -287,6 +287,7 @@ class OaiHarvest:
         local.env["PGPASSWORD"] = self.pg_pass
 
         now = datetime.datetime.now()
+        #backup = "%s.%s-%s-%s-%s-%s.tar.bz2" % (self.output, now.year, now.month, now.day, now.hour, now.minute)
         backup = "%s.%s-%s-%s.tar.bz2" % (self.output, now.year, now.month, now.day)
         command = ["-c", "UPDATE harvest SET location = '%s' WHERE \"type\" = '%s' AND location = '%s';" % (backup, self.output, self.outputdir),
             "-U", self.pg_user,
@@ -303,20 +304,19 @@ class OaiHarvest:
 
         self.psql(command)
 
-        command = ["-f", os.path.join(self.workdir, "viewer.sql"),
+        log = os.path.join(self.workdir, "viewer.sql.log")
+        chain = (self.psql["-f", os.path.join(self.workdir, "viewer.sql"),
             "-U", self.pg_user,
             "-h", self.pg_host,
             "-p", self.pg_port,
-            self.pg_db]
+            self.pg_db] > log)
 
         if self.verbose:
             self.print_to_stdout("\t\tPSQL command:\n")
-            self.print_to_stdout("\t\t\t%s " % self.psql)
-            for i in command:
-                self.print_to_stdout("%s " % i)
+            self.print_to_stdout("\t\t\t%s " % chain)
             self.print_to_stdout("\n")
 
-        self.psql(command)
+        chain()
 
     def search(self, directory):
         """
