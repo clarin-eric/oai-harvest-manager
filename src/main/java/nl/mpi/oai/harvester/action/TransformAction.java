@@ -53,6 +53,7 @@ import java.util.concurrent.Semaphore;
 import javax.xml.transform.ErrorListener;
 import javax.xml.transform.SourceLocator;
 import net.sf.saxon.s9api.MessageListener;
+import net.sf.saxon.s9api.XsltExecutable;
 
 /**
  * This class represents the application of an XSL transformation to the
@@ -62,7 +63,9 @@ import net.sf.saxon.s9api.MessageListener;
  */
 public class TransformAction implements Action {
     private static final Logger logger = LogManager.getLogger(TransformAction.class);
-    private final XsltTransformer transformer;
+    
+    /** The XSL executable. */
+    private final XsltExecutable executable;
 
     /** The file containing the XSL transformation. */
     private String xsltFile;
@@ -115,16 +118,8 @@ public class TransformAction implements Action {
         else
             xslSource = new StreamSource(new FileInputStream(xsltFile),xsltFile);
 
-        transformer = Saxon.buildTransformer(Saxon.buildDocument(xslSource)).load();
+        executable = Saxon.buildTransformer(Saxon.buildDocument(xslSource));
         
-        TransformActionListener listener = new TransformActionListener();
-        transformer.setErrorListener(listener);
-        transformer.setMessageListener(listener);
-
-        if (cacheDir != null) {
-            logger.debug("Setting the URLResolve to cache in "+cacheDir);
-            transformer.setURIResolver(new TransformActionURLResolver(transformer.getURIResolver()));
-        }
     }
 
     @Override
@@ -150,12 +145,25 @@ public class TransformAction implements Action {
                     source = new DOMSource(record.getDoc());
                 }
                 XdmNode old = Saxon.buildDocument(source);
+                XsltTransformer transformer = executable.load();
+                
+                TransformActionListener listener = new TransformActionListener();
+                transformer.setErrorListener(listener);
+                transformer.setMessageListener(listener);
+
+                if (cacheDir != null) {
+                    logger.debug("Setting the URLResolve to cache in "+cacheDir);
+                    transformer.setURIResolver(new TransformActionURLResolver(transformer.getURIResolver()));
+                }
+                
                 transformer.setSource(old.asSource());
                 transformer.setDestination(output);
+
                 transformer.setParameter(new QName("config"), Saxon.wrapNode(this.config.getOwnerDocument()));
                 transformer.setParameter(new QName("provider_name"), new XdmAtomicValue(record.getOrigin().getName()));
                 transformer.setParameter(new QName("provider_uri"), new XdmAtomicValue(record.getOrigin().getOaiUrl()));
                 transformer.setParameter(new QName("record_identifier"), new XdmAtomicValue(record.getId()));
+
                 transformer.transform();
                 record.setDoc(doc);
                 logger.debug("transformed to XML doc with ["+XPathFactory.newInstance().newXPath().evaluate("count(//*)", record.getDoc())+"] nodes");
