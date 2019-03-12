@@ -18,23 +18,36 @@
 
 package nl.mpi.oai.harvester.action;
 
-import net.sf.saxon.Configuration;
-import net.sf.saxon.TransformerFactoryImpl;
+import net.sf.saxon.s9api.DOMDestination;
+import net.sf.saxon.s9api.QName;
+import net.sf.saxon.s9api.SaxonApiException;
+import net.sf.saxon.s9api.XdmAtomicValue;
+import net.sf.saxon.s9api.XdmNode;
+import net.sf.saxon.s9api.XsltTransformer;
 import nl.mpi.oai.harvester.metadata.Metadata;
+import nl.mpi.tla.util.Saxon;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.w3c.dom.Document;
+import org.w3c.dom.Node;
 
-import javax.xml.transform.*;
-import javax.xml.transform.dom.DOMResult;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.ErrorListener;
+import javax.xml.transform.Result;
+import javax.xml.transform.Source;
+import javax.xml.transform.Templates;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.URIResolver;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.net.MalformedURLException;
@@ -43,7 +56,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.concurrent.Semaphore;
-import org.w3c.dom.Node;
 
 /**
  * This class represents the application of an XSL transformation to the
@@ -53,6 +65,7 @@ import org.w3c.dom.Node;
  */
 public class TransformAction implements Action {
     private static final Logger logger = LogManager.getLogger(TransformAction.class);
+    private final XsltTransformer upsert;
 
     /** The file containing the XSL transformation. */
     private String xsltFile;
@@ -81,7 +94,8 @@ public class TransformAction implements Action {
      * @throws FileNotFoundException stylesheet couldn't be found
      * @throws TransformerConfigurationException there is a problem with the stylesheet
      */
-    public TransformAction(Node conf, String xsltFile,Path cacheDir,int maxJobs) throws FileNotFoundException, TransformerConfigurationException {
+    public TransformAction(Node conf, String xsltFile,Path cacheDir,int maxJobs)
+      throws FileNotFoundException, TransformerConfigurationException, MalformedURLException, SaxonApiException {
         this(conf, xsltFile,cacheDir,(maxJobs>0?new Semaphore(maxJobs):null));
     }
     
@@ -94,29 +108,24 @@ public class TransformAction implements Action {
      * @throws FileNotFoundException stylesheet couldn't be found
      * @throws TransformerConfigurationException there is a problem with the stylesheet
      */
-    public TransformAction(Node conf, String xsltFile,Path cacheDir,Semaphore semaphore) throws FileNotFoundException, TransformerConfigurationException {
+    public TransformAction(Node conf, String xsltFile,Path cacheDir,Semaphore semaphore)
+      throws FileNotFoundException, TransformerConfigurationException, MalformedURLException, SaxonApiException {
         this.config = conf;
-	this.xsltFile = xsltFile;
+	      this.xsltFile = xsltFile;
         this.cacheDir = cacheDir;
         this.semaphore = semaphore;
-	factory = TransformerFactory.newInstance("net.sf.saxon.TransformerFactoryImpl", null);
-        if(factory instanceof TransformerFactoryImpl) {
-            TransformerFactoryImpl transformerFactoryImpl = ((TransformerFactoryImpl)factory);
-            logger.debug("Telling Saxon to send messages as warnings to logger");
-            final Configuration tfConfig = transformerFactoryImpl.getConfiguration();
-            tfConfig.setMessageEmitterClass("net.sf.saxon.serialize.MessageWarner");
-            if (cacheDir != null) {
-                logger.debug("Setting the URLResolve to cache in "+cacheDir);
-                transformerFactoryImpl.setURIResolver(new TransformActionURLResolver(transformerFactoryImpl.getURIResolver()));
-            }
-        }
-        factory.setErrorListener(new TransformActionErrorListener());
         Source xslSource = null;
         if (xsltFile.startsWith("http:") || xsltFile.startsWith("https:"))
             xslSource = new StreamSource(xsltFile);
         else
             xslSource = new StreamSource(new FileInputStream(xsltFile),xsltFile);
-	templates = factory.newTemplates(xslSource);
+        try {
+            upsert = Saxon.buildTransformer(Saxon.buildDocument(xslSource)).load();
+        } catch(Exception exp) {
+            logger.error("melding: ", exp);
+            throw exp;
+        }
+        upsert.setErrorListener(new TransformActionErrorListener());
     }
 
     @Override
@@ -133,30 +142,25 @@ public class TransformAction implements Action {
                         } catch (InterruptedException e) { }
                     }
                 }
-                Transformer transformer = templates.newTransformer();
                 Source source = null;
-                Result output = null;
+                Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
+                DOMDestination output = new DOMDestination(doc);
                 if (record.hasStream()) {
                     source = new SAXSource(record.getSource());
-                    output = new StreamResult(new ByteArrayOutputStream());
                 } else {
                     source = new DOMSource(record.getDoc());
-                    output = new DOMResult();
                 }
-                transformer.setParameter("config", this.config.getOwnerDocument());
-                transformer.setParameter("provider_name",record.getOrigin().getName());
-                transformer.setParameter("provider_uri",record.getOrigin().getOaiUrl());
-                transformer.setParameter("record_identifier",record.getId());
-                transformer.transform(source, output);
-                if (record.hasStream()) {                 
-                    byte[] bytes = ((ByteArrayOutputStream)((StreamResult)output).getOutputStream()).toByteArray();
-                    record.setStream(new ByteArrayInputStream(bytes));
-                    logger.debug("transformed to XML stream with ["+bytes.length+"] bytes");
-                } else {
-                    record.setDoc((Document) ((DOMResult)output).getNode());
-                    logger.debug("transformed to XML doc with ["+XPathFactory.newInstance().newXPath().evaluate("count(//*)", record.getDoc())+"] nodes");
-                }
-            } catch (TransformerException | XPathExpressionException ex) {
+                XdmNode old = Saxon.buildDocument(source);
+                upsert.setSource(old.asSource());
+                upsert.setDestination(output);
+                upsert.setParameter(new QName("config"), Saxon.wrapNode(this.config.getOwnerDocument()));
+                upsert.setParameter(new QName("provider_name"), new XdmAtomicValue(record.getOrigin().getName()));
+                upsert.setParameter(new QName("provider_uri"), new XdmAtomicValue(record.getOrigin().getOaiUrl()));
+                upsert.setParameter(new QName("record_identifier"), new XdmAtomicValue(record.getId()));
+                upsert.transform();
+                record.setDoc(doc);
+                logger.debug("transformed to XML doc with ["+XPathFactory.newInstance().newXPath().evaluate("count(//*)", record.getDoc())+"] nodes");
+            } catch (XPathExpressionException | SaxonApiException | ParserConfigurationException ex) {
                 logger.error("Transformation error: ",ex);
                 return false;
             } finally {
@@ -171,32 +175,32 @@ public class TransformAction implements Action {
 
     @Override
     public String toString() {
-	return "transform using " + xsltFile;
+        return "transform using " + xsltFile;
     }
 
     // Transform actions differ if and only if the XSLT files differ.
     @Override
     public int hashCode() {
-	return xsltFile.hashCode();
+	      return xsltFile.hashCode();
     }
     @Override
     public boolean equals(Object o) {
-	if (o instanceof TransformAction) {
-	    TransformAction t = (TransformAction)o;
-	    return xsltFile.equals(t.xsltFile);
-	}
-	return false;
+	      if (o instanceof TransformAction) {
+	          TransformAction t = (TransformAction)o;
+        	  return xsltFile.equals(t.xsltFile);
+	      }
+	      return false;
     }
 
     @Override
     public Action clone() {
-	try {
-	    // This is a deep copy. The new object has its own Transform object.
-	    return new TransformAction(config, xsltFile,cacheDir,semaphore);
-	} catch (FileNotFoundException | TransformerConfigurationException ex) {
-	    logger.error(ex);
-	}
-	return null;
+	      try {
+	          // This is a deep copy. The new object has its own Transform object.
+	          return new TransformAction(config, xsltFile,cacheDir,semaphore);
+	      } catch (FileNotFoundException | TransformerConfigurationException | MalformedURLException | SaxonApiException ex) {
+	          logger.error(ex);
+	      }
+	      return null;
     }
     
     class TransformActionErrorListener implements ErrorListener {
