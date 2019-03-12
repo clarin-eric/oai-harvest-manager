@@ -38,6 +38,7 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -49,6 +50,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import net.sf.saxon.s9api.SaxonApiException;
 
 
 /**
@@ -293,7 +296,7 @@ public class Configuration {
                                 }
                             }
                             act = new TransformAction(base, xslFile, cache, jobs);
-                        } catch (IOException | TransformerConfigurationException ex) {
+                        } catch (Exception ex) {
                             logger.error(ex);
                         }
                     }
