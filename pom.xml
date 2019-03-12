@@ -38,6 +38,23 @@
       <name>ibiblio.org</name>
       <url>http://mirrors.ibiblio.org/pub/mirrors/maven2</url>
     </repository>
+
+    <repository>
+      <id>CLARIN</id>
+      <name>CLARIN Repository</name>
+      <url>https://nexus.clarin.eu/content/repositories/Clarin</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+    <repository>
+      <id>CLARIN-Snapshot</id>
+      <name>CLARIN Snapshot Repository</name>
+      <url>https://nexus.clarin.eu/content/repositories/clarin-snapshot</url>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
   </repositories>
 
   <!-- DEPENDENCIES -->
@@ -55,9 +72,16 @@
     </dependency>
 
     <dependency>
-	<groupId>net.sf.saxon</groupId>
-	<artifactId>Saxon-HE</artifactId>
-	<version>9.5.1-8</version>
+      <groupId>net.sf.saxon</groupId>
+      <artifactId>Saxon-HE</artifactId>
+      <version>9.5.1-8</version>
+    </dependency>
+
+    <dependency>
+      <groupId>nl.mpi.tla</groupId>
+      <artifactId>SaxonUtils</artifactId>
+      <version>1.0-SNAPSHOT</version>
+      <type>jar</type>
     </dependency>
 
     <dependency>
@@ -96,6 +120,18 @@
         <artifactId>woodstox-core-asl</artifactId>
         <version>4.1.3</version>
         <type>jar</type>
+    </dependency>
+
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>1.7.2</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-log4j12</artifactId>
+      <version>1.7.2</version>
     </dependency>
 
   </dependencies>
