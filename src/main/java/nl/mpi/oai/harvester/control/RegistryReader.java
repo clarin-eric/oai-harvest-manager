@@ -41,6 +41,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -53,49 +54,11 @@ import java.util.List;
  */
 public class RegistryReader {
   private static final Logger logger = LogManager.getLogger(RegistryReader.class);
-  private final XPath xpath;
 
   /**
    * Create a new registry reader object.
    */
   public RegistryReader() {
-    XPathFactory xpf = XPathFactory.newInstance();
-    xpath = xpf.newXPath();
-    NSContext nsContext = new NSContext();
-    nsContext.add("cmd", "http://www.clarin.eu/api/KML");
-    xpath.setNamespaceContext(nsContext);
-  }
-
-  /**
-   * Fetch the XML document located at the given URL, parse it, and
-   * return the resulting DOM tree.
-   */
-  private static Document openRemoteDocument(URL url) throws IOException,
-    ParserConfigurationException, SAXException {
-    HttpURLConnection connection = getConnection(url,"application/xml");
-
-    DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-    DocumentBuilder db = dbf.newDocumentBuilder();
-    return db.parse(connection.getInputStream());
-  }
-
-  /**
-   * Fetch the json document located at the given URL, parse it, and
-   * return the list of uri's
-   */
-  private static List<String> getUris(URL url) throws IOException {
-    url = new URL(url.toString() + "/Centre");
-    HttpURLConnection connection = getConnection(url,"application/json");
-    String jsonString = getJsonString(connection.getInputStream());
-    JSONArray jsonArr = JSONArray.fromObject(jsonString);
-    List<String> result = new ArrayList<>();
-    for (int i = 0; i < jsonArr.size(); i++) {
-      JSONObject json = jsonArr.getJSONObject(i);
-      JSONObject jsonObj = json.getJSONObject("fields");
-      String res = (String) jsonObj.get("website_url");
-      result.add(res);
-    }
-    return result;
   }
 
   private static HttpURLConnection getConnection(URL url, String contentType) throws IOException {
@@ -156,74 +119,26 @@ public class RegistryReader {
    * @param registryUrl url of the registry endpoint
    * @return list of all OAI-PMH endpoint URLs
    */
-  public List<String> getEndpoints(URL registryUrl) {
+  public List<String> getEndpoints(URL registryUrl) throws MalformedURLException, IOException {
     // Basically this makes a simple REST call to get a list of
     // addresses for a further batch of REST calls. This is not
     // documented in detail since it's specific to the CLARIN
     // registry implementation anyway.
     List<String> endpoints = new ArrayList<>();
-    try {
-      List<String> provUrls = getUris(registryUrl);
-
-      logger.info("Fetching information on " + provUrls.size()
-        + " centres");
-      for (String providerInfoUrl : provUrls) {
-        Document doc = openRemoteDocument(new URL(providerInfoUrl));
-        NodeList ends = getEndpoints(doc);
-        if (ends != null) {
-          for (int i = 0; i < ends.getLength(); i++)
-            endpoints.add(ends.item(i).getNodeValue().trim());
-        }
-      }
-    } catch (IOException | ParserConfigurationException | SAXException
-      | XPathExpressionException | DOMException e) {
-      logger.error("Error reading from centre registry", e);
+    registryUrl = new URL(registryUrl.toString() + "/OAIPMHEndpoint");
+    HttpURLConnection connection = getConnection(registryUrl,"application/json");
+    String jsonString = getJsonString(connection.getInputStream());
+    JSONArray jsonArr = JSONArray.fromObject(jsonString);
+    for (int i = 0; i < jsonArr.size(); i++) {
+      JSONObject json = jsonArr.getJSONObject(i);
+      JSONObject jsonObj = json.getJSONObject("fields");
+      String res = (String) jsonObj.get("uri");
+      endpoints.add(res);
     }
+
+    logger.info("Fetching information on " + endpoints.size()
+        + " endPoints");
     return endpoints;
   }
 
-  /**
-   * Extract links to all provider information pages from the summary
-   * document returned by the centre registry
-   *
-   * @param doc center registry cycle response
-   * @return list of URLs of provider-specific info pages
-   * @throws XPathExpressionException problem with the paths to query the center registry response
-   */
-  public List<String> getProviderInfoUrls(Document doc) throws XPathExpressionException {
-    if (doc == null) {
-      logger.warn("The centre registry response is missing");
-      return Collections.emptyList();
-    }
-
-    NodeList centres = (NodeList) xpath.evaluate("/Centers/CenterProfile/Center_id_link/text()",
-      doc.getDocumentElement(), XPathConstants.NODESET);
-    List<String> provUrls = new ArrayList<>();
-    for (int j = 0; j < centres.getLength(); j++) {
-      String provUrl = centres.item(j).getNodeValue();
-      if (provUrl != null) {
-        provUrls.add(provUrl);
-      }
-    }
-    return provUrls;
-  }
-
-  /**
-   * Extract the OAI-PMH endpoint of a single provider from its description
-   * document.
-   *
-   * @param providerInfo xml information from the center registry
-   * @return endpoint URL, or null if none available
-   * @throws XPathExpressionException problem with the paths to query the center registry response
-   */
-  public NodeList getEndpoints(Document providerInfo) throws XPathExpressionException {
-    if (providerInfo == null) {
-      return null;
-    }
-
-    NodeList endpoints = (NodeList) xpath.evaluate(
-      "/cmd:CMD/cmd:Components/cmd:CenterProfile/cmd:CenterExtendedInformation/cmd:Metadata/cmd:OaiAccessPoint/text()",
-      providerInfo.getDocumentElement(), XPathConstants.NODESET);
-    return (endpoints == null) ? null : endpoints;
-  }
 }
