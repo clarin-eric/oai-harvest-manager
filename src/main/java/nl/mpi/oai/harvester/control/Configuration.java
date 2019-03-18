@@ -322,6 +322,7 @@ public class Configuration {
      * @param base top node of the providers section
      */
     private void parseProviders(Node base) throws
+            IOException,
             XPathExpressionException,
             MalformedURLException,
             ParserConfigurationException {

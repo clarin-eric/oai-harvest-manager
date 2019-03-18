@@ -70,7 +70,7 @@
     </format>
     <format match="prefix" value="olac">
       <action type="save" dir="oai" suffix=".xml"/>
-      <action type="transform" file="resources/addOAISetName.xsl" cache="cache"/>
+      <action type="transform" file="C:/git/oai-harvest-manager/src/main/resources/addOAISetName.xsl" cache="cache"/>
       <action type="split"/>
       <action type="save" dir="rec" suffix=".xml"/>
       <action type="transform" file="https://raw.githubusercontent.com/clarin-eric/metadata-conversion/olac-cmdi/olac-cmdi/olac2cmdi.xsl"/>
@@ -80,7 +80,7 @@
     </format>
     <format match="prefix" value="oai_dc">
       <action type="save" dir="oai" suffix=".xml"/>
-      <action type="transform" file="resources/addOAISetName.xsl" cache="cache"/>
+      <action type="transform" file="C:/git/oai-harvest-manager/src/main/resources/addOAISetName.xsl" cache="cache"/>
       <action type="split"/>
       <action type="save" dir="rec" suffix=".xml"/>
       <action type="transform" file="https://raw.githubusercontent.com/clarin-eric/metadata-conversion/olac-cmdi/olac-cmdi/olac2cmdi.xsl"/>
@@ -94,7 +94,7 @@
   <!-- ### list of providers ### -->
   <providers>
     <import>
-      <registry url="https://centres.clarin.eu/restxml/"/>
+      <registry url="https://centres.clarin.eu/api/model"/>
       <!--
         Block harvesting from a specific provider defined in the registry 
         element by supplying its endpoint URL as an child element tagged 
