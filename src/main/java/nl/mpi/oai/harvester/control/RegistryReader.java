@@ -20,30 +20,18 @@ package nl.mpi.oai.harvester.control;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
-import nl.mpi.oai.harvester.metadata.NSContext;
+import nl.mpi.oai.harvester.Provider;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.w3c.dom.DOMException;
-import org.w3c.dom.Document;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.MalformedURLException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -54,11 +42,13 @@ import java.util.List;
  */
 public class RegistryReader {
   private static final Logger logger = LogManager.getLogger(RegistryReader.class);
+  private static URL registryUrl = null;
 
   /**
    * Create a new registry reader object.
    */
-  public RegistryReader() {
+  public RegistryReader(URL url) {
+    this.registryUrl = url;
   }
 
   private static HttpURLConnection getConnection(URL url, String contentType) throws IOException {
@@ -108,35 +98,89 @@ public class RegistryReader {
       sb.append(line);
     }
     rd.close();
-
     return sb.toString();
+  }
+
+  static void getEndpointInfo(PrintWriter m, Provider provider) throws IOException {
+    String endpointUrl = provider.getOaiUrl();
+    String directoryName = Util.toFileFormat(provider.getName()).replaceAll("/", "");
+
+    JSONObject endPoint = getEndpoint(endpointUrl);
+    JSONObject fields = endPoint.getJSONObject("fields");
+    int centreKey = (int) fields.get("centre");
+
+    String centreName = "";
+    JSONObject centre = getJSONObject("/Centre", centreKey);
+    fields = centre.getJSONObject("fields");
+    centreName = (String) fields.get("name");
+    int consortiumKey = (int) fields.get("consortium");
+
+    String nationalProject = "";
+    JSONObject consortium = getJSONObject("/Consortium", consortiumKey);
+    fields = consortium.getJSONObject("fields");
+    nationalProject = (String) fields.get("name");
+    m.printf("%s,%s,%s,%s", endpointUrl, directoryName, centreName, nationalProject);
+    m.println();
+  }
+
+  private static JSONObject getEndpoint(String url) throws IOException {
+    JSONArray jsonArr = getModelAsJSONArray("/OAIPMHEndpoint");
+    for(int i=0; i<jsonArr.size(); i++) {
+      JSONObject json = jsonArr.getJSONObject(i);
+      if(json.getJSONObject("fields").get("uri").equals(url))
+        return json;
+    }
+    return null;
+  }
+
+  private static JSONObject getJSONObject(String url, int key) throws IOException {
+    JSONArray jsonArr = getModelAsJSONArray(url);
+    for(int i=0; i<jsonArr.size(); i++) {
+      JSONObject json = jsonArr.getJSONObject(i);
+      if(json.get("pk").equals(key)) {
+        return json;
+      }
+    }
+    return null;
   }
 
   /**
    * Get a list of all OAI-PMH endpoint URLs defined in the
    * specified registry.
    *
-   * @param registryUrl url of the registry endpoint
    * @return list of all OAI-PMH endpoint URLs
    */
-  public List<String> getEndpoints(URL registryUrl) throws MalformedURLException, IOException {
+  public static JSONArray getModelAsJSONArray(String url) throws IOException {
     // Basically this makes a simple REST call to get a list of
     // addresses for a further batch of REST calls. This is not
     // documented in detail since it's specific to the CLARIN
     // registry implementation anyway.
-    List<String> endpoints = new ArrayList<>();
-    registryUrl = new URL(registryUrl.toString() + "/OAIPMHEndpoint");
-    HttpURLConnection connection = getConnection(registryUrl,"application/json");
+    URL regUrl = new URL(registryUrl.toString() + url);
+    HttpURLConnection connection = getConnection(regUrl, "application/json");
     String jsonString = getJsonString(connection.getInputStream());
-    JSONArray jsonArr = JSONArray.fromObject(jsonString);
-    for (int i = 0; i < jsonArr.size(); i++) {
-      JSONObject json = jsonArr.getJSONObject(i);
-      JSONObject jsonObj = json.getJSONObject("fields");
-      String res = (String) jsonObj.get("uri");
-      endpoints.add(res);
-    }
+    return JSONArray.fromObject(jsonString);
+  }
 
-    logger.info("Fetching information on " + endpoints.size()
+    /**
+     * Get a list of all OAI-PMH endpoint URLs defined in the
+     * specified registry.
+     *
+     * @return list of all OAI-PMH endpoint URLs
+     */
+    public List<String> getEndpoints() throws IOException {
+      // Basically this makes a simple REST call to get a list of
+      // addresses for a further batch of REST calls. This is not
+      // documented in detail since it's specific to the CLARIN
+      // registry implementation anyway.
+      List<String> endpoints = new ArrayList<>();
+      JSONArray jsonArr = getModelAsJSONArray("/OAIPMHEndpoint");
+      for (int i = 0; i < jsonArr.size(); i++) {
+        JSONObject json = jsonArr.getJSONObject(i);
+        JSONObject jsonObj = json.getJSONObject("fields");
+        String res = (String) jsonObj.get("uri");
+        endpoints.add(res);
+      }
+      logger.info("Fetching information on " + endpoints.size()
         + " endPoints");
     return endpoints;
   }
