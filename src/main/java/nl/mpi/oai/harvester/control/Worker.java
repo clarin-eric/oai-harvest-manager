@@ -18,21 +18,28 @@
 
 package nl.mpi.oai.harvester.control;
 
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.Arrays;
 import nl.mpi.oai.harvester.Provider;
 import nl.mpi.oai.harvester.StaticProvider;
 import nl.mpi.oai.harvester.action.ActionSequence;
 import nl.mpi.oai.harvester.cycle.Cycle;
 import nl.mpi.oai.harvester.cycle.Endpoint;
-import nl.mpi.oai.harvester.harvesting.*;
+import nl.mpi.oai.harvester.harvesting.AbstractHarvesting;
+import nl.mpi.oai.harvester.harvesting.FormatHarvesting;
+import nl.mpi.oai.harvester.harvesting.IdentifierListHarvesting;
+import nl.mpi.oai.harvester.harvesting.OAIFactory;
+import nl.mpi.oai.harvester.harvesting.RecordListHarvesting;
+import nl.mpi.oai.harvester.harvesting.Scenario;
+import nl.mpi.oai.harvester.harvesting.StaticPrefixHarvesting;
+import nl.mpi.oai.harvester.harvesting.StaticRecordListHarvesting;
 import nl.mpi.oai.harvester.metadata.MetadataFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
 
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -71,7 +78,6 @@ class Worker implements Runnable {
      * Associate a provider and action actionSequences with a scenario
      *
      * @param provider OAI-PMH provider that this thread will harvest
-     * @param actionSequences list of actions to take on harvested metadata
      * @param cycle the harvesting cycle
      */
     public Worker(Provider provider, Configuration config,
@@ -107,8 +113,7 @@ class Worker implements Runnable {
                 PrintWriter m = null;
                 try {
                     m = new PrintWriter(new FileWriter(map,true));
-                    m.printf("%s,%s", provider.getOaiUrl(),Util.toFileFormat(provider.getName()).replaceAll("/", ""));
-                    m.println();
+                    RegistryReader.getEndpointInfo(m, provider);
                 } catch (IOException e) {
                     logger.error("failed to write to the map file!",e);
                 } finally {

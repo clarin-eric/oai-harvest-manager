@@ -60,6 +60,7 @@ import java.util.Map;
 public class Configuration {
     private static final Logger logger = LogManager.getLogger(Configuration.class);
     private final XPath xpath;
+    private RegistryReader registryReader;
 
     /**
      * Configuration options stored as key-value pairs.
@@ -381,8 +382,8 @@ public class Configuration {
                         }
                     }
                     // get the list of endpoints from the centre registry
-                    RegistryReader rr = new RegistryReader();
-                    List<String> provUrls = rr.getEndpoints(new java.net.URL(rUrl));
+                    registryReader = new RegistryReader(new java.net.URL(rUrl));
+                    List<String> provUrls = registryReader.getEndpoints();
 
                     // use the list to create the list of endpoints to harvest from
                     for (String provUrl : provUrls) {
@@ -586,7 +587,7 @@ public class Configuration {
             PrintWriter map = null;
             try {
                 map = new PrintWriter(new FileWriter(mapFile,true));
-                map.println("endpointUrl,directoryName");
+                map.println("endpointUrl,directoryName,centreName,nationalProject");
             } catch (IOException e) {
                 logger.error("couldn't create an initial/default " + mapFile + " file: ", e);
             } finally {
