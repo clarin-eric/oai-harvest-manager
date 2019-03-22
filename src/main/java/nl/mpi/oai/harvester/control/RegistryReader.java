@@ -98,7 +98,6 @@ public class RegistryReader {
       sb.append(line);
     }
     rd.close();
-
     return sb.toString();
   }
 
@@ -106,24 +105,26 @@ public class RegistryReader {
     String endpointUrl = provider.getOaiUrl();
     String directoryName = Util.toFileFormat(provider.getName()).replaceAll("/", "");
 
-    String centreName = "";
     JSONObject endPoint = getEndpoint(endpointUrl);
     JSONObject fields = endPoint.getJSONObject("fields");
     int centreKey = (int) fields.get("centre");
-    JSONObject centre = getCentre(centreKey);
+
+    String centreName = "";
+    JSONObject centre = getJSONObject("/Centre", centreKey);
     fields = centre.getJSONObject("fields");
     centreName = (String) fields.get("name");
-
     int consortiumKey = (int) fields.get("consortium");
-    JSONObject consortium = getConsortium(consortiumKey);
+
+    String nationalProject = "";
+    JSONObject consortium = getJSONObject("/Consortium", consortiumKey);
     fields = consortium.getJSONObject("fields");
-    String nationalProject = (String) fields.get("name");
+    nationalProject = (String) fields.get("name");
     m.printf("%s,%s,%s,%s", endpointUrl, directoryName, centreName, nationalProject);
     m.println();
   }
 
   private static JSONObject getEndpoint(String url) throws IOException {
-    JSONArray jsonArr = getModelAsJSONArray( "/OAIPMHEndpoint");
+    JSONArray jsonArr = getModelAsJSONArray("/OAIPMHEndpoint");
     for(int i=0; i<jsonArr.size(); i++) {
       JSONObject json = jsonArr.getJSONObject(i);
       if(json.getJSONObject("fields").get("uri").equals(url))
@@ -132,8 +133,8 @@ public class RegistryReader {
     return null;
   }
 
-  private static JSONObject getCentre(int key) throws IOException {
-    JSONArray jsonArr = getModelAsJSONArray("/Centre");
+  private static JSONObject getJSONObject(String url, int key) throws IOException {
+    JSONArray jsonArr = getModelAsJSONArray(url);
     for(int i=0; i<jsonArr.size(); i++) {
       JSONObject json = jsonArr.getJSONObject(i);
       if(json.get("pk").equals(key)) {
@@ -142,18 +143,6 @@ public class RegistryReader {
     }
     return null;
   }
-
-  private static JSONObject getConsortium(int key) throws IOException {
-    JSONArray jsonArr = getModelAsJSONArray("/Consortium");
-    for(int i=0; i<jsonArr.size(); i++) {
-      JSONObject json = jsonArr.getJSONObject(i);
-      if(json.get("pk").equals(key)) {
-        return json;
-      }
-    }
-    return null;
-  }
-
 
   /**
    * Get a list of all OAI-PMH endpoint URLs defined in the
