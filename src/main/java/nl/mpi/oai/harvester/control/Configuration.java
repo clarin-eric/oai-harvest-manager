@@ -63,7 +63,7 @@ import net.sf.saxon.s9api.SaxonApiException;
 public class Configuration {
     private static final Logger logger = LogManager.getLogger(Configuration.class);
     private final XPath xpath;
-    private RegistryReader registryReader;
+    private RegistryReader registryReader = null;
 
     /**
      * Configuration options stored as key-value pairs.
@@ -659,6 +659,21 @@ public class Configuration {
         String s = settings.get(KnownOptions.SCENARIO.toString());
         return (s == null) ? "ListIndentifiers" : s;
     }
+    
+    /**
+     * Get Registry Reader
+     */
+    public RegistryReader getRegistryReader() {
+        return this.registryReader;
+    }
+    
+    /**
+     * Has a Registry Reader?
+     */
+    public boolean hasRegistryReader() {
+        return (this.registryReader!=null);
+    }
+    
 
     /**
      * Log parsed contents of the configuration.

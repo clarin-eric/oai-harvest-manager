@@ -13,10 +13,8 @@
         <!-- Do the XML files in the resources directory. Please note that Maven
          will also include them in them in the jar. -->
         <include>config*.xml</include>
-        <include>oai2.xsl</include>
         <include>addOAISetName.xsl</include>
-        <include>olac2cmdi.xsl</include>
-        <include>sil_to_iso6393.xml</include>
+        <include>filter.xsl</include>
 
         <!-- Do include the log4j properties file in the resources directory
          while excluding it from the jar. Please refer to the configuration of

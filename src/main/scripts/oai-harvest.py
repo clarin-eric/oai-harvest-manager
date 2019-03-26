@@ -358,19 +358,23 @@ class App(cli.Application):
 
     @cli.switch(["-c", "--config"], str, mandatory=False, help="Config directory (can be online). (optional)")
     def set_config(self, config):
-        self.confdir = config
+        if config:
+            self.confdir = config
 
     @cli.switch(["-o", "--output"], str, mandatory=True, help="Output folder (collection) this harvest is part of.")
     def set_output(self, output):
-        self.output = output
+        if output:
+            self.output = output
 
     @cli.switch(["-n", "--name"], str, mandatory=True, help="Name for this harvest run.")
     def set_name(self, name):
-        self.name = name
+        if name:
+            self.name = name
 
     @cli.switch(["-p", "--postgres"], str, mandatory=False, help="Postgres database (<user>:<pass>@<host>:<port>/<db>) to connext to. (optional)")
     def set_postgres(self, postgres):
-        self.postgres = postgres
+        if postgres:
+            self.postgres = postgres
 
     def main(self):
         oai = OaiHarvest(conf=self.confdir, output=self.output, name=self.name, postgres=self.postgres, verbose=self.verbose)

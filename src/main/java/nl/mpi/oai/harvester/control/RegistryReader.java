@@ -51,7 +51,7 @@ public class RegistryReader {
     this.registryUrl = url;
   }
 
-  private static HttpURLConnection getConnection(URL url, String contentType) throws IOException {
+  private HttpURLConnection getConnection(URL url, String contentType) throws IOException {
     HttpURLConnection connection = (HttpURLConnection) url.openConnection();
     connection.setInstanceFollowRedirects(false);
     connection.setRequestMethod("GET");
@@ -90,7 +90,7 @@ public class RegistryReader {
   }
 
 
-  public static String getJsonString(InputStream stream) throws IOException {
+  public String getJsonString(InputStream stream) throws IOException {
     BufferedReader rd = new BufferedReader(new InputStreamReader(stream));
     StringBuilder sb = new StringBuilder();
     String line;
@@ -101,7 +101,7 @@ public class RegistryReader {
     return sb.toString();
   }
 
-  static void getEndpointInfo(PrintWriter m, Provider provider) throws IOException {
+  void getEndpointInfo(PrintWriter m, Provider provider) throws IOException {
     String endpointUrl = provider.getOaiUrl();
     String directoryName = Util.toFileFormat(provider.getName()).replaceAll("/", "");
 
@@ -123,7 +123,7 @@ public class RegistryReader {
     m.println();
   }
 
-  private static JSONObject getEndpoint(String url) throws IOException {
+  private JSONObject getEndpoint(String url) throws IOException {
     JSONArray jsonArr = getModelAsJSONArray("/OAIPMHEndpoint");
     for(int i=0; i<jsonArr.size(); i++) {
       JSONObject json = jsonArr.getJSONObject(i);
@@ -133,7 +133,7 @@ public class RegistryReader {
     return null;
   }
 
-  private static JSONObject getJSONObject(String url, int key) throws IOException {
+  private JSONObject getJSONObject(String url, int key) throws IOException {
     JSONArray jsonArr = getModelAsJSONArray(url);
     for(int i=0; i<jsonArr.size(); i++) {
       JSONObject json = jsonArr.getJSONObject(i);
@@ -150,12 +150,12 @@ public class RegistryReader {
    *
    * @return list of all OAI-PMH endpoint URLs
    */
-  public static JSONArray getModelAsJSONArray(String url) throws IOException {
+  public JSONArray getModelAsJSONArray(String model) throws IOException {
     // Basically this makes a simple REST call to get a list of
     // addresses for a further batch of REST calls. This is not
     // documented in detail since it's specific to the CLARIN
     // registry implementation anyway.
-    URL regUrl = new URL(registryUrl.toString() + url);
+    URL regUrl = new URL(registryUrl.toString() + model);
     HttpURLConnection connection = getConnection(regUrl, "application/json");
     String jsonString = getJsonString(connection.getInputStream());
     return JSONArray.fromObject(jsonString);

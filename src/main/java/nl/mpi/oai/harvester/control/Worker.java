@@ -113,7 +113,12 @@ class Worker implements Runnable {
                 PrintWriter m = null;
                 try {
                     m = new PrintWriter(new FileWriter(map,true));
-                    RegistryReader.getEndpointInfo(m, provider);
+                    if (config.hasRegistryReader()) {
+                        config.getRegistryReader().getEndpointInfo(m, provider);
+                    } else {
+                        m.printf("%s,%s,,", provider.getOaiUrl(),Util.toFileFormat(provider.getName()).replaceAll("/", ""));
+                        m.println();
+                    }
                 } catch (IOException e) {
                     logger.error("failed to write to the map file!",e);
                 } finally {

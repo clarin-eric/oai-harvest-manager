@@ -40,6 +40,7 @@
   <!-- ### actions to take on metadata formats (in order of preference) ### -->
   <actions>
     <format match="namespace" value="http://www.clarin.eu/cmd/1">
+      <action type="transform" file="resources/filter.xsl"/>
       <action type="save" dir="oai" suffix=".xml"/>
       <action type="split"/>
       <action type="save" dir="rec" suffix=".xml"/>
@@ -47,6 +48,7 @@
       <action type="save" dir="cmdi-1_2" suffix=".xml" history="true"/>
     </format>
     <format match="namespace" value="http://www.clarin.eu/cmd/">
+      <action type="transform" file="resources/filter.xsl"/>
       <action type="save" dir="oai" suffix=".xml"/>
       <action type="split"/>
       <action type="save" dir="rec" suffix=".xml"/>
@@ -56,6 +58,7 @@
       <action type="save" dir="cmdi-1_2" suffix=".xml" history="true"/>
     </format>
     <format match="prefix" value="olac">
+      <action type="transform" file="resources/filter.xsl"/>
       <action type="save" dir="oai" suffix=".xml"/>
       <action type="transform" file="resources/addOAISetName.xsl" cache=".oai-cache"/>
       <action type="split"/>
@@ -66,6 +69,7 @@
       <action type="save" dir="cmdi-1_2" suffix=".xml" history="true"/>
     </format>
     <format match="prefix" value="oai_dc">
+      <action type="transform" file="resources/filter.xsl"/>
       <action type="save" dir="oai" suffix=".xml"/>
       <action type="transform" file="resources/addOAISetName.xsl" cache=".oai-cache"/>
       <action type="split"/>
@@ -94,7 +98,21 @@
     <provider url="https://lindat.mff.cuni.cz/repository/oai/request"/>
     <provider url="https://arche.acdh.oeaw.ac.at/oai"/>
     <provider url="https://clarinportulan.net/oaipmh/"/>
--->
     <provider url="https://www.meertens.knaw.nl/flat/oai2"/>
+    <provider url="http://www.meertens.knaw.nl/oai/oai_server.php"/>
+    <provider url="http://clarino.uib.no/oai"/>
+    <provider url="https://lindat.mff.cuni.cz/repository/oai/request"/>
+    <provider url="https://oai.cedifor.de/"/>
+    <provider url="https://www.meertens.knaw.nl/flat/oai2"/>
+-->
+<!--
+    <provider url="https://oai.datacite.org/oai">
+      <filter>Subject and Keywords = Humanities - Languages and literature (6.2) or Humanities - Other humanities (6.5))</filter>
+      <set>DELFT.UU</set>
+    </provider>
+-->
+    <provider url="https://www.meertens.knaw.nl/flat/oai2">
+      <filter>dwangarbeider</filter>
+    </provider>
   </providers>
 </config>
