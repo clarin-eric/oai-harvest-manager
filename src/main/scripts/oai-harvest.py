@@ -83,10 +83,6 @@ class OaiHarvest:
         self.run_harvest()
         self.print_to_stdout("\tDone\n")
 
-        self.print_to_stdout("\tExpand map.\n")
-        self.expand_map()
-        self.print_to_stdout("\tDone\n")
-
         self.print_to_stdout("\tReset output.\n")
         self.do_reset()
         self.print_to_stdout("\tDone\n")
@@ -170,23 +166,6 @@ class OaiHarvest:
             self.print_to_stdout("\n")
 
         return self.harvester(command)
-
-    def expand_map(self):
-        """
-        Expand the map
-        """
-        command = [
-            os.path.join(self.workdir, "map.csv")
-        ]
-
-        if self.verbose:
-            self.print_to_stdout("\t\tExpander command:\n")
-            self.print_to_stdout("\t\t\t%s " % self.mapexpander)
-            for i in command:
-                self.print_to_stdout("%s " % i)
-            self.print_to_stdout("\n")
-
-        return self.mapexpander(command)
 
     def do_reset(self):
         """

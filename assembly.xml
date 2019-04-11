@@ -27,8 +27,6 @@
       <outputDirectory></outputDirectory>
       <includes>
     	  <include>run-harvester.sh</include>
-        <include>expand-map.sh</include>
-        <include>expandMap.xsl</include>
       </includes>
       <fileMode>0755</fileMode>
       <filtered>true</filtered>
