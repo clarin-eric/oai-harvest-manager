@@ -105,14 +105,10 @@
     <provider url="https://oai.cedifor.de/"/>
     <provider url="https://www.meertens.knaw.nl/flat/oai2"/>
 -->
-<!--
     <provider url="https://oai.datacite.org/oai">
-      <filter>Subject and Keywords = Humanities - Languages and literature (6.2) or Humanities - Other humanities (6.5))</filter>
-      <set>DELFT.UU</set>
-    </provider>
--->
-    <provider url="https://www.meertens.knaw.nl/flat/oai2">
-      <filter xmlns:cmd="http://www.clarin.eu/cmd/">.//cmd:title[contains(.,'dwangarbeider')]</filter>
+      <!--<filter>Subject and Keywords = Humanities - Languages and literature (6.2) or Humanities - Other humanities (6.5))</filter>-->
+      <filter xmlns:dc="http://purl.org/dc/elements/1.1/">.//dc:subject[contains(.,'(6.2)') or contains(.,'(6.5)')]</filter>
+      <!--<set>DELFT.UU</set>-->
     </provider>
   </providers>
 </config>
