@@ -22,7 +22,6 @@
 
   <!-- REPOSITORIES -->
   <repositories>
-
     <repository>
       <id>CLARIN</id>
       <name>CLARIN Repository</name>
