@@ -23,16 +23,6 @@
   <!-- REPOSITORIES -->
   <repositories>
 
-    <!-- The OCLC harvester2 artifact is in the MPI repository
-	 (because the owner of the project does not currently make it
-	 available via Maven).
-      -->
-    <repository>
-      <id>MPI</id>
-      <name>MPI LAT Repository</name>
-      <url>http://lux15.mpi.nl/nexus/content/groups/public</url>
-    </repository>
-
     <repository>
       <id>ibiblio</id>
       <name>ibiblio.org</name>
