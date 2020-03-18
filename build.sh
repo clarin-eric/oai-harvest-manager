@@ -27,7 +27,7 @@ MAVEN_CONFIG_DIR="/root/.m2"
 BUILD_CONTAINER_NAME="${APP_NAME}-maven-build"
 
 MAVEN_OPTS="$@"
-MAVEN_CMD="mvn clean install ${MAVEN_OPTS}"
+MAVEN_CMD="${MAVEN_CMD:-mvn clean install} ${MAVEN_OPTS}"
 
 if ! [ "${JAVA_SRC_DIR}" ]; then
   JAVA_SRC_DIR="$( cd ${SCRIPT_DIR} ; pwd -P )"
