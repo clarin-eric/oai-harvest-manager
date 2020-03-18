@@ -648,6 +648,14 @@ public class Configuration {
     }
     
     /**
+     * Get dry run flag.
+     */
+    public boolean isDryRun() {
+        String s = settings.get(KnownOptions.DRYRUN.toString());
+        return (s == null) ? false : Boolean.valueOf(s);
+    }
+    
+    /**
      * Get scenario.
      */
     public String getScenario() {
