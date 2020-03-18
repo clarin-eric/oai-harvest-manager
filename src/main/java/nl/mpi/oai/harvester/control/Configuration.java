@@ -90,7 +90,7 @@ public class Configuration {
         RETRYDELAY("retry-delay"), MAXJOBS("max-jobs"),
         POOLSIZE("resource-pool-size"), TIMEOUT("timeout"),
         OVERVIEWFILE("overview-file"), MAPFILE("map-file"),
-        SAVERESPONSE("save-response"), SCENARIO("scenario"), INCREMENTAL("incremental");
+        SAVERESPONSE("save-response"), SCENARIO("scenario"), INCREMENTAL("incremental"), DRYRUN("dry-run");
         private final String val;
 
         KnownOptions(final String s) {
