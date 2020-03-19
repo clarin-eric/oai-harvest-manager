@@ -17,6 +17,8 @@
  */
 package nl.mpi.oai.harvester.control;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -25,6 +27,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Before;
 import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 
 /**
  * Tests for RegistryReader. (Only parsing of canned responses is tested. No
@@ -36,11 +39,12 @@ import org.w3c.dom.Document;
 public class RegistryReaderTest {
 
     private DocumentBuilder db;
+    private RegistryReader instance;
 
     @Before
     public void setUp() throws Exception {
-        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-        db = dbf.newDocumentBuilder();
+        instance = new RegistryReader();
+        db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
     }
 
     /**
@@ -49,7 +53,7 @@ public class RegistryReaderTest {
     @Test
     public void testGetProviderInfoUrls() throws Exception {
         Document docSummary = db.parse(getClass().getResourceAsStream("/centre-registry-overview.xml"));
-        RegistryReader instance = new RegistryReader();
+
         List<String> result = instance.getProviderInfoUrls(docSummary);
         assertEquals(24, result.size());
     }
@@ -59,17 +63,30 @@ public class RegistryReaderTest {
      */
     @Test
     public void testGetEndpoint() throws Exception {
-        Document docProvInfo = db.parse(getClass().getResourceAsStream("/centre-registry-providerinfo.xml"));
-
-        RegistryReader instance = new RegistryReader();
         String expResult = "http://www.phonetik.uni-muenchen.de/cgi-bin/BASRepository/oaipmh/oai.pl?verb=Identify";
-        NodeList result = instance.getEndpoints(docProvInfo);
+
+        NodeList result = instance.getEndpoints(getProviderInfoDoc());
         assertEquals(expResult, result.item(0).getNodeValue());
     }
 
     @Test
     public void testGetOaiPmhSets() throws Exception {
+        String endpoint = "http://www.phonetik.uni-muenchen.de/cgi-bin/BASRepository/oaipmh/oai.pl?verb=Identify";
+        NodeList result = instance.getOaiPmhSets(getProviderInfoDoc(), endpoint);
+        assertEquals(2, result.getLength());
+    }
 
+    @Test
+    public void testGetOaiPmhSetsNone() throws Exception {
+        String endpoint = "http://www.clarin.eu";
+        NodeList result = instance.getOaiPmhSets(getProviderInfoDoc(), endpoint);
+        assertEquals(0, result.getLength());
+    }
+
+    private Document getProviderInfoDoc() throws SAXException, IOException {
+        try (InputStream resource = getClass().getResourceAsStream("/centre-registry-providerinfo.xml")) {
+            return db.parse(resource);
+        }
     }
 
 }

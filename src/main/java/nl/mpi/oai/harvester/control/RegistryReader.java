@@ -132,7 +132,25 @@ public class RegistryReader {
 
 	NodeList endpoints = (NodeList) xpath.evaluate("/cmd:CMD/cmd:Components/cmd:CenterProfile/cmd:CenterExtendedInformation/cmd:Metadata/cmd:OaiAccessPoint/text()",
 		providerInfo.getDocumentElement(), XPathConstants.NODESET);
-	return (endpoints == null) ? null : endpoints;
+	return endpoints;
+    }
+    
+    /**
+     * Extract the OAI-PMH sets for a single endpoint from aprovider's description
+     * document.
+     * 
+     * @param providerInfo xml information from the center registry
+     * @param endpoint endpoint URL
+     * @return endpoint URL, or null if none available
+     * @throws XPathExpressionException problem with the paths to query the center registry response
+     */
+    public NodeList getOaiPmhSets(Document providerInfo, String endpoint) throws XPathExpressionException {
+        if (providerInfo == null)
+	    return null;
+
+	NodeList sets = (NodeList) xpath.evaluate("/cmd:CMD/cmd:Components/cmd:CenterProfile/cmd:CenterExtendedInformation/cmd:Metadata[cmd:OaiAccessPoint='" + endpoint +"']/cmd:OaiPmhSets/cmd:Set",
+		providerInfo.getDocumentElement(), XPathConstants.NODESET);
+	return sets;
     }
     
     /**
@@ -147,7 +165,7 @@ public class RegistryReader {
 	connection.setRequestProperty("Content-Type", "application/xml");
 	connection.connect();
         
-	int responseCode = connection.getResponseCode();
+	connection.getResponseCode();
         
         Boolean redirect = false;
 
@@ -165,9 +183,6 @@ public class RegistryReader {
             // get redirect url from "location" header field
             String newUrl = connection.getHeaderField("Location");
 
-            // get the cookie if need, for login
-            String cookies = connection.getHeaderField("Set-Cookie");
-
             // open the new connnection again
             
             connection = (HttpURLConnection) new URL(newUrl).openConnection();
@@ -180,7 +195,7 @@ public class RegistryReader {
             
             connection.connect();
             
-            responseCode = connection.getResponseCode();
+            connection.getResponseCode();
         }
 
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();

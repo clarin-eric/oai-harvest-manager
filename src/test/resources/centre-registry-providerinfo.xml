@@ -62,8 +62,12 @@
                 <Metadata>
                     <OaiPmhSets>
                         <Set>
-                            <SetSpec>test-set</SetSpec>
-                            <SetType>Test</SetType>
+                            <SetSpec>test-set1</SetSpec>
+                            <SetType>Test1</SetType>
+                        </Set>
+                        <Set>
+                            <SetSpec>test-set2</SetSpec>
+                            <SetType>Test2</SetType>
                         </Set>
                     </OaiPmhSets>
                     <OaiAccessPoint>http://www.phonetik.uni-muenchen.de/cgi-bin/BASRepository/oaipmh/oai.pl?verb=Identify</OaiAccessPoint>
