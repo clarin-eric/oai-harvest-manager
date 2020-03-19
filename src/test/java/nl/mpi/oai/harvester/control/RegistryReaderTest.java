@@ -15,38 +15,43 @@
  * LICENSE-gpl-3.0.txt. If that file is missing, see
  * <http://www.gnu.org/licenses/>.
  */
-
 package nl.mpi.oai.harvester.control;
 
 import java.util.List;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-
-import nl.mpi.oai.harvester.control.RegistryReader;
 import org.w3c.dom.NodeList;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Before;
 import org.w3c.dom.Document;
 
 /**
- * Tests for RegistryReader. (Only parsing of canned responses is tested.
- * No connection to a registry is made.)
- * 
+ * Tests for RegistryReader. (Only parsing of canned responses is tested. No
+ * connection to a registry is made.)
+ *
  * @author Lari Lampen (MPI-PL)
+ * @author twan@clarin.eu
  */
 public class RegistryReaderTest {
+
+    private DocumentBuilder db;
+
+    @Before
+    public void setUp() throws Exception {
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        db = dbf.newDocumentBuilder();
+    }
+
     /**
      * Test of getProviderInfoUrls method, of class RegistryReader.
      */
     @Test
     public void testGetProviderInfoUrls() throws Exception {
-	DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-	DocumentBuilder db = dbf.newDocumentBuilder();
-	Document docSummary = db.parse(getClass().getResourceAsStream("/centre-registry-overview.xml"));
-
-	RegistryReader instance = new RegistryReader();
-	List<String> result = instance.getProviderInfoUrls(docSummary);
-	assertEquals(24, result.size());
+        Document docSummary = db.parse(getClass().getResourceAsStream("/centre-registry-overview.xml"));
+        RegistryReader instance = new RegistryReader();
+        List<String> result = instance.getProviderInfoUrls(docSummary);
+        assertEquals(24, result.size());
     }
 
     /**
@@ -54,13 +59,17 @@ public class RegistryReaderTest {
      */
     @Test
     public void testGetEndpoint() throws Exception {
-	DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-	DocumentBuilder db = dbf.newDocumentBuilder();
-	Document docProvInfo = db.parse(getClass().getResourceAsStream("/centre-registry-providerinfo.xml"));
+        Document docProvInfo = db.parse(getClass().getResourceAsStream("/centre-registry-providerinfo.xml"));
 
-	RegistryReader instance = new RegistryReader();
-	String expResult = "http://www.phonetik.uni-muenchen.de/cgi-bin/BASRepository/oaipmh/oai.pl?verb=Identify";
-	NodeList result = instance.getEndpoints(docProvInfo);
-	assertEquals(expResult, result.item(0).getNodeValue());
+        RegistryReader instance = new RegistryReader();
+        String expResult = "http://www.phonetik.uni-muenchen.de/cgi-bin/BASRepository/oaipmh/oai.pl?verb=Identify";
+        NodeList result = instance.getEndpoints(docProvInfo);
+        assertEquals(expResult, result.item(0).getNodeValue());
     }
+
+    @Test
+    public void testGetOaiPmhSets() throws Exception {
+
+    }
+
 }
