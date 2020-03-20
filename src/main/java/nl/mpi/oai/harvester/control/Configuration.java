@@ -18,6 +18,9 @@
 
 package nl.mpi.oai.harvester.control;
 
+import com.google.common.base.Predicates;
+import com.google.common.base.Splitter;
+import com.google.common.collect.ImmutableSet;
 import nl.mpi.oai.harvester.Provider;
 import nl.mpi.oai.harvester.StaticProvider;
 import nl.mpi.oai.harvester.action.*;
@@ -46,9 +49,15 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 
 /**
@@ -59,6 +68,9 @@ import java.util.Map;
  */
 public class Configuration {
     private static final Logger logger = LogManager.getLogger(Configuration.class);
+    private static final Set<String> DEFAULT_EXCLUDE_SETS = Collections.emptySet();
+    private static final Set<String> DEFAULT_INCLUDE_SETS = ImmutableSet.of("*");
+
     private final XPath xpath;
 
     /**
@@ -329,7 +341,24 @@ public class Configuration {
         if (importNode == null) {
             logger.debug("No import node in the configuration file");
         } else {
-
+            final Node includeSetTypesNode = (Node) xpath.evaluate("./includeOaiPmhSetTypes", importNode,XPathConstants.NODE);
+            final Collection<String> includeSetTypes;
+            if(includeSetTypesNode != null) {
+                includeSetTypes = Splitter.onPattern("\\s*,\\s*").splitToList(includeSetTypesNode.getTextContent());
+            } else {
+                 includeSetTypes= DEFAULT_INCLUDE_SETS;
+            }
+            logger.debug("Included set types: {}", includeSetTypes);
+            
+            final Node excludeSetTypesNode = (Node) xpath.evaluate("./excludeOaiPmhSetTypes", importNode,XPathConstants.NODE);
+            final Collection<String> excludeSetTypes;
+            if(excludeSetTypesNode != null) {
+                excludeSetTypes = Splitter.onPattern("\\s*,\\s*").splitToList(excludeSetTypesNode.getTextContent());
+            } else {
+                excludeSetTypes = DEFAULT_EXCLUDE_SETS;
+            }
+            logger.debug("Excluded set types: {}", excludeSetTypes);
+            
             // within the import node, look for the mandatory registry node   
             Node registryNode = (Node) xpath.evaluate("./registry", importNode,
                     XPathConstants.NODE);
@@ -380,12 +409,13 @@ public class Configuration {
                         }
                     }
                     // get the list of endpoints from the centre registry
-                    RegistryReader rr = new RegistryReader();
-                    List<String> provUrls = rr.getEndpoints(new java.net.URL(rUrl));
+                    final RegistryReader rr = new RegistryReader();
+
+                    final Map<String, Collection<CentreRegistrySetDefinition>> endPointOaiPmhSetMap 
+                            = rr.getEndPointOaiPmhSetMap(new java.net.URL(rUrl));
 
                     // use the list to create the list of endpoints to harvest from
-                    for (String provUrl : provUrls) {
-
+                    for (String provUrl : endPointOaiPmhSetMap.keySet()) {
                         // do not include an endpoint if it is specified to be excluded
                         if (excludeSpec.contains(provUrl)) {
                             logger.debug("Excluding endpoint" + provUrl);
@@ -402,9 +432,9 @@ public class Configuration {
 
                                 int timeout = (pTimeout != null) ? Integer.valueOf(pTimeout) : getTimeout();
                                 int maxRetryCount = (pMaxRetryCount != null) ? Integer.valueOf(pMaxRetryCount) : getMaxRetryCount();
-                                int[] retryDelays = (pRetryDelays != null)?parseRetryDelays(pRetryDelays):getRetryDelays();
+                                int[] retryDelays = (pRetryDelays != null) ? parseRetryDelays(pRetryDelays) : getRetryDelays();
                                 boolean exclusive = Boolean.parseBoolean(pExclusive);
-                                String scenario = (pScenario != null) ?  pScenario : getScenario();
+                                String scenario = (pScenario != null) ? pScenario : getScenario();
 
                                 provider.setTimeout(timeout);
                                 provider.setMaxRetryCount(maxRetryCount);
@@ -420,6 +450,36 @@ public class Configuration {
                                 provider.setIncremental(isIncremental());
                                 provider.setScenario(getScenario());
                             }
+                            
+                            //configure sets
+                            final Collection<CentreRegistrySetDefinition> allSets
+                                    = Optional.ofNullable(endPointOaiPmhSetMap.get(provUrl))
+                                            .orElse(Collections.emptySet());
+                            
+                            if(!allSets.isEmpty()) {
+                                //apply include/exclude config
+                                final Collection<CentreRegistrySetDefinition> includedSets
+                                        = new HashSet<>(allSets);
+                                if(!includeSetTypes.contains("*")) {
+                                    //reduce to entries with type matching entry from include types
+                                    includedSets.removeIf(
+                                            Predicates.not(s -> includeSetTypes.contains(s.getSetType())));
+                                }                            
+                                if(!excludeSetTypes.isEmpty()) {
+                                    includedSets.removeIf(s -> excludeSetTypes.contains(s.getSetType()));
+                                }                            
+
+                                logger.debug("Sets for {}; before include/exclude filter: {}; after filter: {}", provUrl, allSets, includedSets);
+
+                                if(!includedSets.isEmpty()) {
+                                    final String[] sets = includedSets.stream()
+                                            .map(CentreRegistrySetDefinition::getSetSpec)
+                                            .toArray(String[]::new);
+                                    
+                                    provider.setSets(sets);
+                                }
+                            }
+
                             providers.add(provider);
                         }
                     }
