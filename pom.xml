@@ -34,13 +34,7 @@
   <dependencies>
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-api</artifactId>
-      <version>2.13.1</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-core</artifactId>
+      <artifactId>log4j-slf4j-impl</artifactId>
       <version>2.13.1</version>
     </dependency>
 
@@ -94,6 +88,7 @@
       <version>2.24.1</version>
       <scope>test</scope>
     </dependency>
+
   </dependencies>
 
   <!-- Build cycle referred plugins -->
