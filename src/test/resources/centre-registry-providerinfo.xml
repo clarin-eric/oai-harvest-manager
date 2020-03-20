@@ -72,7 +72,11 @@
                     </OaiPmhSets>
                     <OaiAccessPoint>http://www.phonetik.uni-muenchen.de/cgi-bin/BASRepository/oaipmh/oai.pl?verb=Identify</OaiAccessPoint>
                 </Metadata>
-				
+
+                <Metadata>
+                    <OaiAccessPoint>http://www.phonetik.uni-muenchen.de/cgi-bin/BASRepository/oaipmh/oai2.pl?verb=Identify</OaiAccessPoint>
+                </Metadata>
+                                                                				
                 <OrganisationalInformation> 
                     <ClarinOrganisationInfo>
                         <OrganisationName>Bayerisches Archiv für Sprachsignale</OrganisationName>
