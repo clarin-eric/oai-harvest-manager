@@ -51,9 +51,9 @@ public class RegistryReaderTest {
     private static final String PROVIDER_INFO_RESOURCE = "/centre-registry-providerinfo.xml";
     private static final String REGISTRY_OVERVIEW_RESOURCE = "/centre-registry-overview.xml";
     private static final String REGISTRY_PATH = "/";
-    private static final String INFO_RESOURCE_PATH = "/restxml/1";
-    private static String REGISTRY_URL;
-    private static String PROVIDER_INFO_URL;
+    private static final String CENTRE_INFO_RESOURCE_PATH = "/restxml/1";
+    private String registryURl;
+    private String centreInfoUrl;
     
     private DocumentBuilder db;
     private RegistryReader instance;
@@ -63,28 +63,23 @@ public class RegistryReaderTest {
 
     @Rule
     public WireMockClassRule wireMockInstanceRule = wireMockRule;
-
-    @BeforeClass
-    public static void setUpClass()  throws Exception {
-        //set up mock centre registry REST XML server
-        
-        stubFor(get(urlEqualTo(INFO_RESOURCE_PATH))
-                .willReturn(aResponse()
-                        .withBody(getResourceAsString(PROVIDER_INFO_RESOURCE))));
-        PROVIDER_INFO_URL = "http://localhost:" + wireMockRule.getOptions().portNumber() + INFO_RESOURCE_PATH;
-
-        stubFor(get(urlEqualTo(REGISTRY_PATH))
-                .willReturn(aResponse()
-                        .withBody(getResourceAsString(REGISTRY_OVERVIEW_RESOURCE)
-                                .replaceAll("<Center_id_link>\\S+</Center_id_link>", "<Center_id_link>" + PROVIDER_INFO_URL + "</Center_id_link>"))));
-        REGISTRY_URL = "http://localhost:" + wireMockRule.getOptions().portNumber() + REGISTRY_PATH;
-    }
     
     @Before
     public void setUp() throws Exception {
         instance = new RegistryReader();
         db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 
+        //set up mock centre registry REST XML server
+        stubFor(get(urlEqualTo(CENTRE_INFO_RESOURCE_PATH))
+                .willReturn(aResponse()
+                        .withBody(getResourceAsString(PROVIDER_INFO_RESOURCE))));
+        centreInfoUrl = "http://localhost:" + wireMockRule.getOptions().portNumber() + CENTRE_INFO_RESOURCE_PATH;
+
+        stubFor(get(urlEqualTo(REGISTRY_PATH))
+                .willReturn(aResponse()
+                        .withBody(getResourceAsString(REGISTRY_OVERVIEW_RESOURCE)
+                                .replaceAll("<Center_id_link>\\S+</Center_id_link>", "<Center_id_link>" + centreInfoUrl + "</Center_id_link>"))));
+        registryURl = "http://localhost:" + wireMockRule.getOptions().portNumber() + REGISTRY_PATH;
     }
 
     /**
@@ -111,7 +106,7 @@ public class RegistryReaderTest {
 
     @Test
     public void testGetEndpointsFromService() throws Exception {
-        final List<String> urls = instance.getEndpoints(new URL(REGISTRY_URL));
+        final List<String> urls = instance.getEndpoints(new URL(registryURl));
         assertEquals(48, urls.size()); // 24 'centres' * 2 endpoints
     }
     
@@ -120,7 +115,7 @@ public class RegistryReaderTest {
         final String endpointUrl1 = "http://www.phonetik.uni-muenchen.de/cgi-bin/BASRepository/oaipmh/oai.pl?verb=Identify";
         final String endpointUrl2 = "http://www.phonetik.uni-muenchen.de/cgi-bin/BASRepository/oaipmh/oai2.pl?verb=Identify";
         
-        final Map<String, Collection<CentreRegistrySetDefinition>> map = instance.getEndPointOaiPmhSetMap(new URL(REGISTRY_URL));
+        final Map<String, Collection<CentreRegistrySetDefinition>> map = instance.getEndPointOaiPmhSetMap(new URL(registryURl));
         assertEquals(2, map.size());
         assertTrue(map.containsKey(endpointUrl1));
         assertEquals(2, map.get(endpointUrl1).size());
