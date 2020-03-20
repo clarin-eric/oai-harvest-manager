@@ -29,6 +29,8 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import com.google.common.base.Charsets;
+import java.util.Collection;
+import java.util.Map;
 import org.apache.commons.io.IOUtils;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -111,6 +113,16 @@ public class RegistryReaderTest {
     public void testGetEndpointsFromService() throws Exception {
         final List<String> urls = instance.getEndpoints(new URL(REGISTRY_URL));
         assertEquals(24, urls.size());
+    }
+    
+    @Test
+    public void testGetOaiSetsFromService() throws Exception {
+        final String endpointUrl = "http://www.phonetik.uni-muenchen.de/cgi-bin/BASRepository/oaipmh/oai.pl?verb=Identify";
+        
+        final Map<String, Collection<CentreRegistrySetDefinition>> map = instance.getEndPointOaiPmhSetMap(new URL(REGISTRY_URL));
+        assertEquals(1, map.size());
+        assertTrue(map.containsKey(endpointUrl));
+        assertEquals(2, map.get(endpointUrl).size());
     }
 
     @Test

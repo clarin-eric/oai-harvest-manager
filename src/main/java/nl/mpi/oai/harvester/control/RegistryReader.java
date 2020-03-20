@@ -37,8 +37,13 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * This class reads information from the REST service of the CLARIN Centre
@@ -78,8 +83,8 @@ public class RegistryReader {
 
 	    logger.info("Fetching information on " + provUrls.size()
 		    + " centres");
-	    for (String providerInfoUrl : provUrls) {
-		doc = openRemoteDocument(new URL(providerInfoUrl));
+	    for (String centreInfoUrl : provUrls) {
+		doc = openRemoteDocument(new URL(centreInfoUrl));
 		NodeList ends = getEndpoints(doc);
 		if (ends != null) {
                     for (int i =0;i<ends.getLength();i++)
@@ -91,6 +96,38 @@ public class RegistryReader {
 	    logger.error("Error reading from centre registry", e);
 	}
 	return endpoints;
+    }
+    
+    
+    public Map<String, Collection<CentreRegistrySetDefinition>> getEndPointOaiPmhSetMap(URL registryUrl) {
+	// Basically this makes a simple REST call to get a list of
+	// addresses for a further batch of REST calls. This is not
+	// documented in detail since it's specific to the CLARIN
+	// registry implementation anyway.
+	final Map<String, Collection<CentreRegistrySetDefinition>> map = new HashMap<>();
+	try {
+            final Document centresDoc = openRemoteDocument(registryUrl);
+            final List<String> provUrls = getProviderInfoUrls(centresDoc);
+            
+	    logger.info("Fetching information on " + provUrls.size()
+		    + " centres");
+            
+	    for (String centreInfoUrl : provUrls) {
+		final Document centreDoc = openRemoteDocument(new URL(centreInfoUrl));
+		final NodeList endpointsList = getEndpoints(centreDoc);
+		if (endpointsList != null) {
+                    for (int i =0;i<endpointsList.getLength();i++) {
+                        final String endpoint = endpointsList.item(i).getNodeValue().trim();
+                        final Set<CentreRegistrySetDefinition> sets = getOaiPmhSetsForEndpoint(centreDoc, endpoint);
+                        map.put(endpoint, sets);
+                    }
+		}
+	    }
+	} catch (IOException | ParserConfigurationException | SAXException
+		| XPathExpressionException | DOMException e) {
+	    logger.error("Error reading from centre registry", e);
+	}
+	return map;
     }
 
     /**
@@ -134,6 +171,37 @@ public class RegistryReader {
 		providerInfo.getDocumentElement(), XPathConstants.NODESET);
 	return endpoints;
     }
+
+    private Set<CentreRegistrySetDefinition> getOaiPmhSetsForEndpoint(final Document centreDoc, final String endpoint) throws XPathExpressionException, DOMException {
+        Set<CentreRegistrySetDefinition> sets = new HashSet<>();
+        final NodeList setList = getOaiPmhSets(centreDoc, endpoint);
+        if(setList == null) {
+            logger.debug("No set list for endpoint {}", endpoint);
+        } else {
+            for(int s=0;s<setList.getLength();s++) {
+                String setSpec = null;
+                String setType = null;
+                
+                final NodeList setNodeProps = setList.item(s).getChildNodes();
+                for(int p=0; p<setNodeProps.getLength(); p++) {
+                    switch(setNodeProps.item(p).getNodeName()) {
+                        case "SetSpec":
+                            setSpec = setNodeProps.item(p).getTextContent();
+                            logger.debug("{{}} SetSpec={}", endpoint, setSpec);
+                            break;
+                        case "SetType":
+                            setType = setNodeProps.item(p).getTextContent();
+                            logger.debug("{{}} SetType={}", endpoint, setType);
+                            break;
+                    }
+                }
+                if(setSpec != null && setType != null) {
+                    sets.add(new CentreRegistrySetDefinition(setSpec, setType));
+                }
+            }
+        }
+        return sets;
+    }
     
     /**
      * Extract the OAI-PMH sets for a single endpoint from aprovider's description
@@ -141,7 +209,7 @@ public class RegistryReader {
      * 
      * @param providerInfo xml information from the center registry
      * @param endpoint endpoint URL
-     * @return endpoint URL, or null if none available
+     * @return 0 or more "Set" nodes containing "SetSpec" and "SetType" child elements
      * @throws XPathExpressionException problem with the paths to query the center registry response
      */
     public NodeList getOaiPmhSets(Document providerInfo, String endpoint) throws XPathExpressionException {
