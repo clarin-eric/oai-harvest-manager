@@ -13,17 +13,16 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.Reader;
+import java.util.List;
 import java.util.function.Function;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
+import nl.mpi.oai.harvester.Provider;
+import nl.mpi.oai.harvester.action.ActionSequence;
 import org.junit.Test;
 import org.junit.Rule;
 import org.junit.rules.TemporaryFolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import static org.junit.Assert.*;
 
 /**
  *
@@ -32,7 +31,10 @@ import org.slf4j.LoggerFactory;
 public class ConfigurationTest {
 
     private final static Logger logger = LoggerFactory.getLogger(ConfigurationTest.class);
-
+    private static final String BASIC_CONFIG_RESOURCE = "/config/test-config-basic.xml";
+    
+    private static Configuration BASIC_CONFIG;
+    
     @Rule
     public TemporaryFolder workdir = new TemporaryFolder();
 
@@ -41,33 +43,51 @@ public class ConfigurationTest {
         return line.replaceAll("\\{\\{workdir\\}\\}", workdir.getRoot().getAbsolutePath());
     };
 
-    public ConfigurationTest() {
-    }
-
-    @BeforeClass
-    public static void setUpClass() {
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
-    }
-
-    @Before
-    public void setUp() {
-    }
-
-    @After
-    public void tearDown() {
-    }
-
-    /**
-     * Test of readConfig method, of class Configuration.
-     */
     @Test
     public void testReadConfig() throws Exception {
-        final String filename = pathForResource("/config/test-config-basic.xml");
-        final Configuration instance = new Configuration();
-        instance.readConfig(filename);
+        final Configuration config = getBasicConfig();
+        assertNotNull(config);
+    }
+    
+    @Test
+    public void testBasicProps() throws Exception {
+        final Configuration config = getBasicConfig();
+        assertEquals(false, config.isDryRun());
+        assertEquals(false, config.isIncremental());
+    }
+    
+    @Test
+    public void testActionSequences() throws Exception {
+        final List<ActionSequence> actionSequences = getBasicConfig().getActionSequences();
+        
+        assertNotNull(actionSequences);
+        assertEquals(4, actionSequences.size());
+        assertEquals("namespace", actionSequences.get(0).getInputFormat().getType());
+        assertEquals("http://www.clarin.eu/cmd/1", actionSequences.get(0).getInputFormat().getValue());
+    }
+    
+    @Test
+    public void testProviders() throws Exception {
+        final List<Provider> providers = getBasicConfig().getProviders();
+        assertNotNull(providers);
+        assertEquals(1, providers.size());
+        assertEquals("https://www.meertens.knaw.nl/flat/oai2", providers.get(0).getOaiUrl());
+    }
+    
+    private Configuration getBasicConfig() throws Exception {
+        synchronized(ConfigurationTest.class) {
+            if(BASIC_CONFIG == null) {
+                BASIC_CONFIG = readConfig(BASIC_CONFIG_RESOURCE);
+            }
+        }
+        return BASIC_CONFIG;
+    }
+    
+    private Configuration readConfig(String name) throws Exception {
+        final String filename = pathForResource(name);
+        final Configuration config = new Configuration();
+        config.readConfig(filename);
+        return config;
     }
 
     private String pathForResource(String resource) {
