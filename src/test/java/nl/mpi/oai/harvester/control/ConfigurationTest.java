@@ -5,6 +5,11 @@
  */
 package nl.mpi.oai.harvester.control;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.get;
+import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
+import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
 import com.google.common.base.Charsets;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -17,12 +22,14 @@ import java.util.List;
 import java.util.function.Function;
 import nl.mpi.oai.harvester.Provider;
 import nl.mpi.oai.harvester.action.ActionSequence;
+import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 import org.junit.Rule;
 import org.junit.rules.TemporaryFolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import static org.junit.Assert.*;
+import org.junit.ClassRule;
 
 /**
  *
@@ -32,40 +39,49 @@ public class ConfigurationTest {
 
     private final static Logger logger = LoggerFactory.getLogger(ConfigurationTest.class);
     private static final String BASIC_CONFIG_RESOURCE = "/config/test-config-basic.xml";
-    
+
+    final String PROVIDER_INFO_RESOURCE = "/centre-registry-providerinfo.xml";
+    final String REGISTRY_OVERVIEW_RESOURCE = "/centre-registry-overview.xml";
+    final String MOCK_REGISTRY_REGISTRY_PATH = "/";
+    final String MOCK_REGISTRY_CENTRE_INFO_RESOURCE_PATH = "/restxml/1";
+
     private static Configuration BASIC_CONFIG;
-    
+
+    @ClassRule
+    public static WireMockClassRule wireMockRule = new WireMockClassRule(8089);
+
+    @Rule
+    public WireMockClassRule wireMockInstanceRule = wireMockRule;
+
     @Rule
     public TemporaryFolder workdir = new TemporaryFolder();
 
-    private final Function<String, String> testConfigFilter = (String line) -> {
-        assert (line != null);
-        return line.replaceAll("\\{\\{workdir\\}\\}", workdir.getRoot().getAbsolutePath());
-    };
+    private final Function<String, String> testConfigFilter
+            = line -> line.replaceAll("\\{\\{workdir\\}\\}", workdir.getRoot().getAbsolutePath());
 
     @Test
     public void testReadConfig() throws Exception {
         final Configuration config = getBasicConfig();
         assertNotNull(config);
     }
-    
+
     @Test
     public void testBasicProps() throws Exception {
         final Configuration config = getBasicConfig();
         assertEquals(false, config.isDryRun());
         assertEquals(false, config.isIncremental());
     }
-    
+
     @Test
     public void testActionSequences() throws Exception {
         final List<ActionSequence> actionSequences = getBasicConfig().getActionSequences();
-        
+
         assertNotNull(actionSequences);
         assertEquals(4, actionSequences.size());
         assertEquals("namespace", actionSequences.get(0).getInputFormat().getType());
         assertEquals("http://www.clarin.eu/cmd/1", actionSequences.get(0).getInputFormat().getValue());
     }
-    
+
     @Test
     public void testProviders() throws Exception {
         final List<Provider> providers = getBasicConfig().getProviders();
@@ -73,16 +89,31 @@ public class ConfigurationTest {
         assertEquals(1, providers.size());
         assertEquals("https://www.meertens.knaw.nl/flat/oai2", providers.get(0).getOaiUrl());
     }
-    
+
+    @Test
+    public void testImportFromRegistry() throws Exception {
+        //set up mock centre registry REST XML server
+        final String registryURl = setUpMockRegistry();
+        final Function<String, String> configFilter
+                = testConfigFilter.andThen(line -> line.replaceAll("\\{\\{registryUrl\\}\\}", registryURl));
+
+        final File configFile = fileForResource("/config/test-config-import.xml", configFilter);
+
+        final Configuration configuration = new Configuration().readConfig(configFile.getAbsolutePath());
+        List<Provider> providers = configuration.getProviders();
+        assertNotNull(providers);
+        assertEquals(2, providers.size());
+    }
+
     private Configuration getBasicConfig() throws Exception {
-        synchronized(ConfigurationTest.class) {
-            if(BASIC_CONFIG == null) {
+        synchronized (ConfigurationTest.class) {
+            if (BASIC_CONFIG == null) {
                 BASIC_CONFIG = readConfig(BASIC_CONFIG_RESOURCE);
             }
         }
         return BASIC_CONFIG;
     }
-    
+
     private Configuration readConfig(String name) throws Exception {
         final String filename = pathForResource(name);
         final Configuration config = new Configuration();
@@ -117,5 +148,28 @@ public class ConfigurationTest {
         } catch (IOException ex) {
             throw new RuntimeException("Error while reading resource for test: " + resource, ex);
         }
+    }
+
+    private String setUpMockRegistry() throws IOException {
+        stubFor(get(urlEqualTo(MOCK_REGISTRY_CENTRE_INFO_RESOURCE_PATH))
+                .willReturn(aResponse()
+                        .withBody(getResourceAsString(PROVIDER_INFO_RESOURCE))));
+        final String centreInfoUrl = "http://localhost:" + wireMockRule.getOptions().portNumber() + MOCK_REGISTRY_CENTRE_INFO_RESOURCE_PATH;
+
+        stubFor(get(urlEqualTo(MOCK_REGISTRY_REGISTRY_PATH))
+                .willReturn(aResponse()
+                        .withBody(getResourceAsString(REGISTRY_OVERVIEW_RESOURCE)
+                                .replaceAll("<Center_id_link>\\S+</Center_id_link>", "<Center_id_link>" + centreInfoUrl + "</Center_id_link>"))));
+        final String registryURl = "http://localhost:" + wireMockRule.getOptions().portNumber() + MOCK_REGISTRY_REGISTRY_PATH;
+
+        return registryURl;
+    }
+
+    private String getResourceAsString(String resourceName) throws IOException {
+        final String registryOverviewString;
+        try (InputStream infoResourceStream = getClass().getResourceAsStream(resourceName)) {
+            registryOverviewString = IOUtils.toString(infoResourceStream, Charsets.UTF_8.name());
+        }
+        return registryOverviewString;
     }
 }

@@ -142,7 +142,7 @@ public class Configuration {
      * @throws XPathExpressionException     problem with the paths accessing the configuration
      * @throws IOException                  problem accessing the configuration
      */
-    public void readConfig(String filename) throws ParserConfigurationException,
+    public Configuration readConfig(String filename) throws ParserConfigurationException,
             SAXException, XPathExpressionException, IOException {
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         DocumentBuilder db = dbf.newDocumentBuilder();
@@ -176,6 +176,7 @@ public class Configuration {
         applyTimeoutSetting();
 
         logger.debug("Finished reading config");
+        return this;
     }
 
     /**
@@ -373,6 +374,8 @@ public class Configuration {
                     logger.warn("No registry specified to import from; will not import");
                 } else {
 
+                    logger.info("Importing providers from registry at {}", rUrl);
+                    
                     // list of endpoints to be excluded
                     ArrayList<String> excludeSpec = new ArrayList<>();
 
