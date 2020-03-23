@@ -5,3 +5,6 @@ target/
 run/
 
 /nbproject/
+nb-configuration.xml
+nbactions.xml
+
