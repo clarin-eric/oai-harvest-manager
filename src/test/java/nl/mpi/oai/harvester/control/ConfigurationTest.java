@@ -18,9 +18,13 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 import nl.mpi.oai.harvester.Provider;
+import nl.mpi.oai.harvester.action.Action;
 import nl.mpi.oai.harvester.action.ActionSequence;
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
@@ -80,6 +84,10 @@ public class ConfigurationTest {
         assertEquals(4, actionSequences.size());
         assertEquals("namespace", actionSequences.get(0).getInputFormat().getType());
         assertEquals("http://www.clarin.eu/cmd/1", actionSequences.get(0).getInputFormat().getValue());
+        
+        final List<ResourcePool<Action>> actions = actionSequences.get(0).getActions();
+        assertEquals(5, actions.size());
+        
     }
 
     @Test
@@ -100,9 +108,30 @@ public class ConfigurationTest {
         final File configFile = fileForResource("/config/test-config-import.xml", configFilter);
 
         final Configuration configuration = new Configuration().readConfig(configFile.getAbsolutePath());
-        List<Provider> providers = configuration.getProviders();
+
+        final List<Provider> providers = configuration.getProviders();
         assertNotNull(providers);
         assertEquals(2, providers.size());
+
+        //check specific provider
+        {
+            final Optional<Provider> prov = providers.stream().filter(p -> p.getOaiUrl().equals("http://www.phonetik.uni-muenchen.de/cgi-bin/BASRepository/oaipmh/oai.pl")).findAny();
+            assertTrue(prov.isPresent());
+
+            //check specific providers for sets; first has two specified in registry response, but one is excluded
+            final List<String> sets = Arrays.asList(prov.get().getSets());
+            assertEquals(1, sets.size());
+            assertTrue(sets.contains("test-set2"));
+        }
+
+        //second provider
+        {
+            final Optional<Provider> prov = providers.stream().filter(p -> p.getOaiUrl().equals("http://www.phonetik.uni-muenchen.de/cgi-bin/BASRepository/oaipmh/oai2.pl")).findAny();
+            assertTrue(prov.isPresent());
+
+            //should have no sets
+            assertNull(prov.get().getSets());
+        }
     }
 
     private Configuration getBasicConfig() throws Exception {

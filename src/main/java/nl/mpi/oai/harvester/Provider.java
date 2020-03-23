@@ -223,6 +223,10 @@ public class Provider {
 	return oaiUrl;
     }
 
+    public String[] getSets() {
+        return sets;
+    }
+
     /**
      * Get the name declared by an OAI-PMH provider by making an
      * Identify request. Returns null if no name can be found.

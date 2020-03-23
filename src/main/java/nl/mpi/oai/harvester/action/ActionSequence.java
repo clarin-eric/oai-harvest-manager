@@ -98,7 +98,10 @@ public class ActionSequence {
     public MetadataFormat getInputFormat() {
 	return inputFormat;
     }
-    
+
+    public List<ResourcePool<Action>> getActions() {
+        return actions;
+    }
     
     
     /**
