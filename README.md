@@ -25,7 +25,7 @@ OAI-PMH **endpoint**.
 
 # Building
 
-Building this app requires JDK 1.7 and Apache Maven. It can be built
+Building this app requires JDK 8 and Apache Maven. It can be built
 simply using the command:
 
 ```mvn clean package assembly:assembly```
@@ -33,9 +33,11 @@ simply using the command:
 If you use a Java IDE, it is highly likely it also offers a simple way
 to do the above.
 
+You can also use the `build.sh` script to run a build within an environment
+provisioned with suitable versions of the JDK and Maven. Requires docker.
+
 The above build process creates a package named
 `oai-harvest-manager-x.y.z.tar.gz` (where x.y.z is a version number).
-
 
 # Running the Application
 
@@ -87,6 +89,9 @@ thread control settings, including the resource pool size (which can
 be reduced to lessen memory footprint, or increased to speed up
 processing if resources are plentiful); and settings related to
 incremental harvesting.
+
+Set the `dry-run` setting to `true` to run the harvester without making
+the actual harvest requests to the OAI-PMH endpoints.
 
 ## Configuring Directories
 
