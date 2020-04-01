@@ -1,0 +1,56 @@
+<!-- This is the configuration for CLARIN harvesting. -->
+<config>
+
+  <!-- ### configuration settings ### -->
+  <settings>
+    <!-- Working directory. -->
+    <workdir>{{workdir}}</workdir>
+
+    <!-- Maximum number of attempts per record before giving up. -->
+    <max-retry-count>2</max-retry-count>
+
+    <!-- Delay between retries of a record (milliseconds). -->
+    <retry-delay>10000</retry-delay>
+
+    <!-- Maximum number of concurrent harvester threads -->
+    <max-jobs>4</max-jobs>
+
+    <!-- Number of resources placed in the resource pool. -->
+    <resource-pool-size>4</resource-pool-size>
+
+    <!-- Default timeout (for connection and reading) for a single
+    http request in seconds. If unspecified, will be INFINITE.  -->
+    <timeout>60</timeout>
+    <scenario>ListRecords</scenario>
+    <incremental>false</incremental>
+    <dry-run>false</dry-run>
+  </settings>
+
+  <!-- ### output directories (referenced in the action section) ### -->
+  <directories>
+    <!-- When the attribute 'max-files' is non-zero, subdirectories
+         will be created to ensure no directory has more than that
+         number of files. -->
+    <dir path="oai-rec" id="rec" max-files="0"/>
+    <dir path="oai-pmh" id="oai" max-files="0"/>
+    <dir path="results/cmdi-1_1" id="cmdi-1_1" max-files="0"/>
+    <dir path="results/cmdi" id="cmdi-1_2" max-files="0"/>
+  </directories>
+  
+  
+  <!-- ### actions to take on metadata formats (in order of preference) ### -->
+  <actions>
+    <format match="namespace" value="http://www.clarin.eu/cmd/1">
+      <action type="save" dir="oai" suffix=".xml"/>
+    </format>
+  </actions>
+  
+  <!-- ### list of providers ### -->
+  <providers>
+    <import>
+      <includeOaiPmhSetTypes>Tests1,Test2</includeOaiPmhSetTypes>
+      <excludeOaiPmhSetTypes>Test1</excludeOaiPmhSetTypes>
+      <registry url="{{registryUrl}}"/>
+    </import>
+  </providers>
+</config>

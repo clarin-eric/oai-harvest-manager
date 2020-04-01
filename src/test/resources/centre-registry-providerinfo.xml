@@ -1,108 +1,116 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CMD xmlns="http://www.clarin.eu/cmd/"
-	 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	 	     CMDVersion="1.1"
-	     xsi:schemaLocation="http://www.clarin.eu/cmd/ http://catalog.clarin.eu/ds/ComponentRegistry/rest/registry/profiles/clarin.eu:cr1:p_1320657629667/xsd">
-	   <Header/>
-	   <Resources>
-	      <ResourceProxyList/>
-	      <JournalFileProxyList/>
-	      <ResourceRelationList/>
-	   </Resources>
-	   <Components>
-       <CenterProfile> 
-       <CenterBasicInformation>
-             <Name>Bayerisches Archiv für Sprachsignale</Name>
-            <!-- For details about the center types, see www.clarin.eu/files/wg2-1-center-types-doc-v5.pdf -->
-	         <Type>B</Type>
-	         <Status>certified B</Status>
-             <Description>A center in CLARIN-D</Description>
-	            <Country>
-	               <Code>DE</Code>
-	            </Country>
-         </CenterBasicInformation>
-         <CenterExtendedInformation>
-          <Website>http://www.phonetik.uni-muenchen.de/forschung/bay_arch_sprsig/index.html</Website>
-          <LongTermArchivingPolicy>yes - guaranteed by the University of Munich</LongTermArchivingPolicy>
-          <RepositorySystem>own system</RepositorySystem>
-          <PidStatus>handle via EPIC</PidStatus>
+     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     CMDVersion="1.1"
+     xsi:schemaLocation="http://www.clarin.eu/cmd/ http://catalog.clarin.eu/ds/ComponentRegistry/rest/registry/profiles/clarin.eu:cr1:p_1320657629667/xsd">
+    <Header/>
+    <Resources>
+        <ResourceProxyList/>
+        <JournalFileProxyList/>
+        <ResourceRelationList/>
+    </Resources>
+    <Components>
+        <CenterProfile> 
+            <CenterBasicInformation>
+                <Name>Bayerisches Archiv für Sprachsignale</Name>
+                <!-- For details about the center types, see www.clarin.eu/files/wg2-1-center-types-doc-v5.pdf -->
+                <Type>B</Type>
+                <Status>certified B</Status>
+                <Description>A center in CLARIN-D</Description>
+                <Country>
+                    <Code>DE</Code>
+                </Country>
+            </CenterBasicInformation>
+            <CenterExtendedInformation>
+                <Website>http://www.phonetik.uni-muenchen.de/forschung/bay_arch_sprsig/index.html</Website>
+                <LongTermArchivingPolicy>yes - guaranteed by the University of Munich</LongTermArchivingPolicy>
+                <RepositorySystem>own system</RepositorySystem>
+                <PidStatus>handle via EPIC</PidStatus>
                 
-			 	<StrictVersioning>true</StrictVersioning>
+                <StrictVersioning>true</StrictVersioning>
 				
 					
-          <AssessmentStatus>DSA granted: https://assessment.datasealofapproval.org/assessment_83/seal/html/ </AssessmentStatus>
+                <AssessmentStatus>DSA granted: https://assessment.datasealofapproval.org/assessment_83/seal/html/ </AssessmentStatus>
 
 
-			<WebReference>
-				<Website>http://www.phonetik.uni-muenchen.de/forschung/bay_arch_sprsig/index.html</Website>
-				<Description>Site with corpora</Description>
-			</WebReference>	
+                <WebReference>
+                    <Website>http://www.phonetik.uni-muenchen.de/forschung/bay_arch_sprsig/index.html</Website>
+                    <Description>Site with corpora</Description>
+                </WebReference>	
 
-			<WebReference>
-				<Website>https://clarin.phonetik.uni-muenchen.de/BASRepository/</Website>
-				<Description>Repository</Description>
-			</WebReference>	
+                <WebReference>
+                    <Website>https://clarin.phonetik.uni-muenchen.de/BASRepository/</Website>
+                    <Description>Repository</Description>
+                </WebReference>	
 
-			<WebReference>
-				<Website>https://clarin.phonetik.uni-muenchen.de/BASSRU/</Website>
-				<Description>CQL</Description>
-			</WebReference>	
+                <WebReference>
+                    <Website>https://clarin.phonetik.uni-muenchen.de/BASSRU/</Website>
+                    <Description>CQL</Description>
+                </WebReference>	
 	
-			<AAI>
-				<AaiStatus>Service Provider available </AaiStatus> 
+                <AAI>
+                    <AaiStatus>Service Provider available </AaiStatus> 
 				
- 				<MemberOfNationalFederation>DE</MemberOfNationalFederation>
+                    <MemberOfNationalFederation>DE</MemberOfNationalFederation>
  				
  				
 				
-			 	<MemberOfSpf>false</MemberOfSpf> 
+                    <MemberOfSpf>false</MemberOfSpf> 
 					
- 			</AAI>
- 			<Metadata>
- 
-				<MetadataScheme>CMDI</MetadataScheme>
-				
-				<WebServicesSet>Weblicht</WebServicesSet> 
- 
-				<WebServiceType>WebLicht</WebServiceType>
- 
- 	            <OaiAccessPoint>http://www.phonetik.uni-muenchen.de/cgi-bin/BASRepository/oaipmh/oai.pl?verb=Identify</OaiAccessPoint>
- 	</Metadata>
-				
-          <OrganisationalInformation> 
-              <ClarinOrganisationInfo>
-              	  <OrganisationName>Bayerisches Archiv für Sprachsignale</OrganisationName>
-              	  <Institution>Ludwig-Maximilians-Universität München</Institution>
-              	  <WorkingUnit>BAS CLARIN-D-Center</WorkingUnit>
-              	  <Code> BAS</Code>
-              	  <PostAddress>Ludwig-Maximilians-Universität, Institut für Phonetik und Sprachverarbeitung, Schellingstr 3, München, DE</PostAddress>
-              	  <Expertise>corpora, phonetic tools</Expertise>
+                </AAI>
+                        
+                <Metadata>
+                    <OaiPmhSets>
+                        <Set>
+                            <SetSpec>test-set1</SetSpec>
+                            <SetType>Test1</SetType>
+                        </Set>
+                        <Set>
+                            <SetSpec>test-set2</SetSpec>
+                            <SetType>Test2</SetType>
+                        </Set>
+                    </OaiPmhSets>
+                    <OaiAccessPoint>http://www.phonetik.uni-muenchen.de/cgi-bin/BASRepository/oaipmh/oai.pl?verb=Identify</OaiAccessPoint>
+                </Metadata>
+
+                <Metadata>
+                    <OaiAccessPoint>http://www.phonetik.uni-muenchen.de/cgi-bin/BASRepository/oaipmh/oai2.pl?verb=Identify</OaiAccessPoint>
+                </Metadata>
+                                                                				
+                <OrganisationalInformation> 
+                    <ClarinOrganisationInfo>
+                        <OrganisationName>Bayerisches Archiv für Sprachsignale</OrganisationName>
+                        <Institution>Ludwig-Maximilians-Universität München</Institution>
+                        <WorkingUnit>BAS CLARIN-D-Center</WorkingUnit>
+                        <Code> BAS</Code>
+                        <PostAddress>Ludwig-Maximilians-Universität, Institut für Phonetik und Sprachverarbeitung, Schellingstr 3, München, DE</PostAddress>
+                        <Expertise>corpora, phonetic tools</Expertise>
             
-              </ClarinOrganisationInfo>
-              <AdministrativeContact>
-                     <Contact>
-							<Person>Christoph Draxler</Person>
-							<Email>bas@bas.uni-muenchen.de</Email>
-							<Telephone>+49-89-2802758</Telephone>
-							<Website>http://www.bas.uni-muenchen.de/Bas</Website>
-                     </Contact>
-              </AdministrativeContact>
-              <TechnicalContact>
-                     <Contact>
-							<Person>Florian Schiel</Person>
-							<Email>bas@bas.uni-muenchen.de</Email>
-							<Telephone>+49-89-2802758</Telephone>
-							<Website>http://www.bas.uni-muenchen.de/Bas</Website>
-                     </Contact>
-              </TechnicalContact>
-          </OrganisationalInformation> 
-        <Monitoring>
-				<SpTestSite>https://clarin.phonetik.uni-muenchen.de/BASRepository/</SpTestSite>
-		</Monitoring>	     
-         </CenterExtendedInformation> 
+                    </ClarinOrganisationInfo>
+                    <AdministrativeContact>
+                        <Contact>
+                            <Person>Christoph Draxler</Person>
+                            <Email>bas@bas.uni-muenchen.de</Email>
+                            <Telephone>+49-89-2802758</Telephone>
+                            <Website>http://www.bas.uni-muenchen.de/Bas</Website>
+                        </Contact>
+                    </AdministrativeContact>
+                    <TechnicalContact>
+                        <Contact>
+                            <Person>Florian Schiel</Person>
+                            <Email>bas@bas.uni-muenchen.de</Email>
+                            <Telephone>+49-89-2802758</Telephone>
+                            <Website>http://www.bas.uni-muenchen.de/Bas</Website>
+                        </Contact>
+                    </TechnicalContact>
+                </OrganisationalInformation> 
+                <Monitoring>
+                    <SpTestSite>https://clarin.phonetik.uni-muenchen.de/BASRepository/</SpTestSite>
+                </Monitoring>	     
+            </CenterExtendedInformation> 
          
-       </CenterProfile>
- </Components>
+        </CenterProfile>
+    </Components>
 </CMD>
 
  

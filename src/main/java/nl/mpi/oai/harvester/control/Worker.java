@@ -140,86 +140,88 @@ class Worker implements Runnable {
             FileSynchronization.addProviderStatistic(provider);
 
             for (final ActionSequence actionSequence : actionSequences) {
-
-                // list of prefixes provided by the endpoint
-                List<String> prefixes;
-
-                // kj: annotate
-                Scenario scenario = new Scenario(provider, actionSequence);
-
-                if (provider instanceof StaticProvider) {
-                    logger.debug("static harvest["+provider+"]");
-
-                    // set type of format harvesting to apply
-                    AbstractHarvesting harvesting = new StaticPrefixHarvesting(
-                            oaiFactory,
-                            (StaticProvider) provider,
-                            actionSequence);
-                    logger.debug("harvesting["+harvesting+"]");
-
-                    // get the prefixes
-                    prefixes = scenario.getPrefixes(harvesting);
-                    logger.debug("prefixes["+prefixes+"]");
-
-                    if (prefixes.isEmpty()) {
-                        logger.debug("no prefixes["+prefixes+"] -> done");
-                        done = false;
-                    } else {
-                        // set type of record harvesting to apply
-                        harvesting = new StaticRecordListHarvesting(oaiFactory,
-                                (StaticProvider) provider, prefixes, metadataFactory);
-
-                        // get the records
-                        if (scenarioName.equals("ListIdentifiers")) {
-                            done = scenario.listIdentifiers(harvesting);
-                            logger.debug("list identifiers -> done["+done+"]");
-                        } else {
-                            done = scenario.listRecords(harvesting);
-                            logger.debug("list records -> done["+done+"]");
-                        }
-                    }
+                
+                if(config.isDryRun()) {
+                    logger.info("Dry run mode. Skipping action sequence: {{}}", actionSequence.toString());
                 } else {
-                    logger.debug("dynamic harvest["+provider+"]");
+                    // list of prefixes provided by the endpoint
+                    List<String> prefixes;
 
-                    // set type of format harvesting to apply
-                    AbstractHarvesting harvesting = new FormatHarvesting(oaiFactory,
-                            provider, actionSequence);
+                    // kj: annotate
+                    Scenario scenario = new Scenario(provider, actionSequence);
 
-                    // get the prefixes
-                    prefixes = scenario.getPrefixes(harvesting);
-                    logger.debug("prefixes["+prefixes+"]");
+                    if (provider instanceof StaticProvider) {
+                        logger.debug("static harvest["+provider+"]");
 
-                    if (prefixes.isEmpty()) {
-                        // no match
-                        logger.debug("no prefixes["+prefixes+"] -> done");
-                        done = false;
-                    } else {
-                        // determine the type of record harvesting to apply
-                        if (scenarioName.equals("ListIdentifiers")) {
-                            // kj: annotate, connect verb to scenario
-                            harvesting = new IdentifierListHarvesting(oaiFactory,
-                                    provider, prefixes, metadataFactory, endpoint);
+                        // set type of format harvesting to apply
+                        AbstractHarvesting harvesting = new StaticPrefixHarvesting(
+                                oaiFactory,
+                                (StaticProvider) provider,
+                                actionSequence);
+                        logger.debug("harvesting["+harvesting+"]");
 
-                            // get the records
-                            done = scenario.listIdentifiers(harvesting);
-                            logger.debug("list identifiers -> done["+done+"]");
+                        // get the prefixes
+                        prefixes = scenario.getPrefixes(harvesting);
+                        logger.debug("prefixes["+prefixes+"]");
+
+                        if (prefixes.isEmpty()) {
+                            logger.debug("no prefixes["+prefixes+"] -> done");
+                            done = false;
                         } else {
-                            harvesting = new RecordListHarvesting(oaiFactory,
-                                    provider, prefixes, metadataFactory, endpoint);
+                            // set type of record harvesting to apply
+                            harvesting = new StaticRecordListHarvesting(oaiFactory,
+                                    (StaticProvider) provider, prefixes, metadataFactory);
 
                             // get the records
-                            done = scenario.listRecords(harvesting);
-                            logger.debug("list records -> done[" + done + "]");
+                            if (scenarioName.equals("ListIdentifiers")) {
+                                done = scenario.listIdentifiers(harvesting);
+                                logger.debug("list identifiers -> done["+done+"]");
+                            } else {
+                                done = scenario.listRecords(harvesting);
+                                logger.debug("list records -> done["+done+"]");
+                            }
                         }
-                        if(Main.config.isIncremental()) {
-                            FileSynchronization.execute(provider);
+                    } else {
+                        logger.debug("dynamic harvest["+provider+"]");
+
+                        // set type of format harvesting to apply
+                        AbstractHarvesting harvesting = new FormatHarvesting(oaiFactory,
+                                provider, actionSequence);
+
+                        // get the prefixes
+                        prefixes = scenario.getPrefixes(harvesting);
+                        logger.debug("prefixes["+prefixes+"]");
+
+                        if (prefixes.isEmpty()) {
+                            // no match
+                            logger.debug("no prefixes["+prefixes+"] -> done");
+                            done = false;
+                        } else {
+                            // determine the type of record harvesting to apply
+                            if (scenarioName.equals("ListIdentifiers")) {
+                                // kj: annotate, connect verb to scenario
+                                harvesting = new IdentifierListHarvesting(oaiFactory,
+                                        provider, prefixes, metadataFactory, endpoint);
+
+                                // get the records
+                                done = scenario.listIdentifiers(harvesting);
+                                logger.debug("list identifiers -> done["+done+"]");
+                            } else {
+                                harvesting = new RecordListHarvesting(oaiFactory,
+                                        provider, prefixes, metadataFactory, endpoint);
+
+                                // get the records
+                                done = scenario.listRecords(harvesting);
+                                logger.debug("list records -> done[" + done + "]");
+                            }
+                            if(Main.config.isIncremental()) {
+                                FileSynchronization.execute(provider);
+                            }
                         }
                     }
                 }
-
                 // break after an action sequence has completed successfully
                 if (done) break;
-
             }
 
             // report back success or failure to the cycle

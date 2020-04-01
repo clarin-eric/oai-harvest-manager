@@ -18,6 +18,9 @@
 
 package nl.mpi.oai.harvester.control;
 
+import com.google.common.base.Predicates;
+import com.google.common.base.Splitter;
+import com.google.common.collect.ImmutableSet;
 import nl.mpi.oai.harvester.Provider;
 import nl.mpi.oai.harvester.StaticProvider;
 import nl.mpi.oai.harvester.action.*;
@@ -32,13 +35,11 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 import java.io.BufferedWriter;
-import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -47,11 +48,14 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import net.sf.saxon.s9api.SaxonApiException;
+import java.util.Optional;
+import java.util.Set;
 
 
 /**
@@ -62,6 +66,9 @@ import net.sf.saxon.s9api.SaxonApiException;
  */
 public class Configuration {
     private static final Logger logger = LogManager.getLogger(Configuration.class);
+    private static final Set<String> DEFAULT_EXCLUDE_SETS = Collections.emptySet();
+    private static final Set<String> DEFAULT_INCLUDE_SETS = ImmutableSet.of("*");
+
     private final XPath xpath;
     private RegistryReader registryReader = null;
 
@@ -94,7 +101,7 @@ public class Configuration {
         RETRYDELAY("retry-delay"), MAXJOBS("max-jobs"),
         POOLSIZE("resource-pool-size"), TIMEOUT("timeout"),
         OVERVIEWFILE("overview-file"), MAPFILE("map-file"),
-        SAVERESPONSE("save-response"), SCENARIO("scenario"), INCREMENTAL("incremental");
+        SAVERESPONSE("save-response"), SCENARIO("scenario"), INCREMENTAL("incremental"), DRYRUN("dry-run");
         private final String val;
 
         KnownOptions(final String s) {
@@ -134,7 +141,7 @@ public class Configuration {
      * @throws XPathExpressionException     problem with the paths accessing the configuration
      * @throws IOException                  problem accessing the configuration
      */
-    public void readConfig(String filename) throws ParserConfigurationException,
+    public Configuration readConfig(String filename) throws ParserConfigurationException,
             SAXException, XPathExpressionException, IOException {
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         DocumentBuilder db = dbf.newDocumentBuilder();
@@ -168,6 +175,7 @@ public class Configuration {
         applyTimeoutSetting();
 
         logger.debug("Finished reading config");
+        return this;
     }
 
     /**
@@ -334,7 +342,24 @@ public class Configuration {
         if (importNode == null) {
             logger.debug("No import node in the configuration file");
         } else {
-
+            final Node includeSetTypesNode = (Node) xpath.evaluate("./includeOaiPmhSetTypes", importNode,XPathConstants.NODE);
+            final Collection<String> includeSetTypes;
+            if(includeSetTypesNode != null) {
+                includeSetTypes = Splitter.onPattern("\\s*,\\s*").splitToList(includeSetTypesNode.getTextContent());
+            } else {
+                 includeSetTypes= DEFAULT_INCLUDE_SETS;
+            }
+            logger.debug("Included set types: {}", includeSetTypes);
+            
+            final Node excludeSetTypesNode = (Node) xpath.evaluate("./excludeOaiPmhSetTypes", importNode,XPathConstants.NODE);
+            final Collection<String> excludeSetTypes;
+            if(excludeSetTypesNode != null) {
+                excludeSetTypes = Splitter.onPattern("\\s*,\\s*").splitToList(excludeSetTypesNode.getTextContent());
+            } else {
+                excludeSetTypes = DEFAULT_EXCLUDE_SETS;
+            }
+            logger.debug("Excluded set types: {}", excludeSetTypes);
+            
             // within the import node, look for the mandatory registry node   
             Node registryNode = (Node) xpath.evaluate("./registry", importNode,
                     XPathConstants.NODE);
@@ -349,6 +374,8 @@ public class Configuration {
                     logger.warn("No registry specified to import from; will not import");
                 } else {
 
+                    logger.info("Importing providers from registry at {}", rUrl);
+                    
                     // list of endpoints to be excluded
                     ArrayList<String> excludeSpec = new ArrayList<>();
 
@@ -388,9 +415,11 @@ public class Configuration {
                     registryReader = new RegistryReader(new java.net.URL(rUrl));
                     List<String> provUrls = registryReader.getEndpoints();
 
-                    // use the list to create the list of endpoints to harvest from
-                    for (String provUrl : provUrls) {
+                    final Map<String, Collection<CentreRegistrySetDefinition>> endPointOaiPmhSetMap 
+                            = rr.getEndPointOaiPmhSetMap(new java.net.URL(rUrl));
 
+                    // use the list to create the list of endpoints to harvest from
+                    for (String provUrl : endPointOaiPmhSetMap.keySet()) {
                         // do not include an endpoint if it is specified to be excluded
                         if (excludeSpec.contains(provUrl)) {
                             logger.debug("Excluding endpoint" + provUrl);
@@ -407,9 +436,9 @@ public class Configuration {
 
                                 int timeout = (pTimeout != null) ? Integer.valueOf(pTimeout) : getTimeout();
                                 int maxRetryCount = (pMaxRetryCount != null) ? Integer.valueOf(pMaxRetryCount) : getMaxRetryCount();
-                                int[] retryDelays = (pRetryDelays != null)?parseRetryDelays(pRetryDelays):getRetryDelays();
+                                int[] retryDelays = (pRetryDelays != null) ? parseRetryDelays(pRetryDelays) : getRetryDelays();
                                 boolean exclusive = Boolean.parseBoolean(pExclusive);
-                                String scenario = (pScenario != null) ?  pScenario : getScenario();
+                                String scenario = (pScenario != null) ? pScenario : getScenario();
 
                                 provider.setTimeout(timeout);
                                 provider.setMaxRetryCount(maxRetryCount);
@@ -425,6 +454,36 @@ public class Configuration {
                                 provider.setIncremental(isIncremental());
                                 provider.setScenario(getScenario());
                             }
+                            
+                            //configure sets
+                            final Collection<CentreRegistrySetDefinition> allSets
+                                    = Optional.ofNullable(endPointOaiPmhSetMap.get(provUrl))
+                                            .orElse(Collections.emptySet());
+                            
+                            if(!allSets.isEmpty()) {
+                                //apply include/exclude config
+                                final Collection<CentreRegistrySetDefinition> includedSets
+                                        = new HashSet<>(allSets);
+                                if(!includeSetTypes.contains("*")) {
+                                    //reduce to entries with type matching entry from include types
+                                    includedSets.removeIf(
+                                            Predicates.not(s -> includeSetTypes.contains(s.getSetType())));
+                                }                            
+                                if(!excludeSetTypes.isEmpty()) {
+                                    includedSets.removeIf(s -> excludeSetTypes.contains(s.getSetType()));
+                                }                            
+
+                                logger.debug("Sets for {}; before include/exclude filter: {}; after filter: {}", provUrl, allSets, includedSets);
+
+                                if(!includedSets.isEmpty()) {
+                                    final String[] sets = includedSets.stream()
+                                            .map(CentreRegistrySetDefinition::getSetSpec)
+                                            .toArray(String[]::new);
+                                    
+                                    provider.setSets(sets);
+                                }
+                            }
+
                             providers.add(provider);
                         }
                     }
@@ -649,6 +708,14 @@ public class Configuration {
      */
     public boolean isIncremental() {
         String s = settings.get(KnownOptions.INCREMENTAL.toString());
+        return (s == null) ? false : Boolean.valueOf(s);
+    }
+    
+    /**
+     * Get dry run flag.
+     */
+    public boolean isDryRun() {
+        String s = settings.get(KnownOptions.DRYRUN.toString());
         return (s == null) ? false : Boolean.valueOf(s);
     }
     

@@ -1,3 +1,10 @@
 target/
 .idea/
 *.iml
+/target-old/
+run/
+
+/nbproject/
+nb-configuration.xml
+nbactions.xml
+
