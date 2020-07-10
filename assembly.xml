@@ -12,11 +12,8 @@
 
         <!-- Do the XML files in the resources directory. Please note that Maven
          will also include them in them in the jar. -->
-        <include>config*.xml</include>
-        <include>oai2.xsl</include>
+	      <include>config*.xml</include>
         <include>addOAISetName.xsl</include>
-        <include>olac2cmdi.xsl</include>
-        <include>sil_to_iso6393.xml</include>
 
         <!-- Do include the log4j properties file in the resources directory
          while excluding it from the jar. Please refer to the configuration of
@@ -28,8 +25,10 @@
       <directory>src/main/scripts</directory>
       <outputDirectory></outputDirectory>
       <includes>
-    	  <include>run-harvester.sh</include>
-        <include>expand-map.sh</include>
+      	<include>run-harvester.sh</include>
+        <include>oaiharvest.sh</include>
+        <include>oaiharvest-env.sh</include>
+      	<include>expand-map.sh</include>
         <include>expandMap.xsl</include>
       </includes>
       <fileMode>0755</fileMode>

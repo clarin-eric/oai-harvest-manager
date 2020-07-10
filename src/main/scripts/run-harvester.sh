@@ -30,3 +30,5 @@ fi
 PROPS="${PROPS} -Dlogdir=${LOG_DIR} -Dhttp.user=Mozilla/5.0"
 
 nice ${JAVA} ${PROPS} -jar ${JAR} $*
+
+rm -rf /opt/oai-harvest-manager/overview.xml

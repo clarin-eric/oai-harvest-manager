@@ -113,7 +113,7 @@ public class Configuration {
             return val;
         }
     }
-    
+
     /**
      * Map file
      */

@@ -64,7 +64,7 @@
       <action type="split"/>
       <action type="save" dir="rec" suffix=".xml"/>
       <action type="strip"/>
-      <action type="save" dir="cmdi-1_1" suffix=".xml"/>
+      <!--<action type="save" dir="cmdi-1_1" suffix=".xml"/>-->
       <action type="transform" file="https://infra.clarin.eu/CMDI/1.x/upgrade/cmd-record-1_1-to-1_2.xsl" cache="cache"/>
       <action type="save" dir="cmdi-1_2" suffix=".xml"/>
     </format>
@@ -74,7 +74,11 @@
       <action type="split"/>
       <action type="save" dir="rec" suffix=".xml"/>
       <action type="transform" file="https://raw.githubusercontent.com/clarin-eric/metadata-conversion/olac-cmdi/olac-cmdi/olac2cmdi.xsl"/>
+<<<<<<< ours:src/main/resources/config-clarin-clarin.xml
       <action type="save" dir="cmdi-1_1" suffix=".xml"/>
+=======
+      <!--<action type="save" dir="cmdi-1_1" suffix=".xml"/>-->
+>>>>>>> theirs:src/main/resources/config-clarin.xml
       <action type="transform" file="https://infra.clarin.eu/CMDI/1.x/upgrade/cmd-record-1_1-to-1_2.xsl" cache="cache"/>
       <action type="save" dir="cmdi-1_2" suffix=".xml"/>
     </format>
@@ -84,7 +88,11 @@
       <action type="split"/>
       <action type="save" dir="rec" suffix=".xml"/>
       <action type="transform" file="https://raw.githubusercontent.com/clarin-eric/metadata-conversion/olac-cmdi/olac-cmdi/olac2cmdi.xsl"/>
+<<<<<<< ours:src/main/resources/config-clarin-clarin.xml
       <action type="save" dir="cmdi-1_1" suffix=".xml"/>
+=======
+      <!--<action type="save" dir="cmdi-1_1" suffix=".xml"/>-->
+>>>>>>> theirs:src/main/resources/config-clarin.xml
       <action type="transform" file="https://infra.clarin.eu/CMDI/1.x/upgrade/cmd-record-1_1-to-1_2.xsl" cache="cache"/>
       <action type="save" dir="cmdi-1_2" suffix=".xml"/>
     </format>
@@ -110,7 +118,11 @@
       -->
       <!-- Leipzig doesn't like too much time between calls within one session, GetRecord calls don't care -->
       <config url="https://clarinoai.informatik.uni-leipzig.de/oaiprovider/oai" scenario="ListIdentifiers"/>
+<<<<<<< ours:src/main/resources/config-clarin-clarin.xml
       <!-- BAS runs sometimes into memory problems when its big CMD records get processed in batch -->
+=======
+      <!-- BAS runs sometimes into memory when its big CMD records get processed in batch -->
+>>>>>>> theirs:src/main/resources/config-clarin.xml
       <config url="http://www.phonetik.uni-muenchen.de/cgi-bin/BASRepository/oaipmh/oai.pl" scenario="ListIdentifiers"/>
     </import>
     <!-- Virtual Collection Registry -->
@@ -132,7 +144,11 @@
     <provider url="https://repository.ortolang.fr/api/oai"/>
     <provider url="https://dataverse.no/oai">
       <set>trolling</set>
+<<<<<<< ours:src/main/resources/config-clarin-clarin.xml
     </provider>
     <provider url="https://lat1.lis.soas.ac.uk/ds/oaiprovider/oai2"/>
+=======
+    </provider>    
+>>>>>>> theirs:src/main/resources/config-clarin.xml
   </providers>
 </config>
