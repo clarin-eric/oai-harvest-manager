@@ -1,6 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>nl.mpi</groupId>
@@ -16,63 +14,56 @@
   </properties>
 
   <scm>
-    <connection>scm:git:https://github.com/TheLanguageArchive/oai-harvest-manager.git</connection>
-    <developerConnection>scm:git:https://github.com/TheLanguageArchive/oai-harvest-manager.git</developerConnection>
+    <connection>scm:git:https://github.com/clarin-eric/oai-harvest-manager.git</connection>
+    <developerConnection>scm:git:https://github.com/clarin-eric/oai-harvest-manager.git</developerConnection>
   </scm>
-
-  <!-- REPOSITORIES -->
-  <repositories>
-
-    
-
-  </repositories>
 
   <!-- DEPENDENCIES -->
   <dependencies>
 
-  <dependency>
+    <dependency>
       <groupId>org.glassfish.jaxb</groupId>
       <artifactId>codemodel</artifactId>
-      <version>2.2.11</version>
-  </dependency>
-  <dependency>
+      <version>3.0.0-M4</version>
+    </dependency>
+    <dependency>
       <groupId>org.glassfish.jaxb</groupId>
       <artifactId>txw2</artifactId>
-      <version>2.2.11</version>
-  </dependency>
-  <dependency>
+      <version>3.0.0-M4</version>
+    </dependency>
+    <dependency>
       <groupId>com.sun.xsom</groupId>
       <artifactId>xsom</artifactId>
       <version>20140925</version>
-  </dependency>
-  <dependency>
+    </dependency>
+    <dependency>
       <groupId>com.sun.istack</groupId>
-      <version>2.21</version>
+      <version>4.0.0-M3</version>
       <artifactId>istack-commons-runtime</artifactId>
-  </dependency>
-  <dependency>
+    </dependency>
+    <dependency>
       <groupId>com.sun.xml.bind.external</groupId>
       <artifactId>rngom</artifactId>
-      <version>2.2.11</version>
-  </dependency>
+      <version>3.0.0-M4</version>
+    </dependency>
 
 
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-slf4j-impl</artifactId>
-      <version>2.13.1</version>
+      <version>2.13.3</version>
     </dependency>
 
     <dependency>
-	<groupId>net.sf.saxon</groupId>
-	<artifactId>Saxon-HE</artifactId>
-	<version>9.5.1-8</version>
+      <groupId>net.sf.saxon</groupId>
+      <artifactId>Saxon-HE</artifactId>
+      <version>10.1</version>
     </dependency>
 
     <dependency>
-	<groupId>xalan</groupId>
-	<artifactId>xalan</artifactId>
-	<version>2.7.2</version>
+      <groupId>xalan</groupId>
+      <artifactId>xalan</artifactId>
+      <version>2.7.2</version>
     </dependency>
 
     <dependency>
@@ -85,39 +76,57 @@
     <dependency>
       <groupId>joda-time</groupId>
       <artifactId>joda-time</artifactId>
-      <version>2.2</version>
+      <version>2.10.6</version>
     </dependency>
 
     <dependency>
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
-      <version>2.5</version>
+      <version>2.7</version>
     </dependency>
 
     <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-all</artifactId>
-      <version>1.9.5</version>
+      <version>2.0.2-beta</version>
     </dependency>
 
     <dependency>
-        <groupId>org.codehaus.woodstox</groupId>
-        <artifactId>woodstox-core-asl</artifactId>
-        <version>4.2.0</version>
-        <type>jar</type>
+      <groupId>org.codehaus.woodstox</groupId>
+      <artifactId>woodstox-core-asl</artifactId>
+      <version>4.4.1</version>
+      <type>jar</type>
     </dependency>
-    
+
     <dependency>
       <groupId>com.github.tomakehurst</groupId>
       <artifactId>wiremock-jre8</artifactId>
-      <version>2.24.1</version>
+      <version>2.27.1</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
-      <version>28.2-jre</version>
+      <version>29.0-jre</version>
     </dependency>
+    
+    <!-- for java 11 -->
+    <dependency>
+      <groupId>javax.annotation</groupId>
+      <artifactId>javax.annotation-api</artifactId>
+      <version>1.3.2</version>
+    </dependency>
+    <dependency>
+      <groupId>javax.xml.bind</groupId>
+      <artifactId>jaxb-api</artifactId>
+      <version>2.4.0-b180725.0427</version>
+    </dependency>
+    <dependency>
+      <groupId>org.glassfish.jaxb</groupId>
+      <artifactId>jaxb-runtime</artifactId>
+      <version>2.4.0-b180725.0644</version>
+    </dependency>
+    
   </dependencies>
 
   <!-- Build cycle referred plugins -->
@@ -138,23 +147,46 @@
         <plugin>
           <!-- Disable deployment because has not been configured -->
           <artifactId>maven-deploy-plugin</artifactId>
-            <configuration>
-              <skip>true</skip>
-            </configuration>
+          <version>3.0.0-M1</version>
+          <configuration>
+            <skip>true</skip>
+          </configuration>
         </plugin>
       </plugins>
     </pluginManagement>
 
     <plugins>
 
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <version>3.0.0-M3</version>
+        <executions>
+          <execution>
+            <id>enforce-maven</id>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <requireMavenVersion>
+                  <version>3.0.5</version>
+                </requireMavenVersion>
+              </rules>    
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
       <!-- Configure the java compiler version, set it to 1.8 -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.1</version>
+        <version>3.8.1</version>
         <configuration>
-          <source>1.8</source>
-          <target>1.8</target>
+          <release>11</release>
+          <!--<source>1.8</source>
+          <target>1.8</target>-->
         </configuration>
       </plugin>
 
@@ -164,9 +196,9 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
-        <version>2.10.3</version>
+        <version>3.2.0</version>
         <configuration>
-            <sourcepath>src/main/java;target/generated-sources/jaxb</sourcepath>
+          <sourcepath>src/main/java;target/generated-sources/jaxb</sourcepath>
         </configuration>
       </plugin>
 
@@ -183,11 +215,9 @@
               <goal>copy-dependencies</goal>
             </goals>
             <configuration>
-              <outputDirectory>target/lib
-              </outputDirectory>
+              <outputDirectory>target/lib </outputDirectory>
               <overWriteReleases>true</overWriteReleases>
-              <overWriteSnapshots>true
-              </overWriteSnapshots>
+              <overWriteSnapshots>true </overWriteSnapshots>
             </configuration>
           </execution>
         </executions>
@@ -201,7 +231,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
-        <version>2.5</version>
+        <version>3.2.0</version>
         <configuration>
           <classesDirectory>target/classes</classesDirectory>
           <archive>
@@ -231,10 +261,10 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-assembly-plugin</artifactId>
-        <version>2.4</version>
+        <version>3.3.0</version>
         <configuration>
-	      <finalName>${project.artifactId}-${versionNumber}</finalName>
-	      <appendAssemblyId>false</appendAssemblyId>
+          <finalName>${project.artifactId}-${versionNumber}</finalName>
+          <appendAssemblyId>false</appendAssemblyId>
           <descriptors>
             <descriptor>assembly.xml</descriptor>
           </descriptors>
@@ -248,7 +278,7 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>buildnumber-maven-plugin</artifactId>
-        <version>1.2</version>
+        <version>1.4</version>
         <executions>
           <execution>
             <phase>validate</phase>
@@ -257,7 +287,7 @@
             </goals>
             <configuration>
               <revisionOnScmFailure>none</revisionOnScmFailure>
-	          <shortRevisionLength>6</shortRevisionLength>
+              <shortRevisionLength>6</shortRevisionLength>
             </configuration>
           </execution>
         </executions>
@@ -275,8 +305,8 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>jaxb2-maven-plugin</artifactId>
-       <!-- <version>1.6</version> -->
-        <version>2.4</version>
+        <!-- <version>1.6</version> -->
+        <version>2.5.0</version>
         <executions>
           <execution>
             <id>xjc</id>
@@ -286,9 +316,7 @@
           </execution>
         </executions>
         <configuration>
-          <packageName>
-            nl.mpi.oai.harvester.generated
-          </packageName>
+          <packageName> nl.mpi.oai.harvester.generated </packageName>
         </configuration>
       </plugin>
 
@@ -298,7 +326,7 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>findbugs-maven-plugin</artifactId>
-        <version>3.0.0</version>
+        <version>3.0.5</version>
         <configuration>
           <threshold>Normal</threshold>
           <effort>Min</effort>
@@ -317,7 +345,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
-        <version>2.10.3</version>
+        <version>3.2.0</version>
       </plugin>
     </plugins>
   </reporting>
