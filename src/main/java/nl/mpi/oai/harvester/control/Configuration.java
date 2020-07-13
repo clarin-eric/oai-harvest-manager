@@ -35,7 +35,6 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
@@ -57,7 +56,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 
 /**
@@ -72,6 +70,7 @@ public class Configuration {
     private static final Set<String> DEFAULT_INCLUDE_SETS = ImmutableSet.of("*");
 
     private final XPath xpath;
+    private RegistryReader registryReader = null;
 
     /**
      * Configuration options stored as key-value pairs.
@@ -306,7 +305,7 @@ public class Configuration {
                                 }
                             }
                             act = new TransformAction(base, xslFile, cache, jobs);
-                        } catch (IOException | TransformerConfigurationException ex) {
+                        } catch (Exception ex) {
                             logger.error(ex);
                         }
                     }
@@ -332,6 +331,7 @@ public class Configuration {
      * @param base top node of the providers section
      */
     private void parseProviders(Node base) throws
+            IOException,
             XPathExpressionException,
             MalformedURLException,
             ParserConfigurationException {
@@ -412,7 +412,8 @@ public class Configuration {
                         }
                     }
                     // get the list of endpoints from the centre registry
-                    final RegistryReader rr = new RegistryReader();
+                    registryReader = new RegistryReader(new java.net.URL(rUrl));
+                    List<String> provUrls = registryReader.getEndpoints();
 
                     final Map<String, Collection<CentreRegistrySetDefinition>> endPointOaiPmhSetMap 
                             = rr.getEndPointOaiPmhSetMap(new java.net.URL(rUrl));
@@ -648,7 +649,7 @@ public class Configuration {
             PrintWriter map = null;
             try {
                 map = new PrintWriter(new FileWriter(mapFile,true));
-                map.println("endpointUrl,directoryName");
+                map.println("endpointUrl,directoryName,centreName,nationalProject");
             } catch (IOException e) {
                 logger.error("couldn't create an initial/default " + mapFile + " file: ", e);
             } finally {
@@ -725,6 +726,21 @@ public class Configuration {
         String s = settings.get(KnownOptions.SCENARIO.toString());
         return (s == null) ? "ListIndentifiers" : s;
     }
+    
+    /**
+     * Get Registry Reader
+     */
+    public RegistryReader getRegistryReader() {
+        return this.registryReader;
+    }
+    
+    /**
+     * Has a Registry Reader?
+     */
+    public boolean hasRegistryReader() {
+        return (this.registryReader!=null);
+    }
+    
 
     /**
      * Log parsed contents of the configuration.

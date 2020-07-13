@@ -83,10 +83,6 @@ class OaiHarvest:
         self.run_harvest()
         self.print_to_stdout("\tDone\n")
 
-        self.print_to_stdout("\tExpand map.\n")
-        self.expand_map()
-        self.print_to_stdout("\tDone\n")
-
         self.print_to_stdout("\tReset output.\n")
         self.do_reset()
         self.print_to_stdout("\tDone\n")
@@ -170,23 +166,6 @@ class OaiHarvest:
             self.print_to_stdout("\n")
 
         return self.harvester(command)
-
-    def expand_map(self):
-        """
-        Expand the map
-        """
-        command = [
-            os.path.join(self.workdir, "map.csv")
-        ]
-
-        if self.verbose:
-            self.print_to_stdout("\t\tExpander command:\n")
-            self.print_to_stdout("\t\t\t%s " % self.mapexpander)
-            for i in command:
-                self.print_to_stdout("%s " % i)
-            self.print_to_stdout("\n")
-
-        return self.mapexpander(command)
 
     def do_reset(self):
         """
@@ -358,19 +337,23 @@ class App(cli.Application):
 
     @cli.switch(["-c", "--config"], str, mandatory=False, help="Config directory (can be online). (optional)")
     def set_config(self, config):
-        self.confdir = config
+        if config:
+            self.confdir = config
 
     @cli.switch(["-o", "--output"], str, mandatory=True, help="Output folder (collection) this harvest is part of.")
     def set_output(self, output):
-        self.output = output
+        if output:
+            self.output = output
 
     @cli.switch(["-n", "--name"], str, mandatory=True, help="Name for this harvest run.")
     def set_name(self, name):
-        self.name = name
+        if name:
+            self.name = name
 
     @cli.switch(["-p", "--postgres"], str, mandatory=False, help="Postgres database (<user>:<pass>@<host>:<port>/<db>) to connext to. (optional)")
     def set_postgres(self, postgres):
-        self.postgres = postgres
+        if postgres:
+            self.postgres = postgres
 
     def main(self):
         oai = OaiHarvest(conf=self.confdir, output=self.output, name=self.name, postgres=self.postgres, verbose=self.verbose)

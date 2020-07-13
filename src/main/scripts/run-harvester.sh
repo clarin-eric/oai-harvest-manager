@@ -27,8 +27,8 @@ else
   LOG_DIR=$thisDir
 fi
 
+CLASSPATH="`find $thisDir -type f -name '*.jar' -exec echo -n "{}:" \;`$CLASSPATH"
+
 PROPS="${PROPS} -Dlogdir=${LOG_DIR} -Dhttp.user=Mozilla/5.0"
 
-nice ${JAVA} ${PROPS} -jar ${JAR} $*
-
-rm -rf /opt/oai-harvest-manager/overview.xml
+nice ${JAVA} -cp ${CLASSPATH}:${JAR}${PROPS} nl.mpi.oai.harvester.control.Main $*

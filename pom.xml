@@ -18,6 +18,26 @@
     <developerConnection>scm:git:https://github.com/clarin-eric/oai-harvest-manager.git</developerConnection>
   </scm>
 
+  <!-- REPOSITORIES -->
+  <repositories>
+    <repository>
+      <id>CLARIN</id>
+      <name>CLARIN Repository</name>
+      <url>https://nexus.clarin.eu/content/repositories/Clarin</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+    <repository>
+      <id>CLARIN-Snapshot</id>
+      <name>CLARIN Snapshot Repository</name>
+      <url>https://nexus.clarin.eu/content/repositories/clarin-snapshot</url>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
+
   <!-- DEPENDENCIES -->
   <dependencies>
 
@@ -57,13 +77,20 @@
     <dependency>
       <groupId>net.sf.saxon</groupId>
       <artifactId>Saxon-HE</artifactId>
-      <version>10.1</version>
+      <version>9.5.1-8</version>
     </dependency>
 
     <dependency>
-      <groupId>xalan</groupId>
-      <artifactId>xalan</artifactId>
-      <version>2.7.2</version>
+      <groupId>nl.mpi.tla</groupId>
+      <artifactId>SaxonUtils</artifactId>
+      <version>1.0-SNAPSHOT</version>
+      <type>jar</type>
+    </dependency>
+
+    <dependency>
+	<groupId>xalan</groupId>
+	<artifactId>xalan</artifactId>
+	<version>2.7.2</version>
     </dependency>
 
     <dependency>
