@@ -66,7 +66,9 @@ public class RegistryReaderTest {
     
     @Before
     public void setUp() throws Exception {
-        instance = new RegistryReader();
+        registryURl = "http://localhost:" + wireMockRule.getOptions().portNumber() + REGISTRY_PATH;
+
+        instance = new RegistryReader(new URL(registryURl));
         db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 
         //set up mock centre registry REST XML server
@@ -79,8 +81,7 @@ public class RegistryReaderTest {
                 .willReturn(aResponse()
                         .withBody(getResourceAsString(REGISTRY_OVERVIEW_RESOURCE)
                                 .replaceAll("<Center_id_link>\\S+</Center_id_link>", "<Center_id_link>" + centreInfoUrl + "</Center_id_link>"))));
-        registryURl = "http://localhost:" + wireMockRule.getOptions().portNumber() + REGISTRY_PATH;
-    }
+          }
 
     /**
      * Test of getProviderInfoUrls method, of class RegistryReader.

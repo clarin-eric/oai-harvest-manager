@@ -413,10 +413,8 @@ public class Configuration {
                     }
                     // get the list of endpoints from the centre registry
                     registryReader = new RegistryReader(new java.net.URL(rUrl));
-                    List<String> provUrls = registryReader.getEndpoints();
-
                     final Map<String, Collection<CentreRegistrySetDefinition>> endPointOaiPmhSetMap 
-                            = rr.getEndPointOaiPmhSetMap(new java.net.URL(rUrl));
+                            = registryReader.getEndPointOaiPmhSetMap();
 
                     // use the list to create the list of endpoints to harvest from
                     for (String provUrl : endPointOaiPmhSetMap.keySet()) {
