@@ -479,7 +479,9 @@ public class Configuration {
                                             .map(CentreRegistrySetDefinition::getSetSpec)
                                             .toArray(String[]::new);
                                     
-                                    provider.setSets(sets);
+                                    if(sets.length > 0) {
+                                        provider.setSets(sets);
+                                    }
                                 }
                             }
 
