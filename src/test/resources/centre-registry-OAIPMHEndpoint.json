@@ -1,0 +1,502 @@
+[
+    {
+        "model": "centre_registry.oaipmhendpoint",
+        "pk": 20,
+        "fields": {
+            "centre": 14,
+            "uri": "http://clarin.dk/oaiprovider/",
+            "note": "",
+            "oai_pmh_sets": []
+        }
+    },
+    {
+        "model": "centre_registry.oaipmhendpoint",
+        "pk": 9,
+        "fields": {
+            "centre": 10,
+            "uri": "http://clarin04.ims.uni-stuttgart.de/oaiprovider/oai",
+            "note": "",
+            "oai_pmh_sets": [3]
+        }
+    },
+    {
+        "model": "centre_registry.oaipmhendpoint",
+        "pk": 31,
+        "fields": {
+            "centre": 29,
+            "uri": "http://clarino.uib.no/oai",
+            "note": "",
+            "oai_pmh_sets": []
+        }
+    },
+    {
+        "model": "centre_registry.oaipmhendpoint",
+        "pk": 38,
+        "fields": {
+            "centre": 40,
+            "uri": "http://clst.science.ru.nl/oai/provider",
+            "note": "",
+            "oai_pmh_sets": []
+        }
+    },
+    {
+        "model": "centre_registry.oaipmhendpoint",
+        "pk": 30,
+        "fields": {
+            "centre": 33,
+            "uri": "http://cocoon.huma-num.fr/crdo_servlet/oai-pmh",
+            "note": "",
+            "oai_pmh_sets": []
+        }
+    },
+    {
+        "model": "centre_registry.oaipmhendpoint",
+        "pk": 8,
+        "fields": {
+            "centre": 9,
+            "uri": "http://corpora.uni-hamburg.de:8080/oai/provider",
+            "note": "",
+            "oai_pmh_sets": [3]
+        }
+    },
+    {
+        "model": "centre_registry.oaipmhendpoint",
+        "pk": 32,
+        "fields": {
+            "centre": 34,
+            "uri": "http://dspace-clarin-it.ilc.cnr.it/repository/oai/request",
+            "note": "",
+            "oai_pmh_sets": [2]
+        }
+    },
+    {
+        "model": "centre_registry.oaipmhendpoint",
+        "pk": 6,
+        "fields": {
+            "centre": 13,
+            "uri": "http://fedora.clarin-d.uni-saarland.de/oaiprovider/",
+            "note": "",
+            "oai_pmh_sets": []
+        }
+    },
+    {
+        "model": "centre_registry.oaipmhendpoint",
+        "pk": 11,
+        "fields": {
+            "centre": 3,
+            "uri": "http://lindat.mff.cuni.cz/repository/oai/request",
+            "note": "",
+            "oai_pmh_sets": [8]
+        }
+    },
+    {
+        "model": "centre_registry.oaipmhendpoint",
+        "pk": 17,
+        "fields": {
+            "centre": 17,
+            "uri": "http://metalb.csc.fi/cgi-bin/que",
+            "note": "",
+            "oai_pmh_sets": []
+        }
+    },
+    {
+        "model": "centre_registry.oaipmhendpoint",
+        "pk": 23,
+        "fields": {
+            "centre": 20,
+            "uri": "http://oai.clarin-beta.dans.knaw.nl/OAIHandler",
+            "note": "",
+            "oai_pmh_sets": []
+        }
+    },
+    {
+        "model": "centre_registry.oaipmhendpoint",
+        "pk": 18,
+        "fields": {
+            "centre": 18,
+            "uri": "http://oai.talkbank.org/oai/provider",
+            "note": "",
+            "oai_pmh_sets": []
+        }
+    },
+    {
+        "model": "centre_registry.oaipmhendpoint",
+        "pk": 10,
+        "fields": {
+            "centre": 21,
+            "uri": "http://oaipmh.huygens.knaw.nl/oai",
+            "note": "",
+            "oai_pmh_sets": []
+        }
+    },
+    {
+        "model": "centre_registry.oaipmhendpoint",
+        "pk": 25,
+        "fields": {
+            "centre": 4,
+            "uri": "http://openscience.uni-leipzig.de/index.php/mr2/oai",
+            "note": "",
+            "oai_pmh_sets": []
+        }
+    },
+    {
+        "model": "centre_registry.oaipmhendpoint",
+        "pk": 45,
+        "fields": {
+            "centre": 44,
+            "uri": "http://phonotheque.mmsh.huma-num.fr/oai/provider",
+            "note": "",
+            "oai_pmh_sets": []
+        }
+    },
+    {
+        "model": "centre_registry.oaipmhendpoint",
+        "pk": 35,
+        "fields": {
+            "centre": 38,
+            "uri": "http://polmine.sowi.uni-due.de:8080/oai/provider",
+            "note": "",
+            "oai_pmh_sets": []
+        }
+    },
+    {
+        "model": "centre_registry.oaipmhendpoint",
+        "pk": 4,
+        "fields": {
+            "centre": 11,
+            "uri": "http://repos.ids-mannheim.de/oaiprovider/",
+            "note": "",
+            "oai_pmh_sets": [4]
+        }
+    },
+    {
+        "model": "centre_registry.oaipmhendpoint",
+        "pk": 43,
+        "fields": {
+            "centre": 14,
+            "uri": "http://repository.clarin.dk/repository/oai/request",
+            "note": "",
+            "oai_pmh_sets": []
+        }
+    },
+    {
+        "model": "centre_registry.oaipmhendpoint",
+        "pk": 12,
+        "fields": {
+            "centre": 22,
+            "uri": "http://repository.clarin.inl.nl/oai/provider",
+            "note": "",
+            "oai_pmh_sets": []
+        }
+    },
+    {
+        "model": "centre_registry.oaipmhendpoint",
+        "pk": 26,
+        "fields": {
+            "centre": 28,
+            "uri": "http://sldr.org/oai-pmh.php",
+            "note": "",
+            "oai_pmh_sets": []
+        }
+    },
+    {
+        "model": "centre_registry.oaipmhendpoint",
+        "pk": 39,
+        "fields": {
+            "centre": 43,
+            "uri": "http://tekstlab.uio.no/oai",
+            "note": "",
+            "oai_pmh_sets": []
+        }
+    },
+    {
+        "model": "centre_registry.oaipmhendpoint",
+        "pk": 54,
+        "fields": {
+            "centre": 71,
+            "uri": "http://textgridlab.org/1.0/tgoaipmh/oai",
+            "note": "",
+            "oai_pmh_sets": []
+        }
+    },
+    {
+        "model": "centre_registry.oaipmhendpoint",
+        "pk": 47,
+        "fields": {
+            "centre": 60,
+            "uri": "http://worldviews.gei.de/oai",
+            "note": "",
+            "oai_pmh_sets": []
+        }
+    },
+    {
+        "model": "centre_registry.oaipmhendpoint",
+        "pk": 24,
+        "fields": {
+            "centre": 16,
+            "uri": "http://ws02.iula.upf.edu/corpus_data/oai-iula/oai.pl",
+            "note": "",
+            "oai_pmh_sets": []
+        }
+    },
+    {
+        "model": "centre_registry.oaipmhendpoint",
+        "pk": 27,
+        "fields": {
+            "centre": 30,
+            "uri": "http://www.clarin.si/repository/oai/request",
+            "note": "",
+            "oai_pmh_sets": [6]
+        }
+    },
+    {
+        "model": "centre_registry.oaipmhendpoint",
+        "pk": 13,
+        "fields": {
+            "centre": 23,
+            "uri": "http://www.meertens.knaw.nl/oai/oai_server.php",
+            "note": "",
+            "oai_pmh_sets": []
+        }
+    },
+    {
+        "model": "centre_registry.oaipmhendpoint",
+        "pk": 28,
+        "fields": {
+            "centre": 31,
+            "uri": "http://www.nb.no/clarino/oai",
+            "note": "",
+            "oai_pmh_sets": []
+        }
+    },
+    {
+        "model": "centre_registry.oaipmhendpoint",
+        "pk": 3,
+        "fields": {
+            "centre": 5,
+            "uri": "http://www.phonetik.uni-muenchen.de/cgi-bin/BASRepository/oaipmh/oai.pl",
+            "note": "",
+            "oai_pmh_sets": [5]
+        }
+    },
+    {
+        "model": "centre_registry.oaipmhendpoint",
+        "pk": 41,
+        "fields": {
+            "centre": 47,
+            "uri": "https://api.ka3.uni-koeln.de/oai/lac",
+            "note": "",
+            "oai_pmh_sets": []
+        }
+    },
+    {
+        "model": "centre_registry.oaipmhendpoint",
+        "pk": 5,
+        "fields": {
+            "centre": 24,
+            "uri": "https://archive.mpi.nl/oai2",
+            "note": "",
+            "oai_pmh_sets": []
+        }
+    },
+    {
+        "model": "centre_registry.oaipmhendpoint",
+        "pk": 52,
+        "fields": {
+            "centre": 67,
+            "uri": "https://clarin-belarus.corpus.by/provider",
+            "note": "",
+            "oai_pmh_sets": []
+        }
+    },
+    {
+        "model": "centre_registry.oaipmhendpoint",
+        "pk": 16,
+        "fields": {
+            "centre": 25,
+            "uri": "https://clarin-pl.eu/oai/request",
+            "note": "",
+            "oai_pmh_sets": []
+        }
+    },
+    {
+        "model": "centre_registry.oaipmhendpoint",
+        "pk": 7,
+        "fields": {
+            "centre": 6,
+            "uri": "https://clarin.bbaw.de:8088/oaiprovider",
+            "note": "",
+            "oai_pmh_sets": [4]
+        }
+    },
+    {
+        "model": "centre_registry.oaipmhendpoint",
+        "pk": 42,
+        "fields": {
+            "centre": 49,
+            "uri": "https://clarin.eurac.edu/repository/oai/request",
+            "note": "",
+            "oai_pmh_sets": []
+        }
+    },
+    {
+        "model": "centre_registry.oaipmhendpoint",
+        "pk": 33,
+        "fields": {
+            "centre": 36,
+            "uri": "https://clarin.vdu.lt/oai/request",
+            "note": "",
+            "oai_pmh_sets": []
+        }
+    },
+    {
+        "model": "centre_registry.oaipmhendpoint",
+        "pk": 2,
+        "fields": {
+            "centre": 4,
+            "uri": "https://clarinoai.informatik.uni-leipzig.de/oaiprovider/oai",
+            "note": "",
+            "oai_pmh_sets": [7]
+        }
+    },
+    {
+        "model": "centre_registry.oaipmhendpoint",
+        "pk": 51,
+        "fields": {
+            "centre": 42,
+            "uri": "https://corpora.humlab.lu.se/ds/oaiprovider/oai2",
+            "note": "",
+            "oai_pmh_sets": []
+        }
+    },
+    {
+        "model": "centre_registry.oaipmhendpoint",
+        "pk": 49,
+        "fields": {
+            "centre": 65,
+            "uri": "https://gams.uni-graz.at/oaiprovider/",
+            "note": "",
+            "oai_pmh_sets": []
+        }
+    },
+    {
+        "model": "centre_registry.oaipmhendpoint",
+        "pk": 14,
+        "fields": {
+            "centre": 15,
+            "uri": "https://metashare.ut.ee/oai_pmh/",
+            "note": "",
+            "oai_pmh_sets": [1]
+        }
+    },
+    {
+        "model": "centre_registry.oaipmhendpoint",
+        "pk": 36,
+        "fields": {
+            "centre": 35,
+            "uri": "https://oai.cedifor.de/",
+            "note": "",
+            "oai_pmh_sets": []
+        }
+    },
+    {
+        "model": "centre_registry.oaipmhendpoint",
+        "pk": 19,
+        "fields": {
+            "centre": 26,
+            "uri": "https://ota.bodleian.ox.ac.uk/repository/oai/request",
+            "note": "",
+            "oai_pmh_sets": []
+        }
+    },
+    {
+        "model": "centre_registry.oaipmhendpoint",
+        "pk": 44,
+        "fields": {
+            "centre": 50,
+            "uri": "https://portulanclarin.net/repository/oaipmh/",
+            "note": "",
+            "oai_pmh_sets": []
+        }
+    },
+    {
+        "model": "centre_registry.oaipmhendpoint",
+        "pk": 29,
+        "fields": {
+            "centre": 29,
+            "uri": "https://repo.clarino.uib.no/oai/request",
+            "note": "",
+            "oai_pmh_sets": []
+        }
+    },
+    {
+        "model": "centre_registry.oaipmhendpoint",
+        "pk": 46,
+        "fields": {
+            "centre": 58,
+            "uri": "https://repo.sadilar.org/oai/request",
+            "note": "",
+            "oai_pmh_sets": []
+        }
+    },
+    {
+        "model": "centre_registry.oaipmhendpoint",
+        "pk": 34,
+        "fields": {
+            "centre": 37,
+            "uri": "https://repo.spraakbanken.gu.se/oai/request",
+            "note": "",
+            "oai_pmh_sets": []
+        }
+    },
+    {
+        "model": "centre_registry.oaipmhendpoint",
+        "pk": 50,
+        "fields": {
+            "centre": 64,
+            "uri": "https://repository.clarin.is/repository/oai/request",
+            "note": "",
+            "oai_pmh_sets": []
+        }
+    },
+    {
+        "model": "centre_registry.oaipmhendpoint",
+        "pk": 53,
+        "fields": {
+            "centre": 68,
+            "uri": "https://repository.clarin.lv/repository/oai/request",
+            "note": "",
+            "oai_pmh_sets": []
+        }
+    },
+    {
+        "model": "centre_registry.oaipmhendpoint",
+        "pk": 48,
+        "fields": {
+            "centre": 62,
+            "uri": "https://repository.de.dariah.eu/1.0/oaipmh/oai",
+            "note": "",
+            "oai_pmh_sets": []
+        }
+    },
+    {
+        "model": "centre_registry.oaipmhendpoint",
+        "pk": 21,
+        "fields": {
+            "centre": 1,
+            "uri": "https://talar.sfb833.uni-tuebingen.de/erdora/rest/oai",
+            "note": "",
+            "oai_pmh_sets": [4]
+        }
+    },
+    {
+        "model": "centre_registry.oaipmhendpoint",
+        "pk": 37,
+        "fields": {
+            "centre": 23,
+            "uri": "https://www.meertens.knaw.nl/flat/oai2",
+            "note": "",
+            "oai_pmh_sets": []
+        }
+    }
+]

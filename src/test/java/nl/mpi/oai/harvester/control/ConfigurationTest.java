@@ -111,7 +111,7 @@ public class ConfigurationTest {
 
         final List<Provider> providers = configuration.getProviders();
         assertNotNull(providers);
-        assertEquals(2, providers.size());
+        assertEquals(50, providers.size());
 
         //check specific provider
         {
