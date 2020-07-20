@@ -196,7 +196,7 @@ public class Provider {
         this.deletionMode = deletionMode;
     }
 
-	/**
+    /**
      * Set the name of this provider
      *
      * @param name name of provider
@@ -223,6 +223,10 @@ public class Provider {
 	return oaiUrl;
     }
 
+    public boolean hasSets() {
+        return (sets!=null && 0<=sets.length);
+    }
+    
     public String[] getSets() {
         return sets;
     }

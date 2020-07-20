@@ -126,7 +126,7 @@ public class ConfigurationTest {
 
         //second provider
         {
-            final Optional<Provider> prov = providers.stream().filter(p -> p.getOaiUrl().equals("http://www.phonetik.uni-muenchen.de/cgi-bin/BASRepository/oaipmh/oai2.pl")).findAny();
+            final Optional<Provider> prov = providers.stream().filter(p -> p.getOaiUrl().equals("http://www.nb.no/clarino/oai")).findAny();
             assertTrue(prov.isPresent());
 
             //should have no sets

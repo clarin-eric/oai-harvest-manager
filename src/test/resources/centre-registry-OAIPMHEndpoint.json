@@ -276,7 +276,7 @@
             "centre": 5,
             "uri": "http://www.phonetik.uni-muenchen.de/cgi-bin/BASRepository/oaipmh/oai.pl",
             "note": "",
-            "oai_pmh_sets": [5]
+            "oai_pmh_sets": [10,11]
         }
     },
     {

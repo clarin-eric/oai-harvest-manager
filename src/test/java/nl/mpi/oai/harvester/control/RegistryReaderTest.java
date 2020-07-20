@@ -116,7 +116,7 @@ public class RegistryReaderTest {
         final Map<String, Collection<CentreRegistrySetDefinition>> map = registry.getEndPointOaiPmhSetMap();
         assertEquals(50, map.size());
         assertTrue(map.containsKey(endpointUrl1));
-        assertEquals(1, map.get(endpointUrl1).size());
+        assertEquals(2, map.get(endpointUrl1).size());
         assertTrue(map.containsKey(endpointUrl2));
         assertEquals(0, map.get(endpointUrl2).size());
     }

@@ -477,8 +477,9 @@ public class Configuration {
                                     final String[] sets = includedSets.stream()
                                             .map(CentreRegistrySetDefinition::getSetSpec)
                                             .toArray(String[]::new);
-                                    
-                                    provider.setSets(sets);
+                                    if(sets.length > 0) {
+                                        provider.setSets(sets);
+                                    }
                                 }
                             }
 
