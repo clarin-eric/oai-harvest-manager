@@ -17,8 +17,13 @@
  */
 package nl.mpi.oai.harvester.control;
 
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
+import static com.jayway.jsonpath.Criteria.where;
+import com.jayway.jsonpath.DocumentContext;
+import com.jayway.jsonpath.Filter;
+import static com.jayway.jsonpath.Filter.filter;
+import com.jayway.jsonpath.JsonPath;
+import static com.jayway.jsonpath.JsonPath.parse;
+import com.jayway.jsonpath.Option;
 import nl.mpi.oai.harvester.Provider;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -50,13 +55,18 @@ public class RegistryReader {
     private static final Logger logger = LogManager.getLogger(RegistryReader.class);
     private static URL registryUrl = null;
 
-    private static final Map<String, JSONArray> modelCache = new HashMap<>();
+    private static final Map<String, DocumentContext> modelCache = new HashMap<>();
+    
+    //JsonPath configuration
+    private static com.jayway.jsonpath.Configuration conf = com.jayway.jsonpath.Configuration.defaultConfiguration();
 
     /**
      * Create a new registry reader object.
      */
     public RegistryReader(URL url) {
         this.registryUrl = url;
+        
+        conf.addOptions(Option.ALWAYS_RETURN_LIST,Option.SUPPRESS_EXCEPTIONS);
     }
 
     private HttpURLConnection getConnection(URL url, String contentType) throws IOException {
@@ -103,29 +113,18 @@ public class RegistryReader {
         return sb.toString();
     }
 
-    private JSONArray getModelAsJSONArray(String model) throws IOException {
-        JSONArray res = null;
+    private DocumentContext getModelAsJSONArray(String model) throws IOException {
+        DocumentContext res = null;
         if (modelCache.containsKey(model)) {
             res = modelCache.get(model);
         } else {
             URL regUrl = new URL(registryUrl.toString() + (registryUrl.toString().endsWith("/") ? "" : "/") + model);
             HttpURLConnection connection = getConnection(regUrl, "application/json");
             String jsonString = getJSONString(connection.getInputStream());
-            res = JSONArray.fromObject(jsonString);
+            res = JsonPath.using(conf).parse(jsonString);
             modelCache.put(model,res);
         }
         return res;
-    }
-
-    private JSONObject getJSONObject(String model, int key) throws IOException {
-        JSONArray jsonArr = getModelAsJSONArray(model);
-        for (int i = 0; i < jsonArr.size(); i++) {
-            JSONObject json = jsonArr.getJSONObject(i);
-            if (json.get("pk").equals(key)) {
-                return json;
-            }
-        }
-        return null;
     }
 
     /**
@@ -135,47 +134,32 @@ public class RegistryReader {
      * @return list of all OAI-PMH endpoint URLs
      */
     public List<String> getEndpoints() throws IOException {
-        List<String> endpoints = new ArrayList<>();
-        JSONArray jsonArr = getModelAsJSONArray("OAIPMHEndpoint");
-        for (int i = 0; i < jsonArr.size(); i++) {
-            JSONObject json = jsonArr.getJSONObject(i);
-            JSONObject jsonObj = json.getJSONObject("fields");
-            String res = (String) jsonObj.get("uri");
-            endpoints.add(res);
-        }
+        DocumentContext model = getModelAsJSONArray("OAIPMHEndpoint");
+        List<String> endpoints = model.read("$..uri");
         logger.info("Found " + endpoints.size() + " endpoints");
         return endpoints;
     }
 
-    private JSONObject getEndpoint(String url) throws IOException {
-        JSONArray jsonArr = getModelAsJSONArray("OAIPMHEndpoint");
-        for (int i = 0; i < jsonArr.size(); i++) {
-            JSONObject json = jsonArr.getJSONObject(i);
-            if (json.getJSONObject("fields").get("uri").equals(url)) {
-                return json;
-            }
-        }
-        return null;
+    private List<Object> getEndpoint(String url) throws IOException {
+        DocumentContext model = getModelAsJSONArray("OAIPMHEndpoint");
+        Filter uriFilter = filter(where("uri").is(url));
+        return model.read("$.fields[?]",uriFilter);
     }
 
     void printEndpointMapping(PrintWriter m, Provider provider) throws IOException {
         String endpointUrl = provider.getOaiUrl();
         String directoryName = Util.toFileFormat(provider.getName()).replaceAll("/", "");
+        
+        Filter provFilter = filter(where("uri").is(endpointUrl));
+        String centreKey = (String) ((List<String>)getModelAsJSONArray("OAIPMHEndpoint").read("$.fields[?].centre", provFilter)).get(0);
 
-        JSONObject endPoint = getEndpoint(endpointUrl);
-        JSONObject fields = endPoint.getJSONObject("fields");
-        int centreKey = (int) fields.get("centre");
-
-        String centreName = "";
-        JSONObject centre = getJSONObject("Centre", centreKey);
-        fields = centre.getJSONObject("fields");
-        centreName = (String) fields.get("name");
-        int consortiumKey = (int) fields.get("consortium");
-
-        String nationalProject = "";
-        JSONObject consortium = getJSONObject("Consortium", consortiumKey);
-        fields = consortium.getJSONObject("fields");
-        nationalProject = (String) fields.get("name");
+        Filter centreFilter = filter(where("pk").is(centreKey));
+        String centreName =(String) ((List<String>)getModelAsJSONArray("OAIPMHEndpoint").read("$*[?].fields.name", centreFilter)).get(0);
+        String consortiumKey =(String) ((List<String>)getModelAsJSONArray("OAIPMHEndpoint").read("$*[?].fields.consortium", centreFilter)).get(0);
+        
+        Filter consortiumFilter = filter(where("pk").is(consortiumKey));
+        String nationalProject =(String) ((List<String>)getModelAsJSONArray("Consortium").read("$*[?].fields.name", consortiumFilter)).get(0);
+   
         m.printf("%s,%s,%s,%s", endpointUrl, directoryName, centreName, nationalProject);
         m.println();
     }
@@ -186,29 +170,20 @@ public class RegistryReader {
             final List<String> provUrls = getEndpoints();
 
             for (String provUrl : provUrls) {
-                JSONObject endPoint = getEndpoint(provUrl);
-                JSONObject fields = endPoint.getJSONObject("fields");
-//                System.out.println("endpoint["+provUrl+"]:>>"+fields.toString()+"<<");
-//                for (Iterator iter = fields.keys();iter.hasNext(); ) {
-//                    String key = (String)iter.next();
-//                    if (fields.getString(key).startsWith("[")) {
-//                        System.out.println("field["+key+"]>>"+fields.getString(key)+"<array<");
-//                        System.out.println("field["+key+"]>>"+JSONArray.fromObject(fields.getString(key))+"<<");
-//                    } else
-//                        System.out.println("field["+key+"]>>"+fields.getString(key)+"<<");
-//                }
-                JSONArray s = JSONArray.fromObject(fields.getString("oai_pmh_sets"));
-                System.out.println("MENZO:endpoint["+provUrl+"]:>>"+fields.toString()+"<<>>"+s.toString()+"<<arr?"+s.isArray());
-                JSONArray sets = fields.getJSONArray("oai_pmh_sets");
                 Set<CentreRegistrySetDefinition> setdef = new HashSet<>();
-                for (int i = 0; i < sets.size(); i++) {
-                    int key = sets.getInt(i);
-                    JSONObject set = getJSONObject("OAIPMHEndpointSet", key);
-                    fields = set.getJSONObject("fields");
-                    String setSpec = fields.getString("set_spec");
-                    String setType = fields.getString("set_type");
-                    setdef.add(new CentreRegistrySetDefinition(setSpec, setType));
+                //JsonPath-> $[?(@.fields.uri=='http://www.phonetik.uni-muenchen.de/cgi-bin/BASRepository/oaipmh/oai.pl')].fields.oai_pmh_sets
+                Filter provFilter = filter(where("@.fields.uri").is(provUrl));                
+                List<net.minidev.json.JSONArray> s = (List<net.minidev.json.JSONArray>)getModelAsJSONArray("OAIPMHEndpoint").read("$.[?].fields.oai_pmh_sets", provFilter);
+                for(net.minidev.json.JSONArray set:s) {
+                    for (Iterator iter = set.iterator();iter.hasNext();) {
+                        Filter setFilter = filter(where("pk").is((Integer)iter.next()));
+                        String setSpec = (String) ((List<String>)getModelAsJSONArray("OAIPMHEndpointSet").read("$[?].fields.set_spec", setFilter)).get(0);
+                        String setType = (String) ((List<String>)getModelAsJSONArray("OAIPMHEndpointSet").read("$[?].fields.set_type", setFilter)).get(0);
+                        System.err.println("MENZO: spec["+setSpec+"] type["+setType+"]");
+                        setdef.add(new CentreRegistrySetDefinition(setSpec, setType));
+                    }
                 }
+                System.err.println("MENZO: prov["+provUrl+"] sets ["+setdef.size()+"]");
                 map.put(provUrl, setdef);
             }
         } catch (IOException e) {
