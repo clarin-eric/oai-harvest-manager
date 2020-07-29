@@ -107,7 +107,7 @@ class Worker implements Runnable {
                 try {
                     m = new PrintWriter(new FileWriter(map,true));
                     if (config.hasRegistryReader()) {
-                        config.getRegistryReader().printEndpointMapping(m, provider);
+                        m.println(config.getRegistryReader().endpointMapping(provider.getOaiUrl(),provider.getName()));
                     } else {
                         m.printf("%s,%s,,", provider.getOaiUrl(),Util.toFileFormat(provider.getName()).replaceAll("/", ""));
                         m.println();

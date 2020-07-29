@@ -146,22 +146,20 @@ public class RegistryReader {
         return model.read("$.fields[?]",uriFilter);
     }
 
-    void printEndpointMapping(PrintWriter m, Provider provider) throws IOException {
-        String endpointUrl = provider.getOaiUrl();
-        String directoryName = Util.toFileFormat(provider.getName()).replaceAll("/", "");
+    String endpointMapping(String endpointUrl,String endpointName) throws IOException {
+        String directoryName = Util.toFileFormat(endpointName).replaceAll("/", "");
         
-        Filter provFilter = filter(where("uri").is(endpointUrl));
-        String centreKey = (String) ((List<String>)getModelAsJSONArray("OAIPMHEndpoint").read("$.fields[?].centre", provFilter)).get(0);
+        Filter provFilter = filter(where("@.fields.uri").is(endpointUrl));
+        Integer centreKey = (Integer) ((List<Integer>)getModelAsJSONArray("OAIPMHEndpoint").read("$.[?].fields.centre", provFilter)).get(0);
 
         Filter centreFilter = filter(where("pk").is(centreKey));
-        String centreName =(String) ((List<String>)getModelAsJSONArray("OAIPMHEndpoint").read("$*[?].fields.name", centreFilter)).get(0);
-        String consortiumKey =(String) ((List<String>)getModelAsJSONArray("OAIPMHEndpoint").read("$*[?].fields.consortium", centreFilter)).get(0);
+        String centreName =(String) ((List<String>)getModelAsJSONArray("Centre").read("$[?].fields.name", centreFilter)).get(0);
+        Integer consortiumKey =(Integer) ((List<Integer>)getModelAsJSONArray("Centre").read("$[?].fields.consortium", centreFilter)).get(0);
         
         Filter consortiumFilter = filter(where("pk").is(consortiumKey));
-        String nationalProject =(String) ((List<String>)getModelAsJSONArray("Consortium").read("$*[?].fields.name", consortiumFilter)).get(0);
+        String nationalProject =(String) ((List<String>)getModelAsJSONArray("Consortium").read("$[?].fields.name", consortiumFilter)).get(0);
    
-        m.printf("%s,%s,%s,%s", endpointUrl, directoryName, centreName, nationalProject);
-        m.println();
+       return String.format("%s,%s,%s,%s", endpointUrl, directoryName, centreName, nationalProject);
     }
 
     public Map<String, Collection<CentreRegistrySetDefinition>> getEndPointOaiPmhSetMap() {
@@ -179,11 +177,9 @@ public class RegistryReader {
                         Filter setFilter = filter(where("pk").is((Integer)iter.next()));
                         String setSpec = (String) ((List<String>)getModelAsJSONArray("OAIPMHEndpointSet").read("$[?].fields.set_spec", setFilter)).get(0);
                         String setType = (String) ((List<String>)getModelAsJSONArray("OAIPMHEndpointSet").read("$[?].fields.set_type", setFilter)).get(0);
-                        System.err.println("MENZO: spec["+setSpec+"] type["+setType+"]");
                         setdef.add(new CentreRegistrySetDefinition(setSpec, setType));
                     }
                 }
-                System.err.println("MENZO: prov["+provUrl+"] sets ["+setdef.size()+"]");
                 map.put(provUrl, setdef);
             }
         } catch (IOException e) {

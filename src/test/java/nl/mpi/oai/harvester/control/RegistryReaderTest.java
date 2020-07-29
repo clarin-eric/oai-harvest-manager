@@ -45,6 +45,7 @@ import org.xml.sax.SAXException;
  *
  * @author Lari Lampen (MPI-PL)
  * @author twan@clarin.eu
+ * @author menzo.windhouwer@di.huc.knaw.nl
  */
 public class RegistryReaderTest {
 
@@ -127,7 +128,13 @@ public class RegistryReaderTest {
 //        final Map<String, Collection<CentreRegistrySetDefinition>> map = registry.getEndPointOaiPmhSetMap();
 //        assertNull(map.get(endpoint));
 //    }
-
+    
+    @Test
+    public void testEndpointMapping() throws Exception {
+        String entry = registry.endpointMapping("http://clarin.dk/oaiprovider/","CLARIN DK OAI");
+        assertEquals(entry,"http://clarin.dk/oaiprovider/,CLARIN_DK_OAI,The CLARIN Centre at the University of Copenhagen,CLARIN-DK");
+    }
+    
     private static String getResourceAsString(String resourceName) throws IOException {
         final String registryOverviewString;
         try (InputStream infoResourceStream = RegistryReaderTest.class.getResourceAsStream(resourceName)) {
