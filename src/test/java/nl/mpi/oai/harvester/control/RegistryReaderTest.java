@@ -122,12 +122,12 @@ public class RegistryReaderTest {
         assertEquals(0, map.get(endpointUrl2).size());
     }
 
-//    @Test
-//    public void testGetOaiPmhSetsNone() throws Exception {
-//        String endpoint = "http://www.clarin.eu";
-//        final Map<String, Collection<CentreRegistrySetDefinition>> map = registry.getEndPointOaiPmhSetMap();
-//        assertNull(map.get(endpoint));
-//    }
+    @Test
+    public void testGetOaiPmhSetsNone() throws Exception {
+        String endpoint = "http://www.clarin.eu";
+        final Map<String, Collection<CentreRegistrySetDefinition>> map = registry.getEndPointOaiPmhSetMap();
+        assertNull(map.get(endpoint));
+    }
     
     @Test
     public void testEndpointMapping() throws Exception {
