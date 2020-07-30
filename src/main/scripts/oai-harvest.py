@@ -15,7 +15,7 @@ class OaiHarvestError(StandardError):
 
 class OaiHarvest:
 
-    def __init__(self, conf=None, oai="/app/oai", base="/app/workdir", output="test", name="test", jvm="-Xmx1G", postgres="oai:oai@localhost:5432/oai", verbose=False):
+    def __init__(self, conf=None, dry=None, oai="/app/oai", base="/app/workdir", output="test", name="test", jvm="-Xmx1G", postgres="oai:oai@localhost:5432/oai", verbose=False):
         self.verbose = verbose
 
         self.oai = oai
@@ -27,6 +27,8 @@ class OaiHarvest:
         self.confdir = conf
 
         self.jvm = jvm
+
+        self.dry = dry
 
         self.pg = False
         if postgres:
@@ -61,6 +63,7 @@ class OaiHarvest:
 
         if self.verbose:
             self.print_to_stdout("Config:\n")
+            self.print_to_stdout("\tdry run: %s\n" % self.dry)
             self.print_to_stdout("\tconf dir: %s\n" % self.confdir)
             self.print_to_stdout("\tconf file: %s\n" % self.config_file)
             self.print_to_stdout("\tlog dir: %s\n" % self.logdir)
@@ -157,6 +160,8 @@ class OaiHarvest:
             "map-file=%s" % os.path.join(self.workdir, "map.csv"),
             conf
         ]
+        if self.dry == True:
+            command.insert(0,"dry-run=true")
 
         if self.verbose:
             self.print_to_stdout("\t\tHarvester command:\n")
@@ -331,6 +336,7 @@ class App(cli.Application):
     VERSION = "0.0.1"
     verbose = cli.Flag(["v", "verbose"], help="Verbose output")
     confdir = None
+    dry = None
     output = None
     name = None
     postgres = None
@@ -339,6 +345,11 @@ class App(cli.Application):
     def set_config(self, config):
         if config:
             self.confdir = config
+
+    @cli.switch(["-d", "--dry"], str, mandatory=False, help="Dry run. (optional)")
+    def set_config(self, config):
+        if config:
+            self.dry = True
 
     @cli.switch(["-o", "--output"], str, mandatory=True, help="Output folder (collection) this harvest is part of.")
     def set_output(self, output):
@@ -356,7 +367,7 @@ class App(cli.Application):
             self.postgres = postgres
 
     def main(self):
-        oai = OaiHarvest(conf=self.confdir, output=self.output, name=self.name, postgres=self.postgres, verbose=self.verbose)
+        oai = OaiHarvest(conf=self.confdir, dry=self.dry, output=self.output, name=self.name, postgres=self.postgres, verbose=self.verbose)
         try:
             oai.run()
         except Exception as e:
