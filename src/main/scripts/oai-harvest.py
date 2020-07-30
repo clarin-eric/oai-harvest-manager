@@ -347,8 +347,8 @@ class App(cli.Application):
             self.confdir = config
 
     @cli.switch(["-d", "--dry"], str, mandatory=False, help="Dry run. (optional)")
-    def set_config(self, config):
-        if config:
+    def set_dry(self, dry):
+        if dry:
             self.dry = True
 
     @cli.switch(["-o", "--output"], str, mandatory=True, help="Output folder (collection) this harvest is part of.")
