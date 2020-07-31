@@ -250,7 +250,7 @@
         "model": "centre_registry.centre",
         "pk": 14,
         "fields": {
-            "name": "The CLARIN Centre at the University of Copenhagen",
+            "name": "The CLARIN, Centre at the \"University of Copenhagen\"",
             "shorthand": "CLARIN-DK-UCPH",
             "organisation_name": "University of Copenhagen",
             "institution": "Faculty of Humanities",

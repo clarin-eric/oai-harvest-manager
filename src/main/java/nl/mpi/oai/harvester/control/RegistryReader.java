@@ -113,7 +113,7 @@ public class RegistryReader {
         return sb.toString();
     }
 
-    private DocumentContext getModelAsJSONArray(String model) throws IOException {
+    private DocumentContext getModel(String model) throws IOException {
         DocumentContext res = null;
         if (modelCache.containsKey(model)) {
             res = modelCache.get(model);
@@ -134,14 +134,14 @@ public class RegistryReader {
      * @return list of all OAI-PMH endpoint URLs
      */
     public List<String> getEndpoints() throws IOException {
-        DocumentContext model = getModelAsJSONArray("OAIPMHEndpoint");
+        DocumentContext model = getModel("OAIPMHEndpoint");
         List<String> endpoints = model.read("$..uri");
         logger.info("Found " + endpoints.size() + " endpoints");
         return endpoints;
     }
 
     private List<Object> getEndpoint(String url) throws IOException {
-        DocumentContext model = getModelAsJSONArray("OAIPMHEndpoint");
+        DocumentContext model = getModel("OAIPMHEndpoint");
         Filter uriFilter = filter(where("uri").is(url));
         return model.read("$.fields[?]",uriFilter);
     }
@@ -150,16 +150,16 @@ public class RegistryReader {
         String directoryName = Util.toFileFormat(endpointName).replaceAll("/", "");
         
         Filter provFilter = filter(where("@.fields.uri").is(endpointUrl));
-        Integer centreKey = (Integer) ((List<Integer>)getModelAsJSONArray("OAIPMHEndpoint").read("$.[?].fields.centre", provFilter)).get(0);
+        Integer centreKey = (Integer) ((List<Integer>)getModel("OAIPMHEndpoint").read("$.[?].fields.centre", provFilter)).get(0);
 
         Filter centreFilter = filter(where("pk").is(centreKey));
-        String centreName =(String) ((List<String>)getModelAsJSONArray("Centre").read("$[?].fields.name", centreFilter)).get(0);
-        Integer consortiumKey =(Integer) ((List<Integer>)getModelAsJSONArray("Centre").read("$[?].fields.consortium", centreFilter)).get(0);
+        String centreName =(String) ((List<String>)getModel("Centre").read("$[?].fields.name", centreFilter)).get(0);
+        Integer consortiumKey =(Integer) ((List<Integer>)getModel("Centre").read("$[?].fields.consortium", centreFilter)).get(0);
         
         Filter consortiumFilter = filter(where("pk").is(consortiumKey));
-        String nationalProject =(String) ((List<String>)getModelAsJSONArray("Consortium").read("$[?].fields.name", consortiumFilter)).get(0);
+        String nationalProject =(String) ((List<String>)getModel("Consortium").read("$[?].fields.name", consortiumFilter)).get(0);
    
-       return String.format("%s,%s,%s,%s", endpointUrl, directoryName, centreName, nationalProject);
+        return String.format("\"%s\",\"%s\",\"%s\",\"%s\"", endpointUrl.replaceAll("\"", "\"\""), directoryName.replaceAll("\"", "\"\""), centreName.replaceAll("\"", "\"\""), nationalProject.replaceAll("\"", "\"\""));
     }
 
     public Map<String, Collection<CentreRegistrySetDefinition>> getEndPointOaiPmhSetMap() {
@@ -171,12 +171,12 @@ public class RegistryReader {
                 Set<CentreRegistrySetDefinition> setdef = new HashSet<>();
                 //JsonPath-> $[?(@.fields.uri=='http://www.phonetik.uni-muenchen.de/cgi-bin/BASRepository/oaipmh/oai.pl')].fields.oai_pmh_sets
                 Filter provFilter = filter(where("@.fields.uri").is(provUrl));                
-                List<net.minidev.json.JSONArray> s = (List<net.minidev.json.JSONArray>)getModelAsJSONArray("OAIPMHEndpoint").read("$.[?].fields.oai_pmh_sets", provFilter);
+                List<net.minidev.json.JSONArray> s = (List<net.minidev.json.JSONArray>)getModel("OAIPMHEndpoint").read("$.[?].fields.oai_pmh_sets", provFilter);
                 for(net.minidev.json.JSONArray set:s) {
                     for (Iterator iter = set.iterator();iter.hasNext();) {
                         Filter setFilter = filter(where("pk").is((Integer)iter.next()));
-                        String setSpec = (String) ((List<String>)getModelAsJSONArray("OAIPMHEndpointSet").read("$[?].fields.set_spec", setFilter)).get(0);
-                        String setType = (String) ((List<String>)getModelAsJSONArray("OAIPMHEndpointSet").read("$[?].fields.set_type", setFilter)).get(0);
+                        String setSpec = (String) ((List<String>)getModel("OAIPMHEndpointSet").read("$[?].fields.set_spec", setFilter)).get(0);
+                        String setType = (String) ((List<String>)getModel("OAIPMHEndpointSet").read("$[?].fields.set_type", setFilter)).get(0);
                         setdef.add(new CentreRegistrySetDefinition(setSpec, setType));
                     }
                 }

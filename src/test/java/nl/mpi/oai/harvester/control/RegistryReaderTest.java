@@ -132,7 +132,7 @@ public class RegistryReaderTest {
     @Test
     public void testEndpointMapping() throws Exception {
         String entry = registry.endpointMapping("http://clarin.dk/oaiprovider/","CLARIN DK OAI");
-        assertEquals(entry,"http://clarin.dk/oaiprovider/,CLARIN_DK_OAI,The CLARIN Centre at the University of Copenhagen,CLARIN-DK");
+        assertEquals(entry,"\"http://clarin.dk/oaiprovider/\",\"CLARIN_DK_OAI\",\"The CLARIN, Centre at the \"\"University of Copenhagen\"\"\",\"CLARIN-DK\"");
     }
     
     private static String getResourceAsString(String resourceName) throws IOException {
