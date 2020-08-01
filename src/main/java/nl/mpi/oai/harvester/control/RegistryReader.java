@@ -150,15 +150,27 @@ public class RegistryReader {
         String directoryName = Util.toFileFormat(endpointName).replaceAll("/", "");
         
         Filter provFilter = filter(where("@.fields.uri").is(endpointUrl));
-        Integer centreKey = (Integer) ((List<Integer>)getModel("OAIPMHEndpoint").read("$.[?].fields.centre", provFilter)).get(0);
+        List<Integer> iList = (List<Integer>)getModel("OAIPMHEndpoint").read("$.[?].fields.centre", provFilter);
+        Integer centreKey = iList.size()>0? iList.get(0):null;
 
-        Filter centreFilter = filter(where("pk").is(centreKey));
-        String centreName =(String) ((List<String>)getModel("Centre").read("$[?].fields.name", centreFilter)).get(0);
-        Integer consortiumKey =(Integer) ((List<Integer>)getModel("Centre").read("$[?].fields.consortium", centreFilter)).get(0);
+        String centreName = "";
+        String nationalProject = "";
+
+        if (centreKey != null) {
+            Filter centreFilter = filter(where("pk").is(centreKey));
+            List<String> sList = (List<String>)getModel("Centre").read("$[?].fields.name", centreFilter);
+            centreName = sList.size()>0? sList.get(0):"";
+
+            iList = (List<Integer>)getModel("Centre").read("$[?].fields.consortium", centreFilter);
+            Integer consortiumKey = iList.size()>0? iList.get(0):null;
         
-        Filter consortiumFilter = filter(where("pk").is(consortiumKey));
-        String nationalProject =(String) ((List<String>)getModel("Consortium").read("$[?].fields.name", consortiumFilter)).get(0);
-   
+            if (consortiumKey != null) {
+                Filter consortiumFilter = filter(where("pk").is(consortiumKey));
+                sList = (List<String>)getModel("Consortium").read("$[?].fields.name", consortiumFilter);
+                nationalProject = sList.size()>0? sList.get(0):"";
+            }
+        }
+        
         return String.format("\"%s\",\"%s\",\"%s\",\"%s\"", endpointUrl.replaceAll("\"", "\"\""), directoryName.replaceAll("\"", "\"\""), centreName.replaceAll("\"", "\"\""), nationalProject.replaceAll("\"", "\"\""));
     }
 
@@ -167,6 +179,7 @@ public class RegistryReader {
         try {
             final List<String> provUrls = getEndpoints();
 
+            List<String> sList = null;
             for (String provUrl : provUrls) {
                 Set<CentreRegistrySetDefinition> setdef = new HashSet<>();
                 //JsonPath-> $[?(@.fields.uri=='http://www.phonetik.uni-muenchen.de/cgi-bin/BASRepository/oaipmh/oai.pl')].fields.oai_pmh_sets
@@ -175,9 +188,12 @@ public class RegistryReader {
                 for(net.minidev.json.JSONArray set:s) {
                     for (Iterator iter = set.iterator();iter.hasNext();) {
                         Filter setFilter = filter(where("pk").is((Integer)iter.next()));
-                        String setSpec = (String) ((List<String>)getModel("OAIPMHEndpointSet").read("$[?].fields.set_spec", setFilter)).get(0);
-                        String setType = (String) ((List<String>)getModel("OAIPMHEndpointSet").read("$[?].fields.set_type", setFilter)).get(0);
-                        setdef.add(new CentreRegistrySetDefinition(setSpec, setType));
+                        sList = (List<String>)getModel("OAIPMHEndpointSet").read("$[?].fields.set_spec", setFilter);
+                        String setSpec = (sList.size()>0 ? sList.get(0) : null);
+                        sList = (List<String>)getModel("OAIPMHEndpointSet").read("$[?].fields.set_type", setFilter);
+                        String setType = (sList.size()>0 ? sList.get(0) : null);
+                        if (setSpec!=null && setType!=null)
+                            setdef.add(new CentreRegistrySetDefinition(setSpec, setType));
                     }
                 }
                 map.put(provUrl, setdef);
