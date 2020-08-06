@@ -48,7 +48,6 @@ class OaiHarvest:
             self.psql = local["psql"]
 
         self.harvester = local[os.path.join(oai, "run-harvester.sh")]
-        self.mapexpander = local[os.path.join(oai, "expand-map.sh")]
         self.viewer = local[os.path.join(oai, "run-viewer.sh")]
         self.workdir = os.path.join(base, "workdir", "%s-%s" % (output, name))
         self.logdir = os.path.join(self.workdir, "log")
