@@ -419,7 +419,7 @@ public class Provider {
             int retryDelay = getRetryDelay(i);
             if (retryDelay > 0) {
                 try {
-                    Thread.sleep(retryDelay);
+                    Thread.sleep(retryDelay*1000);
                 } catch(InterruptedException e) {
                     logger.error(e.getMessage(), e);
                 }
