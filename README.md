@@ -25,7 +25,7 @@ OAI-PMH **endpoint**.
 
 # Building
 
-Building this app requires JDK 8 and Apache Maven. It can be built
+Building this app requires JDK 11 and Apache Maven. It can be built
 simply using the command:
 
 ```mvn clean package assembly:assembly```
