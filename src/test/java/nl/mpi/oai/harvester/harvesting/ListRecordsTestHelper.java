@@ -59,8 +59,8 @@ public class ListRecordsTestHelper extends TestHelper {
     void addTraces() {
 
         // add the traces identifying the records the test should yield
-        addToList("http://metalb.csc.fi/cgi-bin/que", "cmdi0571", "Language Bank of Finland-0000000");
-        addToList("http://metalb.csc.fi/cgi-bin/que", "cmdi0571", "Language Bank of Finland-0000001");
-        addToList("http://metalb.csc.fi/cgi-bin/que", "cmdi2312", "Language Bank of Finland-0000002");
+        addToList("http://metalb.csc.fi/cgi-bin/que", "cmdi0571", "ListRecords-0-0000000");
+        addToList("http://metalb.csc.fi/cgi-bin/que", "cmdi0571", "ListRecords-0-0000001");
+        addToList("http://metalb.csc.fi/cgi-bin/que", "cmdi2312", "ListRecords-0-0000002");
     }
 }
