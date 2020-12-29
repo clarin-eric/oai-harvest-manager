@@ -44,10 +44,15 @@ public class ConfigurationTest {
     private final static Logger logger = LoggerFactory.getLogger(ConfigurationTest.class);
     private static final String BASIC_CONFIG_RESOURCE = "/config/test-config-basic.xml";
 
-    final String PROVIDER_INFO_RESOURCE = "/centre-registry-providerinfo.xml";
-    final String REGISTRY_OVERVIEW_RESOURCE = "/centre-registry-overview.xml";
-    final String MOCK_REGISTRY_REGISTRY_PATH = "/";
-    final String MOCK_REGISTRY_CENTRE_INFO_RESOURCE_PATH = "/restxml/1";
+    private static final String REGISTRY_PATH = "/model";
+    private static final String REGISTRY_CENTRE_INFO = REGISTRY_PATH + "/Centre";
+    private static final String REGISTRY_CENTRE_RESOURCE = "/centre-registry-Centre.json";
+    private static final String REGISTRY_ENDPOINT_INFO = REGISTRY_PATH + "/OAIPMHEndpoint";
+    private static final String REGISTRY_ENDPOINT_RESOURCE = "/centre-registry-OAIPMHEndpoint.json";
+    private static final String REGISTRY_SET_INFO = REGISTRY_PATH + "/OAIPMHEndpointSet";
+    private static final String REGISTRY_SET_RESOURCE = "/centre-registry-OAIPMHEndpointSet.json";
+    private static final String REGISTRY_CONSORTIUM_INFO = REGISTRY_PATH + "/Consortium";
+    private static final String REGISTRY_CONSORTIUM_RESOURCE = "/centre-registry-Consortium.json";
 
     private static Configuration BASIC_CONFIG;
 
@@ -180,16 +185,22 @@ public class ConfigurationTest {
     }
 
     private String setUpMockRegistry() throws IOException {
-        stubFor(get(urlEqualTo(MOCK_REGISTRY_CENTRE_INFO_RESOURCE_PATH))
-                .willReturn(aResponse()
-                        .withBody(getResourceAsString(PROVIDER_INFO_RESOURCE))));
-        final String centreInfoUrl = "http://localhost:" + wireMockRule.getOptions().portNumber() + MOCK_REGISTRY_CENTRE_INFO_RESOURCE_PATH;
 
-        stubFor(get(urlEqualTo(MOCK_REGISTRY_REGISTRY_PATH))
+        //set up mock centre registry REST JSON server
+        stubFor(get(urlEqualTo(REGISTRY_CENTRE_INFO))
                 .willReturn(aResponse()
-                        .withBody(getResourceAsString(REGISTRY_OVERVIEW_RESOURCE)
-                                .replaceAll("<Center_id_link>\\S+</Center_id_link>", "<Center_id_link>" + centreInfoUrl + "</Center_id_link>"))));
-        final String registryURl = "http://localhost:" + wireMockRule.getOptions().portNumber() + MOCK_REGISTRY_REGISTRY_PATH;
+                        .withBody(getResourceAsString(REGISTRY_CENTRE_RESOURCE))));
+        stubFor(get(urlEqualTo(REGISTRY_ENDPOINT_INFO))
+                .willReturn(aResponse()
+                        .withBody(getResourceAsString(REGISTRY_ENDPOINT_RESOURCE))));
+        stubFor(get(urlEqualTo(REGISTRY_SET_INFO))
+                .willReturn(aResponse()
+                        .withBody(getResourceAsString(REGISTRY_SET_RESOURCE))));
+        stubFor(get(urlEqualTo(REGISTRY_CONSORTIUM_INFO))
+                .willReturn(aResponse()
+                        .withBody(getResourceAsString(REGISTRY_CONSORTIUM_RESOURCE))));
+
+        final String registryURl = "http://localhost:" + wireMockRule.getOptions().portNumber() + REGISTRY_PATH;
 
         return registryURl;
     }
