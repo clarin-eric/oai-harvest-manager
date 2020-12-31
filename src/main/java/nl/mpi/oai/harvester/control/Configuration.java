@@ -39,6 +39,9 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
+
+import static org.mockito.Mockito.reset;
+
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -707,7 +710,10 @@ public class Configuration {
      */
     public boolean isIncremental() {
         String s = settings.get(KnownOptions.INCREMENTAL.toString());
-        return (s == null) ? false : Boolean.valueOf(s);
+        boolean r = (s == null) ? false : Boolean.valueOf(s);
+        if (r)
+            logger.warn("Incremental harvesting cannot be enabled ... needs to be finished!");
+        return false;
     }
     
     /**
