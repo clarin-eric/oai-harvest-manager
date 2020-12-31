@@ -181,6 +181,10 @@ For each provider, the following can be defined:
   delay and timeout) can be overwritten for a specific provider by
   adding them as attributes to the provider element. 
 
+- The attribute *exclusive*, when set to true, indicates that the
+  provider should be harvested on its own, i.e. no other harvesting threads 
+  should be active, this can be used when a provider has some huge records.
+
 - The provider element may contain multiple *set* child elements,
   which specify the names of OAI-PMH sets to be harvested.
 
@@ -231,10 +235,6 @@ convenient for debugging specific providers.
 
 # Implementation Notes
 
-Saxon is used as the XPath engine, although only standard APIs are
-used and hence changing to a different XPath processor would be
-trivial.
-
 Processing for each provider runs in a separate thread. It is not
 possible to target a single provider with multiple threads (except in
 the special case where sets are used; then it is possible to mention
@@ -269,8 +269,3 @@ action actionSequences, and 5 each for the directories ```cmdi``` and
 The pooling implementation is particularly important when
 transformations are used, as preparing a transformation object
 involves parsing the XSLT, potentially a time-consuming process.
-
-
-# Build Status
-
-[![Build Status](https://travis-ci.org/TheLanguageArchive/oai-harvest-manager.png?branch=master)](https://travis-ci.org/TheLanguageArchive/oai-harvest-manager)
