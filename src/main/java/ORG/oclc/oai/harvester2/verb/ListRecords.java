@@ -163,10 +163,10 @@ public class ListRecords extends HarvesterVerb {
                     state = state == 1? 0: -1;// if START then STOP else ERROR
             }
             if (state < 0 || token == null) {
-                logger.warn("couldn't find token in the XML stream!");
+                logger.debug("couldn't find token, done!");
                 return null;
             }
-            logger.debug("found token["+token+"] in the XML stream!");
+            logger.debug("found token["+token+"], resume!");
             return token;
         } else if (schemaLocation.indexOf(SCHEMA_LOCATION_V1_1_LIST_RECORDS) != -1) {
             return getSingleString("/oai11_ListRecords:ListRecords/oai11_ListRecords:resumptionToken");

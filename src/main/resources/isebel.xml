@@ -1,0 +1,52 @@
+<!-- This is the configuration for CLARIN harvesting. -->
+<config>
+  <!-- ### configuration settings ### -->
+  <settings>
+    <incremental>false</incremental>
+    <!-- Working directory. -->
+    <workdir>/Users/vic/Documents/DANS/projects/ODISSEI/oai-harvest-manager/data</workdir>
+    <!-- Maximum number of attempts per record before giving up. -->
+    <max-retry-count>2</max-retry-count>
+    <!-- Delay between retries of a record (milliseconds). -->
+    <retry-delay>10000</retry-delay>
+    <!-- Maximum number of concurrent harvester threads -->
+    <max-jobs>4</max-jobs>
+    <!-- Number of resources placed in the resource pool. -->
+    <resource-pool-size>4</resource-pool-size>
+    <!-- Default timeout (for connection and reading) for a single
+    http request in seconds. If unspecified, will be INFINITE.  -->
+    <timeout>60</timeout>
+    <scenario>ListRecords</scenario>
+  </settings>
+  <!-- ### output directories (referenced in the action section) ### -->
+  <directories>
+    <!-- When the attribute 'max-files' is non-zero, subdirectories
+         will be created to ensure no directory has more than that
+         number of files. -->
+    <dir path="oai" id="oai" max-files="0"/>
+    <dir path="rec" id="rec" max-files="0"/>
+    <dir path="oai-dc" id="oai-dc" max-files="0"/>
+  </directories>
+  <!-- ### actions to take on metadata formats (in order of preference) ### -->
+  <actions>
+    <format match="namespace" value="http://www.openarchives.org/OAI/2.0/oai_dc/">
+      <action type="save" dir="oai" suffix=".xml"/>
+      <action type="split"/>
+      <action type="save" dir="rec" suffix=".xml"/>
+      <action type="strip"/>
+      <action type="save" dir="oai-dc" suffix=".xml"/>
+    </format>
+  </actions>
+  <!-- ### list of providers ### -->
+  <providers>
+    <!--<provider url="http://archief.meertens.knaw.nl/oaiprovider/"/>
+    <provider url="http://www.elra.info/elrac/elra_catalogue.xml" static="true"
+	      name="European Language Resources Association"/>
+    <provider url="http://catalog.paradisec.org.au/oai/item"
+	      name="Pacific And Regional Archive for Digital Sources in Endangered Cultures (PARADISEC)"/>
+    <provider url="https://b2share.eudat.eu/oai2d/" name="B2SHARE">
+      <set>Linguistics</set>
+    </provider>-->
+    <provider url="https://www.oai-pmh.centerdata.nl/lissdata/oai2.php" name="LISS" timeout="60" />
+  </providers>
+</config>

@@ -219,8 +219,10 @@ class Worker implements Runnable {
 
             // report back success or failure to the cycle
             endpoint.doneHarvesting(done);
-            FileSynchronization.saveStatistics(provider);
-            endpoint.setIncrement(FileSynchronization.getProviderStatistic(provider).getHarvestedRecords());
+            if (config.isIncremental()) {
+                FileSynchronization.saveStatistics(provider);
+                endpoint.setIncrement(FileSynchronization.getProviderStatistic(provider).getHarvestedRecords());
+            }
             logger.info("Processing finished for " + provider);
         } catch (Throwable e) {
             logger.error("Processing failed for " + provider+": "+e.getMessage(),e);
