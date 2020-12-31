@@ -74,7 +74,7 @@ public class RegistryReaderTest {
 
         registry = new RegistryReader(new URL(registryURl));
 
-        //set up mock centre registry REST XML server
+        //set up mock centre registry REST JSON server
         stubFor(get(urlEqualTo(REGISTRY_CENTRE_INFO))
                 .willReturn(aResponse()
                         .withBody(getResourceAsString(REGISTRY_CENTRE_RESOURCE))));
