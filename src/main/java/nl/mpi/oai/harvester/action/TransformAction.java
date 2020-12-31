@@ -26,6 +26,7 @@ import net.sf.saxon.s9api.XdmNode;
 import net.sf.saxon.s9api.XsltTransformer;
 import nl.mpi.oai.harvester.metadata.Metadata;
 import nl.mpi.tla.util.Saxon;
+import nl.mpi.tla.util.SaxonListener;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.w3c.dom.Document;
@@ -247,7 +248,7 @@ public class TransformAction implements Action {
             return res;
         }
     }
-    
+
     class TransformActionListener implements MessageListener, ErrorListener {
 
         protected boolean handleMessage(String msg, String loc, Exception e) {
@@ -301,7 +302,5 @@ public class TransformAction implements Action {
                     logger.info("["+getLocation(sl)+"]: "+xn.getStringValue());
             }
         }
-    }
-
-
+    }   
 }
