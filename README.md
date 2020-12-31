@@ -28,7 +28,7 @@ OAI-PMH **endpoint**.
 Building this app requires JDK 11 and Apache Maven. It can be built
 simply using the command:
 
-```mvn clean package assembly:assembly```
+```mvn clean install```
 
 If you use a Java IDE, it is highly likely it also offers a simple way
 to do the above.
@@ -37,7 +37,7 @@ You can also use the `build.sh` script to run a build within an environment
 provisioned with suitable versions of the JDK and Maven. Requires docker.
 
 The above build process creates a package named
-`oai-harvest-manager-x.y.z.tar.gz` (where x.y.z is a version number).
+`target/oai-harvest-manager-x.y.z.tar.gz` (where x.y.z is a version number).
 
 # Running the Application
 
@@ -60,6 +60,8 @@ override the timeout value defined in `config.xml`, if any. The first
 parameter that does not contain = is taken as the configuration file
 name.
 
+If you used `build.sh` to run a build you can use `run.sh config.xml` to run this build
+
 
 # Configuration
 
@@ -77,8 +79,9 @@ file. The configuration file is composed of four sections:
    listed.
 
 To get a clear idea of the structure of the configuration file, see
-the [sample configuration files](src/main/resources) in juxtaposition
-with the explanation for each section below.
+the [sample configuration files](src/main/resources) or the 
+[CLARIN configuration files](https://github.com/clarin-eric/oai-harvest-config) in 
+juxtaposition with the explanation for each section below.
 
 ## Configuring Settings
 
@@ -142,7 +145,11 @@ action types are available:
 - The *transform* action applies a mapping, defined in an XSLT file,
   to the metadata record. This can be used, among other things, for
   semantic mapping between metadata schemata. See the included
-  configuration files for an example.
+  configuration files for an example. The XSLT recieves various parameters:
+  1. ```config``` the configuration file used
+  2. ```provider_name``` the provider name
+  3. ```provider_uri`` the endpoint
+  4. ```record_identifier`` the id of the record to transform
 
 For each provider, the first format definition that the provider
 supports will determine the action sequence to be executed. If one of
@@ -182,8 +189,10 @@ a *centre registry*. So far, this registry is only used by the CLARIN community.
 The registry is specified by its URL. All the provider endpoints defined in the
 registry will be harvested. Sometimes, it might be necessary to exclude an
 endpoint from the ones defined in the registry. This can be done by specifying
-its URL in the configuration file used for harvesting. Please review the
-instructions in the configuration files supplied in the package.
+its URL in the configuration file used for harvesting. In other cases
+an endpoint loaded from the registry needs its specific configuration timeout,
+this can be done in a similar vain as excluding. Please review the
+instructions in the configuration files supplied in the package. 
 
 # Static Providers
 

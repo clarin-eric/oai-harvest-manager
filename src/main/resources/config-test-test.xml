@@ -9,8 +9,9 @@
     <!-- Maximum number of attempts per record before giving up. -->
     <max-retry-count>2</max-retry-count>
 
-    <!-- Delay between retries of a record (seconds). -->
-    <retry-delay>10</retry-delay>
+    <!-- Sequence of delays between retries of a record (seconds). 
+    If the sequence size is smaller than the number of retries the last value will be reused-->
+    <retry-delay>10 20</retry-delay>
 
     <!-- Maximum number of concurrent harvester threads -->
     <max-jobs>4</max-jobs>
