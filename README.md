@@ -148,8 +148,8 @@ action types are available:
   configuration files for an example. The XSLT recieves various parameters:
   1. ```config``` the configuration file used
   2. ```provider_name``` the provider name
-  3. ```provider_uri`` the endpoint
-  4. ```record_identifier`` the id of the record to transform
+  3. ```provider_uri``` the endpoint
+  4. ```record_identifier``` the id of the record to transform
 
 For each provider, the first format definition that the provider
 supports will determine the action sequence to be executed. If one of
