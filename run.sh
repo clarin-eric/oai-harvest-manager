@@ -1,8 +1,8 @@
 #!/bin/bash 
 JAVA_TARGET_DIR="$(cd "$(dirname $0)" && pwd)/target"
-JAVA_IMAGE=registry.gitlab.com/clarin-eric/docker-alpine-supervisor-java-base:openjdk8-1.2.5
+JAVA_IMAGE=registry.gitlab.com/clarin-eric/docker-alpine-supervisor-java-base:openjdk11-1.2.5
 CONTAINER_CONF_FILE_PATH='/tmp/harvester.conf'
-JAVA_CMD="java -Dlogdir=/logdir -jar /java-bin/oai-harvest-manager*.jar ${CONTAINER_CONF_FILE_PATH}"
+JAVA_CMD="java -Dlogdir=/logdir -jar /java-bin/oai-harvest-manager*.jar workdir=/workdir ${CONTAINER_CONF_FILE_PATH}"
 WORKDIR="${WORKDIR:-$(pwd)/run/workdir}"
 LOGDIR="${LOGDIR:-$(pwd)/run/log}"
 CONFIG_FILE="$1"

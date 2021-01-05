@@ -1,0 +1,71 @@
+[{
+        "model": "centre_registry.oaipmhendpointset",
+        "pk": 3,
+        "fields": {
+            "set_spec": "",
+            "set_type": "WebLicht"
+        }
+    }, {
+        "model": "centre_registry.oaipmhendpointset",
+        "pk": 4,
+        "fields": {
+            "set_spec": "WebLichtWebServices",
+            "set_type": "WebLicht"
+        }
+    }, {
+        "model": "centre_registry.oaipmhendpointset",
+        "pk": 5,
+        "fields": {
+            "set_spec": "Weblicht",
+            "set_type": "WebLicht"
+        }
+    }, {
+        "model": "centre_registry.oaipmhendpointset",
+        "pk": 2,
+        "fields": {
+            "set_spec": "hdl_000-c0-111_78",
+            "set_type": "WebLicht"
+        }
+    }, {
+        "model": "centre_registry.oaipmhendpointset",
+        "pk": 6,
+        "fields": {
+            "set_spec": "hdl_11356_1077",
+            "set_type": "WebLicht"
+        }
+    }, {
+        "model": "centre_registry.oaipmhendpointset",
+        "pk": 8,
+        "fields": {
+            "set_spec": "hdl_11858_00-097C-0000-0023-8C33-2",
+            "set_type": "WebLicht"
+        }
+    }, {
+        "model": "centre_registry.oaipmhendpointset",
+        "pk": 7,
+        "fields": {
+            "set_spec": "oai:webservices",
+            "set_type": "WebLicht"
+        }
+    }, {
+        "model": "centre_registry.oaipmhendpointset",
+        "pk": 1,
+        "fields": {
+            "set_spec": "toolService:service:WebLichtWebService",
+            "set_type": "WebLicht"
+        }
+    }, {
+        "model": "centre_registry.oaipmhendpointset",
+        "pk": 10,
+        "fields": {
+            "set_spec": "test-set1",
+            "set_type": "Test1"
+        }
+    },{
+        "model": "centre_registry.oaipmhendpointset",
+        "pk": 11,
+        "fields": {
+            "set_spec": "test-set2",
+            "set_type": "Test2"
+        }
+    }]

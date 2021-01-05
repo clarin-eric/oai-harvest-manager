@@ -15,7 +15,7 @@ class OaiHarvestError(StandardError):
 
 class OaiHarvest:
 
-    def __init__(self, conf=None, oai="/app/oai", base="/app/workdir", output="test", name="test", jvm="-Xmx1G", postgres="oai:oai@localhost:5432/oai", verbose=False):
+    def __init__(self, conf=None, dry=None, oai="/app/oai", base="/app/workdir", output="test", name="test", jvm="-Xmx1G", postgres="oai:oai@localhost:5432/oai", verbose=False):
         self.verbose = verbose
 
         self.oai = oai
@@ -27,6 +27,8 @@ class OaiHarvest:
         self.confdir = conf
 
         self.jvm = jvm
+
+        self.dry = dry
 
         self.pg = False
         if postgres:
@@ -46,7 +48,6 @@ class OaiHarvest:
             self.psql = local["psql"]
 
         self.harvester = local[os.path.join(oai, "run-harvester.sh")]
-        self.mapexpander = local[os.path.join(oai, "expand-map.sh")]
         self.viewer = local[os.path.join(oai, "run-viewer.sh")]
         self.workdir = os.path.join(base, "workdir", "%s-%s" % (output, name))
         self.logdir = os.path.join(self.workdir, "log")
@@ -61,6 +62,7 @@ class OaiHarvest:
 
         if self.verbose:
             self.print_to_stdout("Config:\n")
+            self.print_to_stdout("\tdry run: %s\n" % self.dry)
             self.print_to_stdout("\tconf dir: %s\n" % self.confdir)
             self.print_to_stdout("\tconf file: %s\n" % self.config_file)
             self.print_to_stdout("\tlog dir: %s\n" % self.logdir)
@@ -81,10 +83,6 @@ class OaiHarvest:
 
         self.print_to_stdout("\tRunning harvester.\n")
         self.run_harvest()
-        self.print_to_stdout("\tDone\n")
-
-        self.print_to_stdout("\tExpand map.\n")
-        self.expand_map()
         self.print_to_stdout("\tDone\n")
 
         self.print_to_stdout("\tReset output.\n")
@@ -161,6 +159,8 @@ class OaiHarvest:
             "map-file=%s" % os.path.join(self.workdir, "map.csv"),
             conf
         ]
+        if self.dry == True:
+            command.insert(0,"dry-run=true")
 
         if self.verbose:
             self.print_to_stdout("\t\tHarvester command:\n")
@@ -170,23 +170,6 @@ class OaiHarvest:
             self.print_to_stdout("\n")
 
         return self.harvester(command)
-
-    def expand_map(self):
-        """
-        Expand the map
-        """
-        command = [
-            os.path.join(self.workdir, "map.csv")
-        ]
-
-        if self.verbose:
-            self.print_to_stdout("\t\tExpander command:\n")
-            self.print_to_stdout("\t\t\t%s " % self.mapexpander)
-            for i in command:
-                self.print_to_stdout("%s " % i)
-            self.print_to_stdout("\n")
-
-        return self.mapexpander(command)
 
     def do_reset(self):
         """
@@ -352,28 +335,38 @@ class App(cli.Application):
     VERSION = "0.0.1"
     verbose = cli.Flag(["v", "verbose"], help="Verbose output")
     confdir = None
+    dry = None
     output = None
     name = None
     postgres = None
 
     @cli.switch(["-c", "--config"], str, mandatory=False, help="Config directory (can be online). (optional)")
     def set_config(self, config):
-        self.confdir = config
+        if config:
+            self.confdir = config
+
+    @cli.switch(["-d", "--dry"], str, mandatory=False, help="Dry run. (optional)")
+    def set_dry(self, dry):
+        if dry:
+            self.dry = True
 
     @cli.switch(["-o", "--output"], str, mandatory=True, help="Output folder (collection) this harvest is part of.")
     def set_output(self, output):
-        self.output = output
+        if output:
+            self.output = output
 
     @cli.switch(["-n", "--name"], str, mandatory=True, help="Name for this harvest run.")
     def set_name(self, name):
-        self.name = name
+        if name:
+            self.name = name
 
     @cli.switch(["-p", "--postgres"], str, mandatory=False, help="Postgres database (<user>:<pass>@<host>:<port>/<db>) to connext to. (optional)")
     def set_postgres(self, postgres):
-        self.postgres = postgres
+        if postgres:
+            self.postgres = postgres
 
     def main(self):
-        oai = OaiHarvest(conf=self.confdir, output=self.output, name=self.name, postgres=self.postgres, verbose=self.verbose)
+        oai = OaiHarvest(conf=self.confdir, dry=self.dry, output=self.output, name=self.name, postgres=self.postgres, verbose=self.verbose)
         try:
             oai.run()
         except Exception as e:
