@@ -3,6 +3,8 @@ package nl.mpi.oai.harvester.harvesting;
 import java.util.logging.Level;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
+
+import com.ctc.wstx.exc.WstxUnexpectedCharException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
@@ -93,8 +95,13 @@ public class OAIHelper {
                             }
                             break;
                     }
+                    outer:
                     if (xmlr.hasNext())
-                        xmlr.next();
+                        try {
+                            xmlr.next();
+                        } catch (WstxUnexpectedCharException ex) {
+                            logger.info("Invalid char found in XML, skipping the current one and look for next one");
+                        }
                     else
                         state = state == 1? 0: -1;// if START then STOP else ERROR
                 }

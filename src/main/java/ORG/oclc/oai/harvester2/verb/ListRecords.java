@@ -18,6 +18,7 @@
 
 package ORG.oclc.oai.harvester2.verb;
 
+import com.ctc.wstx.exc.WstxUnexpectedCharException;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -150,16 +151,22 @@ public class ListRecords extends HarvesterVerb {
                         }
                         break;
                 }
+
+                outer:
                 if (xmlr.hasNext())
-                    xmlr.next();
+                    try {
+                        xmlr.next();
+                    } catch (WstxUnexpectedCharException ex) {
+                        logger.info(String.format("Invalid char found in XML, skipping the current one and look for next one: {%s}", xmlr.toString()));
+                    }
                 else
                     state = state == 1? 0: -1;// if START then STOP else ERROR
             }
             if (state < 0 || token == null) {
-                logger.warn("couldn't find token in the XML stream!");
+                logger.debug("couldn't find token, done!");
                 return null;
             }
-            logger.debug("found token["+token+"] in the XML stream!");
+            logger.debug("found token["+token+"], resume!");
             return token;
         } else if (schemaLocation.indexOf(SCHEMA_LOCATION_V1_1_LIST_RECORDS) != -1) {
             return getSingleString("/oai11_ListRecords:ListRecords/oai11_ListRecords:resumptionToken");

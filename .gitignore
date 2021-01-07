@@ -8,3 +8,9 @@ run/
 nb-configuration.xml
 nbactions.xml
 
+.classpath
+.factorypath
+.project
+.settings
+.vscode
+.DS_Store

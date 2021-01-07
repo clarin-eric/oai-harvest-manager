@@ -25,10 +25,10 @@ OAI-PMH **endpoint**.
 
 # Building
 
-Building this app requires JDK 8 and Apache Maven. It can be built
+Building this app requires JDK 11 and Apache Maven. It can be built
 simply using the command:
 
-```mvn clean package assembly:assembly```
+```mvn clean install```
 
 If you use a Java IDE, it is highly likely it also offers a simple way
 to do the above.
@@ -37,7 +37,7 @@ You can also use the `build.sh` script to run a build within an environment
 provisioned with suitable versions of the JDK and Maven. Requires docker.
 
 The above build process creates a package named
-`oai-harvest-manager-x.y.z.tar.gz` (where x.y.z is a version number).
+`target/oai-harvest-manager-x.y.z.tar.gz` (where x.y.z is a version number).
 
 # Running the Application
 
@@ -60,6 +60,8 @@ override the timeout value defined in `config.xml`, if any. The first
 parameter that does not contain = is taken as the configuration file
 name.
 
+If you used `build.sh` to run a build you can use `run.sh config.xml` to run this build
+
 
 # Configuration
 
@@ -77,8 +79,9 @@ file. The configuration file is composed of four sections:
    listed.
 
 To get a clear idea of the structure of the configuration file, see
-the [sample configuration files](src/main/resources) in juxtaposition
-with the explanation for each section below.
+the [sample configuration files](src/main/resources) or the 
+[CLARIN configuration files](https://github.com/clarin-eric/oai-harvest-config) in 
+juxtaposition with the explanation for each section below.
 
 ## Configuring Settings
 
@@ -142,7 +145,11 @@ action types are available:
 - The *transform* action applies a mapping, defined in an XSLT file,
   to the metadata record. This can be used, among other things, for
   semantic mapping between metadata schemata. See the included
-  configuration files for an example.
+  configuration files for an example. The XSLT recieves various parameters:
+  1. ```config``` the configuration file used
+  2. ```provider_name``` the provider name
+  3. ```provider_uri``` the endpoint
+  4. ```record_identifier``` the id of the record to transform
 
 For each provider, the first format definition that the provider
 supports will determine the action sequence to be executed. If one of
@@ -174,6 +181,10 @@ For each provider, the following can be defined:
   delay and timeout) can be overwritten for a specific provider by
   adding them as attributes to the provider element. 
 
+- The attribute *exclusive*, when set to true, indicates that the
+  provider should be harvested on its own, i.e. no other harvesting threads 
+  should be active, this can be used when a provider has some huge records.
+
 - The provider element may contain multiple *set* child elements,
   which specify the names of OAI-PMH sets to be harvested.
 
@@ -182,8 +193,10 @@ a *centre registry*. So far, this registry is only used by the CLARIN community.
 The registry is specified by its URL. All the provider endpoints defined in the
 registry will be harvested. Sometimes, it might be necessary to exclude an
 endpoint from the ones defined in the registry. This can be done by specifying
-its URL in the configuration file used for harvesting. Please review the
-instructions in the configuration files supplied in the package.
+its URL in the configuration file used for harvesting. In other cases
+an endpoint loaded from the registry needs its specific configuration timeout,
+this can be done in a similar vain as excluding. Please review the
+instructions in the configuration files supplied in the package. 
 
 # Static Providers
 
@@ -222,10 +235,6 @@ convenient for debugging specific providers.
 
 # Implementation Notes
 
-Saxon is used as the XPath engine, although only standard APIs are
-used and hence changing to a different XPath processor would be
-trivial.
-
 Processing for each provider runs in a separate thread. It is not
 possible to target a single provider with multiple threads (except in
 the special case where sets are used; then it is possible to mention
@@ -260,8 +269,3 @@ action actionSequences, and 5 each for the directories ```cmdi``` and
 The pooling implementation is particularly important when
 transformations are used, as preparing a transformation object
 involves parsing the XSLT, potentially a time-consuming process.
-
-
-# Build Status
-
-[![Build Status](https://travis-ci.org/TheLanguageArchive/oai-harvest-manager.png?branch=master)](https://travis-ci.org/TheLanguageArchive/oai-harvest-manager)

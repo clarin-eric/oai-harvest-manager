@@ -326,7 +326,7 @@ public abstract class HarvesterVerb {
                     retrySeconds = retryDate - now;
                 }
                 if (retrySeconds == 0) { // Apparently, it's a bad URL
-                    throw new FileNotFoundException("Bad URL?");
+                    throw new FileNotFoundException("Bad URL["+requestURL+"]?");
                 }
                 logger.debug("Retry-After=" + retrySeconds);
                 if (retrySeconds > 0) {

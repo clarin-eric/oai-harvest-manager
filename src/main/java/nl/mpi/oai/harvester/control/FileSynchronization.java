@@ -102,7 +102,7 @@ public final class FileSynchronization {
                     int retryDelay = provider.getRetryDelay(counter);
                     if (retryDelay > 0) {
                         try {
-                            Thread.sleep(retryDelay);
+                            Thread.sleep(retryDelay*1000);
                         } catch (InterruptedException e) {
                             logger.error(e.getMessage(), e);
                         }

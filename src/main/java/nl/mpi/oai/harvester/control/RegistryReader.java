@@ -15,259 +15,193 @@
  * LICENSE-gpl-3.0.txt. If that file is missing, see
  * <http://www.gnu.org/licenses/>.
  */
-
 package nl.mpi.oai.harvester.control;
 
-import nl.mpi.oai.harvester.metadata.NSContext;
+import static com.jayway.jsonpath.Criteria.where;
+import com.jayway.jsonpath.DocumentContext;
+import com.jayway.jsonpath.Filter;
+import static com.jayway.jsonpath.Filter.filter;
+import com.jayway.jsonpath.JsonPath;
+import static com.jayway.jsonpath.JsonPath.parse;
+import com.jayway.jsonpath.Option;
+import nl.mpi.oai.harvester.Provider;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.w3c.dom.DOMException;
-import org.w3c.dom.Document;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 /**
  * This class reads information from the REST service of the CLARIN Centre
- * Registry (see http://www.clarin.eu/content/centres for more information). 
+ * Registry (see http://www.clarin.eu/content/centres for more information).
  *
  * @author Lari Lampen (MPI-PL)
  */
 public class RegistryReader {
+
     private static final Logger logger = LogManager.getLogger(RegistryReader.class);
-    private final XPath xpath;
+    private static URL registryUrl = null;
 
-    /** Create a new registry reader object. */
-    public RegistryReader() {
-	XPathFactory xpf = XPathFactory.newInstance();
-	xpath = xpf.newXPath();
-	NSContext nsContext = new NSContext();
-	nsContext.add("cmd", "http://www.clarin.eu/cmd/");
-	xpath.setNamespaceContext(nsContext);
-    }
-
-    /**
-     * Get a list of all OAI-PMH endpoint URLs defined in the
-     * specified registry.
-     * 
-     * @param registryUrl url of the registry endpoint
-     * @return list of all OAI-PMH endpoint URLs
-     */
-    public List<String> getEndpoints(URL registryUrl) {
-	// Basically this makes a simple REST call to get a list of
-	// addresses for a further batch of REST calls. This is not
-	// documented in detail since it's specific to the CLARIN
-	// registry implementation anyway.
-	List<String> endpoints = new ArrayList<>();
-	try {
-	    Document doc = openRemoteDocument(registryUrl);
-	    List<String> provUrls = getProviderInfoUrls(doc);
-
-	    logger.info("Fetching information on " + provUrls.size()
-		    + " centres");
-	    for (String centreInfoUrl : provUrls) {
-		doc = openRemoteDocument(new URL(centreInfoUrl));
-		NodeList ends = getEndpoints(doc);
-		if (ends != null) {
-                    for (int i =0;i<ends.getLength();i++)
-                        endpoints.add(ends.item(i).getNodeValue().trim());
-		}
-	    }
-	} catch (IOException | ParserConfigurationException | SAXException
-		| XPathExpressionException | DOMException e) {
-	    logger.error("Error reading from centre registry", e);
-	}
-	return endpoints;
-    }
+    private static final Map<String, DocumentContext> modelCache = new HashMap<>();
     
-    
-    public Map<String, Collection<CentreRegistrySetDefinition>> getEndPointOaiPmhSetMap(URL registryUrl) {
-	// Basically this makes a simple REST call to get a list of
-	// addresses for a further batch of REST calls. This is not
-	// documented in detail since it's specific to the CLARIN
-	// registry implementation anyway.
-	final Map<String, Collection<CentreRegistrySetDefinition>> map = new HashMap<>();
-	try {
-            final Document centresDoc = openRemoteDocument(registryUrl);
-            final List<String> provUrls = getProviderInfoUrls(centresDoc);
-            
-	    logger.info("Fetching information on " + provUrls.size()
-		    + " centres");
-            
-	    for (String centreInfoUrl : provUrls) {
-		final Document centreDoc = openRemoteDocument(new URL(centreInfoUrl));
-		final NodeList endpointsList = getEndpoints(centreDoc);
-		if (endpointsList != null) {
-                    for (int i =0;i<endpointsList.getLength();i++) {
-                        final String endpoint = endpointsList.item(i).getNodeValue().trim();
-                        final Set<CentreRegistrySetDefinition> sets = getOaiPmhSetsForEndpoint(centreDoc, endpoint);
-                        map.put(endpoint, sets);
-                    }
-		}
-	    }
-	} catch (IOException | ParserConfigurationException | SAXException
-		| XPathExpressionException | DOMException e) {
-	    logger.error("Error reading from centre registry", e);
-	}
-	return map;
-    }
+    //JsonPath configuration
+    private static com.jayway.jsonpath.Configuration conf = com.jayway.jsonpath.Configuration.defaultConfiguration();
 
     /**
-     * Extract links to all provider information pages from the summary
-     * document returned by the centre registry
-     * 
-     * @param doc center registry cycle response
-     * @return list of URLs of provider-specific info pages
-     * @throws XPathExpressionException problem with the paths to query the center registry response
+     * Create a new registry reader object.
      */
-    public List<String> getProviderInfoUrls(Document doc) throws XPathExpressionException {
-	if (doc == null) {
-	    logger.warn("The centre registry response is missing");
-	    return Collections.emptyList();
-	}
-
-	NodeList centres = (NodeList) xpath.evaluate("/Centers/CenterProfile/Center_id_link/text()",
-		doc.getDocumentElement(), XPathConstants.NODESET);
-	List<String> provUrls = new ArrayList<>();
-	for (int j=0; j<centres.getLength(); j++) {
-	    String provUrl = centres.item(j).getNodeValue();
-	    if (provUrl != null)
-		provUrls.add(provUrl);
-	}
-	return provUrls;
-    }
-
-    /**
-     * Extract the OAI-PMH endpoint of a single provider from its description
-     * document.
-     * 
-     * @param providerInfo xml information from the center registry
-     * @return endpoint URL, or null if none available
-     * @throws XPathExpressionException problem with the paths to query the center registry response
-     */
-    public NodeList getEndpoints(Document providerInfo) throws XPathExpressionException {
-	if (providerInfo == null)
-	    return null;
-
-	NodeList endpoints = (NodeList) xpath.evaluate("/cmd:CMD/cmd:Components/cmd:CenterProfile/cmd:CenterExtendedInformation/cmd:Metadata/cmd:OaiAccessPoint/text()",
-		providerInfo.getDocumentElement(), XPathConstants.NODESET);
-	return endpoints;
-    }
-
-    private Set<CentreRegistrySetDefinition> getOaiPmhSetsForEndpoint(final Document centreDoc, final String endpoint) throws XPathExpressionException, DOMException {
-        Set<CentreRegistrySetDefinition> sets = new HashSet<>();
-        final NodeList setList = getOaiPmhSets(centreDoc, endpoint);
-        if(setList == null) {
-            logger.debug("No set list for endpoint {}", endpoint);
-        } else {
-            for(int s=0;s<setList.getLength();s++) {
-                String setSpec = null;
-                String setType = null;
-                
-                final NodeList setNodeProps = setList.item(s).getChildNodes();
-                for(int p=0; p<setNodeProps.getLength(); p++) {
-                    switch(setNodeProps.item(p).getNodeName()) {
-                        case "SetSpec":
-                            setSpec = setNodeProps.item(p).getTextContent();
-                            logger.debug("{{}} SetSpec={}", endpoint, setSpec);
-                            break;
-                        case "SetType":
-                            setType = setNodeProps.item(p).getTextContent();
-                            logger.debug("{{}} SetType={}", endpoint, setType);
-                            break;
-                    }
-                }
-                if(setSpec != null && setType != null) {
-                    sets.add(new CentreRegistrySetDefinition(setSpec, setType));
-                }
-            }
-        }
-        return sets;
-    }
-    
-    /**
-     * Extract the OAI-PMH sets for a single endpoint from aprovider's description
-     * document.
-     * 
-     * @param providerInfo xml information from the center registry
-     * @param endpoint endpoint URL
-     * @return 0 or more "Set" nodes containing "SetSpec" and "SetType" child elements
-     * @throws XPathExpressionException problem with the paths to query the center registry response
-     */
-    public NodeList getOaiPmhSets(Document providerInfo, String endpoint) throws XPathExpressionException {
-        if (providerInfo == null)
-	    return null;
-
-	NodeList sets = (NodeList) xpath.evaluate("/cmd:CMD/cmd:Components/cmd:CenterProfile/cmd:CenterExtendedInformation/cmd:Metadata[cmd:OaiAccessPoint='" + endpoint +"']/cmd:OaiPmhSets/cmd:Set",
-		providerInfo.getDocumentElement(), XPathConstants.NODESET);
-	return sets;
-    }
-    
-    /**
-     * Fetch the XML document located at the given URL, parse it, and
-     * return the resulting DOM tree.
-     */
-    private static Document openRemoteDocument(URL url) throws IOException,
-	    ParserConfigurationException, SAXException {
-	HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-	connection.setInstanceFollowRedirects(false);
-	connection.setRequestMethod("GET");
-	connection.setRequestProperty("Content-Type", "application/xml");
-	connection.connect();
+    public RegistryReader(URL url) {
+        this.registryUrl = url;
         
-	connection.getResponseCode();
-        
+        conf.addOptions(Option.ALWAYS_RETURN_LIST,Option.SUPPRESS_EXCEPTIONS);
+    }
+
+    private HttpURLConnection getConnection(URL url, String contentType) throws IOException {
+        HttpURLConnection connection = null;
         Boolean redirect = false;
 
-        int status = connection.getResponseCode();
-        if (status != HttpURLConnection.HTTP_OK) {
-            if (status == HttpURLConnection.HTTP_MOVED_TEMP
-                    || status == HttpURLConnection.HTTP_MOVED_PERM
-                    || status == HttpURLConnection.HTTP_SEE_OTHER) {
-                redirect = true;
+        do {
+            connection = (HttpURLConnection) url.openConnection();
+            connection.setInstanceFollowRedirects(false);
+            connection.setRequestMethod("GET");
+            connection.setRequestProperty("Content-Type", contentType);
+            connection.connect();
+
+            int status = connection.getResponseCode();
+            if (status != HttpURLConnection.HTTP_OK) {
+                if (status == HttpURLConnection.HTTP_MOVED_TEMP
+                        || status == HttpURLConnection.HTTP_MOVED_PERM
+                        || status == HttpURLConnection.HTTP_SEE_OTHER) {
+                    redirect = true;
+                    // get redirect url from "location" header field
+                    url = new URL(connection.getHeaderField("Location"));
+                    logger.debug("Center Registry redirect to URL : " + url);
+                } else {
+                    redirect = false;
+                }
+            }
+
+        } while (redirect);
+        return connection;
+    }
+
+    private HttpURLConnection getConnection(String contentType) throws IOException {
+        return getConnection(registryUrl, contentType);
+    }
+
+    private String getJSONString(InputStream stream) throws IOException {
+        BufferedReader rd = new BufferedReader(new InputStreamReader(stream));
+        StringBuilder sb = new StringBuilder();
+        String line;
+        while ((line = rd.readLine()) != null) {
+            sb.append(line);
+        }
+        rd.close();
+        return sb.toString();
+    }
+
+    private DocumentContext getModel(String model) throws IOException {
+        DocumentContext res = null;
+        if (modelCache.containsKey(model)) {
+            res = modelCache.get(model);
+        } else {
+            URL regUrl = new URL(registryUrl.toString() + (registryUrl.toString().endsWith("/") ? "" : "/") + model);
+            HttpURLConnection connection = getConnection(regUrl, "application/json");
+            String jsonString = getJSONString(connection.getInputStream());
+            res = JsonPath.using(conf).parse(jsonString);
+            modelCache.put(model,res);
+        }
+        return res;
+    }
+
+    /**
+     * Get a list of all OAI-PMH endpoint URLs defined in the specified
+     * registry.
+     *
+     * @return list of all OAI-PMH endpoint URLs
+     */
+    public List<String> getEndpoints() throws IOException {
+        DocumentContext model = getModel("OAIPMHEndpoint");
+        List<String> endpoints = model.read("$..uri");
+        logger.info("Found " + endpoints.size() + " endpoints");
+        return endpoints;
+    }
+
+    private List<Object> getEndpoint(String url) throws IOException {
+        DocumentContext model = getModel("OAIPMHEndpoint");
+        Filter uriFilter = filter(where("uri").is(url));
+        return model.read("$.fields[?]",uriFilter);
+    }
+
+    String endpointMapping(String endpointUrl,String endpointName) throws IOException {
+        String directoryName = Util.toFileFormat(endpointName).replaceAll("/", "");
+        
+        Filter provFilter = filter(where("@.fields.uri").is(endpointUrl));
+        List<Integer> iList = (List<Integer>)getModel("OAIPMHEndpoint").read("$.[?].fields.centre", provFilter);
+        Integer centreKey = iList.size()>0? iList.get(0):null;
+
+        String centreName = "";
+        String nationalProject = "";
+
+        if (centreKey != null) {
+            Filter centreFilter = filter(where("pk").is(centreKey));
+            List<String> sList = (List<String>)getModel("Centre").read("$[?].fields.name", centreFilter);
+            centreName = sList.size()>0? sList.get(0):"";
+
+            iList = (List<Integer>)getModel("Centre").read("$[?].fields.consortium", centreFilter);
+            Integer consortiumKey = iList.size()>0? iList.get(0):null;
+        
+            if (consortiumKey != null) {
+                Filter consortiumFilter = filter(where("pk").is(consortiumKey));
+                sList = (List<String>)getModel("Consortium").read("$[?].fields.name", consortiumFilter);
+                nationalProject = sList.size()>0? sList.get(0):"";
             }
         }
         
-	if (redirect) {
- 
-            // get redirect url from "location" header field
-            String newUrl = connection.getHeaderField("Location");
-
-            // open the new connnection again
-            
-            connection = (HttpURLConnection) new URL(newUrl).openConnection();
-            connection.setInstanceFollowRedirects(false);
-            connection.setRequestMethod("GET");
-            connection.setRequestProperty("Content-Type", "application/xml");
-            
-            logger.debug("Redirect to URL : " + newUrl);            
-            logger.debug(System.getProperty("java.runtime.version"));
-            
-            connection.connect();
-            
-            connection.getResponseCode();
-        }
-
-        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-        DocumentBuilder db = dbf.newDocumentBuilder();
-        return db.parse(connection.getInputStream());
+        return String.format("\"%s\",\"%s\",\"%s\",\"%s\"", endpointUrl.replaceAll("\"", "\"\""), directoryName.replaceAll("\"", "\"\""), centreName.replaceAll("\"", "\"\""), nationalProject.replaceAll("\"", "\"\""));
     }
+
+    public Map<String, Collection<CentreRegistrySetDefinition>> getEndPointOaiPmhSetMap() {
+        final Map<String, Collection<CentreRegistrySetDefinition>> map = new HashMap<>();
+        try {
+            final List<String> provUrls = getEndpoints();
+
+            List<String> sList = null;
+            for (String provUrl : provUrls) {
+                Set<CentreRegistrySetDefinition> setdef = new HashSet<>();
+                //JsonPath-> $[?(@.fields.uri=='http://www.phonetik.uni-muenchen.de/cgi-bin/BASRepository/oaipmh/oai.pl')].fields.oai_pmh_sets
+                Filter provFilter = filter(where("@.fields.uri").is(provUrl));                
+                List<net.minidev.json.JSONArray> s = (List<net.minidev.json.JSONArray>)getModel("OAIPMHEndpoint").read("$.[?].fields.oai_pmh_sets", provFilter);
+                for(net.minidev.json.JSONArray set:s) {
+                    for (Iterator iter = set.iterator();iter.hasNext();) {
+                        Filter setFilter = filter(where("pk").is((Integer)iter.next()));
+                        sList = (List<String>)getModel("OAIPMHEndpointSet").read("$[?].fields.set_spec", setFilter);
+                        String setSpec = (sList.size()>0 ? sList.get(0) : null);
+                        sList = (List<String>)getModel("OAIPMHEndpointSet").read("$[?].fields.set_type", setFilter);
+                        String setType = (sList.size()>0 ? sList.get(0) : null);
+                        if (setSpec!=null && setType!=null)
+                            setdef.add(new CentreRegistrySetDefinition(setSpec, setType));
+                    }
+                }
+                map.put(provUrl, setdef);
+            }
+        } catch (IOException e) {
+            logger.error("Error reading from centre registry", e);
+        }
+        return map;
+    }
+
 }
