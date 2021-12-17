@@ -40,8 +40,6 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
-import static org.mockito.Mockito.reset;
-
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
