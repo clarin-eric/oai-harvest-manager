@@ -117,7 +117,7 @@ public class Configuration {
     /**
      * Map file
      */
-    
+
     private String mapFile = "map.csv";
 
     /**
@@ -343,24 +343,24 @@ public class Configuration {
         if (importNode == null) {
             logger.debug("No import node in the configuration file");
         } else {
-            final Node includeSetTypesNode = (Node) xpath.evaluate("./includeOaiPmhSetTypes", importNode,XPathConstants.NODE);
+            final Node includeSetTypesNode = (Node) xpath.evaluate("./includeOaiPmhSetTypes", importNode, XPathConstants.NODE);
             final Collection<String> includeSetTypes;
-            if(includeSetTypesNode != null) {
+            if (includeSetTypesNode != null) {
                 includeSetTypes = Splitter.onPattern("\\s*,\\s*").splitToList(includeSetTypesNode.getTextContent());
             } else {
-                 includeSetTypes= DEFAULT_INCLUDE_SETS;
+                includeSetTypes = DEFAULT_INCLUDE_SETS;
             }
             logger.debug("Included set types: {}", includeSetTypes);
-            
-            final Node excludeSetTypesNode = (Node) xpath.evaluate("./excludeOaiPmhSetTypes", importNode,XPathConstants.NODE);
+
+            final Node excludeSetTypesNode = (Node) xpath.evaluate("./excludeOaiPmhSetTypes", importNode, XPathConstants.NODE);
             final Collection<String> excludeSetTypes;
-            if(excludeSetTypesNode != null) {
+            if (excludeSetTypesNode != null) {
                 excludeSetTypes = Splitter.onPattern("\\s*,\\s*").splitToList(excludeSetTypesNode.getTextContent());
             } else {
                 excludeSetTypes = DEFAULT_EXCLUDE_SETS;
             }
             logger.debug("Excluded set types: {}", excludeSetTypes);
-            
+
             // within the import node, look for the mandatory registry node   
             Node registryNode = (Node) xpath.evaluate("./registry", importNode,
                     XPathConstants.NODE);
@@ -376,7 +376,7 @@ public class Configuration {
                 } else {
 
                     logger.info("Importing providers from registry at {}", rUrl);
-                    
+
                     // list of endpoints to be excluded
                     ArrayList<String> excludeSpec = new ArrayList<>();
 
@@ -414,7 +414,7 @@ public class Configuration {
                     }
                     // get the list of endpoints from the centre registry
                     registryReader = new RegistryReader(new java.net.URL(rUrl));
-                    final Map<String, Collection<CentreRegistrySetDefinition>> endPointOaiPmhSetMap 
+                    final Map<String, Collection<CentreRegistrySetDefinition>> endPointOaiPmhSetMap
                             = registryReader.getEndPointOaiPmhSetMap();
 
                     // use the list to create the list of endpoints to harvest from
@@ -453,32 +453,32 @@ public class Configuration {
                                 provider.setIncremental(isIncremental());
                                 provider.setScenario(getScenario());
                             }
-                            
+
                             //configure sets
                             final Collection<CentreRegistrySetDefinition> allSets
                                     = Optional.ofNullable(endPointOaiPmhSetMap.get(provUrl))
-                                            .orElse(Collections.emptySet());
-                            
-                            if(!allSets.isEmpty()) {
+                                    .orElse(Collections.emptySet());
+
+                            if (!allSets.isEmpty()) {
                                 //apply include/exclude config
                                 final Collection<CentreRegistrySetDefinition> includedSets
                                         = new HashSet<>(allSets);
-                                if(!includeSetTypes.contains("*")) {
+                                if (!includeSetTypes.contains("*")) {
                                     //reduce to entries with type matching entry from include types
                                     includedSets.removeIf(
                                             Predicates.not(s -> includeSetTypes.contains(s.getSetType())));
-                                }                            
-                                if(!excludeSetTypes.isEmpty()) {
+                                }
+                                if (!excludeSetTypes.isEmpty()) {
                                     includedSets.removeIf(s -> excludeSetTypes.contains(s.getSetType()));
-                                }                            
+                                }
 
                                 logger.debug("Sets for {}; before include/exclude filter: {}; after filter: {}", provUrl, allSets, includedSets);
 
-                                if(!includedSets.isEmpty()) {
+                                if (!includedSets.isEmpty()) {
                                     final String[] sets = includedSets.stream()
                                             .map(CentreRegistrySetDefinition::getSetSpec)
                                             .toArray(String[]::new);
-                                    if(sets.length > 0) {
+                                    if (sets.length > 0) {
                                         provider.setSets(sets);
                                     }
                                 }
@@ -506,9 +506,9 @@ public class Configuration {
 
             int timeout = (pTimeout != null) ? Integer.valueOf(pTimeout) : getTimeout();
             int maxRetryCount = (pMaxRetryCount != null) ? Integer.valueOf(pMaxRetryCount) : getMaxRetryCount();
-            int[] retryDelays = (pRetryDelays != null)?parseRetryDelays(pRetryDelays):getRetryDelays();
+            int[] retryDelays = (pRetryDelays != null) ? parseRetryDelays(pRetryDelays) : getRetryDelays();
             boolean exclusive = Boolean.parseBoolean(pExclusive);
-            String scenario = (pScenario != null) ?  pScenario : getScenario();
+            String scenario = (pScenario != null) ? pScenario : getScenario();
 
             if (pUrl == null) {
                 logger.error("Skipping provider " + pName + ": URL is missing");
@@ -578,7 +578,7 @@ public class Configuration {
             return "workspace";
         return s;
     }
-    
+
     public Map<String, OutputDirectory> getOutputDirectories() {
         return outputs;
     }
@@ -593,7 +593,7 @@ public class Configuration {
         if (s == null) return new int[]{0};
         String[] sa = s.split("\\s+");
         int[] da = new int[sa.length];
-        for (int i=0;i<sa.length;i++)
+        for (int i = 0; i < sa.length; i++)
             da[i] = Integer.valueOf(sa[i]);
         return da;
     }
@@ -648,12 +648,12 @@ public class Configuration {
         if (!Files.exists(p)) {
             PrintWriter map = null;
             try {
-                map = new PrintWriter(new FileWriter(mapFile,true));
+                map = new PrintWriter(new FileWriter(mapFile, true));
                 map.println("endpointUrl,directoryName,centreName,nationalProject");
             } catch (IOException e) {
                 logger.error("couldn't create an initial/default " + mapFile + " file: ", e);
             } finally {
-                if (map!=null)
+                if (map != null)
                     map.close();
             }
         }
@@ -713,7 +713,7 @@ public class Configuration {
             logger.warn("Incremental harvesting cannot be enabled ... needs to be finished!");
         return false;
     }
-    
+
     /**
      * Get dry run flag.
      */
@@ -721,7 +721,7 @@ public class Configuration {
         String s = settings.get(KnownOptions.DRYRUN.toString());
         return (s == null) ? false : Boolean.valueOf(s);
     }
-    
+
     /**
      * Get scenario.
      */
@@ -729,21 +729,21 @@ public class Configuration {
         String s = settings.get(KnownOptions.SCENARIO.toString());
         return (s == null) ? "ListIndentifiers" : s;
     }
-    
+
     /**
      * Get Registry Reader
      */
     public RegistryReader getRegistryReader() {
         return this.registryReader;
     }
-    
+
     /**
      * Has a Registry Reader?
      */
     public boolean hasRegistryReader() {
-        return (this.registryReader!=null);
+        return (this.registryReader != null);
     }
-    
+
 
     /**
      * Log parsed contents of the configuration.
