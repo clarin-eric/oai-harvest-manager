@@ -40,23 +40,16 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 
 /**
@@ -93,6 +86,12 @@ public class Configuration {
      * centre registry).
      */
     private List<Provider> providers;
+
+    /**
+     * All known actions
+     */
+    private List<String> knownActions = Arrays.asList("strip", "split", "save", "transform");
+
 
     /**
      * List of names of known configuration options.
@@ -229,6 +228,17 @@ public class Configuration {
         }
     }
 
+
+    private void loadJarFile(File file) throws
+            MalformedURLException,
+            InvocationTargetException,
+            IllegalAccessException,
+            NoSuchMethodException {
+        Method addURL = URLClassLoader.class.getDeclaredMethod("addURL", URL.class);
+        addURL.setAccessible(true);
+        addURL.invoke(URLClassLoader.getSystemClassLoader(), file.toURI().toURL());
+    }
+
     /**
      * Parse the actions section only.
      *
@@ -308,6 +318,26 @@ public class Configuration {
                             act = new TransformAction(base, xslFile, cache, jobs);
                         } catch (Exception ex) {
                             logger.error(ex);
+                        }
+                    }
+                    if (true) {
+                        // load external actions according to the config file, from jar, and execute them
+                        // first, load jar from jar location
+                        String jarLocation = "/Users/vic/Documents/DI/projects/oai-harvester-manager-action/target/oai-harvester-manager-action-1.0-SNAPSHOT.jar";
+                        try {
+                            loadJarFile(new File(jarLocation));
+                        } catch (MalformedURLException | InvocationTargetException | IllegalAccessException | NoSuchMethodException e) {
+                            logger.error("Cannot load external action from external jar, jar loading failed on [" + jarLocation + "].");
+                            logger.error(e.getMessage());
+                        }
+
+                        // load action according to config file
+                        // TODO: line below mimics the actionType, should use the actionType from config file
+                        actionType = "nl.knaw.huc.di.sd.HelloWorldAction";
+                        try {
+                            act = (Action) Class.forName(actionType).getDeclaredConstructor().newInstance();
+                        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+                            e.printStackTrace();
                         }
                     }
                     if (act != null)

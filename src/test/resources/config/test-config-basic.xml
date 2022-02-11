@@ -46,6 +46,7 @@
       <action type="save" dir="rec" suffix=".xml"/>
       <action type="strip"/>
       <action type="save" dir="cmdi-1_2" suffix=".xml" history="true"/>
+      <action type="nl.knaw.huc.di.sd.HelloWorldAction" />
     </format>
     <format match="namespace" value="http://www.clarin.eu/cmd/">
       <action type="save" dir="oai" suffix=".xml"/>
