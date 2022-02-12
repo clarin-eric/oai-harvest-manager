@@ -21,7 +21,6 @@ package nl.mpi.oai.harvester.control;
 import com.google.common.base.Predicates;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableSet;
-import net.sf.saxon.expr.CastableExpression;
 import nl.mpi.oai.harvester.Provider;
 import nl.mpi.oai.harvester.StaticProvider;
 import nl.mpi.oai.harvester.action.*;
@@ -53,9 +52,17 @@ import java.net.URLClassLoader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.Arrays;
+
 
 /**
  * This class represents the settings of the application as defined in its
@@ -91,12 +98,6 @@ public class Configuration {
      * centre registry).
      */
     private List<Provider> providers;
-
-    /**
-     * All known actions
-     */
-    private List<String> knownActions = Arrays.asList("strip", "split", "save", "transform");
-
 
     /**
      * List of names of known configuration options.
@@ -369,8 +370,7 @@ public class Configuration {
                             logger.error(ex);
                         }
                     } else {
-                        // load external actions according to the config file, from jar, and execute them
-                        // first, load jar from jar location
+                        // load external actions according to the config file, from jar
                         String jarLocation = Util.getNodeText(xpath, "./@file", s);
                         logger.info("jar found in " + jarLocation);
                         try {
