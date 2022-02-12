@@ -47,7 +47,7 @@ public class Main {
 
     private static void runHarvesting(Configuration config) {
 	config.log();
-        
+
         ExecutorService executor = new ScheduledThreadPoolExecutor(config.getMaxJobs());
 
 	// create a CycleFactory
@@ -61,23 +61,23 @@ public class Main {
 	    Worker worker = new Worker(provider, config, cycle);
             executor.execute(worker);
 	}
-        
+
         executor.shutdown();
     }
 
     public static void main(String[] args) {
-        
+
         logger.info("Welcome to the main OAI Harvest Manager!");
-        
+
 	String configFile = null;
 
 	// Select Saxon XSLT/XPath implementation (necessary in case there
         // are other XSLT/XPath libraries in classpath).
-        System.setProperty("javax.xml.transform.TransformerFactory",    
+        System.setProperty("javax.xml.transform.TransformerFactory",
             "net.sf.saxon.TransformerFactoryImpl");
         System.setProperty("javax.xml.xpath.XPathFactory",
             "net.sf.saxon.xpath.XPathFactoryImpl");
-    
+
         // Some endpoints behave differently when you're not a browser, so fake it
         System.setProperty("http.agent",
             "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11");
@@ -99,7 +99,7 @@ public class Main {
 	}
 
 	// Process options given on the command line (if any), then read the
-	// configuration file. 
+	// configuration file.
 	config = new Configuration();
 	for (String arg : args) {
 	    if (arg.indexOf('=') > -1) {
@@ -113,17 +113,20 @@ public class Main {
 	}
 	try {
 	    config.readConfig(configFile);
-	} catch (ParserConfigurationException | SAXException 
+	} catch (ParserConfigurationException | SAXException
 		| XPathExpressionException | IOException ex) {
 	    logger.error("Unable to read configuration file", ex);
 	    return;
+	} catch (ClassNotFoundException ex) {
+		logger.error("One or more classes cannot be found", ex);
+		return;
 	}
 
 	// Ensure the timeout setting is honored.
 	config.applyTimeoutSetting();
 
 	runHarvesting(config);
-        
+
         logger.info("Goodbye from the main OAI Harvest Manager!");
 
     }

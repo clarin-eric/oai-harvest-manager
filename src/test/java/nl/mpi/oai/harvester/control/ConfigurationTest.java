@@ -92,7 +92,6 @@ public class ConfigurationTest {
         
         final List<ResourcePool<Action>> actions = actionSequences.get(0).getActions();
         assertEquals(6, actions.size());
-        
     }
 
     @Test

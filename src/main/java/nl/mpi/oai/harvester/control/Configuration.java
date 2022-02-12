@@ -21,6 +21,7 @@ package nl.mpi.oai.harvester.control;
 import com.google.common.base.Predicates;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableSet;
+import net.sf.saxon.expr.CastableExpression;
 import nl.mpi.oai.harvester.Provider;
 import nl.mpi.oai.harvester.StaticProvider;
 import nl.mpi.oai.harvester.action.*;
@@ -40,17 +41,21 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.BufferedWriter;
+import java.io.PrintWriter;
+import java.io.FileWriter;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
-
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 /**
  * This class represents the settings of the application as defined in its
@@ -142,7 +147,7 @@ public class Configuration {
      * @throws IOException                  problem accessing the configuration
      */
     public Configuration readConfig(String filename) throws ParserConfigurationException,
-            SAXException, XPathExpressionException, IOException {
+            SAXException, XPathExpressionException, IOException, ClassNotFoundException {
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         DocumentBuilder db = dbf.newDocumentBuilder();
         Document doc = db.parse(filename);
@@ -228,15 +233,59 @@ public class Configuration {
         }
     }
 
+    /**
+     * Check if given URL is valid
+     * @param url The URL to be checked
+     * @return true if valid, otherwise false
+     */
+    private boolean isValidUrl(String url) {
+        try {
+            URL obj = new URL(url);
+            obj.toURI();
+            return true;
+        } catch (MalformedURLException | URISyntaxException e) {
+            return false;
+        }
+    }
 
-    private void loadJarFile(File file) throws
-            MalformedURLException,
-            InvocationTargetException,
+    /**
+     * Load and return the designated action from a given jar file either on disk or from URL.
+     * If the type casting gives an error, null will be returned which will be handled by the caller.
+     *
+     * @param file      The string value of the jar file path
+     * @param className The external Action class name we are going to load
+     * @return Return the loaded action or null when the class is not of type Action
+     */
+    private Action loadClassFromJarFile(String file, String className) throws
+            IOException,
+            ClassNotFoundException,
+            InstantiationException,
             IllegalAccessException,
-            NoSuchMethodException {
-        Method addURL = URLClassLoader.class.getDeclaredMethod("addURL", URL.class);
-        addURL.setAccessible(true);
-        addURL.invoke(URLClassLoader.getSystemClassLoader(), file.toURI().toURL());
+            NoSuchMethodException,
+            InvocationTargetException {
+
+        // use ArrayList to add URL to Array
+        URL[] urls = new URL[0];
+        ArrayList<URL> urlArrayList = new ArrayList<>(Arrays.asList(urls));
+        if (isValidUrl(file)) {
+            urlArrayList.add(new URL(file));
+        } else {
+            urlArrayList.add(new URL("jar:file:" + file + "!/"));
+        }
+        urls = urlArrayList.toArray(urls);
+
+        // init class loader from all the JARs
+        URLClassLoader cl = URLClassLoader.newInstance(urls);
+
+        className = className.replace('/', '.');
+        logger.info("Loading class [" + className + "].");
+        Class<?> cls = cl.loadClass(className);
+        try {
+            return (Action) cls.getDeclaredConstructor().newInstance();
+        } catch (ClassCastException ex) {
+            logger.error("The given class [" + className + "] is not a valid Action.class");
+            return null;
+        }
     }
 
     /**
@@ -244,7 +293,7 @@ public class Configuration {
      *
      * @param base top node of the actions section
      */
-    private void parseActions(Node base) throws XPathExpressionException {
+    private void parseActions(Node base) throws XPathExpressionException, IOException, ClassNotFoundException {
         NodeList nodeList = (NodeList) xpath.evaluate("./format", base,
                 XPathConstants.NODESET);
         for (int i = 0; i < nodeList.getLength(); i++) {
@@ -319,25 +368,25 @@ public class Configuration {
                         } catch (Exception ex) {
                             logger.error(ex);
                         }
-                    }
-                    if (true) {
+                    } else {
                         // load external actions according to the config file, from jar, and execute them
                         // first, load jar from jar location
-                        String jarLocation = "/Users/vic/Documents/DI/projects/oai-harvester-manager-action/target/oai-harvester-manager-action-1.0-SNAPSHOT.jar";
+                        String jarLocation = Util.getNodeText(xpath, "./@file", s);
+                        logger.info("jar found in " + jarLocation);
                         try {
-                            loadJarFile(new File(jarLocation));
-                        } catch (MalformedURLException | InvocationTargetException | IllegalAccessException | NoSuchMethodException e) {
-                            logger.error("Cannot load external action from external jar, jar loading failed on [" + jarLocation + "].");
-                            logger.error(e.getMessage());
-                        }
-
-                        // load action according to config file
-                        // TODO: line below mimics the actionType, should use the actionType from config file
-                        actionType = "nl.knaw.huc.di.sd.HelloWorldAction";
-                        try {
-                            act = (Action) Class.forName(actionType).getDeclaredConstructor().newInstance();
-                        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
-                            e.printStackTrace();
+                            logger.info("loading class [" + actionType + "] from jar [" + jarLocation + "]");
+                            act = loadClassFromJarFile(jarLocation, actionType);
+                            logger.info("class [" + actionType + "] loaded from jar [" + jarLocation + "]");
+                        } catch (MalformedURLException e) {
+                            logger.error("Cannot load external action from external jar [" + jarLocation + "], URL malformed.", e);
+                        } catch (InvocationTargetException e) {
+                            logger.error("Cannot load external action from external jar [" + jarLocation + "], target invocation failed. ", e);
+                        } catch (InstantiationException e) {
+                            logger.error("Cannot load external action class [" + actionType + "], cannot instantiate it. ", e);
+                        } catch (IllegalAccessException e) {
+                            logger.error("Cannot load external action from external jar [" + jarLocation + "], cannot access model " + actionType + ". ", e);
+                        } catch (NoSuchMethodException e) {
+                            logger.error("Cannot load external action from external jar [" + jarLocation + "], model " + actionType + ". No such method. ", e);
                         }
                     }
                     if (act != null)
@@ -346,7 +395,7 @@ public class Configuration {
                         logger.error("Unknown action[" + actionType + "]");
                 }
 
-                ActionSequence ap = new ActionSequence(format, ac.toArray(new Action[ac.size()]),
+                ActionSequence ap = new ActionSequence(format, ac.toArray(new Action[0]),
                         getResourcePoolSize());
                 actionSequences.add(ap);
             } else {
@@ -364,7 +413,6 @@ public class Configuration {
     private void parseProviders(Node base) throws
             IOException,
             XPathExpressionException,
-            MalformedURLException,
             ParserConfigurationException {
 
         // check if there is an import node
