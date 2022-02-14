@@ -235,21 +235,6 @@ public class Configuration {
     }
 
     /**
-     * Check if given URL is valid
-     * @param url The URL to be checked
-     * @return true if valid, otherwise false
-     */
-    private boolean isValidUrl(String url) {
-        try {
-            URL obj = new URL(url);
-            obj.toURI();
-            return true;
-        } catch (MalformedURLException | URISyntaxException e) {
-            return false;
-        }
-    }
-
-    /**
      * Load and return the designated action from a given jar file either on disk or from URL.
      * If the type casting gives an error, null will be returned which will be handled by the caller.
      *
@@ -265,14 +250,11 @@ public class Configuration {
             NoSuchMethodException,
             InvocationTargetException {
 
+//        TODO: fall back to Class.forName when file is not provided
         // use ArrayList to add URL to Array
         URL[] urls = new URL[0];
         ArrayList<URL> urlArrayList = new ArrayList<>(Arrays.asList(urls));
-        if (isValidUrl(file)) {
-            urlArrayList.add(new URL(file));
-        } else {
-            urlArrayList.add(new URL("jar:file:" + file + "!/"));
-        }
+        urlArrayList.add(new URL("jar:file:" + file + "!/"));
         urls = urlArrayList.toArray(urls);
 
         // init class loader from all the JARs
