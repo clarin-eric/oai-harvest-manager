@@ -251,18 +251,25 @@ public class Configuration {
             InvocationTargetException {
 
 //        TODO: fall back to Class.forName when file is not provided
-        // use ArrayList to add URL to Array
-        URL[] urls = new URL[0];
-        ArrayList<URL> urlArrayList = new ArrayList<>(Arrays.asList(urls));
-        urlArrayList.add(new URL("jar:file:" + file + "!/"));
-        urls = urlArrayList.toArray(urls);
+        Class<?> cls;
+        if (file == null) {
+            logger.info("No jar file given, loading from class path;");
+            cls = Class.forName(className);
+        } else {
+            // use ArrayList to add URL to Array
+            URL[] urls = new URL[0];
+            ArrayList<URL> urlArrayList = new ArrayList<>(Arrays.asList(urls));
+            urlArrayList.add(new URL("jar:file:" + file + "!/"));
+            urls = urlArrayList.toArray(urls);
 
-        // init class loader from all the JARs
-        URLClassLoader cl = URLClassLoader.newInstance(urls);
+            // init class loader from all the JARs
+            URLClassLoader cl = URLClassLoader.newInstance(urls);
 
-        className = className.replace('/', '.');
-        logger.info("Loading class [" + className + "].");
-        Class<?> cls = cl.loadClass(className);
+            className = className.replace('/', '.');
+            logger.info("Loading class [" + className + "].");
+            cls = cl.loadClass(className);
+        }
+        
         try {
             return (Action) cls.getDeclaredConstructor().newInstance();
         } catch (ClassCastException ex) {
