@@ -235,7 +235,7 @@ public class Configuration {
     }
 
     /**
-     * Load and return the designated action from a given jar file either on disk or from URL.
+     * Load and return the designated action from a given jar file either on disk.
      * If the type casting gives an error, null will be returned which will be handled by the caller.
      *
      * @param file      The string value of the jar file path
@@ -250,7 +250,6 @@ public class Configuration {
             NoSuchMethodException,
             InvocationTargetException {
 
-//        TODO: fall back to Class.forName when file is not provided
         Class<?> cls;
         if (file == null) {
             logger.info("No jar file given, loading from class path;");
