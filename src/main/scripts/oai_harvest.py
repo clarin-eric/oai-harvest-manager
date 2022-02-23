@@ -303,9 +303,9 @@ class OaiHarvest:
 
     def search(self, directory):
         """
-        Search all leaf directories in the specified directory
+        Search all directories in the specified directory
         """
-        result = self.find(directory, "-mindepth", "1", "-type", "d")
+        result = self.find(directory, "-mindepth", "1", "-maxdepth", "1", "-type", "d")
         return result.splitlines()
 
     def do_rsync(self, source, destination):
