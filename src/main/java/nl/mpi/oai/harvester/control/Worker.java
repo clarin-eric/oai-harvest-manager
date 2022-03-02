@@ -141,7 +141,7 @@ class Worker implements Runnable {
                     List<String> prefixes;
 
                     // kj: annotate
-                    Scenario scenario = new Scenario(provider, actionSequence);
+                    OAIScenario scenario = new OAIScenario(provider, actionSequence);
 
                     if (provider instanceof StaticProvider) {
                         logger.debug("static harvest["+provider+"]");

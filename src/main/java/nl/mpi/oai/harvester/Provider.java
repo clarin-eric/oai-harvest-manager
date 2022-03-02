@@ -48,6 +48,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
+import nl.mpi.oai.harvester.metadata.Record;
 
 /**
  * This class represents a single OAI-PMH provider.
