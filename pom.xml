@@ -21,6 +21,11 @@
     <!-- REPOSITORIES -->
     <repositories>
         <repository>
+            <id>huygens-maven</id>
+            <name>Huygens Maven</name>
+            <url>https://maven.huygens.knaw.nl/repository</url>
+        </repository>
+        <repository>
             <id>CLARIN</id>
             <name>CLARIN Repository</name>
             <url>https://nexus.clarin.eu/content/repositories/Clarin</url>
@@ -166,7 +171,6 @@
             <artifactId>jaxb-runtime</artifactId>
             <version>2.4.0-b180725.0644</version>
         </dependency>
-    
     </dependencies>
 
     <!-- Build cycle referred plugins -->

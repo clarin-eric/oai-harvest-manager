@@ -1,4 +1,6 @@
 module oai.harvest.manager {
+    exports nl.mpi.oai.harvester.action;
+    exports nl.mpi.oai.harvester.metadata;
     requires Saxon.HE;
     requires SaxonUtils;
     requires org.apache.logging.log4j;
@@ -14,5 +16,4 @@ module oai.harvest.manager {
     requires java.logging;
     requires woodstox.core.asl;
     requires json.smart;
-//    provides nl.mpi.oai with nl.mpi.oai.harvester.action;
 }
