@@ -44,9 +44,9 @@ import java.io.IOException;
 import java.io.BufferedWriter;
 import java.io.PrintWriter;
 import java.io.FileWriter;
+import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Files;
@@ -62,6 +62,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.Arrays;
+import java.util.Objects;
 
 
 /**
@@ -255,6 +256,20 @@ public class Configuration {
             logger.info("No jar file given, loading from class path;");
             cls = Class.forName(className);
         } else {
+            // If not absolute path, get the file from resource folder and replace file with absolute path
+            ClassLoader classLoader = getClass().getClassLoader();
+            File f = new File(file);
+            if (!f.isAbsolute()) {
+                File newFile = new File(Objects.requireNonNull(classLoader.getResource(file)).getFile());
+                file = newFile.getAbsolutePath();
+                f = new File(file);
+            }
+            // if jar file does not exist, continue anyway in the hope that it can still be loaded from ClassPath,
+            // ClassNotFound will be thrown later, if class not found anywhere
+            if (!f.exists()) {
+                logger.error("The given action jar file [" + file + "] does not exist!");
+                return null;
+            }
             // use ArrayList to add URL to Array
             URL[] urls = new URL[0];
             ArrayList<URL> urlArrayList = new ArrayList<>(Arrays.asList(urls));
