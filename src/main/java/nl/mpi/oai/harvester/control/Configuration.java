@@ -260,8 +260,10 @@ public class Configuration {
             ClassLoader classLoader = getClass().getClassLoader();
             File f = new File(file);
             if (!f.isAbsolute()) {
+                logger.error(file + " is not absolute! Getting absolute path");
                 File newFile = new File(Objects.requireNonNull(classLoader.getResource(file)).getFile());
                 file = newFile.getAbsolutePath();
+                logger.error("Absolute path is [" + file + "]!");
                 f = new File(file);
             }
             // if jar file does not exist, continue anyway in the hope that it can still be loaded from ClassPath,
