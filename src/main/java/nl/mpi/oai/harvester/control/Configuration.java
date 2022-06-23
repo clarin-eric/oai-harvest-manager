@@ -201,8 +201,18 @@ public class Configuration {
                 continue;
             }
             String text = curr.getTextContent();
-            if (text != null && !text.isEmpty()
-                    && !settings.containsKey(opt)) {
+            if (text != null && !text.isEmpty() && !settings.containsKey(opt)) {
+                // TODO: add logic for parsing the new scenario ex. ListRecord, oai-ListRecord
+                // if current item is scenario, check if it contains dash
+                if (Objects.equals(opt, KnownOptions.SCENARIO.toString())) {
+                    String[] tokens = text.split("-");
+                    if (tokens.length > 1) {
+                        logger.error("len of token is " + tokens.length + ". Found protocol");
+                        settings.put("protocol", tokens[0]);
+                        text = tokens[1];
+                    }
+                }
+                // TODO: end of new code
                 settings.put(opt, text);
             }
         }
@@ -803,6 +813,20 @@ public class Configuration {
     public boolean isDryRun() {
         String s = settings.get(KnownOptions.DRYRUN.toString());
         return (s == null) ? false : Boolean.valueOf(s);
+    }
+
+    /**
+     * Get Protocol
+     */
+    public String getProtocol() {
+        // TODO: for now, get protocol will return oai if there is no protocol or empty protocol, should discuss
+        String s = "";
+        try {
+            s = settings.get("protocol");
+        } catch (Exception ex) {
+            return "oai";
+        }
+        return s == null ? "oai": s;
     }
 
     /**

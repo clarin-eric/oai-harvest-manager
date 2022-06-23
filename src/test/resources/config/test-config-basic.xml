@@ -21,7 +21,7 @@
     <!-- Default timeout (for connection and reading) for a single
     http request in seconds. If unspecified, will be INFINITE.  -->
     <timeout>60</timeout>
-    <scenario>ListRecords</scenario>
+    <scenario>oai-ListRecords</scenario>
     <incremental>false</incremental>
     <dry-run>false</dry-run>
   </settings>
