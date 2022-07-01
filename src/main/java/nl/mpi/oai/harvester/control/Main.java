@@ -53,6 +53,7 @@ public class Main {
 
     private static void runHarvesting(Configuration config) {
         config.log();
+        String defaultProtocol = "nl.mpi.oai.harvester.protocol.OaiProtocol";
 
         ExecutorService executor = new ScheduledThreadPoolExecutor(config.getMaxJobs());
 
@@ -66,21 +67,18 @@ public class Main {
         String protocolString = config.getProtocol();
         logger.info("Protocol is " + protocolString);
         Class<?> c;
-        if (Objects.equals(protocolString, "nde")) {
-            try {
-                c = Class.forName("nl.mpi.oai.harvester.protocol.NdeProtocol");
-                logger.info("Loading protocol class " + protocolString);
-            } catch (ClassNotFoundException e) {
-                throw new RuntimeException(e);
-            }
 
-        } else {
-            // default protocol is OAI-PMH
+        // Load the protocol, default to OAI in case of error
+        try {
+            logger.info("Loading protocol class " + protocolString);
+            c = Class.forName(protocolString);
+        } catch (ClassNotFoundException e) {
             try {
-                c = Class.forName("nl.mpi.oai.harvester.protocol.OaiProtocol");
-                logger.info("Loading protocol class " + protocolString);
-            } catch (ClassNotFoundException e) {
-                throw new RuntimeException(e);
+                logger.info("Cannot load " + protocolString + "; Loading default protocol: OAI-PMH. ");
+                c = Class.forName(defaultProtocol);
+            } catch (ClassNotFoundException ex) {
+                logger.error("Cannot load default protocol OAI-PMH. Quitting! ");
+                throw new RuntimeException(ex);
             }
         }
 
@@ -92,14 +90,14 @@ public class Main {
             throw new RuntimeException(ex);
         }
 
-        // loop through providers and create new protocol as worker then execute
+        // loop through providers and create new protocol instances as workers then execute
         Object[] parameters;
         for (Provider provider : config.getProviders()) {
             // create a new worker
             // Worker worker = new Worker(provider, config, cycle);
             // executor.execute(worker);
 
-            // TODO: new code; replace worker with protocol
+            // new code; replace worker with protocol
             parameters = new Object[] {provider, config, cycle};
             try {
                 Protocol worker = (Protocol) constructor.newInstance(parameters);
@@ -107,7 +105,7 @@ public class Main {
             } catch (InvocationTargetException | IllegalAccessException | InstantiationException e) {
                 throw new RuntimeException(e);
             }
-            // TODO: end new code
+            // end new code
         }
 
         executor.shutdown();
