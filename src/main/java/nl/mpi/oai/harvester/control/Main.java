@@ -64,17 +64,21 @@ public class Main {
 
         // Load the corresponding protocol class according to config.settings.protocol
         String protocolString = config.getProtocol();
+        logger.info("Protocol is " + protocolString);
         Class<?> c;
-        if (Objects.equals(protocolString, "oai")) {
+        if (Objects.equals(protocolString, "nde")) {
             try {
-                c = Class.forName("nl.mpi.oai.harvester.protocol.OaiProtocol");
+                c = Class.forName("nl.mpi.oai.harvester.protocol.NdeProtocol");
+                logger.info("Loading protocol class " + protocolString);
             } catch (ClassNotFoundException e) {
                 throw new RuntimeException(e);
             }
 
         } else {
+            // default protocol is OAI-PMH
             try {
                 c = Class.forName("nl.mpi.oai.harvester.protocol.OaiProtocol");
+                logger.info("Loading protocol class " + protocolString);
             } catch (ClassNotFoundException e) {
                 throw new RuntimeException(e);
             }

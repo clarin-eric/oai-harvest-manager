@@ -108,7 +108,8 @@ public class Configuration {
         RETRYDELAY("retry-delay"), MAXJOBS("max-jobs"),
         POOLSIZE("resource-pool-size"), TIMEOUT("timeout"),
         OVERVIEWFILE("overview-file"), MAPFILE("map-file"),
-        SAVERESPONSE("save-response"), SCENARIO("scenario"), INCREMENTAL("incremental"), DRYRUN("dry-run");
+        SAVERESPONSE("save-response"), PROTOCOL("protocol"),
+        SCENARIO("scenario"), INCREMENTAL("incremental"), DRYRUN("dry-run");
         private final String val;
 
         KnownOptions(final String s) {
@@ -202,17 +203,6 @@ public class Configuration {
             }
             String text = curr.getTextContent();
             if (text != null && !text.isEmpty() && !settings.containsKey(opt)) {
-                // TODO: add logic for parsing the new scenario ex. ListRecord, oai-ListRecord
-                // if current item is scenario, check if it contains dash
-                if (Objects.equals(opt, KnownOptions.SCENARIO.toString())) {
-                    String[] tokens = text.split("-");
-                    if (tokens.length > 1) {
-                        logger.error("len of token is " + tokens.length + ". Found protocol");
-                        settings.put("protocol", tokens[0]);
-                        text = tokens[1];
-                    }
-                }
-                // TODO: end of new code
                 settings.put(opt, text);
             }
         }
@@ -824,8 +814,10 @@ public class Configuration {
         try {
             s = settings.get("protocol");
         } catch (Exception ex) {
+            logger.info("Error configuration getting protocol string, default to: [" + s + "]");
             return "oai";
         }
+        logger.info("Configuration getting protocol string: [" + s + "]");
         return s == null ? "oai": s;
     }
 
