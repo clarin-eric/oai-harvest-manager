@@ -1,0 +1,85 @@
+<!-- This is the configuration for CLARIN harvesting. -->
+<config>
+
+  <!-- ### configuration settings ### -->
+  <settings>
+    <!-- Working directory. -->
+    <workdir>{{workdir}}</workdir>
+
+    <!-- Maximum number of attempts per record before giving up. -->
+    <max-retry-count>2</max-retry-count>
+
+    <!-- Delay between retries of a record (seconds). -->
+    <retry-delay>10</retry-delay>
+
+    <!-- Maximum number of concurrent harvester threads -->
+    <max-jobs>4</max-jobs>
+
+    <!-- Number of resources placed in the resource pool. -->
+    <resource-pool-size>4</resource-pool-size>
+
+    <!-- Default timeout (for connection and reading) for a single
+    http request in seconds. If unspecified, will be INFINITE.  -->
+    <timeout>60</timeout>
+    <protocol>nde</protocol>
+    <scenario>ListRecords</scenario>
+    <incremental>false</incremental>
+    <dry-run>false</dry-run>
+  </settings>
+
+  <!-- ### output directories (referenced in the action section) ### -->
+  <directories>
+    <!-- When the attribute 'max-files' is non-zero, subdirectories
+         will be created to ensure no directory has more than that
+         number of files. -->
+    <dir path="oai-rec" id="rec" max-files="0"/>
+    <dir path="oai-pmh" id="oai" max-files="0"/>
+    <dir path="results/cmdi-1_1" id="cmdi-1_1" max-files="0"/>
+    <dir path="results/cmdi" id="cmdi-1_2" max-files="0"/>
+  </directories>
+  
+  
+  <!-- ### actions to take on metadata formats (in order of preference) ### -->
+  <actions>
+    <format match="namespace" value="http://www.clarin.eu/cmd/1">
+      <action type="save" dir="oai" suffix=".xml"/>
+      <action type="split"/>
+      <action type="save" dir="rec" suffix=".xml"/>
+      <action type="strip"/>
+      <action type="save" dir="cmdi-1_2" suffix=".xml" history="true"/>
+      <action type="nl.mpi.oai.harvester.action.SplitAction" />
+      <action type="nl.knaw.huc.di.sd.HelloWorldAction" file="/Users/vic/Documents/DI/projects/oai-harvest-manager-action/target/oai-harvester-manager-action-1.0-SNAPSHOT.jar" />
+      <action type="nl.knaw.huc.di.sd.HelloWorldAction" file="oai-harvester-manager-action-1.0-SNAPSHOT.jar" />
+    </format>
+    <format match="namespace" value="http://www.clarin.eu/cmd/">
+      <action type="save" dir="oai" suffix=".xml"/>
+    </format>
+    <format match="prefix" value="olac">
+      <action type="save" dir="oai" suffix=".xml"/>
+    </format>
+    <format match="prefix" value="oai_dc">
+      <action type="save" dir="oai" suffix=".xml"/>
+    </format>
+  </actions>
+  
+  <!-- ### list of providers ### -->
+  <providers>
+    <!--<provider url="http://archief.meertens.knaw.nl/oaiprovider/"/>
+    <provider url="http://www.elra.info/elrac/elra_catalogue.xml" static="true"
+	      name="European Language Resources Association"/>
+    <provider url="http://catalog.paradisec.org.au/oai/item"
+	      name="Pacific And Regional Archive for Digital Sources in Endangered Cultures (PARADISEC)"/>
+    <provider url="https://b2share.eudat.eu/oai2d/" name="B2SHARE">
+      <set>Linguistics</set>
+    </provider>
+    <provider url="http://clarino.uib.no/oai"/>
+    <provider url="https://repo.clarino.uib.no/oai/request"/>
+    <provider url="http://catalog.paradisec.org.au/oai/item"
+      name="Pacific And Regional Archive for Digital Sources in Endangered Cultures (PARADISEC)"/>
+    <provider url="https://lindat.mff.cuni.cz/repository/oai/request"/>
+    <provider url="https://arche.acdh.oeaw.ac.at/oai"/>
+    <provider url="https://clarinportulan.net/oaipmh/"/>
+-->
+    <provider url="https://www.meertens.knaw.nl/flat/oai2"/>
+  </providers>
+</config>
