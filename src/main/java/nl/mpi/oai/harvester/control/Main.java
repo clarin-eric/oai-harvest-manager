@@ -51,7 +51,7 @@ public class Main {
      */
     public static Configuration config;
 
-    private static void runHarvesting(Configuration config) {
+    public static void runHarvesting(Configuration config) {
         config.log();
         String defaultProtocol = "nl.mpi.oai.harvester.protocol.OaiProtocol";
 
