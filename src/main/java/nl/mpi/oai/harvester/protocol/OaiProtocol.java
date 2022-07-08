@@ -85,7 +85,7 @@ public class OaiProtocol extends Protocol {
     public void run() {
         Throwable t = null;
         try {
-            logger.debug("Welcome to OAI Harvest Manager worker!");
+            logger.info("Welcome to OAI Harvest Manager worker!");
             provider.init();
 
             Thread.currentThread().setName(provider.getName().replaceAll("[^a-zA-Z0-9\\-\\(\\)]", " "));

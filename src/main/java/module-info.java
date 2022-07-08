@@ -6,9 +6,9 @@ module oai.harvest.manager {
     requires org.apache.logging.log4j;
     requires stax2.api;
     requires java.xml;
+    requires java.xml.bind;
     requires java.management;
     requires org.joda.time;
-    requires java.xml.bind;
     requires org.apache.commons.io;
     requires xalan;
     requires json.path;
@@ -16,4 +16,6 @@ module oai.harvest.manager {
     requires java.logging;
     requires woodstox.core.asl;
     requires json.smart;
+    requires java.activation;
+    requires unirest.java;
 }

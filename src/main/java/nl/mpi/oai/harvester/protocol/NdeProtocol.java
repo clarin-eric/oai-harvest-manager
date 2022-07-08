@@ -1,24 +1,42 @@
 package nl.mpi.oai.harvester.protocol;
 
+import net.sf.saxon.s9api.SaxonApiException;
+import net.sf.saxon.s9api.XdmAtomicValue;
+import net.sf.saxon.s9api.XdmValue;
 import nl.mpi.oai.harvester.Provider;
 import nl.mpi.oai.harvester.action.ActionSequence;
 import nl.mpi.oai.harvester.control.Configuration;
+import nl.mpi.oai.harvester.control.FileSynchronization;
+import nl.mpi.oai.harvester.control.Util;
 import nl.mpi.oai.harvester.cycle.Cycle;
 import nl.mpi.oai.harvester.cycle.Endpoint;
+import nl.mpi.oai.harvester.metadata.Metadata;
+import nl.mpi.tla.util.Saxon;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.ThreadContext;
 
+import java.io.StringReader;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import com.mashape.unirest.http.HttpResponse;
+import com.mashape.unirest.http.Unirest;
+import com.mashape.unirest.http.exceptions.UnirestException;
+import org.w3c.dom.Document;
+import org.xml.sax.InputSource;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 
 /**
  * This class represents a single processing thread in the harvesting actions
  * workflow. In practice one worker takes care of one provider. The worker
- * applies a scenario for harvesting: first get record identifiers, after that
- * get the records individually. Alternatively, in a second scenario, it gets
- * multiple records per OAI request directly.
+ * applies a scenario for harvesting
  *
- * @author Lari Lampen (MPI-PL), extensions by Kees Jan van de Looij (MPI-PL)
- * extensions by Vic Ding (HUC/DI KNAW)
+ * @author Vic Ding (HUC/DI KNAW)
  */
 public class NdeProtocol extends Protocol {
     private final Logger logger = LogManager.getLogger(this.getClass());
@@ -71,6 +89,94 @@ public class NdeProtocol extends Protocol {
 
     @Override
     public void run() {
-        logger.info("### Running NDE harvesting....");
+        logger.info("Welcome to NDE Harvest Manager worker!");
+        provider.init();
+        logger.info("provider inited");
+        Thread.currentThread().setName(provider.getName().replaceAll("[^a-zA-Z0-9\\-\\(\\)]", " "));
+        logger.info("thread inited");
+
+        // setting specific log filename
+        ThreadContext.put("logFileName", Util.toFileFormat(provider.getName()).replaceAll("/", ""));
+        logger.info("context inited");
+
+        // TODO: what is map doing?
+//        String map = config.getMapFile();
+//        synchronized (map) {
+//            PrintWriter m = null;
+//            try {
+//                m = new PrintWriter(new FileWriter(map, true));
+//                if (config.hasRegistryReader()) {
+//                    m.println(config.getRegistryReader().endpointMapping(provider.getOaiUrl(), provider.getName()));
+//                } else {
+//                    m.printf("%s,%s,,", provider.getOaiUrl(), Util.toFileFormat(provider.getName()).replaceAll("/", ""));
+//                    m.println();
+//                }
+//            } catch (IOException e) {
+//                logger.error("failed to write to the map file!", e);
+//            } finally {
+//                if (m != null)
+//                    m.close();
+//            }
+//        }
+        // TODO: ??
+
+        boolean done = false;
+
+        logger.info("Processing provider[" + provider + "] " +
+                "using scenario[" + scenarioName + "], " +
+                "incremental[" + provider.getIncremental() + "], " +
+                "timeout[" + provider.getTimeout() + "] " +
+                "and retry[count=" + provider.getMaxRetryCount() + ", " +
+                "delays=" + Arrays.toString(provider.getRetryDelays()) + "]"
+        );
+
+        FileSynchronization.addProviderStatistic(provider);
+        logger.info("statistical info added");
+
+        logger.info("before try");
+        String queryString = config.getQuery();
+        // transforming queryString as the original is escaped
+        Map<String, XdmValue> vars = new HashMap<>();
+        vars.put("provider-url", new XdmAtomicValue(provider.getOaiUrl()));
+        try {
+            queryString = Saxon.avt(queryString, Saxon.wrapNode(config.getDoc()), vars);
+        } catch (SaxonApiException e) {
+            throw new RuntimeException(e);
+        }
+
+        // query
+        HttpResponse<String> response;
+        try {
+            response = Unirest.post(config.getQueryEndpoint())
+                    .header("accept", "application/sparql-results+xml")
+                    .field("query", queryString)
+                    .asString();
+            logger.info("This is the response string: " + response.getBody());
+        } catch (UnirestException e) {
+            logger.error("cannot get result back as string");
+            throw new RuntimeException(e);
+        }
+
+        // load xml string as doc
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder builder;
+        Document doc = null;
+        try {
+            builder = factory.newDocumentBuilder();
+            doc = builder.parse(new InputSource(new StringReader(response.getBody())));
+//            logger.info("This is the doc string: " + doc);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        // apply the action seq
+        logger.info("Size of actionSequences is: " + actionSequences.size());
+        for (final ActionSequence actionSequence : actionSequences) {
+
+            logger.info("Action sequence is: " + actionSequence.toString());
+            actionSequence.runActions(new Metadata(provider.getName(), "nde", doc, provider, true, true));
+        }
+
+        logger.info("after try");
     }
 }

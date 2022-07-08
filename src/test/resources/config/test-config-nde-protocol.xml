@@ -4,7 +4,7 @@
   <!-- ### configuration settings ### -->
   <settings>
     <!-- Working directory. -->
-    <workdir>{{workdir}}</workdir>
+    <workdir>/Users/vic/Desktop/tmp</workdir>
 
     <!-- Maximum number of attempts per record before giving up. -->
     <max-retry-count>2</max-retry-count>
@@ -32,7 +32,7 @@
 
       SELECT * WHERE
       {{
-      BIND (&lt;{$provider/@url}> as ?publisher)
+      BIND (&lt;{$provider-url}> as ?publisher)
 
       ?dataset a dcat:Dataset ;
       dct:title ?title ;
@@ -71,34 +71,19 @@
     <!-- When the attribute 'max-files' is non-zero, subdirectories
          will be created to ensure no directory has more than that
          number of files. -->
-    <dir path="oai-rec" id="rec" max-files="0"/>
-    <dir path="oai-pmh" id="oai" max-files="0"/>
-    <dir path="results/cmdi-1_1" id="cmdi-1_1" max-files="0"/>
-    <dir path="results/cmdi" id="cmdi-1_2" max-files="0"/>
+    <dir path="cmdi" id="rec" max-files="0"/>
+    <dir path="middle" id="middle" max-files="0"/>
+    <dir path="first" id="first" max-files="0"/>
   </directories>
-  
-  
+
+
   <!-- ### actions to take on metadata formats (in order of preference) ### -->
   <actions>
-    <format match="namespace" value="http://www.clarin.eu/cmd/1">
-      <action type="save" dir="oai" suffix=".xml"/>
-      <action type="split"/>
+      <action type="save" dir="first" suffix=".xml"/>
+      <action type="transform" file="https://raw.githubusercontent.com/CLARIAH/harvest-config/main/srx-split.xsl"/>
+      <action type="save" dir="middle" suffix=".xml"/>
+      <action type="transform" file="https://raw.githubusercontent.com/CLARIAH/harvest-config/main/srx2cmdi.xsl"/>
       <action type="save" dir="rec" suffix=".xml"/>
-      <action type="strip"/>
-      <action type="save" dir="cmdi-1_2" suffix=".xml" history="true"/>
-      <action type="nl.mpi.oai.harvester.action.SplitAction" />
-      <action type="nl.knaw.huc.di.sd.HelloWorldAction" file="/Users/vic/Documents/DI/projects/oai-harvest-manager-action/target/oai-harvester-manager-action-1.0-SNAPSHOT.jar" />
-      <action type="nl.knaw.huc.di.sd.HelloWorldAction" file="oai-harvester-manager-action-1.0-SNAPSHOT.jar" />
-    </format>
-    <format match="namespace" value="http://www.clarin.eu/cmd/">
-      <action type="save" dir="oai" suffix=".xml"/>
-    </format>
-    <format match="prefix" value="olac">
-      <action type="save" dir="oai" suffix=".xml"/>
-    </format>
-    <format match="prefix" value="oai_dc">
-      <action type="save" dir="oai" suffix=".xml"/>
-    </format>
   </actions>
   
   <!-- ### list of providers ### -->
@@ -120,5 +105,6 @@
     <provider url="https://clarinportulan.net/oaipmh/"/>
 -->
     <provider url="http://data.bibliotheken.nl/id/thes/p075301482" name="KB"/>
+    <provider url="https://uba.uva.nl/" name="UBA"/>
   </providers>
 </config>

@@ -6,6 +6,7 @@
 package nl.mpi.oai.harvester.control;
 
 import com.google.common.base.Charsets;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -14,6 +15,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.function.Function;
+
 import org.junit.Test;
 import org.junit.Rule;
 import org.junit.rules.TemporaryFolder;
@@ -21,7 +23,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
  * @author Vic Ding <qiqing.ding@di.huc.knaw.nl>
  */
 public class MainTest {
@@ -37,18 +38,20 @@ public class MainTest {
     private final Function<String, String> testConfigFilter
             = line -> line.replaceAll("\\{\\{workdir\\}\\}", workdir.getRoot().getAbsolutePath());
 
-    @Test
-    public void testRunHarvestingDefaultProtocol() throws Exception {
-        // TODO: assert something
-        final Configuration config = readConfig(BASIC_CONFIG_WITH_DEFAULT_PROTOCOL);
-        Main.runHarvesting(config);
-    }
+//    @Test
+//    public void testRunHarvestingDefaultProtocol() throws Exception {
+//        // TODO: assert something
+//        final Configuration config = readConfig(BASIC_CONFIG_WITH_DEFAULT_PROTOCOL);
+//        Main.runHarvesting(config);
+//    }
 
     @Test
     public void testRunHarvestingNdeProtocol() throws Exception {
         // TODO: assert something
         final Configuration config = readConfig(BASIC_CONFIG_WITH_NDE_PROTOCOL);
         Main.runHarvesting(config);
+        // TODO: let the test wait for the threads instead of waiting for 5"
+        Thread.sleep(5000);
     }
 
     private Configuration readConfig(String name) throws Exception {

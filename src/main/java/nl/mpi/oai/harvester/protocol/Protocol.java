@@ -66,8 +66,5 @@ public abstract class Protocol implements Runnable {
         this.scenarioName = provider.getScenario();
     }
 
-    @Override
-    public void run() {
-
-    }
+    public abstract void run();
 }
