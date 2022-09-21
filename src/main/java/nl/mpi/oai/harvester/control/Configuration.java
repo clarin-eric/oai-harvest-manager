@@ -345,6 +345,12 @@ public class Configuration {
             } catch (ParserConfigurationException ex) {
                 logger.error(ex);
             }
+        } else if ("xml-split".equals(actionType)) {
+            try {
+                act = new XMLSplitAction();
+            } catch (ParserConfigurationException ex) {
+                logger.error(ex);
+            }
         } else if ("save".equals(actionType)) {
             String outDirId = Util.getNodeText(xpath, "./@dir", base);
             boolean history = Boolean.parseBoolean(Util.getNodeText(xpath, "./@history", base));
