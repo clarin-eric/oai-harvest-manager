@@ -1,10 +1,10 @@
-<!-- This is the configuration for CLARIN harvesting. -->
+<!-- This is the configuration for CLARIAH NDE harvesting. -->
 <config>
 
   <!-- ### configuration settings ### -->
   <settings>
     <!-- Working directory. -->
-    <workdir>/Users/vic/Desktop/tmp</workdir>
+    <workdir>workspace</workdir>
 
     <!-- Maximum number of attempts per record before giving up. -->
     <max-retry-count>2</max-retry-count>
@@ -72,20 +72,18 @@
          will be created to ensure no directory has more than that
          number of files. -->
     <dir path="cmdi" id="rec" max-files="0"/>
-    <dir path="middle" id="middle" max-files="0"/>
-    <dir path="first" id="first" max-files="0"/>
   </directories>
-
 
   <!-- ### actions to take on metadata formats (in order of preference) ### -->
   <actions>
-      <action type="save" dir="first" suffix=".xml"/>
+    <format match="type" value="*">
       <action type="transform" file="https://raw.githubusercontent.com/CLARIAH/harvest-config/main/srx-split.xsl"/>
-      <action type="save" dir="middle" suffix=".xml"/>
+      <action type="xml-split"/>
       <action type="transform" file="https://raw.githubusercontent.com/CLARIAH/harvest-config/main/srx2cmdi.xsl"/>
       <action type="save" dir="rec" suffix=".xml"/>
+    </format>
   </actions>
-  
+
   <!-- ### list of providers ### -->
   <providers>
     <!--<provider url="http://archief.meertens.knaw.nl/oaiprovider/"/>
@@ -104,7 +102,8 @@
     <provider url="https://arche.acdh.oeaw.ac.at/oai"/>
     <provider url="https://clarinportulan.net/oaipmh/"/>
 -->
-    <provider url="http://data.bibliotheken.nl/id/thes/p075301482" name="KB"/>
+<!--    <nde-registry url="https://centres.clarin.eu/api/model"/>-->
+<!--    <provider url="http://data.bibliotheken.nl/id/thes/p075301482" name="KB"/>-->
     <provider url="https://uba.uva.nl/" name="UBA"/>
   </providers>
 </config>

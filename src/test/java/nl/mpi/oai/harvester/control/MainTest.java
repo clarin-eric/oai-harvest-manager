@@ -29,7 +29,6 @@ public class MainTest {
 
     private final static Logger logger = LoggerFactory.getLogger(MainTest.class);
 
-    private static final String BASIC_CONFIG_WITH_DEFAULT_PROTOCOL = "/config/test-config-default-protocol.xml";
     private static final String BASIC_CONFIG_WITH_NDE_PROTOCOL = "/config/test-config-nde-protocol.xml";
 
     @Rule
