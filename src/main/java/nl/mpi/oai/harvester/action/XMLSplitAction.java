@@ -82,10 +82,6 @@ public class XMLSplitAction implements Action {
 
             if (record.hasDoc()) {
 
-                // Get the child nodes of the "metadata" tag;
-                // that's the content of the response without the
-                // OAI-PMH envelope.
-
                 NodeList content = null;
                 try {
                     content = (NodeList) xpath.evaluate("/records/record/*",
@@ -99,9 +95,12 @@ public class XMLSplitAction implements Action {
                         Document doc = db.newDocument();
                         Node copy = doc.importNode(content.item(i), true);
                         doc.appendChild(copy);
-                        String id = "";
                         try {
-                            id = "rec-"+i;
+                            String id = (String) xpath.evaluate(
+                                "./@id",
+                                content.item(i),XPathConstants.STRING);
+                            if (id == null || id.equals(""))
+                                id = "rec-"+i;
                             logger.debug("split off XML doc["+i+"]["+id+"]");
                                 newRecords.add( new Metadata(
                                         id, record.getPrefix(),
