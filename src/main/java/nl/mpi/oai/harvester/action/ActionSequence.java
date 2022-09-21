@@ -126,8 +126,8 @@ public class ActionSequence {
      */
     public void runActions(List<Metadata> metadata) {
 
-	// keep track of whether or not the action is the first in the sequence
-	boolean firstAction = true;
+        // keep track of whether or not the action is the first in the sequence
+        boolean firstAction = true;
 
         for (ResourcePool<Action> actPool : actions) {
                 // claim an action in the pool
