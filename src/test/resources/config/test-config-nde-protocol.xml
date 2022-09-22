@@ -106,6 +106,7 @@
 -->
 <!--    <nde-registry url="https://centres.clarin.eu/api/model"/>-->
     <provider url="http://data.bibliotheken.nl/id/thes/p075301482" name="KB"/>
+    <provider url="https://www.beeldengeluid.nl" name="SV"/>
 <!--    <provider url="https://uba.uva.nl/" name="UBA"/>-->
   </providers>
 </config>

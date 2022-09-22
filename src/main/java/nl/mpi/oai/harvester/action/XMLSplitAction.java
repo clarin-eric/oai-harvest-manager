@@ -97,7 +97,7 @@ public class XMLSplitAction implements Action {
                         doc.appendChild(copy);
 
                         try {
-                            id = (String) xpath.evaluate("./@id", content.item(i),XPathConstants.STRING);
+                            id = (String) xpath.evaluate("../@id", content.item(i),XPathConstants.STRING);
                             if (id == null || id.equals("")) id = "rec-"+i;
                             logger.debug("split off XML doc["+i+"]["+id+"]");
                                 newRecords.add( new Metadata(
