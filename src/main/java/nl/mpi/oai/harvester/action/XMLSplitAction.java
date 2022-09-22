@@ -82,10 +82,6 @@ public class XMLSplitAction implements Action {
 
             if (record.hasDoc()) {
 
-                // Get the child nodes of the "metadata" tag;
-                // that's the content of the response without the
-                // OAI-PMH envelope.
-
                 NodeList content = null;
                 try {
                     content = (NodeList) xpath.evaluate("/records/record/*",
@@ -93,7 +89,6 @@ public class XMLSplitAction implements Action {
                 } catch (XPathExpressionException ex) {
                     logger.error(ex);
                 }
-                logger.debug("#####" + content != null);
                 if ((content != null) && (content.getLength()>0)) {
                     String id;
                     for (int i=0;i<content.getLength();i++) {
@@ -101,11 +96,16 @@ public class XMLSplitAction implements Action {
                         Node copy = doc.importNode(content.item(i), true);
                         doc.appendChild(copy);
 
-                        id = "rec-"+i;
-                        logger.debug("split off XML doc["+i+"]["+id+"]");
-                        newRecords.add( new Metadata(
-                                id, record.getPrefix(),
-                                doc, record.getOrigin(), false, false));
+                        try {
+                            id = (String) xpath.evaluate("./@id", content.item(i),XPathConstants.STRING);
+                            if (id == null || id.equals("")) id = "rec-"+i;
+                            logger.debug("split off XML doc["+i+"]["+id+"]");
+                                newRecords.add( new Metadata(
+                                        id, record.getPrefix(),
+                                        doc, record.getOrigin(), false, false));
+                        } catch (XPathExpressionException ex) {
+                            logger.error(ex);
+                        }
                     }
                 } else
                     logger.warn("No content was found in this envelope["+record.getId()+"]");

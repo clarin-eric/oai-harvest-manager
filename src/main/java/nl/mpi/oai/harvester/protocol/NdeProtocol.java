@@ -91,13 +91,10 @@ public class NdeProtocol extends Protocol {
     public void run() {
         logger.info("Welcome to NDE Harvest Manager worker!");
         provider.init();
-        logger.info("provider inited");
         Thread.currentThread().setName(provider.getName().replaceAll("[^a-zA-Z0-9\\-\\(\\)]", " "));
-        logger.info("thread inited");
 
         // setting specific log filename
         ThreadContext.put("logFileName", Util.toFileFormat(provider.getName()).replaceAll("/", ""));
-        logger.info("context inited");
 
         // TODO: what is map doing?
 //        String map = config.getMapFile();
@@ -131,9 +128,7 @@ public class NdeProtocol extends Protocol {
         );
 
         FileSynchronization.addProviderStatistic(provider);
-        logger.info("statistical info added");
 
-        logger.info("before try");
         String queryString = config.getQuery();
         // transforming queryString as the original is escaped
         Map<String, XdmValue> vars = new HashMap<>();
@@ -151,7 +146,7 @@ public class NdeProtocol extends Protocol {
                     .header("accept", "application/sparql-results+xml")
                     .field("query", queryString)
                     .asString();
-            logger.info("This is the response string: " + response.getBody());
+            logger.info("Query run successfully!");
         } catch (UnirestException e) {
             logger.error("cannot get result back as string");
             throw new RuntimeException(e);
@@ -164,7 +159,6 @@ public class NdeProtocol extends Protocol {
         try {
             builder = factory.newDocumentBuilder();
             doc = builder.parse(new InputSource(new StringReader(response.getBody())));
-//            logger.info("This is the doc string: " + doc);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -176,7 +170,5 @@ public class NdeProtocol extends Protocol {
             logger.info("Action sequence is: " + actionSequence.toString());
             actionSequence.runActions(new Metadata(provider.getName(), "nde", doc, provider, true, true));
         }
-
-        logger.info("after try");
     }
 }
