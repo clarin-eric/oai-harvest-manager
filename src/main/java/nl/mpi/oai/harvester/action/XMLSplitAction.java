@@ -57,7 +57,7 @@ import java.util.List;
  */
 public class XMLSplitAction implements Action {
 
-    private final Logger logger = LogManager.getLogger(SplitAction.class);
+    private final Logger logger = LogManager.getLogger(XMLSplitAction.class);
 
     private final XPath xpath;
     private final DocumentBuilder db;
@@ -93,22 +93,19 @@ public class XMLSplitAction implements Action {
                 } catch (XPathExpressionException ex) {
                     logger.error(ex);
                 }
-
+                logger.debug("#####" + content != null);
                 if ((content != null) && (content.getLength()>0)) {
+                    String id;
                     for (int i=0;i<content.getLength();i++) {
                         Document doc = db.newDocument();
                         Node copy = doc.importNode(content.item(i), true);
                         doc.appendChild(copy);
-                        String id = "";
-                        try {
-                            id = "rec-"+i;
-                            logger.debug("split off XML doc["+i+"]["+id+"]");
-                                newRecords.add( new Metadata(
-                                        id, record.getPrefix(),
-                                        doc, record.getOrigin(), false, false));
-                        } catch (XPathExpressionException ex) {
-                            logger.error(ex);
-                        }
+
+                        id = "rec-"+i;
+                        logger.debug("split off XML doc["+i+"]["+id+"]");
+                        newRecords.add( new Metadata(
+                                id, record.getPrefix(),
+                                doc, record.getOrigin(), false, false));
                     }
                 } else
                     logger.warn("No content was found in this envelope["+record.getId()+"]");
@@ -279,7 +276,7 @@ public class XMLSplitAction implements Action {
 
     @Override
     public String toString() {
-	return "split";
+	return "xml-split";
     }
 
     // All split actions are equal.
@@ -289,7 +286,7 @@ public class XMLSplitAction implements Action {
     }
     @Override
     public boolean equals(Object o) {
-        return o instanceof SplitAction;
+        return o instanceof XMLSplitAction;
     }
 
     @Override
@@ -297,7 +294,7 @@ public class XMLSplitAction implements Action {
 	try {
 	    // All split actions are the same. This is effectively a "deep"
 	    // copy since it has its own XPath object.
-	    return new SplitAction();
+	    return new XMLSplitAction();
 	} catch (ParserConfigurationException ex) {
 	    logger.error(ex);
 	}
