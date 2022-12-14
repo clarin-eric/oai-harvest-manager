@@ -42,7 +42,7 @@
       <directory>target/lib</directory>
       <outputDirectory>lib</outputDirectory>
       <includes>
-	<include>**/*</include>
+	      <include>**/*</include>
       </includes>
     </fileSet>
   </fileSets>
