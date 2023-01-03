@@ -88,25 +88,8 @@
 
   <!-- ### list of providers ### -->
   <providers>
-    <!--<provider url="http://archief.meertens.knaw.nl/oaiprovider/"/>
-    <provider url="http://www.elra.info/elrac/elra_catalogue.xml" static="true"
-	      name="European Language Resources Association"/>
-    <provider url="http://catalog.paradisec.org.au/oai/item"
-	      name="Pacific And Regional Archive for Digital Sources in Endangered Cultures (PARADISEC)"/>
-    <provider url="https://b2share.eudat.eu/oai2d/" name="B2SHARE">
-      <set>Linguistics</set>
-    </provider>
-    <provider url="http://clarino.uib.no/oai"/>
-    <provider url="https://repo.clarino.uib.no/oai/request"/>
-    <provider url="http://catalog.paradisec.org.au/oai/item"
-      name="Pacific And Regional Archive for Digital Sources in Endangered Cultures (PARADISEC)"/>
-    <provider url="https://lindat.mff.cuni.cz/repository/oai/request"/>
-    <provider url="https://arche.acdh.oeaw.ac.at/oai"/>
-    <provider url="https://clarinportulan.net/oaipmh/"/>
--->
-<!--    <nde-registry url="https://centres.clarin.eu/api/model"/>-->
+<!--    <nde-registry url="https://triplestore.netwerkdigitaalerfgoed.nl/repositories/registry"/>-->
     <provider url="http://data.bibliotheken.nl/id/thes/p075301482" name="KB"/>
     <provider url="https://www.beeldengeluid.nl" name="SV"/>
-<!--    <provider url="https://uba.uva.nl/" name="UBA"/>-->
   </providers>
 </config>
