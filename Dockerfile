@@ -7,9 +7,9 @@ RUN apk --no-cache add maven=3.6.1-r0
 COPY . /tmp
 RUN cd /tmp && \
     mvn clean package && \
-    cd /tmp/oai && \
     mkdir /tmp/oai && \
-    tar xfz /tmp/oai-harvest-manager/target/oai-harvest-manager-1.2*.tar.gz
+    cd /tmp/oai && \
+    tar -xfz /tmp/oai-harvest-manager/target/oai-harvest-manager-1.2*.tar.gz
 
 ### Package stage
 
