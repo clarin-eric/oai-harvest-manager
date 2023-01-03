@@ -21,6 +21,15 @@
     <!-- Default timeout (for connection and reading) for a single
     http request in seconds. If unspecified, will be INFINITE.  -->
     <timeout>60</timeout>
+
+    <!-- File used to store endpoint -> directory mappings -->
+    <map-file>map.csv</map-file>
+
+    <!-- Protocol to use,
+    if shortname, for example, OAI-PMH or NDE presents, we should search for short name
+    else assume the given string is a fully qualified domain name in reverse order.
+    When the file attribute is present, load the jar and search for the protocol in the jar,
+    otherwise search for it in the local domain. -->
     <protocol>nl.mpi.oai.harvester.protocol.NdeProtocol</protocol>
     <scenario>ListRecords</scenario>
 
