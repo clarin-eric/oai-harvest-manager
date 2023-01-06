@@ -9,7 +9,7 @@ RUN cd /tmp && \
     mvn clean package && \
     mkdir /tmp/oai && \
     cd /tmp/oai && \
-    tar -xfz /tmp/oai-harvest-manager/target/oai-harvest-manager-1.2*.tar.gz
+    tar -xfz /tmp/target/oai-harvest-manager-1.2*.tar.gz
 
 ### Package stage
 
