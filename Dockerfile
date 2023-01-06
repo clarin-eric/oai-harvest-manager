@@ -1,4 +1,4 @@
-FROM registry.gitlab.com/clarin-eric/docker-alpine-supervisor-java-base:openjdk11-1.2.12 as java-base
+FROM registry.gitlab.com/clarin-eric/docker-alpine-supervisor-java-base:openjdk11-1.2.12 as build
 
 RUN apk --no-cache add maven=3.6.1-r0
 
@@ -13,7 +13,7 @@ RUN cd /tmp && \
 
 ### Package stage
 
-FROM java-base
+FROM registry.gitlab.com/clarin-eric/docker-alpine-supervisor-java-base:openjdk11-1.2.12
 
 # app workdir
 RUN mkdir -p /app/workdir &&\
