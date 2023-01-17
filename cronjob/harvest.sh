@@ -6,7 +6,7 @@ if [ -z ${DATA_VOLUME} ] || [ -z ${HARVESTER_CONFIG} ] || [ -z ${DOCKER_IMAGE} ]
   exit 1;
 fi
 
-echo "Harvesting using harvester [${DOCKER_IMAGE}] and config is [${HARVESTER_CONFIG}]"
+echo "### Harvesting using harvester [${DOCKER_IMAGE}] and config is [${HARVESTER_CONFIG}]"
 
 # get protocol in lower case
 target_protocol=${1:-oai}
