@@ -17,7 +17,6 @@ target_dir=${datastamp}_${target_protocol}
 
 # prepare folder structure for OAI
 if [ -d "/app/proddir/${target_protocol}" ]; then
-  ls -la /app/proddir/${target_protocol}
   echo "removing old bak folder"
   rm -fr /app/proddir/${target_protocol}.bak
   echo "moving old proddir from [/app/proddir/${target_protocol}] to [/app/proddir/${target_protocol}.bak]";
