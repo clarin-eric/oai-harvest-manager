@@ -159,8 +159,18 @@ public class Provider {
      * Prepare this object for use.
      */
     public void init() {
+        this.init(null);
+//		if (name == null) fetchName();
+//		if(deletionMode == null) fetchDeletionMode();
+    }
+    /**
+     * Prepare this object for use.
+     */
+    public void init(String protocolName) {
 		if (name == null) fetchName();
-		if(deletionMode == null) fetchDeletionMode();
+        if (!Objects.equals(protocolName, "nde")) {
+            if(deletionMode == null) fetchDeletionMode();
+        }
     }
 
     public void close() {

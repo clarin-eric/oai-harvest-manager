@@ -17,9 +17,9 @@
 
 package ORG.oclc.oai.harvester2.verb;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.FileInputStream;
+import java.io.*;
+
+import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.xpath.XPathAPI;
@@ -33,17 +33,14 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.*;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringWriter;
 import java.lang.management.GarbageCollectorMXBean;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryPoolMXBean;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.Date;
 import java.util.HashMap;
@@ -176,12 +173,32 @@ public abstract class HarvesterVerb {
                 builder = factory.newDocumentBuilder();
                 builderMap.put(t, builder);
             }
-            doc = builder.parse(getSource());
+            URL dtdFilePath = getClass().getResource("/xhtml1.dtd");
+            assert dtdFilePath != null;
+            String xmlText = IOUtils.toString(getStream(), StandardCharsets.UTF_8);
+            logger.debug("dtdFilePath is: " + dtdFilePath);
+
+            if (xmlText.startsWith("<html")) {
+                try {
+                    xmlText = "<!DOCTYPE html PUBLIC '-//W3C//DTD HTML//EN' '"  + dtdFilePath.toURI() + "'>" + xmlText;
+                    logger.debug("after xmlText is set " + dtdFilePath.toURI());
+                } catch (URISyntaxException e) {
+                    logger.error(e.getMessage(), e);
+                    throw new RuntimeException(e);
+                }
+            }
+
+            doc = builder.parse(new InputSource(new StringReader(xmlText)));
+//            doc = builder.parse(getSource());
             str = null;
             logger.debug("switched from stream to tree for request["+requestURL+"]",new Throwable());
         }
         return doc;
     }
+
+//    private void addDocType(String rootTag, String docType, InputSource originalInputSource) {
+//        originalInputSource.
+//    }
     
     /**
      * Get the xsi:schemaLocation for the OAI response

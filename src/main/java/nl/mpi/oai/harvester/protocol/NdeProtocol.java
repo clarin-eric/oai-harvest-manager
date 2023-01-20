@@ -90,7 +90,7 @@ public class NdeProtocol extends Protocol {
     @Override
     public void run() {
         logger.info("Welcome to NDE Harvest Manager worker!");
-        provider.init();
+        provider.init("nde");
         Thread.currentThread().setName(provider.getName().replaceAll("[^a-zA-Z0-9\\-\\(\\)]", " "));
 
         // setting specific log filename
