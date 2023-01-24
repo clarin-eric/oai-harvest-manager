@@ -7,7 +7,7 @@
 # Clariah portainer cron
 current_dir=$(cd $(dirname $0) && pwd)
 
-if [ ! -f ${current_dir} ]; then
+if [ ! -f "${current_dir}/flag" ]; then
   touch ${current_dir}/flag
 else
   echo "Previous harvest not yet complete, skip the current one."
@@ -17,7 +17,7 @@ fi
 source ${current_dir}/.oai.env && source ${current_dir}/harvest.sh oai
 source ${current_dir}/.nde.env && source ${current_dir}/harvest.sh nde
 
-if [ ! -f ${current_dir} ]; then
+if [ ! -f "${current_dir}/flag" ]; then
   echo "Harvest completed with error: flag status not clear, please check log and files"
 else
   echo "Harvest completed with error: clearing log"
