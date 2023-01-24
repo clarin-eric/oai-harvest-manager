@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
 # local test
 # source $(pwd)/.oai.env && source $(pwd)/harvest.sh oai

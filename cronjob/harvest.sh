@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
 # make sure require vars are set
 if [ -z ${DATA_VOLUME} ] || [ -z ${HARVESTER_CONFIG} ] || [ -z ${DOCKER_IMAGE} ]; then
