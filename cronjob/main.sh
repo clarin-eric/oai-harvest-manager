@@ -20,7 +20,7 @@ source ${current_dir}/.nde.env && source ${current_dir}/harvest.sh nde
 if [ ! -f "${current_dir}/flag" ]; then
   echo "Harvest completed with error: flag status not clear, please check log and files"
 else
-  echo "Harvest completed with error: clearing log"
+  echo "Harvest complete, clearing log"
   rm ${current_dir}/flag
 fi
 
