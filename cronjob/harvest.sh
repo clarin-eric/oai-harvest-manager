@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-export current_dir=BASEDIR=$(cd $(dirname $0) && pwd)
+current_dir=BASEDIR=$(cd $(dirname $0) && pwd)
 # make sure require vars are set
 if [ -z ${DATA_VOLUME} ] || [ -z ${HARVESTER_CONFIG} ] || [ -z ${DOCKER_IMAGE} ]; then
   echo "missing vars";
@@ -14,7 +14,7 @@ target_protocol=${1:-oai}
 target_protocol=`echo "${target_protocol}" | tr '[:upper:]' '[:lower:]'`
 
 # before harvest, prepare folder structure
-docker run --rm -v ${DATA_VOLUME}:/app/workdir -v $(current_dir)/before-harvest.sh:/tmp/before-harvest.sh busybox:latest sh /tmp/before-harvest.sh ${target_protocol}
+docker run --rm -v ${DATA_VOLUME}:/app/workdir -v ${current_dir}/before-harvest.sh:/tmp/before-harvest.sh busybox:latest sh /tmp/before-harvest.sh ${target_protocol}
 
 
 ### run harvest
@@ -23,7 +23,7 @@ if [ ${harvest:-yes} == "yes" ]; then
 fi
 
 # after harvest, prepare proddir
-docker run --rm -v ${DATA_VOLUME}:/app/workdir -v ${DATA_VOLUME_PRODDIR}:/app/proddir -v $(current_dir)/after-harvest.sh:/tmp/after-harvest.sh busybox:latest sh /tmp/after-harvest.sh ${target_protocol}
+docker run --rm -v ${DATA_VOLUME}:/app/workdir -v ${DATA_VOLUME_PRODDIR}:/app/proddir -v ${current_dir}/after-harvest.sh:/tmp/after-harvest.sh busybox:latest sh /tmp/after-harvest.sh ${target_protocol}
 
 # ingest
 if [ ${ingest:-yes} == "yes" ]; then
