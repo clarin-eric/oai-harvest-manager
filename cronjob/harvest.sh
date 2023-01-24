@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+current_dir=BASEDIR=$(cd $(dirname $0) && pwd)
 # make sure require vars are set
 if [ -z ${DATA_VOLUME} ] || [ -z ${HARVESTER_CONFIG} ] || [ -z ${DOCKER_IMAGE} ]; then
   echo "missing vars";
