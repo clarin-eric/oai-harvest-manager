@@ -24,5 +24,5 @@ else
   rm ${current_dir}/flag
 fi
 
-echo "Job done, goodbye! Exiting job. "
+echo "$(date +"%Y%m%d_%H_%M_%S") Job done, goodbye! Exiting job. "
 
