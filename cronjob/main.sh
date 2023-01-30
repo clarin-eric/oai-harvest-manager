@@ -28,7 +28,7 @@ fi
 source ${current_dir}/.ingest.env
 if [ ${ingest:-yes} == "yes" ]; then
   echo "### Ingesting"
-  source ${vlo_dir:-/data/vlo/datasets-vlo}/control.sh -s run-import
+  cd ${vlo_dir:-/data/vlo/datasets-vlo} && ./control.sh -s run-import
 fi
 
 echo "$(date +"%Y%m%d_%H_%M_%S") Job done, goodbye! Exiting job. "
