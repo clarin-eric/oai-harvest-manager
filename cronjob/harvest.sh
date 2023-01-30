@@ -24,8 +24,3 @@ fi
 
 # after harvest, prepare proddir
 docker run --rm -v ${DATA_VOLUME}:/app/workdir -v ${DATA_VOLUME_PRODDIR}:/app/proddir -v ${current_dir}/after-harvest.sh:/tmp/after-harvest.sh busybox:latest sh /tmp/after-harvest.sh ${target_protocol}
-
-# ingest
-if [ ${ingest:-yes} == "yes" ]; then
-  echo "ingesting"
-fi
