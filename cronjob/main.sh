@@ -22,13 +22,16 @@ if [ ! -f "${current_dir}/flag" ]; then
 else
   echo "Harvest complete, clearing log"
   rm ${current_dir}/flag
+  can_ingest="yes"
 fi
 
 # ingest
 source ${current_dir}/.ingest.env
-if [ ${ingest:-yes} == "yes" ]; then
+if [ ${ingest:-yes} == "yes" ] && [ ${can_ingest} == "yes" ]; then
   echo "### Ingesting"
   cd ${vlo_dir:-/data/vlo/datasets-vlo} && ./control.sh -s run-import
+else
+  info "Ingest skipped due to configuration or unclear harvest flag"
 fi
 
 echo "$(date +"%Y%m%d_%H_%M_%S") Job done, goodbye! Exiting job. "
