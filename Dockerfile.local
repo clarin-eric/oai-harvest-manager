@@ -1,10 +1,9 @@
 FROM registry.gitlab.com/clarin-eric/docker-alpine-supervisor-java-base:openjdk11-1.2.12
 
-COPY . /tmp
 WORKDIR /tmp/oai
+COPY ./target/oai-harvest-manager-1.2*.tar.gz /tmp/
 
-RUN ls -la /tmp/target/oai-harvest-manager-1.2*.tar.gz
-RUN tar -xzf /tmp/target/oai-harvest-manager-1.2*.tar.gz
+RUN tar -xzf /tmp/oai-harvest-manager-1.2*.tar.gz
 
 # app workdir
 RUN mkdir -p /app/workdir
