@@ -14,7 +14,7 @@ else
   exit 1
 fi
 
-source ${current_dir}/.oai.env && source ${current_dir}/harvest.sh oai
+#source ${current_dir}/.oai.env && source ${current_dir}/harvest.sh oai
 source ${current_dir}/.nde.env && source ${current_dir}/harvest.sh nde
 
 if [ ! -f "${current_dir}/flag" ]; then
