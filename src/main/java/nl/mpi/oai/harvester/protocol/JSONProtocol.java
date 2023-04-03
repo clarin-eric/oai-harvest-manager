@@ -36,7 +36,7 @@ import java.util.Map;
  *
  * @author Meindert Kroese HUC/DI KNAW)
  */
-public class CodemetaProtocol extends Protocol {
+public class JSONProtocol extends Protocol {
     private final Logger logger = LogManager.getLogger(this.getClass());
     /**
      * The configuration
@@ -53,14 +53,6 @@ public class CodemetaProtocol extends Protocol {
      */
     private final List<ActionSequence> actionSequences;
 
-    /* Harvesting scenario to be applied. ListIdentifiers: first, based on
-       endpoint data and prefix, get a list of identifiers, and after that
-       retrieve each record in the list individually. ListRecords: skip the
-       list, retrieve multiple records per request.
-     */
-    private final String scenarioName;
-
-    // kj: annotate
     Endpoint endpoint;
 
     /**
@@ -69,7 +61,7 @@ public class CodemetaProtocol extends Protocol {
      * @param provider OAI-PMH provider that this thread will harvest
      * @param cycle    the harvesting cycle
      */
-    public CodemetaProtocol(Provider provider, Configuration config, Cycle cycle) {
+    public JSONProtocol(Provider provider, Configuration config, Cycle cycle) {
         super(provider, config, cycle);
 
         this.config = config;
@@ -80,40 +72,17 @@ public class CodemetaProtocol extends Protocol {
 
         // register the endpoint with the cycle, kj: get the group
         this.endpoint = cycle.next(provider.getOaiUrl(), "group");
-
-        // get the name of the scenario the worker needs to apply
-        this.scenarioName = provider.getScenario();
     }
 
     @Override
     public void run() {
-        logger.info("Welcome to NDE Harvest Manager worker!");
-        provider.init("nde");
+        logger.info("Welcome to JSON Harvest Manager worker!");
+        provider.init("json");
         Thread.currentThread().setName(provider.getName().replaceAll("[^a-zA-Z0-9\\-\\(\\)]", " "));
 
         // setting specific log filename
         ThreadContext.put("logFileName", Util.toFileFormat(provider.getName()).replaceAll("/", ""));
 
-        // TODO: what is map doing?
-//        String map = config.getMapFile();
-//        synchronized (map) {
-//            PrintWriter m = null;
-//            try {
-//                m = new PrintWriter(new FileWriter(map, true));
-//                if (config.hasRegistryReader()) {
-//                    m.println(config.getRegistryReader().endpointMapping(provider.getOaiUrl(), provider.getName()));
-//                } else {
-//                    m.printf("%s,%s,,", provider.getOaiUrl(), Util.toFileFormat(provider.getName()).replaceAll("/", ""));
-//                    m.println();
-//                }
-//            } catch (IOException e) {
-//                logger.error("failed to write to the map file!", e);
-//            } finally {
-//                if (m != null)
-//                    m.close();
-//            }
-//        }
-        // TODO: ??
 
         boolean done = false;
 
@@ -140,23 +109,19 @@ public class CodemetaProtocol extends Protocol {
         // query
         HttpResponse<String> response;
         try {
-            response = Unirest.post(config.getQueryEndpoint())
-                    .header("accept", "application/sparql-results+xml")
-                    .field("query", queryString)
+            response = Unirest.get(provider.getOaiUrl())
+                    .header("accept", "application/json")
                     .asString();
-            logger.info("Query run successfully!");
+            logger.info("Fetch run successfully!");
         } catch (UnirestException e) {
             logger.error("cannot get result back as string");
             throw new RuntimeException(e);
         }
 
         // load xml string as doc
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder builder;
         Document doc = null;
         try {
-            builder = factory.newDocumentBuilder();
-            doc = builder.parse(new InputSource(new StringReader(response.getBody())));
+            doc = Saxon.unwrapNode(Saxon.parseJson(response.getBody())).getOwnerDocument();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -166,7 +131,7 @@ public class CodemetaProtocol extends Protocol {
         for (final ActionSequence actionSequence : actionSequences) {
 
             logger.info("Action sequence is: " + actionSequence.toString());
-            actionSequence.runActions(new Metadata(provider.getName(), "nde", doc, provider, true, true));
+            actionSequence.runActions(new Metadata(provider.getName(), "json", doc, provider, true, true));
         }
     }
 }
