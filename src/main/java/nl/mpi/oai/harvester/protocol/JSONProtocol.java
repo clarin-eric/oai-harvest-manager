@@ -86,9 +86,7 @@ public class JSONProtocol extends Protocol {
 
         boolean done = false;
 
-        logger.info("Processing provider[" + provider + "] " +
-                "using scenario[" + scenarioName + "], " +
-                "incremental[" + provider.getIncremental() + "], " +
+        logger.info("Processing JSON provider[" + provider + "] " +
                 "timeout[" + provider.getTimeout() + "] " +
                 "and retry[count=" + provider.getMaxRetryCount() + ", " +
                 "delays=" + Arrays.toString(provider.getRetryDelays()) + "]"
