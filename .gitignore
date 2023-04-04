@@ -3,6 +3,7 @@ target/
 *.iml
 /target-old/
 run/
+test/
 
 /nbproject/
 nb-configuration.xml
