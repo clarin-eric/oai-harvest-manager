@@ -92,18 +92,6 @@ public class JSONProtocol extends Protocol {
                 "delays=" + Arrays.toString(provider.getRetryDelays()) + "]"
         );
 
-        FileSynchronization.addProviderStatistic(provider);
-
-        String queryString = config.getQuery();
-        // transforming queryString as the original is escaped
-        Map<String, XdmValue> vars = new HashMap<>();
-        vars.put("provider-url", new XdmAtomicValue(provider.getOaiUrl()));
-        try {
-            queryString = Saxon.avt(queryString, Saxon.wrapNode(config.getDoc()), vars);
-        } catch (SaxonApiException e) {
-            throw new RuntimeException(e);
-        }
-
         // query
         HttpResponse<String> response;
         try {
