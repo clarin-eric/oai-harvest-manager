@@ -98,12 +98,12 @@
             <version>1.7.32</version>
         </dependency>
 
-        <dependency>
+        <!--<dependency>
             <groupId>net.sf.saxon</groupId>
             <artifactId>Saxon-HE</artifactId>
             <version>9.5.1-8</version>
-<!--            <version>10.5</version>-->
-        </dependency>
+<!-/-            <version>10.5</version>-/->
+        </dependency>-->
         <!-- MD5 -->
         <!-- https://mvnrepository.com/artifact/com.joyent.util/fast-md5 -->
         <dependency>

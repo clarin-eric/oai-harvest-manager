@@ -5,6 +5,7 @@ import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import net.sf.saxon.s9api.SaxonApiException;
 import net.sf.saxon.s9api.XdmAtomicValue;
+import net.sf.saxon.s9api.XdmNode;
 import net.sf.saxon.s9api.XdmValue;
 import nl.mpi.oai.harvester.Provider;
 import nl.mpi.oai.harvester.action.ActionSequence;
@@ -19,6 +20,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
 import org.w3c.dom.Document;
+import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -107,10 +109,26 @@ public class JSONProtocol extends Protocol {
         // load xml string as doc
         Document doc = null;
         try {
-            doc = Saxon.unwrapNode(Saxon.parseJson(response.getBody())).getOwnerDocument();
+            logger.info("before parseJson:"+response.getBody());
+            XdmNode node = Saxon.parseJson(response.getBody());
+            logger.info("after parseJson:"+node);
+            // TODO: make from an XdmNode a Node
+            StringReader r = new StringReader(node.toString());
+            logger.info("after StringReader:"+r);
+            InputSource i = new InputSource(r);
+            logger.info("after InputSource:"+i);
+            doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(i);
+            //Node n = Saxon.unwrapNode(node);
+            //logger.info("after unwrapNode:"+n);
+            //doc = n.getOwnerDocument();
+            logger.info("after DocumentBuilder:"+doc);
+//            doc = Saxon.unwrapNode(Saxon.parseJson(response.getBody())).getOwnerDocument();
         } catch (Exception e) {
+            logger.error("parseJson failed:"+e);
             e.printStackTrace();
+            throw new RuntimeException(e);
         }
+        logger.info("parseJson ran successfully!");
 
         // apply the action seq
         logger.info("Size of actionSequences is: " + actionSequences.size());
