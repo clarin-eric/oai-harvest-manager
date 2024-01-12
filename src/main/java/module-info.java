@@ -10,7 +10,7 @@ module oai.harvest.manager {
     requires java.management;
     requires org.joda.time;
     requires org.apache.commons.io;
-    requires xalan;
+    // requires xalan;
     requires json.path;
     requires com.google.common;
     requires java.logging;

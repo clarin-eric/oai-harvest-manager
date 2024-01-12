@@ -22,6 +22,8 @@ import java.io.IOException;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.transform.TransformerException;
+
+import net.sf.saxon.s9api.SaxonApiException;
 import org.xml.sax.SAXException;
 
 /**
@@ -65,7 +67,8 @@ public class GetRecord extends HarvesterVerb {
      * @throws NoSuchFieldException
      */
     public String getIdentifier()
-    throws TransformerException, NoSuchFieldException, ParserConfigurationException, SAXException, IOException, XMLStreamException {
+        throws TransformerException, NoSuchFieldException, ParserConfigurationException, SAXException, IOException,
+        XMLStreamException, SaxonApiException {
         if (SCHEMA_LOCATION_V2_0.equals(getSchemaLocation())) {
             return getSingleString("/oai20:OAI-PMH/oai20:GetRecord/oai20:record/oai20:header/oai20:identifier");
         } else if (SCHEMA_LOCATION_V1_1_GET_RECORD.equals(getSchemaLocation())) {
