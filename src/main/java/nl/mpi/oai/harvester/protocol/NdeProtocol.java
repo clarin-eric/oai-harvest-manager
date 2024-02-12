@@ -160,7 +160,8 @@ public class NdeProtocol extends Protocol {
             builder = factory.newDocumentBuilder();
             doc = builder.parse(new InputSource(new StringReader(response.getBody())));
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println("Error: I am here");
+//            e.printStackTrace();
         }
 
         // apply the action seq
