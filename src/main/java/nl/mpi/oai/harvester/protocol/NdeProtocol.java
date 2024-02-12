@@ -161,6 +161,7 @@ public class NdeProtocol extends Protocol {
             doc = builder.parse(new InputSource(new StringReader(response.getBody())));
         } catch (Exception e) {
             System.out.println("Error: I am here");
+            System.out.println(response.getStatus() + " " + response.getStatusText());
 //            e.printStackTrace();
         }
 
