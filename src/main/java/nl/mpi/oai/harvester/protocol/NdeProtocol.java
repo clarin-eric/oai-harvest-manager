@@ -160,9 +160,10 @@ public class NdeProtocol extends Protocol {
             builder = factory.newDocumentBuilder();
             doc = builder.parse(new InputSource(new StringReader(response.getBody())));
         } catch (Exception e) {
-            System.out.println("Error: I am here");
-            System.out.println(response.getStatus() + " " + response.getStatusText());
-//            e.printStackTrace();
+            logger.info("Error querying " + config.getQueryEndpoint() + " with query: " + queryString);
+            logger.info(response.getStatus() + " " + response.getStatusText());
+            logger.info(e.getMessage());
+            logger.info(e.getStackTrace());
         }
 
         // apply the action seq

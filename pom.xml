@@ -21,9 +21,9 @@
     <!-- REPOSITORIES -->
     <repositories>
         <repository>
-            <id>netbeans</id>
-            <name>NetBeans</name>
-            <url>https://netbeans.apidesign.org/maven2/</url>
+            <id>mvnrepo</id>
+            <name>mvnrepo</name>
+            <url>https://repo1.maven.org/maven2</url>
         </repository>
         <repository>
             <id>huygens-maven</id>
