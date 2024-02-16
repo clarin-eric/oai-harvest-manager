@@ -72,6 +72,8 @@ public class NDESplitAction implements Action {
 
     @Override
     public boolean perform(List<Record> records) {
+        logger.info("hi, i am in nde split action");
+        logger.info("Splitting " + records.size() + " records");
         List<Metadata> newRecords = new ArrayList<>();
 
         for (Record rec : records) {
@@ -221,8 +223,9 @@ public class NDESplitAction implements Action {
                 if (newRecords.isEmpty()) {
                     logger.error("No records were found in this resultset[" + record.getId() + "]");
                 }
-            } catch (XMLStreamException ex) {
-                logger.error("", ex);
+            } catch (Throwable ex) {
+//            } catch (XMLStreamException ex) {
+                logger.error("Hi, Throwable", ex);
             } finally {
                 try {
                     if (reader != null)

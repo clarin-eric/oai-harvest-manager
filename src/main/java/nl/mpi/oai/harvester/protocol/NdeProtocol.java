@@ -141,6 +141,7 @@ public class NdeProtocol extends Protocol {
             throw new RuntimeException(e);
         }
 
+        logger.info("hellohere");
         // query
         HttpResponse<String> response;
         try {
@@ -149,7 +150,7 @@ public class NdeProtocol extends Protocol {
                     .field("query", queryString)
                     .asString();
             logger.info("Query run successfully!");
-        } catch (UnirestException e) {
+        } catch (Throwable e) {
             logger.error("cannot get result back as string");
             throw new RuntimeException(e);
         }
@@ -177,8 +178,9 @@ public class NdeProtocol extends Protocol {
         logger.info("Size of actionSequences is: " + actionSequences.size());
         for (final ActionSequence actionSequence : actionSequences) {
 
-            actionSequence.runActions(new Metadata(provider.getName(), "nde", src, provider, true, true));
             logger.info("Action sequence is: " + actionSequence.toString());
+            // TODO: This is the place where error starts
+            actionSequence.runActions(new Metadata(provider.getName(), "nde", src, provider, true, true));
         }
     }
 }
