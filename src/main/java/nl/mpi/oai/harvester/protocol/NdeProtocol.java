@@ -16,7 +16,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
 
-import java.io.StringReader;
+import java.io.*;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -152,26 +152,35 @@ public class NdeProtocol extends Protocol {
             throw new RuntimeException(e);
         }
 
+        logger.info("Querying " + config.getQueryEndpoint() + " with query: " + queryString);
+        logger.info(response.getStatus() + " " + response.getStatusText());
         // load xml string as doc
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder;
         Document doc = null;
         try {
-            builder = factory.newDocumentBuilder();
-            doc = builder.parse(new InputSource(new StringReader(response.getBody())));
-        } catch (Exception e) {
+            logger.info("Getting response body...");
+            InputStream in = response.getRawBody();
+            File temp = new File("/app/workdir/temp.txt");
+            FileOutputStream out = new FileOutputStream(temp);
+            org.apache.commons.io.IOUtils.copy(in,out,1000000);
+            out.close();
+//            builder = factory.newDocumentBuilder();
+//            doc = builder.parse(new InputSource(new StringReader(response.getBody())));
+        } catch (Throwable e) {
             logger.info("Error querying " + config.getQueryEndpoint() + " with query: " + queryString);
             logger.info(response.getStatus() + " " + response.getStatusText());
-            logger.info(e.getMessage());
-            logger.info(e.getStackTrace());
+            logger.info(e.getMessage(), e);
+            throw new RuntimeException(e);
+//            logger.info(e.getStackTrace());
         }
 
         // apply the action seq
         logger.info("Size of actionSequences is: " + actionSequences.size());
         for (final ActionSequence actionSequence : actionSequences) {
 
-            logger.info("Action sequence is: " + actionSequence.toString());
             actionSequence.runActions(new Metadata(provider.getName(), "nde", doc, provider, true, true));
+            logger.info("Action sequence is: " + actionSequence.toString());
         }
     }
 }
