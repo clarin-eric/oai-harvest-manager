@@ -11,6 +11,8 @@ import nl.mpi.oai.harvester.control.Util;
 import nl.mpi.oai.harvester.cycle.Cycle;
 import nl.mpi.oai.harvester.cycle.Endpoint;
 import nl.mpi.oai.harvester.metadata.Metadata;
+import nl.mpi.oai.harvester.utils.DocumentSource;
+import nl.mpi.oai.harvester.utils.MarkableFileInputStream;
 import nl.mpi.tla.util.Saxon;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -154,19 +156,15 @@ public class NdeProtocol extends Protocol {
 
         logger.info("Querying " + config.getQueryEndpoint() + " with query: " + queryString);
         logger.info(response.getStatus() + " " + response.getStatusText());
-        // load xml string as doc
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder builder;
-        Document doc = null;
+        DocumentSource src = null;
         try {
             logger.info("Getting response body...");
             InputStream in = response.getRawBody();
-            File temp = new File("/app/workdir/temp.txt");
-            FileOutputStream out = new FileOutputStream(temp);
+            logger.info("Saving it to temp[ " + provider.temp.toAbsolutePath()+"]");
+            FileOutputStream out = new FileOutputStream(provider.temp.toFile());
             org.apache.commons.io.IOUtils.copy(in,out,1000000);
             out.close();
-//            builder = factory.newDocumentBuilder();
-//            doc = builder.parse(new InputSource(new StringReader(response.getBody())));
+            src = new DocumentSource(new MarkableFileInputStream(new FileInputStream(provider.temp.toFile())));
         } catch (Throwable e) {
             logger.info("Error querying " + config.getQueryEndpoint() + " with query: " + queryString);
             logger.info(response.getStatus() + " " + response.getStatusText());
@@ -179,7 +177,7 @@ public class NdeProtocol extends Protocol {
         logger.info("Size of actionSequences is: " + actionSequences.size());
         for (final ActionSequence actionSequence : actionSequences) {
 
-            actionSequence.runActions(new Metadata(provider.getName(), "nde", doc, provider, true, true));
+            actionSequence.runActions(new Metadata(provider.getName(), "nde", src, provider, true, true));
             logger.info("Action sequence is: " + actionSequence.toString());
         }
     }
