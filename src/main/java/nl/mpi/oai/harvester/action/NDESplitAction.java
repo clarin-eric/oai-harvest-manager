@@ -87,6 +87,7 @@ public class NDESplitAction implements Action {
                 XMLOutputFactory xmlof = XMLOutputFactory.newInstance();
                 xmlof.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, true);
                 XMLEventFactory xmlef = XMLEventFactory.newInstance();
+                reader = xmlif.createXMLEventReader(record.getStream());
                 writer = null;
                 Stack<XMLEvent> outer = new Stack<>();
                 Stack<XMLEvent> inner = new Stack<>();

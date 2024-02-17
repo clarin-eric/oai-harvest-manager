@@ -18,7 +18,7 @@ docker run --rm -v ${DATA_VOLUME}:/app/workdir -v ${current_dir}/before-harvest.
 
 
 ### run harvest
-if [ ${harvest:-yes} == "yes" ]; then
+if [ "${harvest:-yes}" = "yes" ]; then
   docker run --rm -e LOG_DIR=/app/workdir -v ${DATA_VOLUME}:/app/workdir ${DOCKER_IMAGE} workdir=/app/workdir/${target_protocol} ${HARVESTER_CONFIG}
 fi
 
