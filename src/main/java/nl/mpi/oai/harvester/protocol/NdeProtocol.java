@@ -143,44 +143,20 @@ public class NdeProtocol extends Protocol {
 
         logger.info("hellohere");
         // query
-        HttpResponse<String> response;
-        try {
-            response = Unirest.post(config.getQueryEndpoint())
-                    .header("accept", "application/sparql-results+xml")
-                    .field("query", queryString)
-                    .asString();
-            logger.info("Query run successfully!");
-        } catch (Throwable e) {
-            logger.error("cannot get result back as string");
-            throw new RuntimeException(e);
-        }
-
-        logger.info("Querying " + config.getQueryEndpoint() + " with query: " + queryString);
-        logger.info(response.getStatus() + " " + response.getStatusText());
         DocumentSource src = null;
         try {
-            logger.info("Getting response body...");
-            InputStream in = response.getRawBody();
-            logger.info("Saving it to temp[ " + provider.temp.toAbsolutePath()+"]");
-            FileOutputStream out = new FileOutputStream(provider.temp.toFile());
-            org.apache.commons.io.IOUtils.copy(in,out,1000000);
-            out.close();
-            src = new DocumentSource(new MarkableFileInputStream(new FileInputStream(provider.temp.toFile())));
+            src = new DocumentSource(DocumentSource.fetch(config.getQueryEndpoint(),queryString, provider.getTimeout(), provider.temp));
+
+            // apply the action seq
+            logger.info("Size of actionSequences is: " + actionSequences.size());
+            for (final ActionSequence actionSequence : actionSequences) {
+
+                logger.info("Action sequence is: " + actionSequence.toString());
+                // TODO: This is the place where error starts
+                actionSequence.runActions(new Metadata(provider.getName(), "nde", src, provider, true, true));
+            }
         } catch (Throwable e) {
-            logger.info("Error querying " + config.getQueryEndpoint() + " with query: " + queryString);
-            logger.info(response.getStatus() + " " + response.getStatusText());
-            logger.info(e.getMessage(), e);
-            throw new RuntimeException(e);
-//            logger.info(e.getStackTrace());
-        }
-
-        // apply the action seq
-        logger.info("Size of actionSequences is: " + actionSequences.size());
-        for (final ActionSequence actionSequence : actionSequences) {
-
-            logger.info("Action sequence is: " + actionSequence.toString());
-            // TODO: This is the place where error starts
-            actionSequence.runActions(new Metadata(provider.getName(), "nde", src, provider, true, true));
+            logger.info("Query ["+queryString+"] om ["+config.getQueryEndpoint()+"] failed: "+e,e);
         }
     }
 }
