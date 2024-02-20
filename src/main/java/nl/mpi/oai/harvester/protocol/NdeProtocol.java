@@ -145,14 +145,12 @@ public class NdeProtocol extends Protocol {
         // query
         DocumentSource src = null;
         try {
-            src = new DocumentSource(DocumentSource.fetch(config.getQueryEndpoint(),queryString, provider.getTimeout(), provider.temp));
+            src = DocumentSource.fetch(config.getQueryEndpoint(), queryString.getBytes("utf-8"), "application/sparql-query", "application/sparql-results+xml", provider.getTimeout(), provider.temp);
 
             // apply the action seq
             logger.info("Size of actionSequences is: " + actionSequences.size());
             for (final ActionSequence actionSequence : actionSequences) {
-
                 logger.info("Action sequence is: " + actionSequence.toString());
-                // TODO: This is the place where error starts
                 actionSequence.runActions(new Metadata(provider.getName(), "nde", src, provider, true, true));
             }
         } catch (Throwable e) {
