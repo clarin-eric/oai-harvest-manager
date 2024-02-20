@@ -101,11 +101,11 @@ public class NDESplitAction implements Action {
                     String ds = null;
                     ByteArrayOutputStream baos = null;
                     while (!state.equals(state.STOP) && !state.equals(state.ERROR)) {
-                        logger.debug("BEGIN loop: state["+state+"] event["+event+"]["+event.getEventType()+"]");
+                        logger.info("BEGIN loop: state["+state+"] event["+event+"]["+event.getEventType()+"]");
                         int eventType = event.getEventType();
                         switch (state) {
                             case START:
-                                logger.debug("state[START]");
+                                logger.info("state[START]");
                                 switch (eventType) {
                                     case XMLEvent2.START_ELEMENT:
                                         QName qn = event.asStartElement().getName();
@@ -116,9 +116,9 @@ public class NDESplitAction implements Action {
                                         break;
                                     default:
                                         outer.push(event);
-                                }
+                                }; break;
                             case RESULTS:
-                                logger.debug("state[RESULTS]");
+                                logger.info("state[RESULTS]");
                                 switch (eventType) {
                                     case XMLEvent.START_ELEMENT:
                                         QName qn = event.asStartElement().getName();
@@ -129,12 +129,13 @@ public class NDESplitAction implements Action {
                                         break;
                                     default:
                                         inner.push(event);
-                                }
+                                }; break;
                             case RESULT:
-                                logger.debug("state[RESULT]");
+                                logger.info("state[RESULT]");
                                 switch (eventType) {
                                     case XMLEvent.START_ELEMENT:
                                         QName qn = event.asStartElement().getName();
+                                        logger.info("element[{"+qn.getNamespaceURI()+"}"+qn.getLocalPart()+"]");
                                         if (qn.getLocalPart().equals("binding")) {
                                             if (event.asStartElement().getAttributeByName(new QName("name")).equals("dataset"))
                                                state = State.DATASET;
@@ -143,9 +144,9 @@ public class NDESplitAction implements Action {
                                         break;
                                     default:
                                         inner.push(event);
-                                }
+                                }; break;
                             case DATASET:
-                                logger.debug("state[DATASET]");
+                                logger.info("state[DATASET]");
                                 switch (eventType) {
                                     case XMLEvent.START_ELEMENT:
                                         QName qn = event.asStartElement().getName();
@@ -156,9 +157,9 @@ public class NDESplitAction implements Action {
                                         break;
                                     default:
                                         inner.push(event);
-                                }
+                                }; break;
                             case URI:
-                                logger.debug("state[URI]");
+                                logger.info("state[URI]");
                                 String uri = null;
                                 switch (eventType) {
                                     case XMLEvent.CHARACTERS:
@@ -199,7 +200,7 @@ public class NDESplitAction implements Action {
                                 state = State.END_RESULT;
                                 break;
                             case END_RESULT:
-                                logger.debug("state[END_RESULT]");
+                                logger.info("state[END_RESULT]");
                                 switch (eventType) {
                                     case XMLEvent.END_ELEMENT:
                                         QName qn = event.asEndElement().getName();
@@ -210,13 +211,13 @@ public class NDESplitAction implements Action {
                                         break;
                                     default:
                                         writer.add(event);
-                                }
+                                }; break;
                         }
                         if (reader.hasNext())
                             event = reader.nextEvent();
                         else
                             state = (state == State.START ? State.STOP : State.ERROR);// if START then STOP else ERROR
-                        logger.debug("END loop: state["+state+"] event["+event+"]["+event.getEventType()+"]");
+                        logger.info("END loop: state["+state+"] event["+event+"]["+event.getEventType()+"]");
                     }
                     if (state.equals(State.ERROR))
                         logger.error("the XML was not properly processed!");
