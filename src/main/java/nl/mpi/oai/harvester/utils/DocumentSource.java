@@ -135,7 +135,7 @@ public class DocumentSource {
         }
     }
 
-    public static InputStream fetch(String requestURL, String query, int timeout, Path temp) throws MalformedURLException, IOException {
+    public static DocumentSource fetch(String requestURL, byte[] body, String contenttype, String accept, int timeout, Path temp) throws MalformedURLException, IOException {
         logger.debug("requestURL=" + requestURL);
         InputStream in;
         URL url = new URL(requestURL);
@@ -146,15 +146,17 @@ public class DocumentSource {
             con.setRequestProperty("User-Agent", "OAIHarvester/2.0");
             con.setRequestProperty("Accept-Encoding",
                     "compress, gzip, identify");
-            if ((query != null) && !query.trim().equals("")) {
-                logger.debug("query=[" + query + "]");
-                con.setRequestProperty("content-type", "application/sparql-query");
-                con.setRequestProperty("accept", "application/sparql-results+xml");
+            if ((accept != null) && !accept.trim().equals("")) {
+                con.setRequestProperty("accept", accept);
+            }
+            if ((body != null)) {
+                if ((contenttype != null) && !contenttype.trim().equals("")) {
+                    con.setRequestProperty("content-type", contenttype);
+                }
                 con.setRequestMethod("POST");
                 con.setDoOutput(true);
-                try(OutputStream os = con.getOutputStream()) {
-                    byte[] input = query.getBytes("utf-8");
-                    os.write(input, 0, input.length);
+                try (OutputStream os = con.getOutputStream()) {
+                    os.write(body, 0, body.length);
                 }
             }
             if (timeout > 0) {
@@ -224,7 +226,7 @@ public class DocumentSource {
             logger.debug("buffered ["+size+"] bytes for URL["+requestURL+"]");
             in = new ByteArrayInputStream(baos.toByteArray());
         }
-        return in;
+        return new DocumentSource(in);
     }
 
 }
