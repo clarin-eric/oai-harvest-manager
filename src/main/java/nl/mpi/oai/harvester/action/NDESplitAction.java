@@ -42,6 +42,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Stack;
 
@@ -72,8 +73,8 @@ public class NDESplitAction implements Action {
 
     @Override
     public boolean perform(List<Record> records) {
-        logger.info("hi, i am in nde split action");
-        logger.info("Splitting " + records.size() + " records");
+        logger.debug("hi, i am in nde split action");
+        logger.debug("Splitting " + records.size() + " records");
         List<Metadata> newRecords = new ArrayList<>();
 
         for (Record rec : records) {
@@ -101,11 +102,11 @@ public class NDESplitAction implements Action {
                     String ds = null;
                     ByteArrayOutputStream baos = null;
                     while (!state.equals(state.STOP) && !state.equals(state.ERROR)) {
-                        logger.info("BEGIN loop: state["+state+"] event["+event+"]["+event.getEventType()+"]");
+                        logger.debug("BEGIN loop: state["+state+"] event["+event+"]["+event.getEventType()+"]");
                         int eventType = event.getEventType();
                         switch (state) {
                             case START:
-                                logger.info("state[START]");
+                                logger.debug("state[START]");
                                 switch (eventType) {
                                     case XMLEvent2.START_ELEMENT:
                                         QName qn = event.asStartElement().getName();
@@ -118,7 +119,7 @@ public class NDESplitAction implements Action {
                                         outer.push(event);
                                 }; break;
                             case RESULTS:
-                                logger.info("state[RESULTS]");
+                                logger.debug("state[RESULTS]");
                                 switch (eventType) {
                                     case XMLEvent.START_ELEMENT:
                                         QName qn = event.asStartElement().getName();
@@ -131,14 +132,23 @@ public class NDESplitAction implements Action {
                                         inner.push(event);
                                 }; break;
                             case RESULT:
-                                logger.info("state[RESULT]");
+                                logger.debug("state[RESULT]");
                                 switch (eventType) {
                                     case XMLEvent.START_ELEMENT:
                                         QName qn = event.asStartElement().getName();
-                                        logger.info("element[{"+qn.getNamespaceURI()+"}"+qn.getLocalPart()+"]");
+                                        logger.debug("element[{"+qn.getNamespaceURI()+"}"+qn.getLocalPart()+"]");
+                                        for (Iterator iter = event.asStartElement().getAttributes();iter.hasNext();) {
+                                            Attribute a = (Attribute)iter.next();
+                                            qn = a.getName();
+                                            logger.debug("attribute[{"+qn.getNamespaceURI()+"}"+qn.getLocalPart()+"]["+a.getValue()+"]");
+                                        }
+                                        qn = event.asStartElement().getName();
                                         if (qn.getLocalPart().equals("binding")) {
-                                            if (event.asStartElement().getAttributeByName(new QName("name")).equals("dataset"))
-                                               state = State.DATASET;
+                                            logger.debug("found binding for ["+event.asStartElement().getAttributeByName(new QName("","name")).getValue()+"]!");
+                                            if (event.asStartElement().getAttributeByName(new QName("","name")).getValue().equals("dataset")) {
+                                                logger.debug("found dataset!");
+                                                state = State.DATASET;
+                                            }
                                         }
                                         inner.push(event);
                                         break;
@@ -146,7 +156,7 @@ public class NDESplitAction implements Action {
                                         inner.push(event);
                                 }; break;
                             case DATASET:
-                                logger.info("state[DATASET]");
+                                logger.debug("state[DATASET]");
                                 switch (eventType) {
                                     case XMLEvent.START_ELEMENT:
                                         QName qn = event.asStartElement().getName();
@@ -159,7 +169,7 @@ public class NDESplitAction implements Action {
                                         inner.push(event);
                                 }; break;
                             case URI:
-                                logger.info("state[URI]");
+                                logger.debug("state[URI]");
                                 String uri = null;
                                 switch (eventType) {
                                     case XMLEvent.CHARACTERS:
@@ -172,12 +182,15 @@ public class NDESplitAction implements Action {
                                 if (ds == null || !ds.equals(uri)) {
                                     // close record (if any)
                                     if (writer != null) {
+                                        logger.debug("close record xml for dataset["+ds+"]");
                                         writer.add(xmlef.createEndElement("","http://www.w3.org/2005/sparql-results#","results"));
                                         writer.add(xmlef.createEndElement("","http://www.w3.org/2005/sparql-results#","sparql"));
                                         writer.close();
                                         newRecords.add(new Metadata(ds, "", new ByteArrayInputStream(baos.toByteArray()), record.getOrigin(),false, false));
                                     }
                                     // new record
+                                    ds = uri;
+                                    logger.debug("create record xml for dataset["+ds+"]");
                                     writer = xmlof.createXMLEventWriter(new ByteArrayOutputStream());
                                     // pop outer stack
                                     Stack<XMLEvent> o = new Stack<>();
@@ -200,7 +213,7 @@ public class NDESplitAction implements Action {
                                 state = State.END_RESULT;
                                 break;
                             case END_RESULT:
-                                logger.info("state[END_RESULT]");
+                                logger.debug("state[END_RESULT]");
                                 switch (eventType) {
                                     case XMLEvent.END_ELEMENT:
                                         QName qn = event.asEndElement().getName();
@@ -217,7 +230,7 @@ public class NDESplitAction implements Action {
                             event = reader.nextEvent();
                         else
                             state = (state == State.START ? State.STOP : State.ERROR);// if START then STOP else ERROR
-                        logger.info("END loop: state["+state+"] event["+event+"]["+event.getEventType()+"]");
+                        logger.debug("END loop: state["+state+"] event["+event+"]["+event.getEventType()+"]");
                     }
                     if (state.equals(State.ERROR))
                         logger.error("the XML was not properly processed!");
