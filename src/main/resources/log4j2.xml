@@ -49,15 +49,15 @@
 
     <Loggers>
 
-        <Logger name="nl.mpi.oai.harvester" level="DEBUG" additivity="false">
+        <Logger name="nl.mpi.oai.harvester" level="INFO" additivity="false">
             <AppenderRef ref="RoutingAppender"/>
         </Logger>
         
-        <Logger name="ORG.oclc.oai.harvester2.verb" level="DEBUG" additivity="false">
+        <Logger name="ORG.oclc.oai.harvester2.verb" level="INFO" additivity="false">
             <AppenderRef ref="RoutingAppender"/>
         </Logger>
 
-        <Root level="DEBUG">
+        <Root level="INFO">
             <AppenderRef ref="fileWriter"/>
         </Root>
     </Loggers>

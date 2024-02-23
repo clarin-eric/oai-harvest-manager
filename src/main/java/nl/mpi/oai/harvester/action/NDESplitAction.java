@@ -20,6 +20,7 @@ package nl.mpi.oai.harvester.action;
 
 import nl.mpi.oai.harvester.metadata.Metadata;
 import nl.mpi.oai.harvester.metadata.Record;
+import nl.mpi.oai.harvester.utils.Queue;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.codehaus.stax2.XMLInputFactory2;
@@ -45,7 +46,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Stack;
-
 
 /**
  * This action corresponds to splitting the OAI-PMH envelope with multiple records
@@ -90,16 +90,16 @@ public class NDESplitAction implements Action {
                 XMLEventFactory xmlef = XMLEventFactory.newInstance();
                 reader = xmlif.createXMLEventReader(record.getStream());
                 writer = null;
-                Stack<XMLEvent> outer = new Stack<>();
-                Stack<XMLEvent> inner = new Stack<>();
+                Queue<XMLEvent> outer = new Queue<>();
+                Queue<XMLEvent> inner = new Queue<>();
 
                 if (reader.hasNext()) {
                     XMLEvent event = reader.nextEvent();
 
                     State state = State.START;
-                    int depth = 0;
-                    String status = null;
                     String ds = null;
+                    int orecs = 0;
+                    int irecs = 0;
                     ByteArrayOutputStream baos = null;
                     while (!state.equals(state.STOP) && !state.equals(state.ERROR)) {
                         logger.debug("BEGIN loop: state["+state+"] event["+event+"]["+event.getEventType()+"]");
@@ -113,10 +113,10 @@ public class NDESplitAction implements Action {
                                         if (qn.getLocalPart().equals("results")) {
                                             state = State.RESULTS;
                                         }
-                                        outer.push(event);
+                                        outer.enqueue(event);
                                         break;
                                     default:
-                                        outer.push(event);
+                                        outer.enqueue(event);
                                 }; break;
                             case RESULTS:
                                 logger.debug("state[RESULTS]");
@@ -126,10 +126,16 @@ public class NDESplitAction implements Action {
                                         if (qn.getLocalPart().equals("result")) {
                                             state = State.RESULT;
                                         }
-                                        inner.push(event);
+                                        inner.enqueue(event);
+                                        break;
+                                    case XMLEvent.END_ELEMENT:
+                                        qn = event.asEndElement().getName();
+                                        if (qn.getLocalPart().equals("results")) {
+                                            state = State.STOP;
+                                        }
                                         break;
                                     default:
-                                        inner.push(event);
+                                        inner.enqueue(event);
                                 }; break;
                             case RESULT:
                                 logger.debug("state[RESULT]");
@@ -150,10 +156,10 @@ public class NDESplitAction implements Action {
                                                 state = State.DATASET;
                                             }
                                         }
-                                        inner.push(event);
+                                        inner.enqueue(event);
                                         break;
                                     default:
-                                        inner.push(event);
+                                        inner.enqueue(event);
                                 }; break;
                             case DATASET:
                                 logger.debug("state[DATASET]");
@@ -163,10 +169,10 @@ public class NDESplitAction implements Action {
                                         if (qn.getLocalPart().equals("uri")) {
                                             state = State.URI;
                                         }
-                                        inner.push(event);
+                                        inner.enqueue(event);
                                         break;
                                     default:
-                                        inner.push(event);
+                                        inner.enqueue(event);
                                 }; break;
                             case URI:
                                 logger.debug("state[URI]");
@@ -174,40 +180,47 @@ public class NDESplitAction implements Action {
                                 switch (eventType) {
                                     case XMLEvent.CHARACTERS:
                                         uri = event.asCharacters().getData();
-                                        inner.push(event);
+                                        inner.enqueue(event);
                                         break;
                                     default:
-                                        inner.push(event);
+                                        inner.enqueue(event);
                                 }
                                 if (ds == null || !ds.equals(uri)) {
                                     // close record (if any)
                                     if (writer != null) {
-                                        logger.debug("close record xml for dataset["+ds+"]");
+                                        logger.debug("close record xml["+orecs+"]["+irecs+"] for dataset["+ds+"]");
                                         writer.add(xmlef.createEndElement("","http://www.w3.org/2005/sparql-results#","results"));
                                         writer.add(xmlef.createEndElement("","http://www.w3.org/2005/sparql-results#","sparql"));
                                         writer.close();
                                         newRecords.add(new Metadata(ds, "", new ByteArrayInputStream(baos.toByteArray()), record.getOrigin(),false, false));
                                     }
                                     // new record
+                                    if (ds == null)
+                                        logger.debug("create first record xml for dataset["+uri+"]");
                                     ds = uri;
-                                    logger.debug("create record xml for dataset["+ds+"]");
-                                    writer = xmlof.createXMLEventWriter(new ByteArrayOutputStream());
+                                    orecs++;
+                                    irecs = 1;
+                                    logger.debug("create record xml["+orecs+"]["+irecs+"] for dataset["+ds+"]");
+                                    baos = new ByteArrayOutputStream();
+                                    writer = xmlof.createXMLEventWriter(baos);
                                     // pop outer stack
-                                    Stack<XMLEvent> o = new Stack<>();
+                                    Queue<XMLEvent> o = new Queue<>();
                                     while(!outer.isEmpty()) {
-                                        o.push(outer.peek());
-                                        writer.add(outer.pop());
+                                        o.enqueue(outer.peek());
+                                        writer.add(outer.dequeue());
                                     }
                                     outer = o;
                                     // pop inner stack
                                     while(!inner.isEmpty()) {
-                                        writer.add(inner.pop());
+                                        writer.add(inner.dequeue());
                                     }
                                 } else {
                                     // add to record
+                                    logger.debug("adding record xml["+orecs+"]["+irecs+"] to dataset["+ds+"]");
+                                    irecs++;
                                     // pop inner stack
                                     while(!inner.isEmpty()) {
-                                        writer.add(inner.pop());
+                                        writer.add(inner.dequeue());
                                     }
                                 }
                                 state = State.END_RESULT;
@@ -230,10 +243,17 @@ public class NDESplitAction implements Action {
                             event = reader.nextEvent();
                         else
                             state = (state == State.START ? State.STOP : State.ERROR);// if START then STOP else ERROR
-                        logger.debug("END loop: state["+state+"] event["+event+"]["+event.getEventType()+"]");
+                        logger.debug("END loop: state["+state+"] event["+event+"]["+event.getEventType()+"]["+ds+"]xml["+orecs+"]["+irecs+"]");
                     }
                     if (state.equals(State.ERROR))
                         logger.error("the XML was not properly processed!");
+                    if (writer != null) {
+                        logger.debug("close last record xml["+orecs+"]["+irecs+"] for dataset["+ds+"]");
+                        writer.add(xmlef.createEndElement("", "http://www.w3.org/2005/sparql-results#", "results"));
+                        writer.add(xmlef.createEndElement("", "http://www.w3.org/2005/sparql-results#", "sparql"));
+                        writer.close();
+                        newRecords.add(new Metadata(ds, "", new ByteArrayInputStream(baos.toByteArray()), record.getOrigin(), false, false));
+                    }
                 }
                 if (newRecords.isEmpty()) {
                     logger.error("No records were found in this resultset[" + record.getId() + "]");
@@ -283,4 +303,5 @@ public class NDESplitAction implements Action {
         }
         return null;
     }
+
 }
