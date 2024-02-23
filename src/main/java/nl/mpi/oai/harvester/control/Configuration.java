@@ -115,7 +115,7 @@ public class Configuration {
         POOLSIZE("resource-pool-size"), TIMEOUT("timeout"),
         OVERVIEWFILE("overview-file"), MAPFILE("map-file"),
         SAVERESPONSE("save-response"), PROTOCOL("protocol"),
-        SCENARIO("scenario"), INCREMENTAL("incremental"), DRYRUN("dry-run");
+        SCENARIO("scenario"), INCREMENTAL("incremental"), DRYRUN("dry-run"), NICEDELAY("nice-delay");
         private final String val;
 
         KnownOptions(final String s) {
@@ -583,11 +583,13 @@ public class Configuration {
                                 String pMaxRetryCount = Util.getNodeText(xpath, "./@max-retry-count", configNode);
                                 String pRetryDelays = Util.getNodeText(xpath, "./@retry-delay", configNode);
                                 String pExclusive = Util.getNodeText(xpath, "./@exclusive", configNode);
+                                String pNiceDelay = Util.getNodeText(xpath, "./@nice-delay", configNode);
 
                                 int timeout = (pTimeout != null) ? Integer.valueOf(pTimeout) : getTimeout();
                                 int maxRetryCount = (pMaxRetryCount != null) ? Integer.valueOf(pMaxRetryCount) : getMaxRetryCount();
                                 int[] retryDelays = (pRetryDelays != null) ? parseRetryDelays(pRetryDelays) : getRetryDelays();
                                 boolean exclusive = Boolean.parseBoolean(pExclusive);
+                                int niceDelay = (pNiceDelay !=null) ? Integer.valueOf(pNiceDelay) : getNiceDelay();
                                 String scenario = (pScenario != null) ? pScenario : getScenario();
 
                                 provider.setTimeout(timeout);
@@ -596,6 +598,7 @@ public class Configuration {
                                 provider.setExclusive(exclusive);
                                 provider.setIncremental(isIncremental());
                                 provider.setScenario(scenario);
+                                provider.setNiceDelay(niceDelay);
                             } else {
                                 provider.setTimeout(getTimeout());
                                 provider.setMaxRetryCount(getMaxRetryCount());
@@ -603,6 +606,7 @@ public class Configuration {
                                 provider.setExclusive(false);
                                 provider.setIncremental(isIncremental());
                                 provider.setScenario(getScenario());
+                                provider.setNiceDelay(getNiceDelay());
                             }
 
                             //configure sets
@@ -654,12 +658,14 @@ public class Configuration {
             String pMaxRetryCount = Util.getNodeText(xpath, "./@max-retry-count", cur);
             String pRetryDelays = Util.getNodeText(xpath, "./@retry-delay", cur);
             String pExclusive = Util.getNodeText(xpath, "./@exclusive", cur);
+            String pNiceDelay = Util.getNodeText(xpath, "./@nice-delay", cur);
 
             int timeout = (pTimeout != null) ? Integer.valueOf(pTimeout) : getTimeout();
             int maxRetryCount = (pMaxRetryCount != null) ? Integer.valueOf(pMaxRetryCount) : getMaxRetryCount();
             int[] retryDelays = (pRetryDelays != null) ? parseRetryDelays(pRetryDelays) : getRetryDelays();
             boolean exclusive = Boolean.parseBoolean(pExclusive);
             String scenario = (pScenario != null) ? pScenario : getScenario();
+            int niceDelay = (pNiceDelay != null) ? Integer.valueOf(pNiceDelay) : getNiceDelay();
 
             if (pUrl == null) {
                 logger.error("Skipping provider " + pName + ": URL is missing");
@@ -676,6 +682,7 @@ public class Configuration {
             provider.setExclusive(exclusive);
             provider.setIncremental(isIncremental());
             provider.setScenario(scenario);
+            provider.setNiceDelay(getNiceDelay());
 
             if (!Boolean.valueOf(pStatic)) {
                 // Note: static providers do not support sets, so this only
@@ -751,6 +758,12 @@ public class Configuration {
 
     public int[] getRetryDelays() {
         return parseRetryDelays(settings.get(KnownOptions.RETRYDELAY.toString()));
+    }
+
+    public int getNiceDelay() {
+        String s = settings.get(KnownOptions.NICEDELAY.toString());
+        if (s == null) return 0;
+        return Integer.valueOf(s);
     }
 
     public int getMaxJobs() {

@@ -141,10 +141,13 @@ public class NdeProtocol extends Protocol {
             throw new RuntimeException(e);
         }
 
-        logger.info("hellohere");
         // query
         DocumentSource src = null;
         try {
+            if (provider.getNiceDelay() > 0) {
+                logger.info("Being nice: sleeping for ["+provider.getNiceDelay()+"] seconds!");
+                Thread.sleep(provider.getNiceDelay() * 1000);
+            }
             src = DocumentSource.fetch(config.getQueryEndpoint(), queryString.getBytes("utf-8"), "application/sparql-query", "application/sparql-results+xml", provider.getTimeout(), provider.temp);
 
             // apply the action seq
