@@ -95,9 +95,7 @@ public class OaiProtocol extends Protocol {
 
             String map = config.getMapFile();
             synchronized (map) {
-                PrintWriter m = null;
-                try {
-                    m = new PrintWriter(new FileWriter(map, true));
+                try (PrintWriter m = new PrintWriter(new FileWriter(map, true))) {
                     if (config.hasRegistryReader()) {
                         m.println(config.getRegistryReader().endpointMapping(provider.getOaiUrl(), provider.getName()));
                     } else {
@@ -106,9 +104,6 @@ public class OaiProtocol extends Protocol {
                     }
                 } catch (IOException e) {
                     logger.error("failed to write to the map file!", e);
-                } finally {
-                    if (m != null)
-                        m.close();
                 }
             }
 

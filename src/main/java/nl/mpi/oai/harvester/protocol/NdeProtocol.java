@@ -98,26 +98,19 @@ public class NdeProtocol extends Protocol {
         // setting specific log filename
         ThreadContext.put("logFileName", Util.toFileFormat(provider.getName()).replaceAll("/", ""));
 
-        // TODO: what is map doing?
-//        String map = config.getMapFile();
-//        synchronized (map) {
-//            PrintWriter m = null;
-//            try {
-//                m = new PrintWriter(new FileWriter(map, true));
-//                if (config.hasRegistryReader()) {
-//                    m.println(config.getRegistryReader().endpointMapping(provider.getOaiUrl(), provider.getName()));
-//                } else {
-//                    m.printf("%s,%s,,", provider.getOaiUrl(), Util.toFileFormat(provider.getName()).replaceAll("/", ""));
-//                    m.println();
-//                }
-//            } catch (IOException e) {
-//                logger.error("failed to write to the map file!", e);
-//            } finally {
-//                if (m != null)
-//                    m.close();
-//            }
-//        }
-        // TODO: ??
+        String map = config.getMapFile();
+        synchronized (map) {
+            try (PrintWriter m = new PrintWriter(new FileWriter(map, true))) {
+                if (config.hasRegistryReader()) {
+                    m.println(config.getRegistryReader().endpointMapping(provider.getOaiUrl(), provider.getName()));
+                } else {
+                    m.printf("%s,%s,,", provider.getOaiUrl(), Util.toFileFormat(provider.getName()).replaceAll("/", ""));
+                    m.println();
+                }
+            } catch (IOException e) {
+                logger.error("failed to write to the map file!", e);
+            }
+        }
 
         boolean done = false;
 
