@@ -106,7 +106,7 @@ public class NdeProtocol extends Protocol {
                 if (config.hasRegistryReader()) {
                     m.println(config.getRegistryReader().endpointMapping(provider.getOaiUrl(), provider.getName()));
                 } else {
-                    m.printf("%s,%s,,", provider.getOaiUrl(), Util.toFileFormat(provider.getName()).replaceAll("/", ""));
+                    m.printf("%s,%s,%s,", provider.getOaiUrl(), Util.toFileFormat(provider.getName()).replaceAll("/", ""), provider.getName());
                     m.println();
                 }
             } catch (IOException e) {
