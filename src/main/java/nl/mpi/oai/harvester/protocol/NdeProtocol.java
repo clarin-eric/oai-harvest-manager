@@ -11,12 +11,14 @@ import nl.mpi.oai.harvester.control.Util;
 import nl.mpi.oai.harvester.cycle.Cycle;
 import nl.mpi.oai.harvester.cycle.Endpoint;
 import nl.mpi.oai.harvester.metadata.Metadata;
+import nl.mpi.oai.harvester.utils.DocumentSource;
+import nl.mpi.oai.harvester.utils.MarkableFileInputStream;
 import nl.mpi.tla.util.Saxon;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
 
-import java.io.StringReader;
+import java.io.*;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -96,26 +98,21 @@ public class NdeProtocol extends Protocol {
         // setting specific log filename
         ThreadContext.put("logFileName", Util.toFileFormat(provider.getName()).replaceAll("/", ""));
 
-        // TODO: what is map doing?
-//        String map = config.getMapFile();
-//        synchronized (map) {
-//            PrintWriter m = null;
-//            try {
-//                m = new PrintWriter(new FileWriter(map, true));
-//                if (config.hasRegistryReader()) {
-//                    m.println(config.getRegistryReader().endpointMapping(provider.getOaiUrl(), provider.getName()));
-//                } else {
-//                    m.printf("%s,%s,,", provider.getOaiUrl(), Util.toFileFormat(provider.getName()).replaceAll("/", ""));
-//                    m.println();
-//                }
-//            } catch (IOException e) {
-//                logger.error("failed to write to the map file!", e);
-//            } finally {
-//                if (m != null)
-//                    m.close();
-//            }
-//        }
-        // TODO: ??
+        String map = config.getMapFile();
+        String workDir = config.getWorkingDirectory();
+        map = workDir + "/" + map;
+        synchronized (map) {
+            try (PrintWriter m = new PrintWriter(new FileWriter(map, true))) {
+                if (config.hasRegistryReader()) {
+                    m.println(config.getRegistryReader().endpointMapping(provider.getOaiUrl(), provider.getName()));
+                } else {
+                    m.printf("%s,%s,%s,", provider.getOaiUrl(), Util.toFileFormat(provider.getName()).replaceAll("/", ""), provider.getName());
+                    m.println();
+                }
+            } catch (IOException e) {
+                logger.error("failed to write to the map file!", e);
+            }
+        }
 
         boolean done = false;
 
@@ -140,35 +137,22 @@ public class NdeProtocol extends Protocol {
         }
 
         // query
-        HttpResponse<String> response;
+        DocumentSource src = null;
         try {
-            response = Unirest.post(config.getQueryEndpoint())
-                    .header("accept", "application/sparql-results+xml")
-                    .field("query", queryString)
-                    .asString();
-            logger.info("Query run successfully!");
-        } catch (UnirestException e) {
-            logger.error("cannot get result back as string");
-            throw new RuntimeException(e);
-        }
+            if (provider.getNiceDelay() > 0) {
+                logger.info("Being nice: sleeping for ["+provider.getNiceDelay()+"] seconds!");
+                Thread.sleep(provider.getNiceDelay() * 1000);
+            }
+            src = DocumentSource.fetch(config.getQueryEndpoint(), queryString.getBytes("utf-8"), "application/sparql-query", "application/sparql-results+xml", provider.getTimeout(), provider.temp);
 
-        // load xml string as doc
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder builder;
-        Document doc = null;
-        try {
-            builder = factory.newDocumentBuilder();
-            doc = builder.parse(new InputSource(new StringReader(response.getBody())));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        // apply the action seq
-        logger.info("Size of actionSequences is: " + actionSequences.size());
-        for (final ActionSequence actionSequence : actionSequences) {
-
-            logger.info("Action sequence is: " + actionSequence.toString());
-            actionSequence.runActions(new Metadata(provider.getName(), "nde", doc, provider, true, true));
+            // apply the action seq
+            logger.info("Size of actionSequences is: " + actionSequences.size());
+            for (final ActionSequence actionSequence : actionSequences) {
+                logger.info("Action sequence is: " + actionSequence.toString());
+                actionSequence.runActions(new Metadata(provider.getName(), "nde", src, provider, true, true));
+            }
+        } catch (Throwable e) {
+            logger.info("Query ["+queryString+"] om ["+config.getQueryEndpoint()+"] failed: "+e,e);
         }
     }
 }

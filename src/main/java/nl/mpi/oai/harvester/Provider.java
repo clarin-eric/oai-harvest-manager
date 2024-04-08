@@ -79,10 +79,13 @@ public class Provider {
 
     /** Maximum number of retries to use when a connection fails. */
     public int[] retryDelays = {0};
-    
+
     /** Maximum timeout for a connection */
     public int timeout = 0;
-    
+
+    /** DElay between requests */
+    public int niceDelay = 0;
+
     /** Do I need some time on my own? */
     public boolean exclusive = false;
     
@@ -325,9 +328,17 @@ public class Provider {
     public void setTimeout(int timeout) {
         this.timeout = timeout;
     }
-    
+
     public int getTimeout() {
         return this.timeout;
+    }
+
+    public void setNiceDelay(int delay) {
+        this.niceDelay = delay;
+    }
+
+    public int getNiceDelay() {
+        return this.niceDelay;
     }
 
     public void setMaxRetryCount(int maxRetryCount) {

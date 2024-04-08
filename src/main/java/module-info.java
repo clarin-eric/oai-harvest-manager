@@ -18,4 +18,6 @@ module oai.harvest.manager {
     requires json.smart;
     requires java.activation;
     requires unirest.java;
+
+    opens nl.mpi.oai.harvester.generated to java.xml.bind;
 }
