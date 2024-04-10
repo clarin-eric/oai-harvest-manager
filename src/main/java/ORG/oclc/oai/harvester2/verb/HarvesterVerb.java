@@ -99,38 +99,16 @@ public abstract class HarvesterVerb {
 	        builderMap.put(t, builder);
 	        
 	        DOMImplementation impl = builder.getDOMImplementation();
-	        Document namespaceHolder = impl.createDocument(
-	                "http://www.oclc.org/research/software/oai/harvester",
-	                "harvester:namespaceHolder", null);
-	        namespaceElement = namespaceHolder.getDocumentElement();
-	        namespaceElement.setAttributeNS("http://www.w3.org/2000/xmlns/",
-	                "xmlns:harvester",
-	        "http://www.oclc.org/research/software/oai/harvester");
-	        namespaceElement.setAttributeNS("http://www.w3.org/2000/xmlns/",
-	                "xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
-	        namespaceElement.setAttributeNS("http://www.w3.org/2000/xmlns/",
-	                "xmlns:oai20", "http://www.openarchives.org/OAI/2.0/");
-	        namespaceElement.setAttributeNS("http://www.w3.org/2000/xmlns/",
-	                "xmlns:oai11_GetRecord",
-	        "http://www.openarchives.org/OAI/1.1/OAI_GetRecord");
-	        namespaceElement.setAttributeNS("http://www.w3.org/2000/xmlns/",
-	                "xmlns:oai11_Identify",
-	        "http://www.openarchives.org/OAI/1.1/OAI_Identify");
-	        namespaceElement.setAttributeNS("http://www.w3.org/2000/xmlns/",
-	                "xmlns:oai11_ListIdentifiers",
-	        "http://www.openarchives.org/OAI/1.1/OAI_ListIdentifiers");
-	        namespaceElement
-	        .setAttributeNS("http://www.w3.org/2000/xmlns/",
-	                "xmlns:oai11_ListMetadataFormats",
-	        "http://www.openarchives.org/OAI/1.1/OAI_ListMetadataFormats");
-	        namespaceElement.setAttributeNS("http://www.w3.org/2000/xmlns/",
-	                "xmlns:oai11_ListRecords",
-	        "http://www.openarchives.org/OAI/1.1/OAI_ListRecords");
-	        namespaceElement.setAttributeNS("http://www.w3.org/2000/xmlns/",
-	                "xmlns:oai11_ListSets",
-	        "http://www.openarchives.org/OAI/1.1/OAI_ListSets");
+
             NAMESPACES.put("harvester", "http://www.oclc.org/research/software/oai/harvester");
-            // TODO: en de rest van de namespaceElement.setAttributeNS
+            NAMESPACES.put("xsi","http://www.w3.org/2001/XMLSchema-instance");
+            NAMESPACES.put("oai20","http://www.openarchives.org/OAI/2.0/");
+            NAMESPACES.put("oai11_GetRecord","http://www.openarchives.org/OAI/1.1/OAI_GetRecord");
+            NAMESPACES.put("oai11_Identify","http://www.openarchives.org/OAI/1.1/OAI_Identify");
+            NAMESPACES.put("oai11_ListIdentifiers","http://www.openarchives.org/OAI/1.1/OAI_ListIdentifiers");
+            NAMESPACES.put("oai11_ListMetadataFormats","http://www.openarchives.org/OAI/1.1/OAI_ListMetadataFormats");
+            NAMESPACES.put("oai11_ListRecords","http://www.openarchives.org/OAI/1.1/OAI_ListRecords");
+            NAMESPACES.put("oai11_ListSets","http://www.openarchives.org/OAI/1.1/OAI_ListSets");
     	} catch (Exception e) {
     		e.printStackTrace();
     	}
