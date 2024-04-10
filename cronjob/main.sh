@@ -34,5 +34,9 @@ else
   info "Ingest skipped due to configuration or unclear harvest flag"
 fi
 
-echo "$(date +"%Y%m%d_%H_%M_%S") Job done, goodbye! Exiting job. "
+# ineo labeling
+source "${current_dir}"/ineo_labeling/.ineo.env
+echo "### docker image [${INEO_DOCKER_IMAGE}], mapping [${INEO_MAPPING}]"
+docker run -d --rm --name ineo_labeling -e INEO_MAPPING="${INEO_MAPPING}" -e SOLR_URL="${SOLR_URL}" -e SOLR_USER="${SOLR_USER}" -e SOLR_PASSWORD="${SOLR_PASSWORD}" "${INEO_DOCKER_IMAGE}"
 
+echo "$(date +"%Y%m%d_%H_%M_%S") Job done, goodbye! Exiting job. "
