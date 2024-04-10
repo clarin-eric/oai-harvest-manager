@@ -48,6 +48,42 @@ def fetch_mapping_file(mapping_url: str) -> ET.Element:
     return fetch_xml_from_url(mapping_url)
 
 
+def _add_provider(providers: Providers, provider: ET.Element) -> None:
+    provider_name = provider.get("name", None)
+    logger.info(f"{provider_name=}")
+
+    profile_node = provider.find("profile")
+    if profile_node is None:
+        provider_profile = None
+    else:
+        provider_profile = profile_node.text
+
+    level_node = provider.find("level")
+    if level_node is None:
+        provider_level = None
+    else:
+        provider_level = int(level_node.text)
+
+    default_node = provider.find("default")
+    if default_node is None:
+        provider_default = None
+    else:
+        provider_default = default_node.text
+        if provider_default == "true":
+            provider_default = True
+        else:
+            provider_default = False
+
+    provider_obj = Provider(
+        name=provider_name,
+        profile=provider_profile,
+        level=provider_level,
+        default=provider_default,
+    )
+    providers.providers.append(provider_obj)
+    providers.provider_keys.append(provider_name)
+
+
 def parse_mapping_file(mapping_tree: ET.Element) -> Providers:
     """
     Parses the mapping file using the ineo_classes and returns a providers object with the mapping.
@@ -71,30 +107,11 @@ def parse_mapping_file(mapping_tree: ET.Element) -> Providers:
         else:
             provider_profile = profile_node.text
 
-        level_node = provider.find("level")
-        if level_node is None:
-            provider_level = None
-        else:
-            provider_level = int(level_node.text)
+    for provider in mapping_tree.findall("provider"):
+        _add_provider(providers, provider)
 
-        default_node = provider.find("default")
-        if default_node is None:
-            provider_default = None
-        else:
-            provider_default = default_node.text
-            if provider_default == "true":
-                provider_default = True
-            else:
-                provider_default = False
-
-        provider_obj = Provider(
-            name=provider_name,
-            profile=provider_profile,
-            level=provider_level,
-            default=provider_default,
-        )
-        providers.providers.append(provider_obj)
-        providers.provider_keys.append(provider_name)
+    for provider in mapping_tree.findall("root"):
+        _add_provider(providers, provider)
     return providers
 
 
@@ -239,8 +256,8 @@ def main() -> None:
     """
     mapping_tree = fetch_mapping_file(INEO_MAPPING)
     providers: Providers = parse_mapping_file(mapping_tree)
-    logger.debug(f"providers: {providers}")
-
+    logger.info(f"providers: {providers}")
+    
     """
     label ineo records
     """
