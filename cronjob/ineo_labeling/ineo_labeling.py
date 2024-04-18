@@ -167,37 +167,58 @@ def update_solr_records(doc: Dict, solr_url: str, username, password) -> None:
     logger.info(f"Record updated: {doc['id']}")
 
 
+def _check_provider_or_root(doc: Dict, mapping: Providers, provider_name: str | None) -> bool:
+    """
+    Check if the given provider or root is an INEO record.
+
+    :param doc:
+    :param mapping:
+    :param provider_name:
+    :return:
+    """
+    provider_profile = doc.get("_componentProfileId", None)
+    provider_level = doc.get("_hierarchyWeight", None)
+
+    logger.info(f"provider_profile: {provider_profile=}, {mapping.get_provider(provider_name).profile=}")
+    logger.info(f"provider_level: {provider_level=}, {mapping.get_provider(provider_name).level=}")
+    logger.info(f"default: {mapping.get_provider(provider_name).default}")
+    if provider_profile is not None and provider_profile is not None and provider_profile == mapping.get_provider(
+            provider_name).profile:
+        logger.info(
+            f"### {provider_name} ### result: {provider_profile == mapping.get_provider(provider_name).profile}")
+        return True
+    if provider_level is not None and provider_level is not None and provider_level == mapping.get_provider(
+            provider_name).level:
+        logger.info(
+            f"type of provider_level: {type(provider_level)}, {type(mapping.get_provider(provider_name).level)}")
+        logger.info(f"result: {provider_level == mapping.get_provider(provider_name).level}")
+        return True
+    if mapping.get_provider(provider_name).default is not None:
+        logger.info(f"provider default: {mapping.get_provider(provider_name).default}")
+        return mapping.get_provider(provider_name).default
+    return False
+
+
 def _is_ineo_record(doc: Dict, mapping: Providers) -> bool:
     """
     Check if the Solr record is an INEO record.
     """
+    result_provider_name: bool = False
+    result_root_name: bool = False
     provider_name = doc.get("dataProvider", None)
-    provider_profile = doc.get("_componentProfileId", None)
-    provider_level = doc.get("_hierarchyWeight", None)
+    root_name = doc.get("_harvesterRoot", None)
 
     if provider_name is None:
         raise ValueError("Provider name is missing in the Solr record.")
 
     logger.info(f"{provider_name=}")
     if provider_name in mapping.provider_keys:
-        logger.info(f"provider_profile: {provider_profile=}, {mapping.get_provider(provider_name).profile=}")
-        logger.info(f"provider_level: {provider_level=}, {mapping.get_provider(provider_name).level=}")
-        logger.info(f"default: {mapping.get_provider(provider_name).default}")
-        if provider_profile is not None and provider_profile is not None and provider_profile == mapping.get_provider(
-                provider_name).profile:
-            logger.info(
-                f"### {provider_name} ### result: {provider_profile == mapping.get_provider(provider_name).profile}")
-            return True
-        if provider_level is not None and provider_level is not None and provider_level == mapping.get_provider(
-                provider_name).level:
-            logger.info(
-                f"type of provider_level: {type(provider_level)}, {type(mapping.get_provider(provider_name).level)}")
-            logger.info(f"result: {provider_level == mapping.get_provider(provider_name).level}")
-            return True
-        if mapping.get_provider(provider_name).default is not None:
-            logger.info(f"provider default: {mapping.get_provider(provider_name).default}")
-            return mapping.get_provider(provider_name).default
-        return False
+        result_provider_name = _check_provider_or_root(doc, mapping, provider_name)
+    if root_name in mapping.provider_keys:
+        result_root_name = _check_provider_or_root(doc, mapping, root_name)
+
+    if result_provider_name or result_root_name:
+        return True
     else:
         logger.info(f"global default: {mapping.default}")
         return mapping.default
