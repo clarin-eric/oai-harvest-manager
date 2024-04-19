@@ -214,7 +214,7 @@ def _is_ineo_record(doc: Dict, mapping: Providers) -> bool:
     logger.info(f"{provider_name=}")
     if provider_name in mapping.provider_keys:
         result_provider_name = _check_provider_or_root(doc, mapping, provider_name)
-    if root_name in mapping.provider_keys:
+    elif root_name in mapping.provider_keys:
         result_root_name = _check_provider_or_root(doc, mapping, root_name)
 
     if result_provider_name or result_root_name:
