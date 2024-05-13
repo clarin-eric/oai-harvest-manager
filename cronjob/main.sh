@@ -19,7 +19,7 @@ source "${current_dir}"/.oai.env && source "${current_dir}"/harvest.sh oai
 
 # ingest
 source "${current_dir}"/.ingest.env
-if [ "${ingest:-yes}" == "yes" ] && [ ${can_ingest} == "yes" ]; then
+if [ "${ingest:-yes}" == "yes" ] && [ "${can_ingest:-yes}" == "yes" ]; then
   echo "### Ingesting"
   cd "${vlo_dir:-/data/vlo/datasets-vlo}" && ./control.sh -s run-import
 else
