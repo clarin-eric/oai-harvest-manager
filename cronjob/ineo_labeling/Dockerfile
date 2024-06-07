@@ -1,4 +1,10 @@
-FROM python:3.11-alpine
+FROM python:3.12-slim-bookworm
+
+STOPSIGNAL SIGKILL
+
+RUN apt-get update && apt-get install -y \
+    curl \
+    git
 
 WORKDIR /app
 COPY .ineo.env /app/.ineo.env
