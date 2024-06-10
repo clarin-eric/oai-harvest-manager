@@ -14,6 +14,7 @@ import ineo_labeling_utils as iu
 from typing import List, Dict
 from xml.etree import ElementTree as ET
 from ineo_classes import Providers, Provider
+from pyfat.__main__ import evaluate
 
 # get environment variable INEO_MAPPING
 INEO_MAPPING = os.getenv("INEO_MAPPING")
@@ -52,6 +53,12 @@ def _add_provider(providers: Providers, provider: ET.Element) -> None:
     provider_name = provider.get("name", None)
     logger.info(f"{provider_name=}")
 
+    provider_node = provider.find("assessment")
+    if provider_node is None:
+        provider_assessment = None
+    else:
+        provider_assessment = provider_node.text
+
     profile_node = provider.find("profile")
     if profile_node is None:
         provider_profile = None
@@ -78,7 +85,8 @@ def _add_provider(providers: Providers, provider: ET.Element) -> None:
         name=provider_name,
         profile=provider_profile,
         level=provider_level,
-        default=provider_default,
+        assessment=provider_assessment,
+        default=provider_default
     )
     providers.providers.append(provider_obj)
     providers.provider_keys.append(provider_name)
@@ -182,12 +190,12 @@ def _check_provider_or_root(doc: Dict, mapping: Providers, provider_name: str | 
     logger.info(f"provider_profile: {provider_profile=}, {mapping.get_provider(provider_name).profile=}")
     logger.info(f"provider_level: {provider_level=}, {mapping.get_provider(provider_name).level=}")
     logger.info(f"default: {mapping.get_provider(provider_name).default}")
-    if provider_profile is not None and provider_profile is not None and provider_profile == mapping.get_provider(
+    if provider_profile is not None and provider_profile == mapping.get_provider(
             provider_name).profile:
         logger.info(
             f"### {provider_name} ### result: {provider_profile == mapping.get_provider(provider_name).profile}")
         return True
-    if provider_level is not None and provider_level is not None and provider_level == mapping.get_provider(
+    if provider_level is not None and provider_level == mapping.get_provider(
             provider_name).level:
         logger.info(
             f"type of provider_level: {type(provider_level)}, {type(mapping.get_provider(provider_name).level)}")
@@ -199,14 +207,20 @@ def _check_provider_or_root(doc: Dict, mapping: Providers, provider_name: str | 
     return False
 
 
-def _is_ineo_record(doc: Dict, mapping: Providers) -> bool:
+def _is_ineo_record(doc: Dict, mapping: Providers) -> tuple[bool, bool]:
     """
-    Check if the Solr record is an INEO record.
+    Check if the Solr record is an INEO record and needs FAIR assessment
+
+    :param doc: Solr record
+    :param mapping: Providers object
+    :return: bool, bool The first value in the tuple indicates if the record is an INEO record,
+                and the second value shows if the record needs assessment.
     """
     result_provider_name: bool = False
     result_root_name: bool = False
     provider_name = doc.get("dataProvider", None)
     root_name = doc.get("_harvesterRoot", None)
+    do_assessment: bool = False
 
     if provider_name is None:
         raise ValueError("Provider name is missing in the Solr record.")
@@ -214,14 +228,16 @@ def _is_ineo_record(doc: Dict, mapping: Providers) -> bool:
     logger.info(f"{provider_name=}")
     if provider_name in mapping.provider_keys:
         result_provider_name = _check_provider_or_root(doc, mapping, provider_name)
+        do_assessment = mapping.get_provider(provider_name).assessment
     elif root_name in mapping.provider_keys:
         result_root_name = _check_provider_or_root(doc, mapping, root_name)
+        do_assessment = mapping.get_provider(root_name).assessment
 
     if result_provider_name or result_root_name:
-        return True
+        return True, do_assessment
     else:
         logger.info(f"global default: {mapping.default}")
-        return mapping.default
+        return mapping.default, do_assessment
 
 
 def _label_ineo_records(docs: List[Dict], mapping: Providers) -> List[Dict]:
@@ -233,16 +249,31 @@ def _label_ineo_records(docs: List[Dict], mapping: Providers) -> List[Dict]:
     payload = []
     for doc in docs:
         logger.info(f"Processing doc: {doc['id']}")
-        ineo_record = _is_ineo_record(doc, mapping)
+        ineo_record, do_assessment = _is_ineo_record(doc, mapping)
+        print(f"ineo_record: {ineo_record}; do_assessment: {do_assessment}")
         if ineo_record:
             logger.info(f"INEO record: {doc['id']}: {ineo_record}")
+            cmdi_file = doc.get("_fileName", None)
+            if cmdi_file is None:
+                logger.error(f"CMDI file is missing in the Solr record: {doc['id']}")
+                exit(1)
+            if do_assessment:
+                logger.info(f"Assessment needed: {doc['id']}: {do_assessment}")
+                variable_dict = {"FACETS": doc}
+                assessment_score = evaluate(cmdi_file, variable_dict).score
+            else:
+                logger.info(f"No assessment needed: {doc['id']}: {do_assessment}")
+                assessment_score = -1
             good += 1
         else:
             bad += 1
-        # Check if the record is an INEO record
+            assessment_score = -1
+        # Add check result and assessment result to payload, to be written back to solr
+        print(f"Assessment score: {assessment_score}")
         payload.append({
             "id": doc["id"],
-            "ineo_record": {"set": ineo_record}
+            "ineo_record": {"set": ineo_record},
+            "fair_score": {"set": assessment_score}
         })
     logger.info(f"{bad=} and {good=}")
     return payload
@@ -255,6 +286,7 @@ def label_ineo_records(query: str, solr_url: str, mapping: Providers) -> None:
     # Retrieve Solr records
     docs = fetch_solr_records(query, solr_url, SOLR_USER, SOLR_PASSWORD)
     update_docs = _label_ineo_records(docs, mapping)
+    exit("done")
 
     # Update Solr records
     with concurrent.futures.ThreadPoolExecutor() as executor:
@@ -278,7 +310,7 @@ def main() -> None:
     mapping_tree = fetch_mapping_file(INEO_MAPPING)
     providers: Providers = parse_mapping_file(mapping_tree)
     logger.info(f"providers: {providers}")
-    
+
     """
     label ineo records
     """

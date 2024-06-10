@@ -8,9 +8,10 @@ class Provider:
     profile: Optional[str] = field(default=None)
     level: Optional[int] = field(default=None)
     default: Optional[bool] = field(default=None)
+    assessment: Optional[bool] = field(default=None)
 
     def __str__(self):
-        return f"Provider(\n{self.name=},\n {self.profile=},\n {self.level=},\n {self.default=})"
+        return f"Provider(\n{self.name=},\n {self.profile=},\n {self.level=},\n {self.default=},\n {self.assessment=}\n)"
 
 
 @dataclass
