@@ -244,7 +244,7 @@ def _label_ineo_records(docs: List[Dict], mapping: Providers) -> List[Dict]:
     """
     Label the Solr records with the ineo_record field.
     """
-    ttl_path: str = "/app/proddir/ttl/"
+    ttl_path: str = "/srv/vlo-data/ttl"
     good = 0
     bad = 0
     payload = []
