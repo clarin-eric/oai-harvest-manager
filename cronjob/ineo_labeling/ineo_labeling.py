@@ -244,15 +244,18 @@ def _label_ineo_records(docs: List[Dict], mapping: Providers) -> List[Dict]:
     """
     Label the Solr records with the ineo_record field.
     """
+    ttl_path: str = "/app/proddir/ttl/"
     good = 0
     bad = 0
     payload = []
     for doc in docs:
+        if os.path.isfile(os.path.join(ttl_path, f"ttl/{doc['id']}.ttl")):
+            continue
         logger.info(f"Processing doc: {doc['id']}")
         ineo_record, do_assessment = _is_ineo_record(doc, mapping)
-        print(f"ineo_record: {ineo_record}; do_assessment: {do_assessment}")
+        env_result = None
         if ineo_record:
-            logger.info(f"INEO record: {doc['id']}: {ineo_record}")
+            logger.debug(f"INEO record: {doc['id']}: {ineo_record}")
             cmdi_file = doc.get("_fileName", None)
             if cmdi_file is None:
                 logger.error(f"CMDI file is missing in the Solr record: {doc['id']}")
@@ -260,7 +263,8 @@ def _label_ineo_records(docs: List[Dict], mapping: Providers) -> List[Dict]:
             if do_assessment:
                 logger.info(f"Assessment needed: {doc['id']}: {do_assessment}")
                 variable_dict = {"FACETS": doc}
-                assessment_score = evaluate(cmdi_file, variable_dict).score
+                env_result = evaluate(cmdi_file, variable_dict)
+                assessment_score = env_result.score
             else:
                 logger.info(f"No assessment needed: {doc['id']}: {do_assessment}")
                 assessment_score = -1
@@ -275,7 +279,10 @@ def _label_ineo_records(docs: List[Dict], mapping: Providers) -> List[Dict]:
             "ineo_record": {"set": ineo_record},
             "fair_score": {"set": assessment_score}
         })
-    logger.info(f"{bad=} and {good=}")
+        if env_result is not None:
+            with open(os.path.join(ttl_path, f"ttl/{doc['id']}.ttl"), "w") as f:
+                f.write(repr(env_result))
+    logger.debug(f"{bad=} and {good=}")
     return payload
 
 
@@ -283,15 +290,23 @@ def label_ineo_records(query: str, solr_url: str, mapping: Providers) -> None:
     """
     Retrieve and update Solr records in parallel.
     """
-    # Retrieve Solr records
-    docs = fetch_solr_records(query, solr_url, SOLR_USER, SOLR_PASSWORD)
-    update_docs = _label_ineo_records(docs, mapping)
-    exit("done")
+    batch_size = 1000
 
-    # Update Solr records
-    with concurrent.futures.ThreadPoolExecutor() as executor:
-        args = [(doc, solr_url, SOLR_USER, SOLR_PASSWORD) for doc in update_docs]
-        executor.map(lambda p: update_solr_records(*p), args)
+    # Retrieve the total number of records
+    docs = fetch_solr_records(query, solr_url, SOLR_USER, SOLR_PASSWORD)
+    total_records = len(docs)
+    logger.info(f"### Total records in Solr: {total_records}")
+
+    for i in range(0, total_records, batch_size):
+        logger.info(f"\n\n##### Processing batch {i} to {i+batch_size}")
+        # Retrieve a batch of records
+        batch = docs[i:i+batch_size]
+        update_docs = _label_ineo_records(batch, mapping)
+
+        # Update Solr records in parallel
+        with concurrent.futures.ThreadPoolExecutor(max_workers=12) as executor:
+            args = [(doc, solr_url, SOLR_USER, SOLR_PASSWORD) for doc in update_docs]
+            executor.map(lambda p: update_solr_records(*p), args)
 
 
 def main() -> None:
