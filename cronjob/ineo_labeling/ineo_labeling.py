@@ -280,8 +280,11 @@ def _label_ineo_records(docs: List[Dict], mapping: Providers) -> List[Dict]:
             "fair_score": {"set": assessment_score}
         })
         if env_result is not None:
-            with open(os.path.join(ttl_path, f"{doc['id']}.ttl"), "w") as f:
-                f.write(repr(env_result))
+            try:
+                with open(os.path.join(ttl_path, f"{doc['id']}.ttl"), "w") as f:
+                    f.write(repr(env_result))
+            except OSError as e:
+                logger.error(f"File name too long: {doc['id']}.ttl")
     logger.debug(f"{bad=} and {good=}")
     return payload
 
