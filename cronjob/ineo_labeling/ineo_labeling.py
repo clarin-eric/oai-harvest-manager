@@ -249,7 +249,7 @@ def _label_ineo_records(docs: List[Dict], mapping: Providers) -> List[Dict]:
     bad = 0
     payload = []
     for doc in docs:
-        if os.path.isfile(os.path.join(ttl_path, f"ttl/{doc['id']}.ttl")):
+        if os.path.isfile(os.path.join(ttl_path, f"{doc['id']}.ttl")):
             continue
         logger.info(f"Processing doc: {doc['id']}")
         ineo_record, do_assessment = _is_ineo_record(doc, mapping)
@@ -280,7 +280,7 @@ def _label_ineo_records(docs: List[Dict], mapping: Providers) -> List[Dict]:
             "fair_score": {"set": assessment_score}
         })
         if env_result is not None:
-            with open(os.path.join(ttl_path, f"ttl/{doc['id']}.ttl"), "w") as f:
+            with open(os.path.join(ttl_path, f"{doc['id']}.ttl"), "w") as f:
                 f.write(repr(env_result))
     logger.debug(f"{bad=} and {good=}")
     return payload
