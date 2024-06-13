@@ -55,9 +55,13 @@ def _add_provider(providers: Providers, provider: ET.Element) -> None:
 
     provider_node = provider.find("assessment")
     if provider_node is None:
-        provider_assessment = None
+        provider_assessment = False
     else:
         provider_assessment = provider_node.text
+        if provider_assessment == "true":
+            provider_assessment = True
+        else:
+            provider_assessment = False
 
     profile_node = provider.find("profile")
     if profile_node is None:
@@ -249,10 +253,12 @@ def _label_ineo_records(docs: List[Dict], mapping: Providers) -> List[Dict]:
     bad = 0
     payload = []
     for doc in docs:
-        if os.path.isfile(os.path.join(ttl_path, f"{doc['id']}.ttl")):
-            continue
+        # TODO FIXME: re-think the logic of caching and remove the static 'caching' below and in the bottom of this function
+        # if os.path.isfile(os.path.join(ttl_path, f"{doc['id']}.ttl")):
+        #     continue
         logger.info(f"Processing doc: {doc['id']}")
         ineo_record, do_assessment = _is_ineo_record(doc, mapping)
+
         env_result = None
         if ineo_record:
             logger.debug(f"INEO record: {doc['id']}: {ineo_record}")
@@ -279,12 +285,12 @@ def _label_ineo_records(docs: List[Dict], mapping: Providers) -> List[Dict]:
             "ineo_record": {"set": ineo_record},
             "fair_score": {"set": assessment_score}
         })
-        if env_result is not None:
+        if env_result is not None and not os.path.isfile(os.path.join(ttl_path, f"{doc['id']}.ttl")):
             try:
                 with open(os.path.join(ttl_path, f"{doc['id']}.ttl"), "w") as f:
                     f.write(repr(env_result))
             except OSError as e:
-                logger.error(f"File name too long: {doc['id']}.ttl")
+                print(f"Error writing to file: {e}")
     logger.debug(f"{bad=} and {good=}")
     return payload
 
