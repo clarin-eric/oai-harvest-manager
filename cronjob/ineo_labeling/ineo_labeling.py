@@ -253,11 +253,18 @@ def _label_ineo_records(docs: List[Dict], mapping: Providers) -> List[Dict]:
     bad = 0
     payload = []
     for doc in docs:
-        # TODO FIXME: re-think the logic of caching and remove the static 'caching' below and in the bottom of this function
-        # if os.path.isfile(os.path.join(ttl_path, f"{doc['id']}.ttl")):
-        #     continue
         logger.info(f"Processing doc: {doc['id']}")
         ineo_record, do_assessment = _is_ineo_record(doc, mapping)
+        # TODO FIXME: re-think the logic of caching and remove the static 'caching' below and in the bottom of this function
+        # TODO NOTE:
+        """
+        TODO: do_assessment is determined, the line below should become a function call to determine the validity and expire of the cache.
+        The check is only needed when do_assessment is True.
+        if do_assessment:
+            do_assessement = check_cache(doc['id'], ttl_path)
+        """
+        if os.path.isfile(os.path.join(ttl_path, f"{doc['id']}.ttl")):
+            do_assessment = False
 
         env_result = None
         if ineo_record:
@@ -280,12 +287,18 @@ def _label_ineo_records(docs: List[Dict], mapping: Providers) -> List[Dict]:
             assessment_score = -1
         # Add check result and assessment result to payload, to be written back to solr
         print(f"Assessment score: {assessment_score}")
-        payload.append({
-            "id": doc["id"],
-            "ineo_record": {"set": ineo_record},
-            "fair_score": {"set": assessment_score}
-        })
-        if env_result is not None and not os.path.isfile(os.path.join(ttl_path, f"{doc['id']}.ttl")):
+        if not do_assessment or env_result is None:
+            payload.append({
+                "id": doc["id"],
+                "ineo_record": {"set": ineo_record}
+            })
+        else:
+            payload.append({
+                "id": doc["id"],
+                "ineo_record": {"set": ineo_record},
+                "fair_score": {"set": assessment_score}
+            })
+            # Write the assessment result to a file
             try:
                 with open(os.path.join(ttl_path, f"{doc['id']}.ttl"), "w") as f:
                     f.write(repr(env_result))
