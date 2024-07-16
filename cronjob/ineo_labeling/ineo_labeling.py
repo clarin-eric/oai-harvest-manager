@@ -7,6 +7,7 @@ The value of ineo_record is either true or false.
 import os
 import logging
 from functools import cache
+from rdflib import Graph, Namespace
 
 import requests
 import concurrent.futures
@@ -244,6 +245,24 @@ def _is_ineo_record(doc: Dict, mapping: Providers) -> tuple[bool, bool]:
         return mapping.default, do_assessment
 
 
+def get_fip_score_from_ttl(ttl_file: str) -> float:
+    """
+    Get the FIP score from the ttl file.
+    """
+    g = Graph()
+
+    g.parse(ttl_file, format='ttl')
+
+    # Step 3: Access the cln namespace
+    cln = Namespace("http://www.clarin.eu/ns/rubric#")
+    ftr = Namespace("https://w3id.org/fair_test_result#")
+
+    # Example usage: print all subjects with cln namespace
+    for s, p, o in g.triples((None, ftr.completion, None)):
+        if s.startswith(cln):
+            return float(o)
+
+
 def _label_ineo_records(docs: List[Dict], mapping: Providers) -> List[Dict]:
     """
     Label the Solr records with the ineo_record field.
@@ -255,16 +274,6 @@ def _label_ineo_records(docs: List[Dict], mapping: Providers) -> List[Dict]:
     for doc in docs:
         logger.info(f"Processing doc: {doc['id']}")
         ineo_record, do_assessment = _is_ineo_record(doc, mapping)
-        # TODO FIXME: re-think the logic of caching and remove the static 'caching' below and in the bottom of this function
-        # TODO NOTE:
-        """
-        TODO: do_assessment is determined, the line below should become a function call to determine the validity and expire of the cache.
-        The check is only needed when do_assessment is True.
-        if do_assessment:
-            do_assessement = check_cache(doc['id'], ttl_path)
-        """
-        if os.path.isfile(os.path.join(ttl_path, f"{doc['id']}.ttl")):
-            do_assessment = False
 
         env_result = None
         if ineo_record:
@@ -275,9 +284,14 @@ def _label_ineo_records(docs: List[Dict], mapping: Providers) -> List[Dict]:
                 exit(1)
             if do_assessment:
                 logger.info(f"Assessment needed: {doc['id']}: {do_assessment}")
-                variable_dict = {"FACETS": doc}
-                env_result = evaluate(cmdi_file, variable_dict)
-                assessment_score = env_result.score
+                # TODO FIXME: re-think the logic of caching and remove the static 'caching' below and in the bottom of this function
+                if os.path.isfile(os.path.join(ttl_path, f"{doc['id']}.ttl")):
+                    env_result = ""
+                    assessment_score = get_fip_score_from_ttl(os.path.join(ttl_path, f"{doc['id']}.ttl"))
+                else:
+                    variable_dict = {"FACETS": doc}
+                    env_result = evaluate(cmdi_file, variable_dict)
+                    assessment_score = env_result.score
             else:
                 logger.info(f"No assessment needed: {doc['id']}: {do_assessment}")
                 assessment_score = -1
