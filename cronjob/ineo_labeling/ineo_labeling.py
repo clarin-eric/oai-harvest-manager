@@ -6,6 +6,7 @@ The value of ineo_record is either true or false.
 """
 import os
 import logging
+import time
 from functools import cache
 from rdflib import Graph, Namespace
 
@@ -151,7 +152,7 @@ def fetch_solr_records(query: str, solr_url: str, username, password) -> List[Di
     # Retrieve the total number of records
     response = _fetch_solr_records(query, solr_url, username, password, start=0, rows=0)
     total_records = response["numFound"]
-    logger.info(f"Total records in Solr: {total_records}")
+    logger.debug(f"Total records in Solr: {total_records}")
 
     # Retrieve the records in parallel
     records = []
@@ -189,19 +190,17 @@ def _check_provider_or_root(doc: Dict, mapping: Providers, provider_name: str | 
     :param provider_name:
     :return:
     """
-    provider_profile = doc.get("_componentProfileId", None)
-    provider_level = doc.get("_hierarchyWeight", None)
+    provider_profile: str | None = doc.get("_componentProfileId", None)
+    provider_level: int | None = doc.get("_hierarchyWeight", None)
 
     logger.info(f"provider_profile: {provider_profile=}, {mapping.get_provider(provider_name).profile=}")
     logger.info(f"provider_level: {provider_level=}, {mapping.get_provider(provider_name).level=}")
     logger.info(f"default: {mapping.get_provider(provider_name).default}")
-    if provider_profile is not None and provider_profile == mapping.get_provider(
-            provider_name).profile:
+    if provider_profile is not None and provider_profile == mapping.get_provider(provider_name).profile:
         logger.info(
             f"### {provider_name} ### result: {provider_profile == mapping.get_provider(provider_name).profile}")
         return True
-    if provider_level is not None and provider_level == mapping.get_provider(
-            provider_name).level:
+    if provider_level is not None and provider_level == mapping.get_provider(provider_name).level:
         logger.info(
             f"type of provider_level: {type(provider_level)}, {type(mapping.get_provider(provider_name).level)}")
         logger.info(f"result: {provider_level == mapping.get_provider(provider_name).level}")
@@ -221,6 +220,7 @@ def _is_ineo_record(doc: Dict, mapping: Providers) -> tuple[bool, bool]:
     :return: bool, bool The first value in the tuple indicates if the record is an INEO record,
                 and the second value shows if the record needs assessment.
     """
+    is_ineo_record: bool = False
     result_provider_name: bool = False
     result_root_name: bool = False
     provider_name = doc.get("dataProvider", None)
@@ -232,17 +232,16 @@ def _is_ineo_record(doc: Dict, mapping: Providers) -> tuple[bool, bool]:
 
     logger.info(f"{provider_name=}")
     if provider_name in mapping.provider_keys:
-        result_provider_name = _check_provider_or_root(doc, mapping, provider_name)
+        is_ineo_record = _check_provider_or_root(doc, mapping, provider_name)
         do_assessment = mapping.get_provider(provider_name).assessment
     elif root_name in mapping.provider_keys:
-        result_root_name = _check_provider_or_root(doc, mapping, root_name)
+        is_ineo_record = _check_provider_or_root(doc, mapping, root_name)
         do_assessment = mapping.get_provider(root_name).assessment
-
-    if result_provider_name or result_root_name:
-        return True, do_assessment
     else:
-        logger.info(f"global default: {mapping.default}")
-        return mapping.default, do_assessment
+        is_ineo_record = mapping.default
+        do_assessment = do_assessment
+
+    return is_ineo_record, is_ineo_record and do_assessment
 
 
 def get_fip_score_from_ttl(ttl_file: str) -> float:
@@ -263,6 +262,20 @@ def get_fip_score_from_ttl(ttl_file: str) -> float:
             return float(o)
 
 
+def cache_ok(file: str, cache_ok_days: float = 7) -> bool:
+    """
+    Determine if the cache is still valid, which checks if the files exists and not older than cache_ok_days.
+
+    :param file: The file path.
+    :param cache_ok_days: How many days the cache is treated as valid.
+    :return: True if cache is valid, False otherwise.
+    """
+    if not os.path.isfile(file):
+        return False
+    else:
+        return time.time() - os.path.getmtime(file) // (24 * 3600) < cache_ok_days
+
+
 def _label_ineo_records(docs: List[Dict], mapping: Providers) -> List[Dict]:
     """
     Label the Solr records with the ineo_record field.
@@ -275,23 +288,23 @@ def _label_ineo_records(docs: List[Dict], mapping: Providers) -> List[Dict]:
         logger.info(f"Processing doc: {doc['id']}")
         ineo_record, do_assessment = _is_ineo_record(doc, mapping)
 
-        env_result = None
+        eval_result = None
         if ineo_record:
             logger.debug(f"INEO record: {doc['id']}: {ineo_record}")
-            cmdi_file = doc.get("_fileName", None)
-            if cmdi_file is None:
+            cmdi_file = doc.get("_fileName", "")
+            if cmdi_file == "":
                 logger.error(f"CMDI file is missing in the Solr record: {doc['id']}")
                 exit(1)
             if do_assessment:
                 logger.info(f"Assessment needed: {doc['id']}: {do_assessment}")
                 # TODO FIXME: re-think the logic of caching and remove the static 'caching' below and in the bottom of this function
-                if os.path.isfile(os.path.join(ttl_path, f"{doc['id']}.ttl")):
-                    env_result = ""
+                ttl_file = os.path.join(ttl_path, f"{doc['id']}.ttl")
+                if cache_ok(ttl_file):
                     assessment_score = get_fip_score_from_ttl(os.path.join(ttl_path, f"{doc['id']}.ttl"))
                 else:
                     variable_dict = {"FACETS": doc}
-                    env_result = evaluate(cmdi_file, variable_dict)
-                    assessment_score = env_result.score
+                    eval_result = evaluate(cmdi_file, variable_dict)
+                    assessment_score = eval_result.score
             else:
                 logger.info(f"No assessment needed: {doc['id']}: {do_assessment}")
                 assessment_score = -1
@@ -301,25 +314,40 @@ def _label_ineo_records(docs: List[Dict], mapping: Providers) -> List[Dict]:
             assessment_score = -1
         # Add check result and assessment result to payload, to be written back to solr
         print(f"Assessment score: {assessment_score}")
-        if not do_assessment or env_result is None:
-            payload.append({
-                "id": doc["id"],
-                "ineo_record": {"set": ineo_record}
-            })
-        else:
-            payload.append({
-                "id": doc["id"],
-                "ineo_record": {"set": ineo_record},
-                "fair_score": {"set": assessment_score}
-            })
-            # Write the assessment result to a file
+        payload.append({
+            "id": doc["id"],
+            "ineo_record": {"set": ineo_record},
+            "fair_score": {"set": assessment_score}
+        })
+
+        # Write the assessment result to a file
+        if eval_result is not None:
             try:
                 with open(os.path.join(ttl_path, f"{doc['id']}.ttl"), "w") as f:
-                    f.write(repr(env_result))
+                    f.write(repr(eval_result))
             except OSError as e:
                 print(f"Error writing to file: {e}")
     logger.debug(f"{bad=} and {good=}")
     return payload
+
+
+def get_ineo_records_from_solr_docs(docs: List[Dict], mapping: Providers) -> List[Dict]:
+    """
+    Label the Solr records with the ineo_record field.
+    """
+    ineo_records = []
+    ineo_records_counter = 0
+    assessment_records_counter = 0
+    for doc in docs:
+        ineo, assessment = _is_ineo_record(doc, mapping)
+        if ineo:
+            ineo_records_counter += 1
+            ineo_records.append(doc)
+        if ineo and assessment:
+            assessment_records_counter += 1
+    logger.info(f"### Total INEO records: {ineo_records_counter}")
+    logger.info(f"### Total records need assessment: {assessment_records_counter}")
+    return ineo_records
 
 
 def label_ineo_records(query: str, solr_url: str, mapping: Providers) -> None:
@@ -330,13 +358,14 @@ def label_ineo_records(query: str, solr_url: str, mapping: Providers) -> None:
 
     # Retrieve the total number of records
     docs = fetch_solr_records(query, solr_url, SOLR_USER, SOLR_PASSWORD)
-    total_records = len(docs)
-    logger.info(f"### Total records in Solr: {total_records}")
+    logger.info(f"### Total records in Solr: {len(docs)}")
+    ineo_records = get_ineo_records_from_solr_docs(docs, mapping)
+    logger.info(f"### Total INEO records: {len(ineo_records)}")
 
-    for i in range(0, total_records, batch_size):
+    for i in range(0, len(ineo_records), batch_size):
         logger.info(f"\n\n##### Processing batch {i} to {i+batch_size}")
         # Retrieve a batch of records
-        batch = docs[i:i+batch_size]
+        batch = ineo_records[i:i+batch_size]
         update_docs = _label_ineo_records(batch, mapping)
 
         # Update Solr records in parallel
