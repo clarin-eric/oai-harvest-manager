@@ -221,8 +221,6 @@ def _is_ineo_record(doc: Dict, mapping: Providers) -> tuple[bool, bool]:
                 and the second value shows if the record needs assessment.
     """
     is_ineo_record: bool = False
-    result_provider_name: bool = False
-    result_root_name: bool = False
     provider_name = doc.get("dataProvider", None)
     root_name = doc.get("_harvesterRoot", None)
     do_assessment: bool = False
@@ -239,7 +237,6 @@ def _is_ineo_record(doc: Dict, mapping: Providers) -> tuple[bool, bool]:
         do_assessment = mapping.get_provider(root_name).assessment
     else:
         is_ineo_record = mapping.default
-        do_assessment = do_assessment
 
     return is_ineo_record, is_ineo_record and do_assessment
 
@@ -297,7 +294,6 @@ def _label_ineo_records(docs: List[Dict], mapping: Providers) -> List[Dict]:
                 exit(1)
             if do_assessment:
                 logger.info(f"Assessment needed: {doc['id']}: {do_assessment}")
-                # TODO FIXME: re-think the logic of caching and remove the static 'caching' below and in the bottom of this function
                 ttl_file = os.path.join(ttl_path, f"{doc['id']}.ttl")
                 if cache_ok(ttl_file):
                     assessment_score = get_fip_score_from_ttl(os.path.join(ttl_path, f"{doc['id']}.ttl"))
@@ -314,11 +310,17 @@ def _label_ineo_records(docs: List[Dict], mapping: Providers) -> List[Dict]:
             assessment_score = -1
         # Add check result and assessment result to payload, to be written back to solr
         print(f"Assessment score: {assessment_score}")
-        payload.append({
-            "id": doc["id"],
-            "ineo_record": {"set": ineo_record},
-            "fair_score": {"set": assessment_score}
-        })
+        if ineo_record:
+            payload.append({
+                "id": doc["id"],
+                "ineo_record": {"set": ineo_record},
+                "fair_score": {"set": assessment_score}
+            })
+        else:
+            payload.append({
+                "id": doc["id"],
+                "ineo_record": {"set": ineo_record},
+            })
 
         # Write the assessment result to a file
         if eval_result is not None:
@@ -331,41 +333,18 @@ def _label_ineo_records(docs: List[Dict], mapping: Providers) -> List[Dict]:
     return payload
 
 
-def get_ineo_records_from_solr_docs(docs: List[Dict], mapping: Providers) -> List[Dict]:
-    """
-    Label the Solr records with the ineo_record field.
-    """
-    ineo_records = []
-    ineo_records_counter = 0
-    assessment_records_counter = 0
-    for doc in docs:
-        ineo, assessment = _is_ineo_record(doc, mapping)
-        if ineo:
-            ineo_records_counter += 1
-            ineo_records.append(doc)
-        if ineo and assessment:
-            assessment_records_counter += 1
-    logger.info(f"### Total INEO records: {ineo_records_counter}")
-    logger.info(f"### Total records need assessment: {assessment_records_counter}")
-    return ineo_records
-
-
 def label_ineo_records(query: str, solr_url: str, mapping: Providers) -> None:
     """
     Retrieve and update Solr records in parallel.
     """
     batch_size = 1000
-
-    # Retrieve the total number of records
     docs = fetch_solr_records(query, solr_url, SOLR_USER, SOLR_PASSWORD)
-    logger.info(f"### Total records in Solr: {len(docs)}")
-    ineo_records = get_ineo_records_from_solr_docs(docs, mapping)
-    logger.info(f"### Total INEO records: {len(ineo_records)}")
+    logger.info(f"### Total records to check from Solr: {len(docs)}")
 
-    for i in range(0, len(ineo_records), batch_size):
+    for i in range(0, len(docs), batch_size):
         logger.info(f"\n\n##### Processing batch {i} to {i+batch_size}")
         # Retrieve a batch of records
-        batch = ineo_records[i:i+batch_size]
+        batch = docs[i:i+batch_size]
         update_docs = _label_ineo_records(batch, mapping)
 
         # Update Solr records in parallel
