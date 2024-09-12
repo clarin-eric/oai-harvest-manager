@@ -18,7 +18,7 @@
 
 #configuration
 APP_NAME="oai-harvest-manager"
-MAVEN_IMAGE="maven:3.6.3-jdk-11"
+MAVEN_IMAGE="maven:3.8.6-jdk-11"
 CLEAN_CACHE=${CLEAN_CACHE:-false}
 
 SCRIPT_DIR="$( cd "$(dirname "$0")" ; pwd -P )"

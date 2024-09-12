@@ -22,6 +22,7 @@ import ORG.oclc.oai.harvester2.verb.GetRecord;
 import ORG.oclc.oai.harvester2.verb.Identify;
 import ORG.oclc.oai.harvester2.verb.ListIdentifiers;
 import ORG.oclc.oai.harvester2.verb.ListMetadataFormats;
+import net.sf.saxon.s9api.SaxonApiException;
 import nl.mpi.oai.harvester.action.ActionSequence;
 import nl.mpi.oai.harvester.control.Util;
 import nl.mpi.oai.harvester.harvesting.Harvesting;
@@ -397,9 +398,7 @@ public class Provider {
 	    List<String> ids;
 	    try {
 		ids = getIdentifiers(prefix);
-	    } catch (ParserConfigurationException | IOException | SAXException
-		    | TransformerException | XPathExpressionException
-		    | NoSuchFieldException ex) {
+	    } catch (ParserConfigurationException | IOException | SAXException | TransformerException | XPathExpressionException | NoSuchFieldException | SaxonApiException ex) {
 		logger.error("Error fetching ids from " + name, ex);
 		return false;
 	    }
@@ -466,8 +465,8 @@ public class Provider {
      * @throws NoSuchFieldException introspection problem
      */
 	public List<String> getIdentifiers(String mdPrefix) throws IOException,
-	    ParserConfigurationException, SAXException, TransformerException,
-	    XPathExpressionException, NoSuchFieldException, XMLStreamException {
+        ParserConfigurationException, SAXException, TransformerException,
+        XPathExpressionException, NoSuchFieldException, XMLStreamException, SaxonApiException {
 	List<String> ids = new ArrayList<>();
 
 	if (sets == null) {
@@ -497,9 +496,9 @@ public class Provider {
      * @throws NoSuchFieldException introspection problem
      */
     public void addIdentifiers(String mdPrefix, String set, List<String> ids)
-	    throws IOException, ParserConfigurationException, SAXException,
-	    TransformerException, XPathExpressionException,
-	    NoSuchFieldException, XMLStreamException {
+        throws IOException, ParserConfigurationException, SAXException,
+        TransformerException, XPathExpressionException,
+        NoSuchFieldException, XMLStreamException, SaxonApiException {
             ListIdentifiers li = new ListIdentifiers(oaiUrl, null, null, set, mdPrefix, timeout);
             for (;;) {
                 addIdentifiers(li.getDocument(), ids);

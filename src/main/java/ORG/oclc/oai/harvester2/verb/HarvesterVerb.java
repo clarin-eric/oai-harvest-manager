@@ -22,7 +22,7 @@ import java.io.*;
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.xpath.XPathAPI;
+//import org.apache.xpath.XPathAPI;
 import org.w3c.dom.*;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -42,15 +42,22 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.InflaterInputStream;
 import java.util.zip.ZipInputStream;
 import javax.xml.stream.XMLStreamException;
 import nl.mpi.oai.harvester.utils.DocumentSource;
 import nl.mpi.oai.harvester.utils.MarkableFileInputStream;
+import nl.mpi.tla.util.Saxon;
+import net.sf.saxon.s9api.SaxonApiException;
+import net.sf.saxon.s9api.XdmItem;
+
 import org.codehaus.stax2.XMLInputFactory2;
 import org.codehaus.stax2.XMLStreamReader2;
 import org.codehaus.stax2.evt.XMLEvent2;
@@ -77,6 +84,7 @@ public abstract class HarvesterVerb {
     private String requestURL = null;
     private static HashMap builderMap = new HashMap();
     private static Element namespaceElement = null;
+    private static Map<String,String> NAMESPACES = new LinkedHashMap<>();
     private static DocumentBuilderFactory factory = null;
     private static TransformerFactory xformFactory = TransformerFactory.newInstance();
     
@@ -91,36 +99,16 @@ public abstract class HarvesterVerb {
 	        builderMap.put(t, builder);
 	        
 	        DOMImplementation impl = builder.getDOMImplementation();
-	        Document namespaceHolder = impl.createDocument(
-	                "http://www.oclc.org/research/software/oai/harvester",
-	                "harvester:namespaceHolder", null);
-	        namespaceElement = namespaceHolder.getDocumentElement();
-	        namespaceElement.setAttributeNS("http://www.w3.org/2000/xmlns/",
-	                "xmlns:harvester",
-	        "http://www.oclc.org/research/software/oai/harvester");
-	        namespaceElement.setAttributeNS("http://www.w3.org/2000/xmlns/",
-	                "xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
-	        namespaceElement.setAttributeNS("http://www.w3.org/2000/xmlns/",
-	                "xmlns:oai20", "http://www.openarchives.org/OAI/2.0/");
-	        namespaceElement.setAttributeNS("http://www.w3.org/2000/xmlns/",
-	                "xmlns:oai11_GetRecord",
-	        "http://www.openarchives.org/OAI/1.1/OAI_GetRecord");
-	        namespaceElement.setAttributeNS("http://www.w3.org/2000/xmlns/",
-	                "xmlns:oai11_Identify",
-	        "http://www.openarchives.org/OAI/1.1/OAI_Identify");
-	        namespaceElement.setAttributeNS("http://www.w3.org/2000/xmlns/",
-	                "xmlns:oai11_ListIdentifiers",
-	        "http://www.openarchives.org/OAI/1.1/OAI_ListIdentifiers");
-	        namespaceElement
-	        .setAttributeNS("http://www.w3.org/2000/xmlns/",
-	                "xmlns:oai11_ListMetadataFormats",
-	        "http://www.openarchives.org/OAI/1.1/OAI_ListMetadataFormats");
-	        namespaceElement.setAttributeNS("http://www.w3.org/2000/xmlns/",
-	                "xmlns:oai11_ListRecords",
-	        "http://www.openarchives.org/OAI/1.1/OAI_ListRecords");
-	        namespaceElement.setAttributeNS("http://www.w3.org/2000/xmlns/",
-	                "xmlns:oai11_ListSets",
-	        "http://www.openarchives.org/OAI/1.1/OAI_ListSets");
+
+            NAMESPACES.put("harvester", "http://www.oclc.org/research/software/oai/harvester");
+            NAMESPACES.put("xsi","http://www.w3.org/2001/XMLSchema-instance");
+            NAMESPACES.put("oai20","http://www.openarchives.org/OAI/2.0/");
+            NAMESPACES.put("oai11_GetRecord","http://www.openarchives.org/OAI/1.1/OAI_GetRecord");
+            NAMESPACES.put("oai11_Identify","http://www.openarchives.org/OAI/1.1/OAI_Identify");
+            NAMESPACES.put("oai11_ListIdentifiers","http://www.openarchives.org/OAI/1.1/OAI_ListIdentifiers");
+            NAMESPACES.put("oai11_ListMetadataFormats","http://www.openarchives.org/OAI/1.1/OAI_ListMetadataFormats");
+            NAMESPACES.put("oai11_ListRecords","http://www.openarchives.org/OAI/1.1/OAI_ListRecords");
+            NAMESPACES.put("oai11_ListSets","http://www.openarchives.org/OAI/1.1/OAI_ListSets");
     	} catch (Exception e) {
     		e.printStackTrace();
     	}
@@ -205,7 +193,9 @@ public abstract class HarvesterVerb {
      * 
      * @return the xsi:schemaLocation value
      */
-    public String getSchemaLocation() throws TransformerException, ParserConfigurationException, SAXException, IOException, XMLStreamException {
+    public String getSchemaLocation()
+        throws TransformerException, ParserConfigurationException, SAXException, IOException, XMLStreamException,
+        SaxonApiException {
         if (this.schemaLocation == null) {
             if (hasDocument()) {
                 this.schemaLocation = getSingleString("/*/@xsi:schemaLocation");
@@ -245,7 +235,7 @@ public abstract class HarvesterVerb {
      * @return a NodeList of /oai:OAI-PMH/oai:error elements
      * @throws TransformerException
      */
-    public NodeList getErrors() throws TransformerException, ParserConfigurationException, SAXException, IOException, XMLStreamException {
+    public List<Node> getErrors() throws TransformerException, ParserConfigurationException, SaxonApiException, SAXException, IOException, XMLStreamException {
         if (SCHEMA_LOCATION_V2_0.equals(getSchemaLocation())) {
             return getNodeList("/oai20:OAI-PMH/oai20:error");
         } else {
@@ -313,7 +303,8 @@ public abstract class HarvesterVerb {
      * @return a String containing the value of the XPath location.
      * @throws TransformerException
      */
-    public String getSingleString(String xpath) throws TransformerException, ParserConfigurationException, SAXException, IOException {
+    public String getSingleString(String xpath)
+        throws TransformerException, ParserConfigurationException, SAXException, IOException, SaxonApiException {
         return getSingleString(getDocument(), xpath);
 //        return XPathAPI.eval(getDocument(), xpath, namespaceElement).str();
 //      String str = null;
@@ -327,8 +318,9 @@ public abstract class HarvesterVerb {
     }
     
     public String getSingleString(Node node, String xpath)
-    throws TransformerException {
-        return XPathAPI.eval(node, xpath, namespaceElement).str();
+    throws SaxonApiException {
+        return Saxon.xpath2string(Saxon.wrapNode(node), xpath, null, NAMESPACES);
+//        return XPathAPI.eval(node, xpath, namespaceElement).str();
     }
     
     /**
@@ -338,8 +330,15 @@ public abstract class HarvesterVerb {
      * @return the NodeList for the xpath into the response DOM
      * @throws TransformerException
      */
-    public NodeList getNodeList(String xpath) throws TransformerException, ParserConfigurationException, SAXException, IOException {
-        return XPathAPI.selectNodeList(getDocument(), xpath, namespaceElement);
+    public List<Node> getNodeList(String xpath) throws SaxonApiException, ParserConfigurationException, SAXException, IOException {
+//        return XPathAPI.selectNodeList(getDocument(), xpath, namespaceElement);
+
+        List<Node> res = new ArrayList<>();
+        for (XdmItem item : Saxon.xpathList(Saxon.wrapNode(getDocument()), xpath, null, NAMESPACES)) {
+            res.add((Node) Saxon.wrapNode((Node) item));
+        }
+
+        return res;
     }
     
     public String toString() {

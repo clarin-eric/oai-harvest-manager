@@ -233,34 +233,34 @@ public class DocumentSource {
     }
     
     public static InputStream iconv(Path input, InputStream in) throws IOException {
-    Process p = Runtime.getRuntime().exec("iconv -f utf-8 -t utf-8 -c");
-    BufferedWriter bwo = new BufferedWriter(new OutputStreamWriter(p.getOutputStream()));
-    BufferedReader bri = new BufferedReader(new InputStreamReader(p.getInputStream()));
+        Process p = Runtime.getRuntime().exec("iconv -f utf-8 -t utf-8 -c");
+        BufferedWriter bwo = new BufferedWriter(new OutputStreamWriter(p.getOutputStream()));
+        BufferedReader bri = new BufferedReader(new InputStreamReader(p.getInputStream()));
     
-    BufferedReader fbri = new BufferedReader(new InputStreamReader(in));
-    String line  = null;
-    while( ( line = fbri.readLine() ) != null ) {
-        bwo.append(line);
-        bwo.newLine();
-    }
-    bwo.flush();
-    bwo.close();
-    fbri.close();
+        BufferedReader fbri = new BufferedReader(new InputStreamReader(in));
+        String line  = null;
+        while( ( line = fbri.readLine() ) != null ) {
+            bwo.append(line);
+            bwo.newLine();
+        }
+        bwo.flush();
+        bwo.close();
+        fbri.close();
     
-    BufferedWriter fbwo = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(input.toFile())));
-    while( ( line = bri.readLine() ) != null ) {
-        fbwo.append(line);
-        fbwo.newLine();
-    }
-    bri.close();
-    fbwo.flush();
-    fbwo.close();
-    try {
-        p.waitFor();
-    } catch ( InterruptedException e ) {
-    }
+        BufferedWriter fbwo = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(input.toFile())));
+        while( ( line = bri.readLine() ) != null ) {
+            fbwo.append(line);
+            fbwo.newLine();
+        }
+        bri.close();
+        fbwo.flush();
+        fbwo.close();
+        try {
+            p.waitFor();
+        } catch ( InterruptedException e ) {
+        }
     
-    return new MarkableFileInputStream(new FileInputStream(input.toFile()));
-}
+        return new MarkableFileInputStream(new FileInputStream(input.toFile()));
+    }
 
 }
