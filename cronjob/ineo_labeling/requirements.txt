@@ -1,0 +1,6 @@
+certifi
+charset-normalizer
+idna
+requests
+urllib3
+git+https://github.com/CLARIAH/pyFAT.git@develop#egg=pyfat

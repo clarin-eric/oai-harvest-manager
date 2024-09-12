@@ -220,7 +220,9 @@ public class DocumentSource {
             out.close();
             logger.debug("temp["+temp+"] for URL["+requestURL+"]");
             in = new MarkableFileInputStream(new FileInputStream(temp.toFile()));
-            in = iconv(temp, in);
+            if (requestURL.contains("https://ssh.datastations.nl/oai")) {
+                in = iconv(temp, in);
+            }
         } else {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             int size = org.apache.commons.io.IOUtils.copy(in, baos);
@@ -234,7 +236,7 @@ public class DocumentSource {
         Process p = Runtime.getRuntime().exec("iconv -f utf-8 -t utf-8 -c");
         BufferedWriter bwo = new BufferedWriter(new OutputStreamWriter(p.getOutputStream()));
         BufferedReader bri = new BufferedReader(new InputStreamReader(p.getInputStream()));
-
+    
         BufferedReader fbri = new BufferedReader(new InputStreamReader(in));
         String line  = null;
         while( ( line = fbri.readLine() ) != null ) {
@@ -243,7 +245,8 @@ public class DocumentSource {
         }
         bwo.flush();
         bwo.close();
-
+        fbri.close();
+    
         BufferedWriter fbwo = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(input.toFile())));
         while( ( line = bri.readLine() ) != null ) {
             fbwo.append(line);
@@ -256,7 +259,7 @@ public class DocumentSource {
             p.waitFor();
         } catch ( InterruptedException e ) {
         }
-
+    
         return new MarkableFileInputStream(new FileInputStream(input.toFile()));
     }
 
