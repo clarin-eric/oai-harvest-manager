@@ -584,6 +584,7 @@ public class Configuration {
                                 String pRetryDelays = Util.getNodeText(xpath, "./@retry-delay", configNode);
                                 String pExclusive = Util.getNodeText(xpath, "./@exclusive", configNode);
                                 String pNiceDelay = Util.getNodeText(xpath, "./@nice-delay", configNode);
+                                String pName = Util.getNodeText(xpath, "./@name", configNode);
 
                                 int timeout = (pTimeout != null) ? Integer.valueOf(pTimeout) : getTimeout();
                                 int maxRetryCount = (pMaxRetryCount != null) ? Integer.valueOf(pMaxRetryCount) : getMaxRetryCount();
@@ -599,6 +600,8 @@ public class Configuration {
                                 provider.setIncremental(isIncremental());
                                 provider.setScenario(scenario);
                                 provider.setNiceDelay(niceDelay);
+                                if (pName != null)
+                                    provider.setName(pName);
                             } else {
                                 provider.setTimeout(getTimeout());
                                 provider.setMaxRetryCount(getMaxRetryCount());
