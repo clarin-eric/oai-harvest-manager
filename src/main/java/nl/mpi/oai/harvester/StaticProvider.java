@@ -169,9 +169,6 @@ public class StaticProvider extends Provider {
 	String xp = "/Repository/ListRecords[@metadataPrefix = '"
 		+ mdPrefix + "']/record[./header/identifier/text() = '"
 		+ id + "']";
-	// String xp = "/os:Repository/os:ListRecords[@metadataPrefix = '"
-	// 	+ mdPrefix + "']/oai:record[./oai:header/oai:identifier/text() = '"
-	// 	+ id + "']";
 	Document doc = getSubtree(xp);
 	if (doc == null) return null;
 	return new Metadata(id, mdPrefix, doc, this, true, false);
