@@ -194,7 +194,7 @@ public class Provider {
 
 	// If we simply can't find a name, make one up.
 	if (name == null || name.isEmpty()) {
-	    String domain = oaiUrl.replaceAll(".*//([^/]+)/.*", "$1");
+	    String domain = (oaiUrl!=null?oaiUrl.replaceAll(".*//([^/]+)/.*", "$1"):"LOCALHOST");
 	    name = "Unnamed provider at " + domain;
 	}
     }

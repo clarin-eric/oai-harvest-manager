@@ -16,3 +16,7 @@ nbactions.xml
 .vscode
 .DS_Store
 /run*
+map.csv
+overview.xml
+workspace/middle/KB/KB.xml
+workspace/middle/SV/SV.xml

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="INFO" name="harvester-config">
+<Configuration status="DEBUG" name="harvester-config">
 
     <Properties>
         <Property name="LOG_DIR">${sys:logdir:-log}</Property>
@@ -49,11 +49,11 @@
 
     <Loggers>
 
-        <Logger name="nl.mpi.oai.harvester" level="INFO" additivity="false">
+        <Logger name="nl.mpi.oai.harvester" level="DEBUG" additivity="false">
             <AppenderRef ref="RoutingAppender"/>
         </Logger>
         
-        <Logger name="ORG.oclc.oai.harvester2.verb" level="INFO" additivity="false">
+        <Logger name="ORG.oclc.oai.harvester2.verb" level="DEBUG" additivity="false">
             <AppenderRef ref="RoutingAppender"/>
         </Logger>
 
