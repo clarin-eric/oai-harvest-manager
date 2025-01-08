@@ -220,9 +220,9 @@ public class DocumentSource {
             out.close();
             logger.debug("temp["+temp+"] for URL["+requestURL+"]");
             in = new MarkableFileInputStream(new FileInputStream(temp.toFile()));
-            if (requestURL.contains("https://ssh.datastations.nl/oai")) {
-                in = iconv(temp, in);
-            }
+            //if (requestURL.contains("https://ssh.datastations.nl/oai")) {
+            //    in = iconv(temp, in);
+            //}
         } else {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             int size = org.apache.commons.io.IOUtils.copy(in, baos);

@@ -1,4 +1,4 @@
-FROM registry.gitlab.com/clarin-eric/docker-alpine-supervisor-java-base:openjdk11-1.2.12 as build
+FROM registry.gitlab.com/clarin-eric/docker-alpine-supervisor-java-base:openjdk11-2.2.0 as build
 
 RUN apk --no-cache add maven=3.6.1-r0
 
