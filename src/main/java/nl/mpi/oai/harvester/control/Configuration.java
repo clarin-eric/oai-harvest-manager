@@ -572,9 +572,9 @@ public class Configuration {
                     for (String provUrl : endPointOaiPmhSetMap.keySet()) {
                         // do not include an endpoint if it is specified to be excluded
                         if (excludeSpec.contains(provUrl)) {
-                            logger.debug("Excluding endpoint" + provUrl);
+                            logger.debug("Excluding endpoint: " + provUrl);
                         } else {
-                            logger.debug("Including endpoint" + provUrl);
+                            logger.debug("Including endpoint: " + provUrl);
                             Provider provider = new Provider(provUrl, getMaxRetryCount(), getRetryDelays());
                             if (configMap.containsKey(provUrl)) {
                                 Node configNode = configMap.get(provUrl);
