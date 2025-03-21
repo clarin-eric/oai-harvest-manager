@@ -1,6 +1,8 @@
 module oai.harvest.manager {
     exports nl.mpi.oai.harvester.action;
     exports nl.mpi.oai.harvester.metadata;
+    exports nl.mpi.oai.harvester.protocol;
+    exports nl.mpi.oai.harvester.utils;
     requires Saxon.HE;
     requires SaxonUtils;
     requires org.apache.logging.log4j;
