@@ -45,7 +45,7 @@
   <!-- ### actions to take on metadata formats (in order of preference) ### -->
   <actions>
     <format match="namespace" value="http://www.clarin.eu/cmd/1">
-      <action type="transform" file="https://raw.githubusercontent.com/menzowindhouwer/oai-harvest-manager/develop/src/main/resources/filter.xsl"/>
+      <action type="transform" file="https://raw.githubusercontent.com/clarin-eric/oai-harvest-manager/master/src/main/resources/filter.xsl"/>
       <action type="save" dir="oai" suffix=".xml"/>
       <action type="split"/>
       <action type="save" dir="rec" suffix=".xml"/>
@@ -53,7 +53,7 @@
       <action type="save" dir="cmdi-1_2" suffix=".xml" history="true"/>
     </format>
     <format match="namespace" value="http://www.clarin.eu/cmd/">
-      <action type="transform" file="https://raw.githubusercontent.com/menzowindhouwer/oai-harvest-manager/develop/src/main/resources/filter.xsl"/>
+      <action type="transform" file="https://raw.githubusercontent.com/clarin-eric/oai-harvest-manager/master/src/main/resources/filter.xsl"/>
       <action type="save" dir="oai" suffix=".xml"/>
       <action type="split"/>
       <action type="save" dir="rec" suffix=".xml"/>
@@ -63,7 +63,7 @@
       <action type="save" dir="cmdi-1_2" suffix=".xml" history="true"/>
     </format>
     <format match="prefix" value="olac">
-      <action type="transform" file="https://raw.githubusercontent.com/menzowindhouwer/oai-harvest-manager/develop/src/main/resources/filter.xsl"/>
+      <action type="transform" file="https://raw.githubusercontent.com/clarin-eric/oai-harvest-manager/master/src/main/resources/filter.xsl"/>
       <action type="save" dir="oai" suffix=".xml"/>
       <action type="transform" file="https://github.com/clarin-eric/oai-harvest-config/raw/develop/addOAISetName.xsl" cache=".oai-cache"/>
       <action type="split"/>
@@ -74,7 +74,7 @@
       <action type="save" dir="cmdi-1_2" suffix=".xml" history="true"/>
     </format>
     <format match="prefix" value="oai_dc">
-      <action type="transform" file="https://raw.githubusercontent.com/menzowindhouwer/oai-harvest-manager/develop/src/main/resources/filter.xsl"/>
+      <action type="transform" file="https://raw.githubusercontent.com/clarin-eric/oai-harvest-manager/master/src/main/resources/filter.xsl"/>
       <action type="save" dir="oai" suffix=".xml"/>
       <action type="transform" file="https://github.com/clarin-eric/oai-harvest-config/raw/develop/addOAISetName.xsl" cache=".oai-cache"/>
       <action type="split"/>
@@ -114,12 +114,15 @@
       <!-/-<filter>Subject and Keywords = Humanities - Languages and literature (6.2) or Humanities - Other humanities (6.5))</filter>-/->
       <filter xmlns:dc="http://purl.org/dc/elements/1.1/">.//dc:subject[contains(.,'(6.2)') or contains(.,'(6.5)')]</filter>
       <!-/-<set>DELFT.UU</set>-/->
-    </provider>-->
+    </provider>
     <provider url="https://www.meertens.knaw.nl/flat/oai2">
       <filter>.//*:title[contains(.,'dwangarbeider')]</filter>
     </provider>
-    <!--<provider url="https://arche.acdh.oeaw.ac.at/oaipmh/" timeout="300">
+    <provider url="https://arche.acdh.oeaw.ac.at/oaipmh/" timeout="300">
       <set>clarin-vlo</set>
     </provider>-->
+    <provider url="https://ssh.datastations.nl/oai" name="DANS">
+      <set>humanities</set>
+    </provider>
   </providers>
 </config>

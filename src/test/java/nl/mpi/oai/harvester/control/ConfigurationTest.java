@@ -91,8 +91,7 @@ public class ConfigurationTest {
         assertEquals("http://www.clarin.eu/cmd/1", actionSequences.get(0).getInputFormat().getValue());
         
         final List<ResourcePool<Action>> actions = actionSequences.get(0).getActions();
-        assertEquals(5, actions.size());
-        
+        assertEquals(7, actions.size());
     }
 
     @Test

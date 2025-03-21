@@ -25,6 +25,7 @@ import net.sf.saxon.s9api.XdmAtomicValue;
 import net.sf.saxon.s9api.XdmNode;
 import net.sf.saxon.s9api.XsltTransformer;
 import nl.mpi.oai.harvester.metadata.Metadata;
+import nl.mpi.oai.harvester.metadata.Record;
 import nl.mpi.tla.util.Saxon;
 import nl.mpi.tla.util.SaxonListener;
 import org.apache.logging.log4j.LogManager;
@@ -124,8 +125,9 @@ public class TransformAction implements Action {
     }
 
     @Override
-    public boolean perform(List<Metadata> records) {
-        for (Metadata record:records) {
+    public boolean perform(List<Record> records) {
+        for (Record rec : records) {
+            Metadata record = (Metadata)rec;
             try {
                 if (semaphore!=null) {
                     for (;;) {

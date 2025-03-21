@@ -4,7 +4,7 @@
     <groupId>nl.mpi</groupId>
     <artifactId>oai-harvest-manager</artifactId>
     <packaging>jar</packaging>
-    <version>1.2.0-SNAPSHOT</version>
+    <version>1.3-SNAPSHOT</version>
     <name>OAI Harvest Manager</name>
     <description>This application manages OAI-PMH harvesting workflows</description>
 
@@ -21,6 +21,16 @@
     <!-- REPOSITORIES -->
     <repositories>
         <repository>
+            <id>mvnrepo</id>
+            <name>mvnrepo</name>
+            <url>https://repo1.maven.org/maven2</url>
+        </repository>
+        <repository>
+            <id>huygens-maven</id>
+            <name>Huygens Maven</name>
+            <url>https://maven.huygens.knaw.nl/repository</url>
+        </repository>
+        <repository>
             <id>CLARIN</id>
             <name>CLARIN Repository</name>
             <url>https://nexus.clarin.eu/content/repositories/Clarin</url>
@@ -34,6 +44,15 @@
             <url>https://nexus.clarin.eu/content/repositories/clarin-snapshot</url>
             <snapshots>
                 <enabled>true</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>central</id>
+            <name>Central Repository</name>
+            <url>https://repo.maven.apache.org/maven2</url>
+            <layout>default</layout>
+            <snapshots>
+                <enabled>false</enabled>
             </snapshots>
         </repository>
     </repositories>
@@ -71,37 +90,46 @@
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-slf4j-impl</artifactId>
-            <version>2.13.3</version>
+            <version>2.16.0</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>log4j-over-slf4j</artifactId>
-            <version>1.7.30</version>
+            <version>1.7.32</version>
         </dependency>
 
-        <dependency>
+        <!--<dependency>
             <groupId>net.sf.saxon</groupId>
             <artifactId>Saxon-HE</artifactId>
             <version>9.5.1-8</version>
+<!-/-            <version>10.5</version>-/->
+        </dependency>-->
+        <!-- MD5 -->
+        <!-- https://mvnrepository.com/artifact/com.joyent.util/fast-md5 -->
+        <dependency>
+            <groupId>com.joyent.util</groupId>
+            <artifactId>fast-md5</artifactId>
+            <version>2.7.1</version>
         </dependency>
 
         <dependency>
             <groupId>nl.mpi.tla</groupId>
             <artifactId>SaxonUtils</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <!--<version>1.0-SNAPSHOT</version>-->
+            <version>2.0-RC2</version>
             <type>jar</type>
         </dependency>
 
-        <dependency>
-            <groupId>xalan</groupId>
-            <artifactId>xalan</artifactId>
-            <version>2.7.2</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>xalan</groupId>-->
+<!--            <artifactId>xalan</artifactId>-->
+<!--            <version>2.7.2</version>-->
+<!--        </dependency>-->
 
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.13.1</version>
+            <version>4.13.2</version>
             <scope>test</scope>
         </dependency>
 
@@ -121,6 +149,7 @@
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
             <version>3.4.6</version>
+            <scope>test</scope>
         </dependency>
   
 
@@ -134,7 +163,7 @@
         <dependency>
             <groupId>com.jayway.jsonpath</groupId>
             <artifactId>json-path</artifactId>
-            <version>2.4.0</version>
+            <version>2.6.0</version>
         </dependency>
 
         <dependency>
@@ -146,7 +175,7 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>29.0-jre</version>
+            <version>31.0.1-jre</version>
         </dependency>
     
         <!-- for java 11 -->
@@ -163,9 +192,31 @@
         <dependency>
             <groupId>org.glassfish.jaxb</groupId>
             <artifactId>jaxb-runtime</artifactId>
-            <version>2.4.0-b180725.0644</version>
+            <version>2.4.0-b180830.0438</version>
         </dependency>
-    
+        <dependency>
+            <groupId>org.eclipse.rdf4j</groupId>
+            <artifactId>rdf4j-bom</artifactId>
+            <version>4.0.2</version>
+            <type>pom</type>
+            <scope>import</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.rdf4j</groupId>
+            <artifactId>rdf4j-storage</artifactId>
+            <version>4.0.2</version>
+            <type>pom</type>
+        </dependency>
+        <dependency>
+            <groupId>com.mashape.unirest</groupId>
+            <artifactId>unirest-java</artifactId>
+            <version>1.4.9</version>
+        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.eclipse.rdf4j</groupId>-->
+<!--            <artifactId>rdf4j-repository-sparql</artifactId>-->
+<!--            <version>4.0.2</version>-->
+<!--        </dependency>-->
     </dependencies>
 
     <!-- Build cycle referred plugins -->
@@ -195,11 +246,10 @@
         </pluginManagement>
 
         <plugins>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-enforcer-plugin</artifactId>
-                <version>3.0.0-M3</version>
+                <version>3.0.0</version>
                 <executions>
                     <execution>
                         <id>enforce-maven</id>
@@ -268,7 +318,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
-                <version>3.2.0</version>
+                <version>3.3.0</version>
                 <configuration>
                     <classesDirectory>target/classes</classesDirectory>
                     <archive>

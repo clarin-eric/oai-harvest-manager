@@ -18,6 +18,7 @@
 
 package ORG.oclc.oai.harvester2.verb;
 
+import net.sf.saxon.s9api.SaxonApiException;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -67,7 +68,8 @@ public class Identify extends HarvesterVerb {
      * @throws NoSuchFieldException
      */
     public String getProtocolVersion()
-    throws TransformerException, NoSuchFieldException, ParserConfigurationException, SAXException, IOException, XMLStreamException {
+        throws TransformerException, NoSuchFieldException, ParserConfigurationException, SAXException, IOException,
+        XMLStreamException, SaxonApiException {
         if (SCHEMA_LOCATION_V2_0.equals(getSchemaLocation())) {
             return getSingleString("/oai20:OAI-PMH/oai20:Identify/oai20:protocolVersion");
         } else if (SCHEMA_LOCATION_V1_1_IDENTIFY.equals(getSchemaLocation())) {
