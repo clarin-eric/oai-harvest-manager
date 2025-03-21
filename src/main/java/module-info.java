@@ -19,7 +19,7 @@ module oai.harvest.manager {
     requires woodstox.core.asl;
     requires json.smart;
     requires java.activation;
-    requires unirest.java;
+   //requires unirest.java;
 
     opens nl.mpi.oai.harvester.generated to java.xml.bind;
 }

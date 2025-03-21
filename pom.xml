@@ -209,12 +209,12 @@
             <version>4.0.5</version>
             <type>pom</type>
         </dependency>
-        -->
         <dependency>
             <groupId>com.mashape.unirest</groupId>
             <artifactId>unirest-java</artifactId>
             <version>1.4.9</version>
         </dependency>
+        -->
 <!--        <dependency>-->
 <!--            <groupId>org.eclipse.rdf4j</groupId>-->
 <!--            <artifactId>rdf4j-repository-sparql</artifactId>-->
