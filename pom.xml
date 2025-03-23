@@ -171,10 +171,12 @@
             <version>2.5.2</version> <!-- Use the latest version -->
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/com.github.tomakehurst/wiremock -->
         <dependency>
             <groupId>com.github.tomakehurst</groupId>
             <artifactId>wiremock</artifactId>
             <version>2.27.2</version>
+            <type>pom</type>
             <scope>test</scope>
         </dependency>
         <dependency>
