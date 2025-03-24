@@ -19,6 +19,7 @@
 package ORG.oclc.oai.harvester2.verb;
 
 import com.ctc.wstx.exc.WstxUnexpectedCharException;
+import net.sf.saxon.s9api.SaxonApiException;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -116,7 +117,8 @@ public class ListRecords extends HarvesterVerb {
      * @throws NoSuchFieldException
      */
     public String getResumptionToken()
-    throws TransformerException, NoSuchFieldException, ParserConfigurationException, SAXException, IOException, XMLStreamException {
+        throws TransformerException, NoSuchFieldException, ParserConfigurationException, SAXException, IOException,
+        XMLStreamException, SaxonApiException {
         String schemaLocation = getSchemaLocation();
         if (schemaLocation.indexOf(SCHEMA_LOCATION_V2_0) != -1) {
             if (hasDocument())

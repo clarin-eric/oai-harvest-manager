@@ -25,6 +25,7 @@ import net.sf.saxon.s9api.XdmAtomicValue;
 import net.sf.saxon.s9api.XdmNode;
 import net.sf.saxon.s9api.XsltTransformer;
 import nl.mpi.oai.harvester.metadata.Metadata;
+import nl.mpi.oai.harvester.metadata.Record;
 import nl.mpi.tla.util.Saxon;
 import nl.mpi.tla.util.SaxonListener;
 import org.apache.logging.log4j.LogManager;
@@ -53,7 +54,7 @@ import java.util.List;
 import java.util.concurrent.Semaphore;
 import javax.xml.transform.ErrorListener;
 import javax.xml.transform.SourceLocator;
-import net.sf.saxon.s9api.MessageListener;
+import net.sf.saxon.s9api.MessageListener2;
 import net.sf.saxon.s9api.XsltExecutable;
 
 /**
@@ -124,8 +125,9 @@ public class TransformAction implements Action {
     }
 
     @Override
-    public boolean perform(List<Metadata> records) {
-        for (Metadata record:records) {
+    public boolean perform(List<Record> records) {
+        for (Record rec : records) {
+            Metadata record = (Metadata)rec;
             try {
                 if (semaphore!=null) {
                     for (;;) {
@@ -249,7 +251,7 @@ public class TransformAction implements Action {
         }
     }
 
-    class TransformActionListener implements MessageListener, ErrorListener {
+    class TransformActionListener implements MessageListener2, ErrorListener {
 
         protected boolean handleMessage(String msg, String loc, Exception e) {
             if (msg.startsWith("INF: "))
@@ -294,12 +296,12 @@ public class TransformAction implements Action {
         }
 
         @Override
-        public void message(XdmNode xn, boolean bln, SourceLocator sl) {
+        public void message(XdmNode xn, QName errorCode, boolean bln, SourceLocator sl) {
             if (!handleMessage(xn.getStringValue(),getLocation(sl),null)) {
                 if (bln)
-                    logger.error("["+getLocation(sl)+"]: "+xn.getStringValue());
+                    logger.error("["+getLocation(sl)+"]["+errorCode+"]: "+xn.getStringValue());
                 else
-                    logger.info("["+getLocation(sl)+"]: "+xn.getStringValue());
+                    logger.info("["+getLocation(sl)+"]["+errorCode+"]: "+xn.getStringValue());
             }
         }
     }   
