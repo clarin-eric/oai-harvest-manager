@@ -12,7 +12,7 @@ This application contains a modified version of the
 ([license](http://www.apache.org/licenses/LICENSE-2.0.html)),
 which implements the OAI-PMH requests.
 
-Sice version 2.0 its possible to extent the harvester with other protocols than OAI-PMH.
+Since version 2.0 its possible to extent the harvester with other protocols than OAI-PMH.
 
 
 # Basic Glossary
